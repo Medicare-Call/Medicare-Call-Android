@@ -10,6 +10,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -31,6 +32,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.zIndex
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.NameBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -50,99 +52,97 @@ fun HomeScreen(modifier: Modifier = Modifier) {
 
         Spacer(modifier = Modifier.height(19.dp))
 
+
+        //1. 초록카드
         Box(
             modifier = Modifier
                 .fillMaxWidth()
-                .height(600.dp)
-        ) {
+                .wrapContentHeight()
+                .heightIn(min = 220.dp)
+                .background(main)
 
-                //초록카드
+
+        ) {
+            Row(
+                modifier = Modifier.padding(horizontal = 20.dp, vertical = 40.dp),
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+
+                //말풍선
+                Card(
+                    modifier = Modifier
+                        //텍스트에 따라 말풍선 늘리기
+                        .wrapContentHeight()
+                        .width(196.dp)
+                        .zIndex(2f), //겹치는 도형 위로 올림
+                    colors = CardDefaults.cardColors(containerColor = Color.White),
+                    shape = RoundedCornerShape(10.dp)
+                ) {
+
+                    Text(
+                        text = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요.",
+                        style = MediCareCallTheme.typography.R_16,
+                        modifier = Modifier
+                            .padding(8.dp)
+                            .background(Color.White)
+                    )
+                }
+                // 꼬리
                 Box(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height ( 220.dp)
-                        .background(main) // 배경색
-
-                ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 40.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        //말풍선
-                        Card(
-                            modifier = Modifier
-
-                                .size(196.dp, 94.dp),
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
-                            shape = RoundedCornerShape(10.dp)
-                        ) {
-
-                            Text(
-                                text = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요.",
-                                style = MediCareCallTheme.typography.R_16,
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .background(Color.White)
-                            )
-                        }
-                        // 꼬리
-                        Box(
-                            modifier = Modifier
-                                .size(width = 14.dp, height = 13.dp)
-                                .offset(x = -2.dp, y = 20.dp)
-                                .clip(SpeechTail)
-                                .background(Color.White)
-
-
-                        )
-                    }
-                    //캐릭터 그림자
-                    Image(
-                        painter = painterResource(id = R.drawable.char_medi_shadow),
-                        contentDescription = null,
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .offset(x = (-52.13).dp, y = -56.19.dp)
-                    )
-                    //캐릭터
-                    Image(
-                        painter = painterResource(id = R.drawable.char_medi),
-                        contentDescription = null, //캐릭터이미지
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .offset(x = (-7.75).dp, y = -55.12.dp)
-
-                    )
-                }
-
-
-                //흰색카드
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .offset(y = 165.dp)
-                        .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                        .size(width = 14.dp, height = 13.dp)
+                        .offset(x = -2.dp, y = 20.dp)
+                        .clip(SpeechTail)
                         .background(Color.White)
-                ) {
-                    // 카드 내용
-                    Column(
-                        modifier = Modifier
-                            .padding(16.dp)
-                            .wrapContentHeight()
-                    ) {
-                        Text("여기는 흰카드 내용!", color = Color.Black)
-                        Spacer(Modifier.height(100.dp)) // 테스트로 내용 길이 늘려보기
-                        Text("끝", color = Color.Black)
-                    }
-                }
+                        .zIndex(2f)
 
 
+                )
             }
+            //캐릭터 그림자
+            Image(
+                painter = painterResource(id = R.drawable.char_medi_shadow),
+                contentDescription = null,
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = (-52.13).dp, y = -56.19.dp)
+                    .zIndex(-1f)
+            )
+            //캐릭터
+            Image(
+                painter = painterResource(id = R.drawable.char_medi),
+                contentDescription = null, //캐릭터이미지
+                modifier = Modifier
+                    .align(Alignment.BottomEnd)
+                    .offset(x = (-7.75).dp, y = -55.12.dp)
+                    .zIndex(3f)
+            )
         }
 
+
+        //2. 흰색카드
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .offset(y = -40.dp)
+                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                .background(Color.White)
+
+        ) {
+            // 카드 내용
+            Column(
+                modifier = Modifier
+                    .padding(16.dp)
+                    .wrapContentHeight()
+            ) {
+                Text("여기는 흰카드 내용!", color = Color.Black)
+                Spacer(Modifier.height(100.dp)) // 테스트로 내용 길이 늘려보기
+                Text("", color = Color.Black)
+            }
+        }
     }
 
+}
 
 
 val SpeechTail = GenericShape { size, _ ->

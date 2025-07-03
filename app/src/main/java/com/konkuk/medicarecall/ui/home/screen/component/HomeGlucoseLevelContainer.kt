@@ -27,13 +27,14 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 fun HomeGlucoseLevelContainer(
     modifier: Modifier = Modifier,
     glucoseLevel: Int,
+    onClick: () -> Unit = {}
 ) {
 
 
     Card(
+        onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
+            .fillMaxWidth(),
 
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(10.dp)

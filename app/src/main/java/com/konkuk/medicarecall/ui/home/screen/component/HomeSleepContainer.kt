@@ -27,14 +27,15 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 fun HomeSleepContainer(
     modifier: Modifier = Modifier,
     sleepHours: Int,   // ← 시간
-    sleepMinutes: Int  // ← 분
+    sleepMinutes: Int,  // ← 분
+    onClick: () -> Unit = {}
 ) {
 
 
     Card(
+        onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
+            .fillMaxWidth(),
 
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(10.dp)

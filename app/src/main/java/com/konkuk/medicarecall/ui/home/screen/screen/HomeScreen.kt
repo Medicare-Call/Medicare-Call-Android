@@ -1,6 +1,5 @@
-package com.konkuk.medicarecall.ui.home.screen
+package com.konkuk.medicarecall.ui.home.screen.screen
 
-import android.system.Os.close
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -27,25 +26,42 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
-import androidx.compose.ui.draw.shadow
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.NameBar
+import com.konkuk.medicarecall.ui.home.screen.component.HomeGlucoseLevelContainer
+import com.konkuk.medicarecall.ui.home.screen.component.HomeMealContainer
+import com.konkuk.medicarecall.ui.home.screen.component.HomeMedicineContainer
+import com.konkuk.medicarecall.ui.home.screen.component.HomeSleepContainer
+import com.konkuk.medicarecall.ui.home.screen.component.HomeStateHealthContainer
+import com.konkuk.medicarecall.ui.home.screen.component.HomeStateMentalContainer
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
 
 @Composable
-fun HomeScreen(modifier: Modifier = Modifier) {
+fun HomeScreen(
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    onNavigateToHomeMealDetail: () -> Unit,
+    onNavigateToHomeMedicineDetail: () -> Unit,
+    onNavigateToHomeSleepDetail: () -> Unit,
+    onNavigateToHomeStateHealthDetail: () -> Unit,
+    onNavigateToHomeStateMentalDetail: () -> Unit,
+    onNavigateToHomeGlucoseLevelDetail: () -> Unit,
+) {
 
 
     Column(
         modifier = Modifier
             .verticalScroll(rememberScrollState())
             .fillMaxSize()
+
 
     ) {
         NameBar()
@@ -124,20 +140,47 @@ fun HomeScreen(modifier: Modifier = Modifier) {
         Box(
             Modifier
                 .fillMaxWidth()
+                .wrapContentHeight()
                 .offset(y = -40.dp)
                 .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                .background(Color.White)
+                .background(Color.Gray)//카드 섀도우 처리 후 변경예정
+
 
         ) {
             // 카드 내용
             Column(
                 modifier = Modifier
-                    .padding(16.dp)
+                    .fillMaxWidth()
                     .wrapContentHeight()
+                    .padding(20.dp)
             ) {
-                Text("여기는 흰카드 내용!", color = Color.Black)
-                Spacer(Modifier.height(100.dp)) // 테스트로 내용 길이 늘려보기
-                Text("", color = Color.Black)
+                Spacer(Modifier.height(12.dp))
+                HomeMealContainer(
+                    onClick = { navController.navigate("mealDetail") }
+                )
+                Spacer(Modifier.height(12.dp))
+                HomeMedicineContainer(
+                    onClick = { navController.navigate("medicineDetail") }
+                )
+                Spacer(Modifier.height(12.dp))
+                HomeSleepContainer(
+                    sleepHours = 7,
+                    sleepMinutes = 12,
+                    onClick = { navController.navigate("sleepDetail") }
+                )
+                Spacer(Modifier.height(12.dp))
+                HomeStateHealthContainer(
+                    onClick = { navController.navigate("stateHealthDetail") }
+                )
+                Spacer(Modifier.height(12.dp))
+                HomeStateMentalContainer(
+                    onClick = { navController.navigate("stateMentalDetail") }
+                )
+                Spacer(Modifier.height(12.dp))
+                HomeGlucoseLevelContainer(
+                    glucoseLevel = 120,
+                    onClick = { navController.navigate("glucoseLevelDetail") }
+                )
             }
         }
     }
@@ -154,8 +197,16 @@ val SpeechTail = GenericShape { size, _ ->
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, heightDp = 1200)
 @Composable
 fun PreviewHomeScreen() {
-    HomeScreen()
+    HomeScreen(
+        navController = rememberNavController(),
+        onNavigateToHomeMealDetail = {},
+        onNavigateToHomeMedicineDetail = {},
+        onNavigateToHomeSleepDetail = {},
+        onNavigateToHomeStateHealthDetail = {},
+        onNavigateToHomeStateMentalDetail = {},
+        onNavigateToHomeGlucoseLevelDetail = {},
+    )
 }

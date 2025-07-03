@@ -24,13 +24,16 @@ import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun HomeMedicineContainer(modifier: Modifier = Modifier) {
+fun HomeMedicineContainer(
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit = {}
+) {
 
 
     Card(
+        onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth()
-            .padding(20.dp),
+            .fillMaxWidth(),
 
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(10.dp)

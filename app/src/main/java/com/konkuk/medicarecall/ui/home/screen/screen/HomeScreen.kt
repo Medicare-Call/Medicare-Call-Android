@@ -59,132 +59,134 @@ fun HomeScreen(
 
     Column(
         modifier = Modifier
-            .verticalScroll(rememberScrollState())
             .fillMaxSize()
 
-
     ) {
+
         NameBar()
 
         Spacer(modifier = Modifier.height(19.dp))
 
-
-        //1. 초록카드
-        Box(
+        Column(
             modifier = Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .heightIn(min = 220.dp)
-                .background(main)
+                .verticalScroll(rememberScrollState())
+                .fillMaxSize()
 
 
         ) {
-            Row(
-                modifier = Modifier.padding(horizontal = 20.dp, vertical = 40.dp),
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-
-                //말풍선
-                Card(
-                    modifier = Modifier
-                        //텍스트에 따라 말풍선 늘리기
-                        .wrapContentHeight()
-                        .width(196.dp)
-                        .zIndex(2f), //겹치는 도형 위로 올림
-                    colors = CardDefaults.cardColors(containerColor = Color.White),
-                    shape = RoundedCornerShape(10.dp)
-                ) {
-
-                    Text(
-                        text = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요.",
-                        style = MediCareCallTheme.typography.R_16,
-                        modifier = Modifier
-                            .padding(8.dp)
-                            .background(Color.White)
-                    )
-                }
-                // 꼬리
-                Box(
-                    modifier = Modifier
-                        .size(width = 14.dp, height = 13.dp)
-                        .offset(x = -2.dp, y = 20.dp)
-                        .clip(SpeechTail)
-                        .background(Color.White)
-                        .zIndex(2f)
 
 
-                )
-            }
-            //캐릭터 그림자
-            Image(
-                painter = painterResource(id = R.drawable.char_medi_shadow),
-                contentDescription = null,
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .offset(x = (-52.13).dp, y = -56.19.dp)
-                    .zIndex(-1f)
-            )
-            //캐릭터
-            Image(
-                painter = painterResource(id = R.drawable.char_medi),
-                contentDescription = null, //캐릭터이미지
-                modifier = Modifier
-                    .align(Alignment.BottomEnd)
-                    .offset(x = (-7.75).dp, y = -55.12.dp)
-                    .zIndex(3f)
-            )
-        }
-
-
-        //2. 흰색카드
-        Box(
-            Modifier
-                .fillMaxWidth()
-                .wrapContentHeight()
-                .offset(y = -40.dp)
-                .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                .background(Color.Gray)//카드 섀도우 처리 후 변경예정
-
-
-        ) {
-            // 카드 내용
-            Column(
+            //1. 초록카드
+            Box(
                 modifier = Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
-                    .padding(20.dp)
+                    .heightIn(min = 220.dp)
+                    .background(main)
+
+
             ) {
-                Spacer(Modifier.height(12.dp))
-                HomeMealContainer(
-                    onClick = { navController.navigate("mealDetail") }
+                Row(
+                    modifier = Modifier.padding(horizontal = 20.dp, vertical = 40.dp),
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+                    //말풍선
+                    Card(
+                        modifier = Modifier
+                            //텍스트에 따라 말풍선 늘리기
+                            .wrapContentHeight()
+                            .width(196.dp)
+                            .zIndex(2f), //겹치는 도형 위로 올림
+                        colors = CardDefaults.cardColors(containerColor = Color.White),
+                        shape = RoundedCornerShape(10.dp)
+                    ) {
+
+                        Text(
+                            text = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요.",
+                            style = MediCareCallTheme.typography.R_16,
+                            modifier = Modifier
+                                .padding(8.dp)
+                                .background(Color.White)
+                        )
+                    }
+                    // 꼬리
+                    Box(
+                        modifier = Modifier
+                            .size(width = 14.dp, height = 13.dp)
+                            .offset(x = -2.dp, y = 20.dp)
+                            .clip(SpeechTail)
+                            .background(Color.White)
+                            .zIndex(2f)
+
+
+                    )
+                }
+                //캐릭터 그림자
+                Image(
+                    painter = painterResource(id = R.drawable.char_medi_shadow),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .offset(x = (-52.13).dp, y = -56.19.dp)
+                        .zIndex(-1f)
                 )
-                Spacer(Modifier.height(12.dp))
-                HomeMedicineContainer(
-                    onClick = { navController.navigate("medicineDetail") }
-                )
-                Spacer(Modifier.height(12.dp))
-                HomeSleepContainer(
-                    sleepHours = 7,
-                    sleepMinutes = 12,
-                    onClick = { navController.navigate("sleepDetail") }
-                )
-                Spacer(Modifier.height(12.dp))
-                HomeStateHealthContainer(
-                    onClick = { navController.navigate("stateHealthDetail") }
-                )
-                Spacer(Modifier.height(12.dp))
-                HomeStateMentalContainer(
-                    onClick = { navController.navigate("stateMentalDetail") }
-                )
-                Spacer(Modifier.height(12.dp))
-                HomeGlucoseLevelContainer(
-                    glucoseLevel = 120,
-                    onClick = { navController.navigate("glucoseLevelDetail") }
+                //캐릭터
+                Image(
+                    painter = painterResource(id = R.drawable.char_medi),
+                    contentDescription = null, //캐릭터이미지
+                    modifier = Modifier
+                        .align(Alignment.BottomEnd)
+                        .offset(x = (-7.75).dp, y = -55.12.dp)
+                        .zIndex(3f)
                 )
             }
-        }
-    }
 
+
+            //2. 흰색카드
+            Box(
+                Modifier
+                    .fillMaxWidth()
+                    .wrapContentHeight()
+                    .offset(y = -40.dp)
+                    .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                    .background(Color.Gray)//카드 섀도우 처리 후 변경예정
+
+
+            ) {
+                // 카드 내용
+                Column(
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .wrapContentHeight()
+                        .padding(20.dp)
+                ) {
+                    Spacer(Modifier.height(12.dp))
+                    HomeMealContainer(
+                        onClick = { navController.navigate("mealDetail") })
+                    Spacer(Modifier.height(12.dp))
+                    HomeMedicineContainer(
+                        onClick = { navController.navigate("medicineDetail") })
+                    Spacer(Modifier.height(12.dp))
+                    HomeSleepContainer(
+                        sleepHours = 7,
+                        sleepMinutes = 12,
+                        onClick = { navController.navigate("sleepDetail") })
+                    Spacer(Modifier.height(12.dp))
+                    HomeStateHealthContainer(
+                        onClick = { navController.navigate("stateHealthDetail") })
+                    Spacer(Modifier.height(12.dp))
+                    HomeStateMentalContainer(
+                        onClick = { navController.navigate("stateMentalDetail") })
+                    Spacer(Modifier.height(12.dp))
+                    HomeGlucoseLevelContainer(
+                        glucoseLevel = 120,
+                        onClick = { navController.navigate("glucoseLevelDetail") })
+                }
+            }
+        }
+
+    }
 }
 
 

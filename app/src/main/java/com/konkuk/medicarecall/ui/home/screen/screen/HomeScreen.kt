@@ -76,7 +76,7 @@ fun HomeScreen(
         ) {
 
 
-            //1. 초록카드
+            //1. 초록 카드
             Box(
                 modifier = Modifier
                     .fillMaxWidth()
@@ -134,7 +134,7 @@ fun HomeScreen(
                 //캐릭터
                 Image(
                     painter = painterResource(id = R.drawable.char_medi),
-                    contentDescription = null, //캐릭터이미지
+                    contentDescription = null, //캐릭터 이미지
                     modifier = Modifier
                         .align(Alignment.BottomEnd)
                         .offset(x = (-7.75).dp, y = -55.12.dp)
@@ -143,14 +143,14 @@ fun HomeScreen(
             }
 
 
-            //2. 흰색카드
+            //2. 흰색 카드
             Box(
                 Modifier
                     .fillMaxWidth()
                     .wrapContentHeight()
                     .offset(y = -40.dp)
                     .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                    .background(Color.Gray)//카드 섀도우 처리 후 변경예정
+                    .background(Color.White)
 
 
             ) {
@@ -163,7 +163,8 @@ fun HomeScreen(
                 ) {
                     Spacer(Modifier.height(12.dp))
                     HomeMealContainer(
-                        onClick = { navController.navigate("mealDetail") })
+                        onClick = { onNavigateToHomeMealDetail() }
+                    )
                     Spacer(Modifier.height(12.dp))
                     HomeMedicineContainer(
                         onClick = { navController.navigate("medicineDetail") })

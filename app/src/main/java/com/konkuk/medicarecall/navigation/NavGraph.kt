@@ -6,7 +6,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import com.konkuk.medicarecall.ui.home.screen.screen.HomeScreen
-import com.konkuk.medicarecall.ui.home.screen.screen.detail.HomeMealDetail
+import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeMealDetail
 import com.konkuk.medicarecall.ui.home.screen.screen.detail.HomeMedicineDetail
 import com.konkuk.medicarecall.ui.settings.screen.SettingsScreen
 import com.konkuk.medicarecall.ui.statistics.screen.StatisticsScreen

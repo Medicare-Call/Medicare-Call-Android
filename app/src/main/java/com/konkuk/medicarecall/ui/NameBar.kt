@@ -1,11 +1,13 @@
 package com.konkuk.medicarecall.ui
 
 
+import android.R.attr.text
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -17,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import java.nio.file.Files.size
 
 @Composable
 fun NameBar(
@@ -31,11 +34,13 @@ fun NameBar(
         horizontalArrangement = Arrangement.SpaceBetween
 
     ) {
-        // 왼쪽 화살표+텍스트
+        // 드롭다운 화살표+텍스트
         Row(
             verticalAlignment = Alignment.CenterVertically
         ) {
             Icon(
+                modifier = Modifier
+                .size (24.dp),
                 painter = painterResource(id = R.drawable.ic_arrow_down),
                 contentDescription = "arrow down",
                 tint = MediCareCallTheme.colors.gray3
@@ -66,7 +71,7 @@ fun NameBar(
 
 }
 
-@Preview
+@Preview(showBackground = true)
 @Composable
 private fun NameBarPreview() {
     NameBar()

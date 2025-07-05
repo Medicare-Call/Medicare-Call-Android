@@ -1,6 +1,8 @@
 package com.konkuk.medicarecall.ui.home.screen.component
 
+import android.R.attr.onClick
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -21,24 +23,31 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeMealDetail
+import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 
 @Composable
 fun HomeMealContainer(
     modifier: Modifier = Modifier,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit
 ) {
 
 
     Card(
-        onClick = onClick,
         modifier = Modifier
-            .fillMaxWidth(),
+            .clickable { onClick() }
+            .fillMaxWidth()
+            .figmaShadow(
+                group = LocalMediCareCallShadowProvider.current.shadow03,
+                cornerRadius = 14.dp
+            ),
 
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(10.dp)
-        //섀도우
+
     ) {
 
         Column(
@@ -156,6 +165,6 @@ fun HomeMealContainer(
 fun PreviewHomeMealContainer() {
 
 
-    HomeMealContainer()
+    HomeMealContainer(onClick = {})
 
 }

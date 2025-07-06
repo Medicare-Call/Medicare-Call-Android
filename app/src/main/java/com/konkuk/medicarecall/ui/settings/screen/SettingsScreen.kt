@@ -194,8 +194,15 @@ fun SettingsScreen() {
                         Text(text = "푸시 알림 설정", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
                         Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray8)
                     }
-
+                    Row(
+                        horizontalArrangement = Arrangement.SpaceBetween,
+                        modifier = Modifier.fillMaxWidth()
+                    ) {
+                        Text(text = "어르신 건강정보 설정", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
+                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray8)
+                    }
                 }
+
             }
         }
     }

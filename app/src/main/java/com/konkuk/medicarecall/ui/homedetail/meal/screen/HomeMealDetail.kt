@@ -58,7 +58,7 @@ fun HomeMealDetail(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(horizontal = 20.dp)
+                    .padding(20.dp)
             ) {
 
                 MonthYearSelector(

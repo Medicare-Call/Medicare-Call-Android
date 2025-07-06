@@ -167,7 +167,8 @@ fun HomeScreen(
                     )
                     Spacer(Modifier.height(12.dp))
                     HomeMedicineContainer(
-                        onClick = { navController.navigate("medicineDetail") })
+                        onClick = {  onNavigateToHomeMedicineDetail() }
+                    )
                     Spacer(Modifier.height(12.dp))
                     HomeSleepContainer(
                         sleepHours = 7,

@@ -180,39 +180,6 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
     }
 }
 
-@Composable
-fun ChipItem(text: String, onRemove: () -> Unit) {
-    Surface(
-        shape = RoundedCornerShape(100.dp),
-        color = MediCareCallTheme.colors.g50,
-        modifier = Modifier
-            .height(33.dp)
-            .border((1.2).dp, MediCareCallTheme.colors.main, shape = RoundedCornerShape(100.dp))
-            .padding(),
-    ) {
-        Row(
-            verticalAlignment = Alignment.CenterVertically,
-        ) {
-            Text(
-                text,
-                color = MediCareCallTheme.colors.main,
-                style = MediCareCallTheme.typography.R_14,
-                modifier = Modifier.padding(start = 16.dp)
-            )
-            Spacer(Modifier.width(8.dp))
-            Icon(
-                painter = painterResource(id = R.drawable.ic_close),
-                contentDescription = "remove",
-                modifier = Modifier
-                    .size(16.dp)
-                    .clickable { onRemove() },
-                tint = MediCareCallTheme.colors.main
-            )
-            Spacer(Modifier.width(12.dp))
-        }
-    }
-}
-
 @Preview(showBackground = true)
 @Composable
 fun MedicationScreenPreview() {

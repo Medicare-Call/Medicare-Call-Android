@@ -67,7 +67,7 @@ fun HomeMealDetail(
                     onMonthClick = { /* TODO */ }
                 )
 
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(12.dp))
 
                 HorizontalPager(
                     state = pagerState

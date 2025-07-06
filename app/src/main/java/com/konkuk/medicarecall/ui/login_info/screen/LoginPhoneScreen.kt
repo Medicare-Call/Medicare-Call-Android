@@ -53,9 +53,9 @@ fun LoginPhoneScreen(
                 val filtered = input.filter { it.isDigit() }.take(11)
                 loginViewModel.onPhoneNumberChanged(filtered)
             },
-            "휴대폰 번호",
-            KeyboardType.Number,
-            PhoneNumberVisualTransformation()
+            placeHolder = "휴대폰 번호",
+            keyboardType = KeyboardType.Number,
+            visualTransformation = PhoneNumberVisualTransformation()
         )
 
         Spacer(Modifier.height(30.dp))

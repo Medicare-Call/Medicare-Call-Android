@@ -16,8 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.konkuk.medicarecall.ui.NameBar
 import com.konkuk.medicarecall.ui.homedetail.MonthYearSelector
+import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.WeeklyCalendar
 import com.konkuk.medicarecall.ui.homedetail.getDatesForWeek
 import com.konkuk.medicarecall.ui.homedetail.meal.MealUiState
@@ -50,13 +50,15 @@ fun HomeMealDetail(
         ) {
 
 
-            NameBar() // TODO: 상단바 변경
+            TopAppBar(
+                title = "식사"
+            )
 
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
-                    .padding(20.dp)
+                    .padding(horizontal = 20.dp)
             ) {
 
                 MonthYearSelector(

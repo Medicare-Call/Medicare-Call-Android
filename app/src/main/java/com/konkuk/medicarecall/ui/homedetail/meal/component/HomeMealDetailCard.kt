@@ -25,9 +25,10 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
 fun HomeMealDetailCard(
-    title: String,
+    mealTime: String,
     description: String,
     isRecorded: Boolean,
+    isEaten: Boolean?,
     modifier: Modifier = Modifier
 ) {
 
@@ -52,7 +53,7 @@ fun HomeMealDetailCard(
             ) {
 
                 Text(
-                    title,
+                    mealTime,
                     style = MediCareCallTheme.typography.SB_18,
                     color = MediCareCallTheme.colors.gray8,
                 )
@@ -85,9 +86,10 @@ fun HomeMealDetailCard(
 @Composable
 fun PreviewHomeMealDetailCard() {
     HomeMealDetailCard(
-        title = "아침",
+        mealTime = "아침",
         description = "간단히 밥과 반찬을 드셨어요.",
-        isRecorded = true
+        isRecorded = true,
+        isEaten = true
     )
 }
 

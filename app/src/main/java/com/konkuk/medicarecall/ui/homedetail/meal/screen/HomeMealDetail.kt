@@ -35,9 +35,9 @@ fun HomeMealDetail(
     ) // 주간 달력
 
     val meals = listOf(
-        MealUiState("아침", "간단히 밥과 반찬을 드셨어요.", true),
-        MealUiState("점심", "식사하지 않으셨어요.", true),
-        MealUiState("저녁", "", false)
+        MealUiState("아침", "간단히 밥과 반찬을 드셨어요.", true, true),
+        MealUiState("점심", "식사하지 않으셨어요.", true, true),
+        MealUiState("저녁", "", false,false )
     )
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -83,9 +83,10 @@ fun HomeMealDetail(
 
                 meals.forEach { meal ->
                     HomeMealDetailCard(
-                        title = meal.title,
-                        description = meal.description,
-                        isRecorded = meal.isRecorded
+                        mealTime = meal.mealTime,       // 아침 점심 저녁
+                        description = meal.description, // 식사 내용
+                        isRecorded = meal.isRecorded,   // 식사 기록 여부
+                        isEaten = meal.isEaten          // 식사 유무
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))

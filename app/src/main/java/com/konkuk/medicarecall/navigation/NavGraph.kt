@@ -12,7 +12,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
-import com.konkuk.medicarecall.ui.home.screen.detail.HomeMedicineDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeMealDetail
 import com.konkuk.medicarecall.ui.homedetail.medicine.DoseStatus
 import com.konkuk.medicarecall.ui.homedetail.medicine.MedicineUiState

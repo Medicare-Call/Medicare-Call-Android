@@ -23,6 +23,7 @@ val G900 = Color(0xFF004723)
 // System
 val Negative = Color(0xFFFF4949)
 val Warning = Color(0xFFFFCB3D)
+val Warning2 = Color(0xFFFFA13D)
 val Positive = Color(0xFF0AD364)
 val Active = Color(0xFF2D8FFF)
 
@@ -56,6 +57,7 @@ data class MediCareCallColors(
     val g900: Color,
     val negative: Color,
     val warning: Color,
+    val warning2: Color,
     val positive: Color,
     val active: Color,
     val white: Color,
@@ -87,6 +89,7 @@ val defaultMediCareCallColors = MediCareCallColors(
     g900 = G900,
     negative = Negative,
     warning = Warning,
+    warning2 = Warning2,
     positive = Positive,
     active = Active,
     white = White,

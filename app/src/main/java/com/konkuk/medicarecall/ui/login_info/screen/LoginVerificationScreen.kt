@@ -51,8 +51,8 @@ fun LoginVerificationScreen(
                 val filtered = input.filter { it.isDigit() }.take(6)
                 loginViewModel.onVerificationCodeChanged(filtered)
             },
-            "인증번호 입력",
-            KeyboardType.Number
+            placeHolder = "인증번호 입력",
+            keyboardType = KeyboardType.Number
         )
 
         Spacer(Modifier.height(30.dp))

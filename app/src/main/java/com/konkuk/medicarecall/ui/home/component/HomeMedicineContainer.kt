@@ -1,7 +1,6 @@
-package com.konkuk.medicarecall.ui.home.screen.component
+package com.konkuk.medicarecall.ui.home.component
 
 import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer

@@ -8,18 +8,16 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-
 import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
+import com.konkuk.medicarecall.ui.home.screen.detail.HomeMedicineDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeMealDetail
-import com.konkuk.medicarecall.ui.home.screen.screen.detail.HomeMedicineDetail
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginVerificationScreen
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
-
 import com.konkuk.medicarecall.ui.settings.screen.SettingsScreen
 import com.konkuk.medicarecall.ui.statistics.screen.StatisticsScreen
 

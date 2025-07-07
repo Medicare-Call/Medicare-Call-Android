@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.home.screen.screen.detail
+package com.konkuk.medicarecall.ui.home.screen.detail
 
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier

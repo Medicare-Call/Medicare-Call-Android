@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.home.screen.screen
+package com.konkuk.medicarecall.ui.home.screen
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -35,12 +35,12 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.NameBar
-import com.konkuk.medicarecall.ui.home.screen.component.HomeGlucoseLevelContainer
-import com.konkuk.medicarecall.ui.home.screen.component.HomeMealContainer
-import com.konkuk.medicarecall.ui.home.screen.component.HomeMedicineContainer
-import com.konkuk.medicarecall.ui.home.screen.component.HomeSleepContainer
-import com.konkuk.medicarecall.ui.home.screen.component.HomeStateHealthContainer
-import com.konkuk.medicarecall.ui.home.screen.component.HomeStateMentalContainer
+import com.konkuk.medicarecall.ui.home.component.HomeGlucoseLevelContainer
+import com.konkuk.medicarecall.ui.home.component.HomeMealContainer
+import com.konkuk.medicarecall.ui.home.component.HomeMedicineContainer
+import com.konkuk.medicarecall.ui.home.component.HomeSleepContainer
+import com.konkuk.medicarecall.ui.home.component.HomeStateHealthContainer
+import com.konkuk.medicarecall.ui.home.component.HomeStateMentalContainer
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
 

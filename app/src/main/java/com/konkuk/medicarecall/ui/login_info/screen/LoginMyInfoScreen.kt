@@ -32,6 +32,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
 import com.konkuk.medicarecall.ui.login_info.component.AgreementItem
 import com.konkuk.medicarecall.ui.component.CTAButton
@@ -176,11 +177,11 @@ fun LoginMyInfoScreen(
                                 interactionSource = null,
                                 indication = null,
                                 onClick = {
-                                allAgreeCheckState = !allAgreeCheckState
-                                checkedStates = checkedStates.map {
-                                    allAgreeCheckState
+                                    allAgreeCheckState = !allAgreeCheckState
+                                    checkedStates = checkedStates.map {
+                                        allAgreeCheckState
+                                    }
                                 }
-                            }
                             )
                         )
                         Spacer(Modifier.width(8.dp))
@@ -207,11 +208,14 @@ fun LoginMyInfoScreen(
                         modifier = modifier
                     )
                 }
-                // 모달 내부 CTA 버튼
+                // 모달 내부 CTA(다음) 버튼
                 CTAButton(
-                    if(isCheckedAll) CTAButtonType.GREEN else CTAButtonType.DISABLED,
+                    if (isCheckedAll) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                     "다음",
-                    {},
+                    {
+                        navController.navigate(Route.LoginSeniorInfoScreen.route)
+                        loginViewModel.updateLoginUiState(LoginUiState.EnterSeniorInfo)
+                    },
                     Modifier
                         .padding(horizontal = 20.dp)
                         .padding(bottom = 30.dp, top = 20.dp)

@@ -15,6 +15,7 @@ import com.konkuk.medicarecall.ui.home.screen.detail.HomeMedicineDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeMealDetail
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
+import com.konkuk.medicarecall.ui.login_info.screen.LoginSeniorInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginVerificationScreen
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
@@ -73,6 +74,9 @@ fun NavGraph(
             }
             composable(route = Route.LoginMyInfo.route) {
                 LoginMyInfoScreen(navController, loginViewModel)
+            }
+            composable(route = Route.LoginSeniorInfoScreen.route) {
+                LoginSeniorInfoScreen(navController, loginViewModel)
             }
         }
         composable(route = Route.HomeMealDetail.route) {

@@ -1,6 +1,5 @@
-package com.konkuk.medicarecall.ui.home.screen.component
+package com.konkuk.medicarecall.ui.home.component
 
-import android.R.attr.onClick
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -23,14 +22,12 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeMealDetail
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
-
 @Composable
-fun HomeMealContainer(
+fun HomeMedicineContainer(
     modifier: Modifier = Modifier,
     onClick: () -> Unit
 ) {
@@ -49,12 +46,10 @@ fun HomeMealContainer(
         shape = RoundedCornerShape(10.dp)
 
     ) {
-
         Column(
             modifier = Modifier.padding(20.dp)
         ) {
-
-            //1) Title: 식사
+            //1) Title: 복약
             Row(
                 verticalAlignment = Alignment.CenterVertically
 
@@ -62,13 +57,13 @@ fun HomeMealContainer(
                 Image(
                     modifier = Modifier
                         .size(24.dp),
-                    painter = painterResource(id = R.drawable.ic_ricebowl),
-                    contentDescription = "ricebowl icon",
+                    painter = painterResource(id = R.drawable.ic_pills),
+                    contentDescription = "pills icon",
 
                     )
 
                 Text(
-                    "식사",
+                    "복용",
                     style = MediCareCallTheme.typography.SB_18,
                     color = MediCareCallTheme.colors.main,
                 )
@@ -77,94 +72,146 @@ fun HomeMealContainer(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            //2) 아침 점심 저녁
+            //2) 복용횟수
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.SpaceBetween,
-                verticalAlignment = Alignment.CenterVertically
-            ) {
-                //아침
-                Column(
-                    modifier = Modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally
+
+            // 전체
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+
                 ) {
-                    Image(
-                        modifier = Modifier
-                            .padding(horizontal = 7.dp)
-                            .size(48.dp),
-                        painter = painterResource(id = R.drawable.ic_ricebowl_eat),
-                        contentDescription = "ricebowl icon_eat",
 
-                        )
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "0/5",
+                        style = MediCareCallTheme.typography.SB_22,
+                    )
+
 
                     Text(
-                        "아침",
+                        "회 하루 복용",
                         style = MediCareCallTheme.typography.R_16,
                         color = MediCareCallTheme.colors.gray6,
                     )
 
-                }
-
-
-                //점심
-                Column(
-                    modifier = Modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .padding(horizontal = 7.dp)
-                            .size(48.dp),
-                        painter = painterResource(id = R.drawable.ic_ricebowl_skip),
-                        contentDescription = "ricebowl icon_eat",
-
-                        )
-
-                    Text(
-                        "점심",
-                        style = MediCareCallTheme.typography.R_16,
-                        color = MediCareCallTheme.colors.gray6,
-                    )
 
                 }
-
-
-                //저녁
-                Column(
-                    modifier = Modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
-                    Image(
-                        modifier = Modifier
-                            .padding(horizontal = 7.dp)
-                            .size(48.dp),
-                        painter = painterResource(id = R.drawable.ic_ricebowl_uncheck),
-                        contentDescription = "ricebowl icon_eat",
-
-                        )
-
-                    Text(
-                        "저녁",
-                        style = MediCareCallTheme.typography.R_16,
-                        color = MediCareCallTheme.colors.gray6,
-                    )
-
-                }
-
-
             }
 
+            Spacer(modifier = Modifier.height(8.dp))
+
+
+            //첫번째 약
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+
+                ) {
+
+                Text(
+                    "당뇨약",
+                    style = MediCareCallTheme.typography.R_16,
+                )
+
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "0/3",
+                        style = MediCareCallTheme.typography.SB_22,
+                    )
+
+
+                    Text(
+                        "회 복용",
+                        style = MediCareCallTheme.typography.R_16,
+                        color = MediCareCallTheme.colors.gray6,
+                    )
+
+
+                }
+
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+
+                    Text(
+                        "다음 복약 09:00",
+                        style = MediCareCallTheme.typography.R_14,
+                        color = MediCareCallTheme.colors.gray4,
+                    )
+
+
+                }
+            }
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+
+            //두번째약
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth(),
+
+                ) {
+
+                Text(
+                    "혈압약",
+                    style = MediCareCallTheme.typography.R_16,
+                )
+
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+                    Text(
+                        "0/2",
+                        style = MediCareCallTheme.typography.SB_22,
+                    )
+
+
+                    Text(
+                        "회 복용",
+                        style = MediCareCallTheme.typography.R_16,
+                        color = MediCareCallTheme.colors.gray6,
+                    )
+
+
+                }
+
+                Row(
+                    modifier = Modifier,
+                    verticalAlignment = Alignment.CenterVertically
+                ) {
+
+
+                    Text(
+                        "다음 복약 09:00",
+                        style = MediCareCallTheme.typography.R_14,
+                        color = MediCareCallTheme.colors.gray4,
+                    )
+
+
+                }
+            }
+
+
         }
+
     }
 }
 
-
-@Preview()
+@Preview
 @Composable
-fun PreviewHomeMealContainer() {
+fun PreviewHomeMedicineContainer() {
 
 
-    HomeMealContainer(onClick = {})
-
+    HomeMedicineContainer(onClick = {})
 }

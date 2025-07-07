@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.home.screen.component
+package com.konkuk.medicarecall.ui.home.component
 
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
@@ -26,9 +26,8 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun HomeGlucoseLevelContainer(
+fun HomeStateHealthContainer(
     modifier: Modifier = Modifier,
-    glucoseLevel: Int,
     onClick: () -> Unit = {}
 ) {
 
@@ -49,7 +48,7 @@ fun HomeGlucoseLevelContainer(
         Column(
             modifier = Modifier.padding(20.dp)
         ) {
-            //1) Title: 혈당
+            //1) Title: 건강징후
             Row(
                 verticalAlignment = Alignment.CenterVertically
 
@@ -57,14 +56,14 @@ fun HomeGlucoseLevelContainer(
                 Image(
                     modifier = Modifier
                         .size(24.dp),
-                    painter = painterResource(id = R.drawable.ic_glucose),
-                    contentDescription = "glucose icon",
+                    painter = painterResource(id = R.drawable.ic_state_health),
+                    contentDescription = "health state icon",
 
                     )
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    "혈당",
+                    "건강징후",
                     style = MediCareCallTheme.typography.SB_18,
                     color = MediCareCallTheme.colors.main,
                 )
@@ -85,15 +84,8 @@ fun HomeGlucoseLevelContainer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "$glucoseLevel",
+                        text = "좋음",
                         style = MediCareCallTheme.typography.SB_22,
-                    )
-
-                    Spacer(modifier = Modifier.width(4.dp))
-
-                    Text(
-                        text = "mg/dL",
-                        style = MediCareCallTheme.typography.R_16,
                     )
 
 
@@ -109,10 +101,7 @@ fun HomeGlucoseLevelContainer(
 
 @Preview
 @Composable
-fun PreviewHomeGlucoseLevelContainer() {
+fun PreviewHomeStateHealthContainer() {
 
-
-    HomeGlucoseLevelContainer(
-        glucoseLevel = 120,
-    )
+    HomeStateHealthContainer()
 }

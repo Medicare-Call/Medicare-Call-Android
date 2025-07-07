@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.ui.component.CTAButton
+import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.settings.component.SettingTextField
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -45,18 +47,24 @@ fun HealthDetailScreen(modifier: Modifier = Modifier) {
             // 복약정보
             // 특이사항
 
-            Button(
-                modifier = modifier.fillMaxWidth().height(50.dp),
-                shape = RoundedCornerShape(14.dp),
+//            Button(
+//                modifier = modifier.fillMaxWidth().height(50.dp),
+//                shape = RoundedCornerShape(14.dp),
+//                onClick = {},
+//                colors = ButtonDefaults.buttonColors(
+//                    contentColor = MediCareCallTheme.colors.white,
+//                    containerColor = MediCareCallTheme.colors.main
+//                )
+//
+//            ) {
+//                Text("확인")
+//            }
+            CTAButton(
+                type = CTAButtonType.GREEN,
+                text = "확인",
                 onClick = {},
-                colors = ButtonDefaults.buttonColors(
-                    contentColor = MediCareCallTheme.colors.white,
-                    containerColor = MediCareCallTheme.colors.main
-                )
-
-            ) {
-                Text("확인")
-            }
+                modifier = modifier.height(50.dp),
+            )
         }
     }
 }

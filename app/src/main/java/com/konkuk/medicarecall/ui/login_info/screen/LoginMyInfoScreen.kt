@@ -79,7 +79,7 @@ fun LoginMyInfoScreen(
                 {
                     loginViewModel.onNameChanged(it)
                 },
-                "이름"
+                placeHolder = "이름"
             )
         }
         Spacer(Modifier.height(20.dp))
@@ -96,7 +96,7 @@ fun LoginMyInfoScreen(
                     val filtered = input.filter { it.isDigit() }.take(8)
                     loginViewModel.onDOBChanged(filtered)
                 },
-                "YYYY / MM / DD",
+                placeHolder = "YYYY / MM / DD",
                 keyboardType = KeyboardType.Number,
                 visualTransformation = DateOfBirthVisualTransformation()
             )

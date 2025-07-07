@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
-import com.konkuk.medicarecall.ui.settings.component.SwitchItem
+import com.konkuk.medicarecall.ui.settings.component.SwitchButton
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
@@ -55,7 +55,7 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier) {
             ) {
             Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("전체 푸시 알림", style = MediCareCallTheme.typography.SB_16, color = Color.Black)
-                SwitchItem(masterChecked, onCheckedChange = { isChecked ->
+                SwitchButton(masterChecked, onCheckedChange = { isChecked ->
                     masterChecked = isChecked
                     completeChecked = isChecked
                     abnormalChecked = isChecked
@@ -64,7 +64,7 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier) {
             }
             Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("케어콜 완료 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                SwitchItem(completeChecked, onCheckedChange = { isChecked ->
+                SwitchButton(completeChecked, onCheckedChange = { isChecked ->
                     completeChecked = isChecked
                     if (!isChecked) {
                         masterChecked = false
@@ -73,7 +73,7 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier) {
             }
             Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("건강 이상 징후 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                SwitchItem(abnormalChecked, onCheckedChange = { isChecked ->
+                SwitchButton(abnormalChecked, onCheckedChange = { isChecked ->
                     abnormalChecked = isChecked
                     if (!isChecked) {
                         masterChecked = false
@@ -82,7 +82,7 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier) {
             }
             Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("케어콜 부재중 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                SwitchItem(missedChecked, onCheckedChange = { isChecked ->
+                SwitchButton(missedChecked, onCheckedChange = { isChecked ->
                     missedChecked = isChecked
                     if (!isChecked) {
                         masterChecked = false

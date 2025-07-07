@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.settings.component
 
-import android.R.attr.checked
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.size
@@ -12,7 +11,7 @@ import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
 
 @Composable
-fun SwitchItem(
+fun SwitchButton(
     checked: Boolean,
     onCheckedChange: (Boolean) -> Unit,
     modifier: Modifier = Modifier
@@ -31,7 +30,7 @@ fun SwitchItem(
 @Preview(showBackground = true, widthDp = 100, heightDp = 60)
 @Composable
 fun SwitchItemOffPreview() {
-    SwitchItem(
+    SwitchButton(
         checked = false,
         onCheckedChange = {}
     )
@@ -40,7 +39,7 @@ fun SwitchItemOffPreview() {
 @Preview(showBackground = true, widthDp = 100, heightDp = 60)
 @Composable
 fun SwitchItemOnPreview() {
-    SwitchItem(
+    SwitchButton(
         checked = true,
         onCheckedChange = {}
     )
@@ -50,7 +49,7 @@ fun SwitchItemOnPreview() {
 @Composable
 fun SwitchItemInteractivePreview() {
     var checked by remember { mutableStateOf(false) }
-    SwitchItem(
+    SwitchButton(
         checked = checked,
         onCheckedChange = { checked = it }
     )

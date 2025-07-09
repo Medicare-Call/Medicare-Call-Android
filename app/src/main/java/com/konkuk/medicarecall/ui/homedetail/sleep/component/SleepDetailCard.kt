@@ -59,7 +59,7 @@ fun HomeSleepDetailCard(
                 Column {
 
                     Text(
-                        text = "총 수면 시간",
+                        text = "건강징후 요약",
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray5
                     )

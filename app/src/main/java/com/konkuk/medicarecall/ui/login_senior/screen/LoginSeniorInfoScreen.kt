@@ -15,11 +15,14 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
+import com.konkuk.medicarecall.ui.model.RelationshipType
+import com.konkuk.medicarecall.ui.model.SeniorLivingType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
 import com.konkuk.medicarecall.ui.util.PhoneNumberVisualTransformation
@@ -30,6 +33,8 @@ fun LoginSeniorInfoScreen(
     loginViewModel: LoginViewModel,
     modifier: Modifier = Modifier
 ) {
+
+
     var scrollState = rememberScrollState()
     Column(
         modifier
@@ -78,13 +83,36 @@ fun LoginSeniorInfoScreen(
             }
             Spacer(Modifier.height(20.dp))
             DefaultTextField(
-                loginViewModel.phoneNumber,
+                "",
                 { },
                 category = "휴대폰 번호",
                 placeHolder = "010-1234-5678",
                 keyboardType = KeyboardType.Number,
                 visualTransformation = PhoneNumberVisualTransformation()
             )
+            Spacer(Modifier.height(20.dp))
+
+
+            DefaultDropdown(
+                enumList = RelationshipType.values().map { it.displayName }
+                    .toList(),
+                placeHolder = "관계 선택하기",
+                category = "어르신과의 관계",
+                scrollState
+            )
+
+
+            Spacer(Modifier.height(20.dp))
+
+            DefaultDropdown(
+                enumList = SeniorLivingType.values().map { it.displayName }
+                    .toList(),
+                placeHolder = "거주방식을 선택해주세요",
+                category = "어르신 거주 방식",
+                scrollState
+            )
+
+
         }
     }
 }

@@ -24,7 +24,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
 fun SettingsTopAppBar(modifier: Modifier = Modifier,
-                      title: String,
+                      title: String = "",
                       leftIcon: @Composable () -> Unit = {},
                       leftIconClick : () -> Unit = {},
                       rightIcon: @Composable () -> Unit = {},

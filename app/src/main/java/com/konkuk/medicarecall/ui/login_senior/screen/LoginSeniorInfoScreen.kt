@@ -26,6 +26,7 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.DefaultTextField
@@ -58,7 +59,6 @@ fun LoginSeniorInfoScreen(
             .verticalScroll(scrollState)
     ) {
         TopBar({
-            loginViewModel.updateLoginUiState(LoginUiState.Start)
             navController.popBackStack()
         })
         Spacer(Modifier.height(20.dp))
@@ -157,7 +157,9 @@ fun LoginSeniorInfoScreen(
             }
 
             Spacer(Modifier.height(30.dp))
-            CTAButton(CTAButtonType.GREEN, "다음", {}, modifier.padding(bottom = 20.dp))
+            CTAButton(CTAButtonType.GREEN, "다음", {
+                navController.navigate(Route.LoginSeniorMedInfoScreen.route)
+            }, modifier.padding(bottom = 20.dp))
 
 
         }

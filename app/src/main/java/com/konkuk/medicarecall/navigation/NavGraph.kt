@@ -16,11 +16,13 @@ import com.konkuk.medicarecall.ui.home.screen.HomeScreen
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.MealDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.SleepDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.StateHealthDetail
+import com.konkuk.medicarecall.ui.homedetail.meal.screen.StateMentalDetail
 import com.konkuk.medicarecall.ui.homedetail.medicine.DoseStatus
 import com.konkuk.medicarecall.ui.homedetail.medicine.MedicineUiState
 import com.konkuk.medicarecall.ui.homedetail.medicine.screen.MedicineDetail
 import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
 import com.konkuk.medicarecall.ui.homedetail.statehealth.HealthUiState
+import com.konkuk.medicarecall.ui.homedetail.statemental.MentalUiState
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
@@ -127,6 +129,22 @@ fun NavGraph(
                         ),
                         //TODO: 병명 볼드처리
                         symptomAnalysis = "주요 증상으로 보아 파킨슨 병이 의심돼요. 어르신과 함께 병원에 방문해 보세요.",
+                        isRecorded = true
+                    )
+                )
+            }
+
+
+            //홈 상세 화면_심리 상태 화면 // 테스트
+
+            composable(route = Route.StateMentalDetail.route) {
+                StateMentalDetail(
+                    navController = navController,
+                    mentals = MentalUiState(
+                        mentalSummary = listOf(
+                            "날씨가 좋아서 기분이 좋음",
+                            "여느 때와 비슷함"
+                        ),
                         isRecorded = true
                     )
                 )

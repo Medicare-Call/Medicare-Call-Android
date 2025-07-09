@@ -189,7 +189,8 @@ fun HomeScreen(
                     )
                     Spacer(Modifier.height(12.dp))
                     HomeStateMentalContainer(
-                        onClick = { navController.navigate("stateMentalDetail") })
+                        onClick = { onNavigateToStateMentalDetail()}
+                    )
                     Spacer(Modifier.height(12.dp))
                     HomeGlucoseLevelContainer(
                         glucoseLevel = 120,

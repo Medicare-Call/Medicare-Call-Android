@@ -23,7 +23,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun HomeMealDetailCard(
+fun MealDetailCard(
     mealTime: String,
     description: String,
     isRecorded: Boolean,
@@ -83,8 +83,8 @@ fun HomeMealDetailCard(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeMealDetailCard() {
-    HomeMealDetailCard(
+fun PreviewMealDetailCard() {
+    MealDetailCard(
         mealTime = "아침",
         description = "간단히 밥과 반찬을 드셨어요.",
         isRecorded = true,

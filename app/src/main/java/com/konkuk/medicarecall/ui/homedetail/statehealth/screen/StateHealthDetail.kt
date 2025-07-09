@@ -27,10 +27,9 @@ import com.konkuk.medicarecall.ui.homedetail.statehealth.component.StateHealthDe
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeStateHealthDetail(
+fun StateHealthDetail(
     navController: NavController,
-    healths: HealthUiState,
-    modifier: Modifier = Modifier
+    healths: HealthUiState
 ) {
 
     val pagerState = rememberPagerState(
@@ -104,7 +103,7 @@ fun HomeStateHealthDetail(
 @Composable
 fun PreviewStateHealthDetail() {
 
-    HomeStateHealthDetail(
+    StateHealthDetail(
         navController = rememberNavController(),
         healths = HealthUiState(
             symptoms = listOf(

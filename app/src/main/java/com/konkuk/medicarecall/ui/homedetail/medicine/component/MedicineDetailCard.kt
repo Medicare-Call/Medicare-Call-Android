@@ -29,7 +29,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun HomeMedicineDetailCard(
+fun MedicineDetailCard(
     medicineName: String,               // 약 이름
     todayTakenCount: Int,               // 오늘 복약 완료 횟수
     todayRequiredCount: Int,            // 오늘 복용 해야 하는 횟수
@@ -100,8 +100,8 @@ fun HomeMedicineDetailCard(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeMedicineDetailCard() {
-    HomeMedicineDetailCard(
+fun PreviewMedicineDetailCard() {
+    MedicineDetailCard(
         medicineName = "당뇨약",
         todayTakenCount = 2,
         todayRequiredCount = 3,

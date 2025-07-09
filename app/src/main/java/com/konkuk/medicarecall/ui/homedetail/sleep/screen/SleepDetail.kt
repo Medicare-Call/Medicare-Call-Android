@@ -17,20 +17,22 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.homedetail.MonthYearSelector
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.WeeklyCalendar
 import com.konkuk.medicarecall.ui.homedetail.getDatesForWeek
 import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
-import com.konkuk.medicarecall.ui.homedetail.sleep.component.HomeSleepDetailCard
+import com.konkuk.medicarecall.ui.homedetail.sleep.component.SleepDetailCard
+
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeSleepDetail(
+fun SleepDetail(
     navController: NavController,
-    sleeps: SleepUiState,
-    modifier: Modifier = Modifier
+    sleeps: SleepUiState
+
 ) {
 
     val pagerState = rememberPagerState(
@@ -82,7 +84,8 @@ fun HomeSleepDetail(
                 }
                 Spacer(modifier = Modifier.height(24.dp))
 
-                HomeSleepDetailCard(
+
+                SleepDetailCard(
                     SleepUiState(
                         date = "2025-07-07",
                         totalSleepHours = 8,
@@ -100,9 +103,9 @@ fun HomeSleepDetail(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeSleepDetail() {
+fun PreviewSleepDetail() {
 
-    HomeSleepDetail(
+    SleepDetail(
         navController = rememberNavController(),
         SleepUiState(
             date = "2025-07-07",

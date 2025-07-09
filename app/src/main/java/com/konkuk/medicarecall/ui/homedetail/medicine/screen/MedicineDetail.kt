@@ -24,11 +24,11 @@ import com.konkuk.medicarecall.ui.homedetail.WeeklyCalendar
 import com.konkuk.medicarecall.ui.homedetail.getDatesForWeek
 import com.konkuk.medicarecall.ui.homedetail.medicine.DoseStatus
 import com.konkuk.medicarecall.ui.homedetail.medicine.MedicineUiState
-import com.konkuk.medicarecall.ui.homedetail.medicine.component.HomeMedicineDetailCard
+import com.konkuk.medicarecall.ui.homedetail.medicine.component.MedicineDetailCard
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeMedicineDetail(
+fun MedicineDetail(
     navController: NavController,
     medicines: List<MedicineUiState>
 ) {
@@ -84,7 +84,7 @@ fun HomeMedicineDetail(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 medicines.forEach { medicine ->
-                    HomeMedicineDetailCard(
+                    MedicineDetailCard(
                         medicineName = medicine.medicineName,                  // 약 이름
                         todayTakenCount = 2,                                   //오늘 복약 완료 횟수
                         todayRequiredCount = medicine.todayRequiredCount,     //오늘 복약 해야 할 횟수
@@ -105,8 +105,8 @@ fun HomeMedicineDetail(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeMealDetail() {
-    HomeMedicineDetail(
+fun PreviewMedicineDetail() {
+    MedicineDetail(
         navController = rememberNavController(), // 프리뷰 전용
         medicines = listOf(
             MedicineUiState(

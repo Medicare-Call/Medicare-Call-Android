@@ -25,7 +25,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun HomeSleepDetailCard(
+fun SleepDetailCard(
 
     sleeps: SleepUiState,
     modifier: Modifier = Modifier
@@ -166,8 +166,8 @@ fun HomeSleepDetailCard(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeSleepDetailCard() {
-    HomeSleepDetailCard(
+fun PreviewSleepDetailCard() {
+    SleepDetailCard(
         sleeps = SleepUiState(
             date = "2025-07-07",
             totalSleepHours = 8,

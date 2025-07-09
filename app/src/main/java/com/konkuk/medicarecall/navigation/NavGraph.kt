@@ -8,16 +8,19 @@ import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
 
 import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
-import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeMealDetail
-import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeSleepDetail
+import com.konkuk.medicarecall.ui.homedetail.meal.screen.MealDetail
+import com.konkuk.medicarecall.ui.homedetail.meal.screen.SleepDetail
+import com.konkuk.medicarecall.ui.homedetail.meal.screen.StateHealthDetail
 import com.konkuk.medicarecall.ui.homedetail.medicine.DoseStatus
 import com.konkuk.medicarecall.ui.homedetail.medicine.MedicineUiState
-import com.konkuk.medicarecall.ui.homedetail.medicine.screen.HomeMedicineDetail
+import com.konkuk.medicarecall.ui.homedetail.medicine.screen.MedicineDetail
 import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
+import com.konkuk.medicarecall.ui.homedetail.statehealth.HealthUiState
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
@@ -50,24 +53,24 @@ fun NavGraph(
             composable(route = Route.Home.route) {
                 HomeScreen(
                     navController = navController,
-                    onNavigateToHomeMealDetail = { navController.navigate(Route.HomeMealDetail.route) },
-                    onNavigateToHomeMedicineDetail = { navController.navigate(Route.HomeMedicineDetail.route) },
-                    onNavigateToHomeSleepDetail = { navController.navigate(Route.HomeSleepDetail.route) },
-                    onNavigateToHomeStateHealthDetail = { navController.navigate(Route.HomeStateHealthDetail.route) },
-                    onNavigateToHomeStateMentalDetail = { navController.navigate(Route.HomeStateMentalDetail.route) },
-                    onNavigateToHomeGlucoseLevelDetail = { navController.navigate(Route.HomeGlucoseLevelDetail.route) }
+                    onNavigateToMealDetail = { navController.navigate(Route.MealDetail.route) },
+                    onNavigateToMedicineDetail = { navController.navigate(Route.MedicineDetail.route) },
+                    onNavigateToSleepDetail = { navController.navigate(Route.SleepDetail.route) },
+                    onNavigateToStateHealthDetail = { navController.navigate(Route.StateHealthDetail.route) },
+                    onNavigateToStateMentalDetail = { navController.navigate(Route.StateMentalDetail.route) },
+                    onNavigateToGlucoseLevelDetail = { navController.navigate(Route.GlucoseLevelDetail.route) }
                 )
             }
 
             // 홈 상세 화면_식사 화면
-            composable(route = Route.HomeMealDetail.route) {
-                HomeMealDetail()
+            composable(route = Route.MealDetail.route) {
+                MealDetail()
             }
 
 
             // 홈 상세 화면_복용 화면 // 테스트
-            composable(route = Route.HomeMedicineDetail.route) {
-                HomeMedicineDetail(
+            composable(route = Route.MedicineDetail.route) {
+                MedicineDetail(
                     navController = navController,
                     medicines = listOf(
                         MedicineUiState(
@@ -97,19 +100,36 @@ fun NavGraph(
 
             //홈 상세 화면_수면 화면 // 테스트
 
-            composable(route = Route.HomeSleepDetail.route) {
-                HomeSleepDetail(
+            composable(route = Route.SleepDetail.route) {
+                SleepDetail(
                     navController = navController,
-
-                        SleepUiState(
-                            date = "2025-07-07",
-                            totalSleepHours = 8,
-                            totalSleepMinutes = 12,
-                            bedTime = "오후 10:12",
-                            wakeUpTime = "오전 06:00",
-                        )
+                    sleeps = SleepUiState(
+                        date = "2025-07-07",
+                        totalSleepHours = 8,
+                        totalSleepMinutes = 12,
+                        bedTime = "오후 10:12",
+                        wakeUpTime = "오전 06:00",
                     )
+                )
+            }
 
+
+            //홈 상세 화면_건강 징후 화면 // 테스트
+
+            composable(route = Route.StateHealthDetail.route) {
+                StateHealthDetail(
+                    navController = navController,
+                    healths = HealthUiState(
+                        symptoms = listOf(
+                            "손 떨림 증상",
+                            "거동 불편",
+                            "몸이 느려짐"
+                        ),
+                        //TODO: 병명 볼드처리
+                        symptomAnalysis = "주요 증상으로 보아 파킨슨 병이 의심돼요. 어르신과 함께 병원에 방문해 보세요.",
+                        isRecorded = true
+                    )
+                )
             }
 
             // 통계
@@ -136,7 +156,6 @@ fun NavGraph(
                 LoginMyInfoScreen(navController, loginViewModel)
             }
         }
-
 
 
     }

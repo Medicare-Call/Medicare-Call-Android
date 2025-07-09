@@ -43,6 +43,7 @@ import com.konkuk.medicarecall.ui.home.component.HomeSleepContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateHealthContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateMentalContainer
 import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
+import com.konkuk.medicarecall.ui.homedetail.statehealth.HealthUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
 
@@ -50,12 +51,12 @@ import com.konkuk.medicarecall.ui.theme.main
 fun HomeScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    onNavigateToHomeMealDetail: () -> Unit,
-    onNavigateToHomeMedicineDetail: () -> Unit,
-    onNavigateToHomeSleepDetail: () -> Unit,
-    onNavigateToHomeStateHealthDetail: () -> Unit,
-    onNavigateToHomeStateMentalDetail: () -> Unit,
-    onNavigateToHomeGlucoseLevelDetail: () -> Unit,
+    onNavigateToMealDetail: () -> Unit,
+    onNavigateToMedicineDetail: () -> Unit,
+    onNavigateToSleepDetail: () -> Unit,
+    onNavigateToStateHealthDetail: () -> Unit,
+    onNavigateToStateMentalDetail: () -> Unit,
+    onNavigateToGlucoseLevelDetail: () -> Unit,
 ) {
 
 
@@ -165,11 +166,11 @@ fun HomeScreen(
                 ) {
                     Spacer(Modifier.height(12.dp))
                     HomeMealContainer(
-                        onClick = { onNavigateToHomeMealDetail() }
+                        onClick = { onNavigateToMealDetail() }
                     )
                     Spacer(Modifier.height(12.dp))
                     HomeMedicineContainer(
-                        onClick = {  onNavigateToHomeMedicineDetail() }
+                        onClick = { onNavigateToMedicineDetail() }
                     )
                     Spacer(Modifier.height(12.dp))
                     HomeSleepContainer(
@@ -180,11 +181,12 @@ fun HomeScreen(
                             bedTime = "오후 10:12",
                             wakeUpTime = "오전 06:00"
                         ),
-                        onClick = {  onNavigateToHomeSleepDetail() }
+                        onClick = { onNavigateToSleepDetail() }
                     )
                     Spacer(Modifier.height(12.dp))
                     HomeStateHealthContainer(
-                        onClick = { navController.navigate("stateHealthDetail") })
+                        onClick = { onNavigateToStateHealthDetail() }
+                    )
                     Spacer(Modifier.height(12.dp))
                     HomeStateMentalContainer(
                         onClick = { navController.navigate("stateMentalDetail") })
@@ -214,11 +216,11 @@ val SpeechTail = GenericShape { size, _ ->
 fun PreviewHomeScreen() {
     HomeScreen(
         navController = rememberNavController(),
-        onNavigateToHomeMealDetail = {},
-        onNavigateToHomeMedicineDetail = {},
-        onNavigateToHomeSleepDetail = {},
-        onNavigateToHomeStateHealthDetail = {},
-        onNavigateToHomeStateMentalDetail = {},
-        onNavigateToHomeGlucoseLevelDetail = {},
+        onNavigateToMealDetail = {},
+        onNavigateToMedicineDetail = {},
+        onNavigateToSleepDetail = {},
+        onNavigateToStateHealthDetail = {},
+        onNavigateToStateMentalDetail = {},
+        onNavigateToGlucoseLevelDetail = {},
     )
 }

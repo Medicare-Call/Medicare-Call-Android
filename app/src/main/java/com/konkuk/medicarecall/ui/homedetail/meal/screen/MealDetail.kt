@@ -21,11 +21,11 @@ import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.WeeklyCalendar
 import com.konkuk.medicarecall.ui.homedetail.getDatesForWeek
 import com.konkuk.medicarecall.ui.homedetail.meal.MealUiState
-import com.konkuk.medicarecall.ui.homedetail.meal.component.HomeMealDetailCard
+import com.konkuk.medicarecall.ui.homedetail.meal.component.MealDetailCard
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeMealDetail(
+fun MealDetail(
     modifier: Modifier = Modifier
 ) {
 
@@ -84,7 +84,7 @@ fun HomeMealDetail(
                 Spacer(modifier = Modifier.height(24.dp))
 
                 meals.forEach { meal ->
-                    HomeMealDetailCard(
+                    MealDetailCard(
                         mealTime = meal.mealTime,       // 아침 점심 저녁
                         description = meal.description, // 식사 내용
                         isRecorded = meal.isRecorded,   // 식사 기록 여부
@@ -104,7 +104,7 @@ fun HomeMealDetail(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeMealDetail() {
-    HomeMealDetail()
+fun PreviewMealDetail() {
+    MealDetail()
 
 }

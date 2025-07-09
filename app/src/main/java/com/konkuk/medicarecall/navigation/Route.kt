@@ -6,6 +6,7 @@ sealed class Route(val route: String) {
     object LoginVerification : Route("login_verification")
     object LoginMyInfo : Route("login_my_info")
     object LoginSeniorInfoScreen : Route("login_senior_info")
+    object LoginSeniorMedInfoScreen : Route("login_senior_med_info")
     object Home : Route("home")
     object Statistics : Route("statistics")
     object Settings : Route("settings")

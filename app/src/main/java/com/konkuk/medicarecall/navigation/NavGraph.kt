@@ -15,9 +15,11 @@ import com.konkuk.medicarecall.ui.home.screen.detail.HomeMedicineDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeMealDetail
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
+import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginVerificationScreen
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
+import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorMedInfoScreen
 import com.konkuk.medicarecall.ui.settings.screen.SettingsScreen
 import com.konkuk.medicarecall.ui.statistics.screen.StatisticsScreen
 
@@ -26,10 +28,11 @@ import com.konkuk.medicarecall.ui.statistics.screen.StatisticsScreen
 fun NavGraph(
     navController: NavHostController,
     loginViewModel: LoginViewModel,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     val loginState = loginViewModel.loginState.collectAsState()
     val startDestination = if (loginState.value == LoginState.LoggedIn) "main" else "login"
-     // navController = navController, startDestination = Route.Home.route, // 시작 화면
+    // navController = navController, startDestination = Route.Home.route, // 시작 화면
     NavHost(
         navController = navController,
         startDestination = startDestination, // 시작 화면
@@ -42,14 +45,14 @@ fun NavGraph(
             // 홈
             composable(route = Route.Home.route) {
                 HomeScreen(
-                navController = navController,
-                onNavigateToHomeMealDetail = { navController.navigate(Route.HomeMealDetail.route) },
-                onNavigateToHomeMedicineDetail = { navController.navigate(Route.HomeMedicineDetail.route) },
-                onNavigateToHomeSleepDetail = { navController.navigate(Route.HomeSleepDetail.route) },
-                onNavigateToHomeStateHealthDetail = { navController.navigate(Route.HomeStateHealthDetail.route) },
-                onNavigateToHomeStateMentalDetail = { navController.navigate(Route.HomeStateMentalDetail.route) },
-                onNavigateToHomeGlucoseLevelDetail = { navController.navigate(Route.HomeGlucoseLevelDetail.route) }
-            )
+                    navController = navController,
+                    onNavigateToHomeMealDetail = { navController.navigate(Route.HomeMealDetail.route) },
+                    onNavigateToHomeMedicineDetail = { navController.navigate(Route.HomeMedicineDetail.route) },
+                    onNavigateToHomeSleepDetail = { navController.navigate(Route.HomeSleepDetail.route) },
+                    onNavigateToHomeStateHealthDetail = { navController.navigate(Route.HomeStateHealthDetail.route) },
+                    onNavigateToHomeStateMentalDetail = { navController.navigate(Route.HomeStateMentalDetail.route) },
+                    onNavigateToHomeGlucoseLevelDetail = { navController.navigate(Route.HomeGlucoseLevelDetail.route) }
+                )
             }
             // 통계
             composable(route = Route.Statistics.route) {
@@ -73,6 +76,12 @@ fun NavGraph(
             }
             composable(route = Route.LoginMyInfo.route) {
                 LoginMyInfoScreen(navController, loginViewModel)
+            }
+            composable(route = Route.LoginSeniorInfoScreen.route) {
+                LoginSeniorInfoScreen(navController, loginViewModel)
+            }
+            composable(route = Route.LoginSeniorMedInfoScreen.route) {
+                LoginSeniorMedInfoScreen(navController)
             }
         }
         composable(route = Route.HomeMealDetail.route) {

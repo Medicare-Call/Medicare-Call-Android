@@ -16,17 +16,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.homedetail.MonthYearSelector
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.WeeklyCalendar
 import com.konkuk.medicarecall.ui.homedetail.getDatesForWeek
-import com.konkuk.medicarecall.ui.homedetail.meal.MealUiState
-import com.konkuk.medicarecall.ui.homedetail.meal.component.HomeMealDetailCard
+import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
+import com.konkuk.medicarecall.ui.homedetail.sleep.component.HomeSleepDetailCard
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun HomeSleepDetail(
+    navController: NavController,
+    sleeps: SleepUiState,
     modifier: Modifier = Modifier
 ) {
 
@@ -35,11 +39,6 @@ fun HomeSleepDetail(
         pageCount = { 52 }
     ) // 주간 달력
 
-    val meals = listOf(
-        MealUiState("아침", "간단히 밥과 반찬을 드셨어요.", true, true),
-        MealUiState("점심", "식사하지 않으셨어요.", true, true),
-        MealUiState("저녁", "", false,false )
-    )
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White
@@ -84,28 +83,36 @@ fun HomeSleepDetail(
                 }
                 Spacer(modifier = Modifier.height(24.dp))
 
-                meals.forEach { meal ->
-                    HomeMealDetailCard(
-                        mealTime = meal.mealTime,       // 아침 점심 저녁
-                        description = meal.description, // 식사 내용
-                        isRecorded = meal.isRecorded,   // 식사 기록 여부
-                        isEaten = meal.isEaten          // 식사 유무
+                HomeSleepDetailCard(
+                    SleepUiState(
+                        date = "2025-07-07",
+                        totalSleepHours = 8,
+                        totalSleepMinutes = 12,
+                        bedTime = "오후 10:12",
+                        wakeUpTime = "오전 06:00",
+                        //isRecorded= true,     //기록 여부
                     )
-
-                    Spacer(modifier = Modifier.height(8.dp))
-
-
-                }
-
-
+                )
             }
         }
     }
 }
 
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewHomeSleepDetail() {
-    HomeSleepDetail()
+
+    HomeSleepDetail(
+        navController = rememberNavController(),
+        SleepUiState(
+            date = "2025-07-07",
+            totalSleepHours = 8,
+            totalSleepMinutes = 12,
+            bedTime = "오후 10:12",
+            wakeUpTime = "오전 06:00",
+            //isRecorded= true,     //기록 여부
+        )
+    )
 
 }

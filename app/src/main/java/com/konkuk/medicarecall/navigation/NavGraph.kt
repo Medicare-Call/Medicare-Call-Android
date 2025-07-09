@@ -13,9 +13,11 @@ import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeMealDetail
+import com.konkuk.medicarecall.ui.homedetail.meal.screen.HomeSleepDetail
 import com.konkuk.medicarecall.ui.homedetail.medicine.DoseStatus
 import com.konkuk.medicarecall.ui.homedetail.medicine.MedicineUiState
 import com.konkuk.medicarecall.ui.homedetail.medicine.screen.HomeMedicineDetail
+import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
@@ -57,7 +59,13 @@ fun NavGraph(
                 )
             }
 
-            // 홈 상세 화면_복용 화면 // 테스트 용 더미 데이터
+            // 홈 상세 화면_식사 화면
+            composable(route = Route.HomeMealDetail.route) {
+                HomeMealDetail()
+            }
+
+
+            // 홈 상세 화면_복용 화면 // 테스트
             composable(route = Route.HomeMedicineDetail.route) {
                 HomeMedicineDetail(
                     navController = navController,
@@ -87,6 +95,23 @@ fun NavGraph(
                 )
             }
 
+            //홈 상세 화면_수면 화면 // 테스트
+
+            composable(route = Route.HomeSleepDetail.route) {
+                HomeSleepDetail(
+                    navController = navController,
+
+                        SleepUiState(
+                            date = "2025-07-07",
+                            totalSleepHours = 8,
+                            totalSleepMinutes = 12,
+                            bedTime = "오후 10:12",
+                            wakeUpTime = "오전 06:00",
+                        )
+                    )
+
+            }
+
             // 통계
             composable(route = Route.Statistics.route) {
                 StatisticsScreen()
@@ -111,9 +136,7 @@ fun NavGraph(
                 LoginMyInfoScreen(navController, loginViewModel)
             }
         }
-        composable(route = Route.HomeMealDetail.route) {
-            HomeMealDetail()
-        }
+
 
 
     }

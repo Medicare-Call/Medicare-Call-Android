@@ -27,7 +27,7 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 @Composable
 fun HomeSleepDetailCard(
 
-    sleep: SleepUiState,
+    sleeps: SleepUiState,
     modifier: Modifier = Modifier
 ) {
 
@@ -70,7 +70,7 @@ fun HomeSleepDetailCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = "${sleep.totalSleepHours}",
+                            text = "${sleeps.totalSleepHours}",
                             style = MediCareCallTheme.typography.SB_22,
                             color = MediCareCallTheme.colors.gray8,
                         )
@@ -83,7 +83,7 @@ fun HomeSleepDetailCard(
                         Spacer(modifier = Modifier.width(4.dp))
 
                         Text(
-                            text = "${sleep.totalSleepMinutes}",
+                            text = "${sleeps.totalSleepMinutes}",
                             style = MediCareCallTheme.typography.SB_22
                         )
 
@@ -124,7 +124,7 @@ fun HomeSleepDetailCard(
                     ) {
 
                         Text(
-                            text = sleep.bedTime,
+                            text = sleeps.bedTime,
                             style = MediCareCallTheme.typography.SB_16,
                         )
                     }
@@ -148,7 +148,7 @@ fun HomeSleepDetailCard(
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = sleep.wakeUpTime,
+                            text = sleeps.wakeUpTime,
                             style = MediCareCallTheme.typography.SB_16,
                             color = MediCareCallTheme.colors.gray8,
                         )
@@ -168,7 +168,7 @@ fun HomeSleepDetailCard(
 @Composable
 fun PreviewHomeSleepDetailCard() {
     HomeSleepDetailCard(
-        sleep = SleepUiState(
+        sleeps = SleepUiState(
             date = "2025-07-07",
             totalSleepHours = 8,
             totalSleepMinutes = 12,

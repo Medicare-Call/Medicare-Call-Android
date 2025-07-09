@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.home.screen
 
+import android.R.attr.onClick
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,7 @@ import com.konkuk.medicarecall.ui.home.component.HomeMedicineContainer
 import com.konkuk.medicarecall.ui.home.component.HomeSleepContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateHealthContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateMentalContainer
+import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
 
@@ -171,9 +173,15 @@ fun HomeScreen(
                     )
                     Spacer(Modifier.height(12.dp))
                     HomeSleepContainer(
-                        sleepHours = 7,
-                        sleepMinutes = 12,
-                        onClick = { navController.navigate("sleepDetail") })
+                        sleeps = SleepUiState(
+                            date = "2025-07-07",
+                            totalSleepHours = 8,
+                            totalSleepMinutes = 12,
+                            bedTime = "오후 10:12",
+                            wakeUpTime = "오전 06:00"
+                        ),
+                        onClick = {  onNavigateToHomeSleepDetail() }
+                    )
                     Spacer(Modifier.height(12.dp))
                     HomeStateHealthContainer(
                         onClick = { navController.navigate("stateHealthDetail") })

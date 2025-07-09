@@ -12,8 +12,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.heightIn
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.OutlinedTextFieldDefaults
@@ -104,6 +107,9 @@ fun <T> DefaultDropdown(
 
 
         AnimatedVisibility(visible = showDropdown) {
+            val dropdownScrollState = rememberScrollState()
+
+
             Box(
                 Modifier
                     .fillMaxHeight()
@@ -119,6 +125,8 @@ fun <T> DefaultDropdown(
                         shape = RoundedCornerShape(14.dp),
                         color = MediCareCallTheme.colors.gray1
                     )
+                    .heightIn(max = 215.dp)
+                    .verticalScroll(dropdownScrollState)
             ) {
                 Column(
                     modifier = Modifier

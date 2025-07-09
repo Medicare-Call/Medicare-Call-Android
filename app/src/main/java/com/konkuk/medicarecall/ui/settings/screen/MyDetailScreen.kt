@@ -1,7 +1,5 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
-import android.R.attr.onClick
-import android.R.attr.value
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer

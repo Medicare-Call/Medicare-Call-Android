@@ -25,6 +25,7 @@ import com.konkuk.medicarecall.ui.component.ChipItem
 import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.MedInfoItem
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
+import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.HealthIssueType
 import com.konkuk.medicarecall.ui.model.SeniorData
@@ -33,6 +34,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun LoginSeniorMedInfoScreen(
     navController: NavController,
+    loginSeniorViewModel: LoginSeniorViewModel,
     modifier: Modifier = Modifier
 ) {
     var scrollState = rememberScrollState()

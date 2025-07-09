@@ -5,6 +5,7 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
@@ -19,6 +20,7 @@ import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginVerificationScreen
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
+import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorMedInfoScreen
 import com.konkuk.medicarecall.ui.settings.screen.SettingsScreen
 import com.konkuk.medicarecall.ui.statistics.screen.StatisticsScreen
@@ -28,6 +30,7 @@ import com.konkuk.medicarecall.ui.statistics.screen.StatisticsScreen
 fun NavGraph(
     navController: NavHostController,
     loginViewModel: LoginViewModel,
+    loginSeniorViewModel: LoginSeniorViewModel,
     modifier: Modifier = Modifier
 ) {
     val loginState = loginViewModel.loginState.collectAsState()
@@ -65,6 +68,8 @@ fun NavGraph(
         }
 
         navigation(startDestination = Route.LoginStart.route, route = "login") {
+
+
             composable(route = Route.LoginStart.route) {
                 LoginStartScreen(navController, loginViewModel)
             }
@@ -78,10 +83,10 @@ fun NavGraph(
                 LoginMyInfoScreen(navController, loginViewModel)
             }
             composable(route = Route.LoginSeniorInfoScreen.route) {
-                LoginSeniorInfoScreen(navController, loginViewModel)
+                LoginSeniorInfoScreen(navController, loginSeniorViewModel)
             }
             composable(route = Route.LoginSeniorMedInfoScreen.route) {
-                LoginSeniorMedInfoScreen(navController)
+                LoginSeniorMedInfoScreen(navController, loginSeniorViewModel)
             }
         }
         composable(route = Route.HomeMealDetail.route) {

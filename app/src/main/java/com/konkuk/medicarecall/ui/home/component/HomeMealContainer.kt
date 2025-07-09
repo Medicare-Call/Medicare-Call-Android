@@ -57,7 +57,7 @@ fun HomeMealContainer(
                 verticalAlignment = Alignment.CenterVertically
 
             ) {
-                Image(
+                Image( //TODO: 밥그릇 아이콘 기본으로 변경 후 색상 적용
                     modifier = Modifier
                         .size(24.dp),
                     painter = painterResource(id = R.drawable.ic_ricebowl),

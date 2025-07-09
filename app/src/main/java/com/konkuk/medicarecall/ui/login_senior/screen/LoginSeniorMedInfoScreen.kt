@@ -1,8 +1,9 @@
 package com.konkuk.medicarecall.ui.login_senior.screen
 
-import android.R.attr.onClick
+import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -13,13 +14,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -90,7 +91,7 @@ fun LoginSeniorMedInfoScreen(
                     ),
                     contentPadding = PaddingValues(0.dp),
 
-                ) {
+                    ) {
                     Text(
                         text = senior.name,
                         style = MediCareCallTheme.typography.R_14,
@@ -113,15 +114,27 @@ fun LoginSeniorMedInfoScreen(
             style = MediCareCallTheme.typography.M_17
         )
         Spacer(Modifier.height(10.dp))
-        ChipItem("수면문제", {})
-        Spacer(Modifier.height(10.dp))
+
+        var healthIssueList = remember { mutableStateListOf<String>() }
+        Log.d("hel", "테스트")
+        if (healthIssueList.isNotEmpty()) {
+            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+                healthIssueList.forEach { healthIssue ->
+                    ChipItem(healthIssue) {
+                        healthIssueList.remove(healthIssue)
+                    }
+                }
+            }
+            Spacer(Modifier.height(10.dp))
+        }
 
 
         DefaultDropdown(
             HealthIssueType.values().map { it.displayName }.toList(),
             "특이사항 선택하기",
             null,
-            scrollState
+            scrollState,
+            { healthIssueList.add(it) }
         )
         CTAButton(CTAButtonType.GREEN, "다음", {}, Modifier.padding(top = 30.dp, bottom = 20.dp))
     }

@@ -20,6 +20,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.component.CTAButton
+import com.konkuk.medicarecall.ui.component.IllnessInfoItem
+import com.konkuk.medicarecall.ui.component.MedInfoItem
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.settings.component.SettingTextField
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
@@ -43,8 +45,10 @@ fun HealthDetailScreen(modifier: Modifier = Modifier) {
         Column(modifier = modifier.fillMaxWidth().padding(20.dp),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-            SettingTextField("질환 정보","당뇨","질환명")
+            // 질환 정보
+            IllnessInfoItem()
             // 복약정보
+            MedInfoItem()
             // 특이사항
 
 //            Button(

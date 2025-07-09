@@ -4,6 +4,7 @@ import android.R.attr.onClick
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -11,18 +12,24 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.ChipItem
 import com.konkuk.medicarecall.ui.component.DefaultDropdown
+import com.konkuk.medicarecall.ui.component.IllnessInfoItem
 import com.konkuk.medicarecall.ui.component.MedInfoItem
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
@@ -65,29 +72,36 @@ fun LoginSeniorMedInfoScreen(
             )
         ) // 임시, TODO: 추후 서버에서 데이터 받아와야 함
 
+        var selectedIndex by remember { mutableStateOf<Int?>(null) }
         Row {
-            seniorList.forEach { senior ->
-                val selected = false
+            seniorList.forEachIndexed { index, senior ->
                 OutlinedButton(
                     onClick = {
-
+                        selectedIndex = index
                     },
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = if (selected) MediCareCallTheme.colors.main else MediCareCallTheme.colors.white,
-                        contentColor = if (selected) MediCareCallTheme.colors.g50 else MediCareCallTheme.colors.gray2,
-
-                        ),
-                    shape = RoundedCornerShape(100.dp),
-                    border = BorderStroke(
-                        width = if (selected) 0.dp else (1.2).dp,
-                        color = if (selected) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray2
+                        containerColor = if (index == selectedIndex) MediCareCallTheme.colors.main else MediCareCallTheme.colors.white,
+                        contentColor = if (index == selectedIndex) MediCareCallTheme.colors.g50 else MediCareCallTheme.colors.gray2,
                     ),
+                    shape = CircleShape,
+                    border = BorderStroke(
+                        width = if (index == selectedIndex) 0.dp else (1.2).dp,
+                        color = if (index == selectedIndex) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray2
+                    ),
+                    contentPadding = PaddingValues(0.dp),
+
                 ) {
-                    Text(text = senior.name, style = MediCareCallTheme.typography.R_14)
+                    Text(
+                        text = senior.name,
+                        style = MediCareCallTheme.typography.R_14,
+                        color = if (index == selectedIndex) MediCareCallTheme.colors.white else MediCareCallTheme.colors.gray5
+                    )
                 }
                 Spacer(modifier = Modifier.width(8.dp)) // 버튼 간격
             }
         }
+        Spacer(Modifier.height(20.dp))
+        IllnessInfoItem()
         Spacer(Modifier.height(20.dp))
 
         MedInfoItem()

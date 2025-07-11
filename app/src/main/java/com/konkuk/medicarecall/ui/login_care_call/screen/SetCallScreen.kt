@@ -37,7 +37,7 @@ import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.TimeSettingType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
-@RequiresApi(Build.VERSION_CODES.Q)
+
 @Composable
 fun SetCallScreen(name: String, modifier: Modifier = Modifier) {
     val scrollState = rememberScrollState()

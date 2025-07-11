@@ -2,6 +2,7 @@ package com.konkuk.medicarecall.ui.settings.screen
 
 import android.R.attr.phoneNumber
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -35,6 +36,7 @@ import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.RelationshipType
 import com.konkuk.medicarecall.ui.model.SeniorLivingType
+import com.konkuk.medicarecall.ui.settings.component.DeleteConfirmDialog
 import com.konkuk.medicarecall.ui.settings.component.SettingTextField
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -48,6 +50,9 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
     var name by remember { mutableStateOf("김옥자") }
     var birth by remember { mutableStateOf("19390928") }
     var phoneNum by remember { mutableStateOf("01012345678") }
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     Column(modifier = Modifier
         .fillMaxSize()
         .background(MediCareCallTheme.colors.bg)) {
@@ -72,7 +77,10 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
                 Text(
                     text = "삭제",
                     color = MediCareCallTheme.colors.negative,
-                    style = MediCareCallTheme.typography.SB_16
+                    style = MediCareCallTheme.typography.SB_16,
+                    modifier = Modifier.clickable {
+                        showDeleteDialog = true
+                    }
                 )
             }
             Column(
@@ -159,8 +167,15 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
                 )
 
             }
-
-
+        }
+        if (showDeleteDialog) {
+            DeleteConfirmDialog(
+                onDismiss = {showDeleteDialog = false},
+                onDelete = {
+                    showDeleteDialog = false
+                    // TODO : 삭제 동작 추가
+                }
+            )
         }
     }
 }

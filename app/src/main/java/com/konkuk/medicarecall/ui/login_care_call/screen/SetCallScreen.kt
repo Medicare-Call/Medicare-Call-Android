@@ -1,7 +1,10 @@
 package com.konkuk.medicarecall.ui.login_care_call.screen
 
+import android.os.Build
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -17,6 +20,10 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
@@ -24,14 +31,17 @@ import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_care_call.component.BenefitItem
+import com.konkuk.medicarecall.ui.login_care_call.component.TimePickerBottomSheet
 import com.konkuk.medicarecall.ui.login_care_call.component.TimeSettingItem
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.TimeSettingType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Composable
 fun SetCallScreen(name: String, modifier: Modifier = Modifier) {
     val scrollState = rememberScrollState()
+    var showBottomSheet = remember { mutableStateOf(false) }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -126,9 +136,9 @@ fun SetCallScreen(name: String, modifier: Modifier = Modifier) {
                 color = MediCareCallTheme.colors.gray8
             )
             Spacer(modifier = modifier.height(30.dp))
-            TimeSettingItem("1차", TimeSettingType.FIRST)
+            TimeSettingItem("1차", TimeSettingType.FIRST, modifier = Modifier.clickable{showBottomSheet.value = true})
             Spacer(modifier = modifier.height(20.dp))
-            TimeSettingItem("2차", TimeSettingType.SECOND)
+            TimeSettingItem("2차", TimeSettingType.SECOND, modifier = Modifier.clickable{showBottomSheet.value = true})
             Spacer(modifier = modifier.height(30.dp))
 
             // 안내 사항
@@ -171,10 +181,18 @@ fun SetCallScreen(name: String, modifier: Modifier = Modifier) {
             }
             Spacer(modifier = modifier.height(30.dp))
             CTAButton(CTAButtonType.GREEN, text = "확인", {}) // 입력여부에 따라 Type 바뀌도록 수정 필요
+            if (showBottomSheet.value) {
+                TimePickerBottomSheet(
+                    visible = true,
+                    onDismiss = {showBottomSheet.value = false},
+                    onNext = {}
+                )
+            }
         }
     }
 }
 
+@RequiresApi(Build.VERSION_CODES.Q)
 @Preview
 @Composable
 private fun SetCallPreview() {

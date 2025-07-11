@@ -27,8 +27,11 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.component.CTAButton
+import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.model.RelationshipType
+import com.konkuk.medicarecall.ui.model.SeniorLivingType
 import com.konkuk.medicarecall.ui.settings.component.SettingTextField
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -82,16 +85,20 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
                     )
                 }
                 SettingTextField("휴대폰 번호","010-1111-1111","010-1234-5678")
-                Column() {
-                    Text("어르신과의 관계",)
-                    Spacer(modifier = modifier.height(10.dp))
-                    // 드롭다운
-                }
-                Column() {
-                    Text("어르신 거주방식", )
-                    Spacer(modifier = modifier.height(10.dp))
-                    // 드롭다운
-                }
+                DefaultDropdown(
+                    enumList = RelationshipType.values().map { it.displayName }
+                        .toList(),
+                    placeHolder = "관계 선택하기",
+                    category = "어르신과의 관계",
+                    scrollState
+                )
+                DefaultDropdown(
+                    enumList = SeniorLivingType.values().map { it.displayName }
+                        .toList(),
+                    placeHolder = "거주방식을 선택해주세요",
+                    category = "어르신 거주 방식",
+                    scrollState
+                )
 
 //                Button(
 //                    modifier = modifier.fillMaxWidth().height(50.dp),

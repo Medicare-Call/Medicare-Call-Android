@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.login_payment.screen
+package com.konkuk.medicarecall.ui.login_care_call.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -23,11 +23,10 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
-import com.konkuk.medicarecall.ui.login_payment.component.BenefitItem
-import com.konkuk.medicarecall.ui.login_payment.component.TimeSettingItem
+import com.konkuk.medicarecall.ui.login_care_call.component.BenefitItem
+import com.konkuk.medicarecall.ui.login_care_call.component.TimeSettingItem
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.TimeSettingType
-import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable

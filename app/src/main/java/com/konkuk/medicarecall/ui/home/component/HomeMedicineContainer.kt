@@ -62,7 +62,7 @@ fun HomeMedicineContainer(
                     )
 
                 Text(
-                    "복용",
+                    "복약",
                     style = MediCareCallTheme.typography.SB_18,
                     color = MediCareCallTheme.colors.main,
                 )
@@ -83,7 +83,7 @@ fun HomeMedicineContainer(
 
                 Row(
                     modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Bottom
                 ) {
                     Text(
                         "0/5",
@@ -118,7 +118,7 @@ fun HomeMedicineContainer(
 
                 Row(
                     modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Bottom
                 ) {
                     Text(
                         "0/3",
@@ -168,7 +168,7 @@ fun HomeMedicineContainer(
 
                 Row(
                     modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Bottom
                 ) {
                     Text(
                         "0/2",
@@ -187,7 +187,7 @@ fun HomeMedicineContainer(
 
                 Row(
                     modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Bottom
                 ) {
 
 

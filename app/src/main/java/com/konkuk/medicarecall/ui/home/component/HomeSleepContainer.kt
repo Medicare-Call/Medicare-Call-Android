@@ -84,7 +84,7 @@ fun HomeSleepContainer(
 
                 Row(
                     modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Bottom
                 ) {
                     Text(
                         text = "${sleeps.totalSleepHours}",

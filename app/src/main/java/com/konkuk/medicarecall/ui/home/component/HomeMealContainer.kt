@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.home.component
 
+import android.R.attr.contentDescription
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -57,7 +58,7 @@ fun HomeMealContainer(
                 verticalAlignment = Alignment.CenterVertically
 
             ) {
-                Image( //TODO: 밥그릇 아이콘 기본으로 변경 후 색상 적용
+                Image(
                     modifier = Modifier
                         .size(24.dp),
                     painter = painterResource(id = R.drawable.ic_ricebowl),
@@ -87,7 +88,7 @@ fun HomeMealContainer(
                     modifier = Modifier,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(
+                    Image(   //TODO: 밥그릇 아이콘 기본으로 변경 후 색상 적용
                         modifier = Modifier
                             .padding(horizontal = 7.dp)
                             .size(48.dp),

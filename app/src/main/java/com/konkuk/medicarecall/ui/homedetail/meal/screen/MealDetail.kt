@@ -16,6 +16,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.konkuk.medicarecall.ui.homedetail.CalendarUiState
 import com.konkuk.medicarecall.ui.homedetail.MonthYearSelector
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.WeeklyCalendar
@@ -49,7 +50,6 @@ fun MealDetail(
                 .fillMaxSize()
         ) {
 
-
             TopAppBar(
                 title = "식사"
             )
@@ -75,10 +75,13 @@ fun MealDetail(
                     val dates = getDatesForWeek(page)
 
                     WeeklyCalendar(
-                        weekDays = listOf("일", "월", "화", "수", "목", "금", "토"),
-                        dates = dates,
-                        selectedDate = 4,
-                        onDateSelected = { /* TODO */ }
+                        calendarUiState = CalendarUiState(
+                            year = 2025,
+                            month = 5,
+                            weekDates = listOf(4, 5, 6, 7, 8, 9, 10),
+                            selectedDate = 7
+                        ),
+                        onDateSelected = { /* 클릭 테스트용 */ }
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))

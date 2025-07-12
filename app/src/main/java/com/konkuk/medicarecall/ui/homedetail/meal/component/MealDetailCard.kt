@@ -43,10 +43,13 @@ fun MealDetailCard(
 
     ) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier
+                .padding(20.dp)
         ) {
             //1) 아침 점심 저녁
             Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
 
             ) {
@@ -61,21 +64,28 @@ fun MealDetailCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            //2) 식사 내용 및 여부
-            if (isRecorded) {
-                Text(
-                    text = description,
-                    style = MediCareCallTheme.typography.R_16,
-                    color = MediCareCallTheme.colors.gray8,
-                )
-            } else {
-                // 기록 전
-                Text(
-                    text = "식사 기록 전이에요.",
-                    style = MediCareCallTheme.typography.R_16,
-                    color = MediCareCallTheme.colors.gray4,
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
 
+            ) {
+                //2) 식사 내용 및 여부
+                if (isRecorded) {
+                    Text(
+                        text = description,
+                        style = MediCareCallTheme.typography.R_16,
+                        color = MediCareCallTheme.colors.gray8,
+                    )
+                } else {
+                    // 기록 전
+                    Text(
+                        text = "식사 기록 전이에요.",
+                        style = MediCareCallTheme.typography.R_16,
+                        color = MediCareCallTheme.colors.gray4,
+                    )
+
+                }
             }
         }
     }

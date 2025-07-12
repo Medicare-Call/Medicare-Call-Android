@@ -73,21 +73,21 @@ fun LoginSeniorMedInfoScreen(
             )
         ) // 임시, TODO: 추후 서버에서 데이터 받아와야 함
 
-        var selectedIndex by remember { mutableStateOf<Int?>(null) }
+        // 상단 어르신 선택 Row
         Row {
             seniorList.forEachIndexed { index, senior ->
                 OutlinedButton(
                     onClick = {
-                        selectedIndex = index
+                        loginSeniorViewModel.onSeniorChanged(index)
                     },
                     colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = if (index == selectedIndex) MediCareCallTheme.colors.main else MediCareCallTheme.colors.white,
-                        contentColor = if (index == selectedIndex) MediCareCallTheme.colors.g50 else MediCareCallTheme.colors.gray2,
+                        containerColor = if (index == loginSeniorViewModel.selectedSenior) MediCareCallTheme.colors.main else MediCareCallTheme.colors.white,
+                        contentColor = if (index == loginSeniorViewModel.selectedSenior) MediCareCallTheme.colors.g50 else MediCareCallTheme.colors.gray2,
                     ),
                     shape = CircleShape,
                     border = BorderStroke(
-                        width = if (index == selectedIndex) 0.dp else (1.2).dp,
-                        color = if (index == selectedIndex) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray2
+                        width = if (index == loginSeniorViewModel.selectedSenior) 0.dp else (1.2).dp,
+                        color = if (index == loginSeniorViewModel.selectedSenior) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray2
                     ),
                     contentPadding = PaddingValues(0.dp),
 
@@ -95,7 +95,7 @@ fun LoginSeniorMedInfoScreen(
                     Text(
                         text = senior.name,
                         style = MediCareCallTheme.typography.R_14,
-                        color = if (index == selectedIndex) MediCareCallTheme.colors.white else MediCareCallTheme.colors.gray5
+                        color = if (index == loginSeniorViewModel.selectedSenior) MediCareCallTheme.colors.white else MediCareCallTheme.colors.gray5
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp)) // 버튼 간격

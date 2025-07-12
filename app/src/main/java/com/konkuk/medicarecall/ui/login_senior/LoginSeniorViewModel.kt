@@ -1,11 +1,14 @@
 package com.konkuk.medicarecall.ui.login_senior
 
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 
 class LoginSeniorViewModel : ViewModel() {
+
+    // 어르신 정보 화면
 
 
     var name by mutableStateOf("")
@@ -33,5 +36,14 @@ class LoginSeniorViewModel : ViewModel() {
     fun onGenderChanged(new: Boolean?) {
         isMale = new
     }
+
+    // 건강정보 화면
+    var selectedSenior by mutableIntStateOf(0)
+        private set
+
+    fun onSeniorChanged(new: Int) {
+        selectedSenior = new
+    }
+
 
 }

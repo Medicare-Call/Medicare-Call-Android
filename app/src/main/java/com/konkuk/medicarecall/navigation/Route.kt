@@ -14,5 +14,5 @@ sealed class Route(val route: String) {
     object SleepDetail : Route("home_sleep_detail")
     object StateHealthDetail : Route("home_state_health_detail")
     object StateMentalDetail : Route("home_state_mental_detail")
-    object GlucoseLevelDetail : Route("home_glucose_level_detail")
+    object GlucoseDetail : Route("home_glucose_detail")
 }

@@ -13,6 +13,10 @@ import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseGraphState
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseTiming
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseUiState
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen.GlucoseDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.MealDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.SleepDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.StateHealthDetail
@@ -60,7 +64,7 @@ fun NavGraph(
                     onNavigateToSleepDetail = { navController.navigate(Route.SleepDetail.route) },
                     onNavigateToStateHealthDetail = { navController.navigate(Route.StateHealthDetail.route) },
                     onNavigateToStateMentalDetail = { navController.navigate(Route.StateMentalDetail.route) },
-                    onNavigateToGlucoseLevelDetail = { navController.navigate(Route.GlucoseLevelDetail.route) }
+                    onNavigateToGlucoseDetail = { navController.navigate(Route.GlucoseDetail.route) }
                 )
             }
 
@@ -149,6 +153,39 @@ fun NavGraph(
                     )
                 )
             }
+
+
+            //홈 상세 화면_혈당 화면 // 테스트
+
+            composable(route = Route.GlucoseDetail.route) {
+                GlucoseDetail(
+                    navController = navController,
+
+                    glucose = GlucoseUiState(
+                        selectedTiming = GlucoseTiming.BEFORE_MEAL,   // 공복 기본 선택
+
+                        dailyAverageBeforeMeal = 120,   // 오늘 하루 평균 공복 혈당
+                        dailyAverageAfterMeal = 120,    // 오늘 하루 평균 식후 혈당
+                        recentBeforeMeal = 127,         // 어제 마지막 공복 혈당
+                        recentAfterMeal = 127,          // 어제 마지막 식후 혈당
+                        glucoseLevelStatusBeforeMeal = "정상",   // 공복 상태
+                        glucoseLevelStatusAfterMeal = "정상",     // 식후 상태
+                        isRecorded = true           // 기록 여부
+                    ),
+
+                    graph = GlucoseGraphState(
+
+                        beforeMealGraph = listOf(60, 75, 90, 110, 200, 130, 100),  // 공복 주간 데이터
+                        afterMealGraph = listOf(60, 75, 90, 110, 200, 130, 100),   // 식후 주간 데이터
+                        weekLabels = listOf("일", "월", "화", "수", "목", "금", "토")
+
+                    )
+
+
+                )
+            }
+
+
 
             // 통계
             composable(route = Route.Statistics.route) {

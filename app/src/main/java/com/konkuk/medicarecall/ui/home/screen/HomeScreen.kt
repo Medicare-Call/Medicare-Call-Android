@@ -56,7 +56,7 @@ fun HomeScreen(
     onNavigateToSleepDetail: () -> Unit,
     onNavigateToStateHealthDetail: () -> Unit,
     onNavigateToStateMentalDetail: () -> Unit,
-    onNavigateToGlucoseLevelDetail: () -> Unit,
+    onNavigateToGlucoseDetail: () -> Unit,
 ) {
 
 
@@ -194,7 +194,9 @@ fun HomeScreen(
                     Spacer(Modifier.height(12.dp))
                     HomeGlucoseLevelContainer(
                         glucoseLevel = 120,
-                        onClick = { navController.navigate("glucoseLevelDetail") })
+                        onClick = { onNavigateToGlucoseDetail()}
+                    )
+                    Spacer(Modifier.height(12.dp))
                 }
             }
         }
@@ -222,6 +224,6 @@ fun PreviewHomeScreen() {
         onNavigateToSleepDetail = {},
         onNavigateToStateHealthDetail = {},
         onNavigateToStateMentalDetail = {},
-        onNavigateToGlucoseLevelDetail = {},
+        onNavigateToGlucoseDetail = {},
     )
 }

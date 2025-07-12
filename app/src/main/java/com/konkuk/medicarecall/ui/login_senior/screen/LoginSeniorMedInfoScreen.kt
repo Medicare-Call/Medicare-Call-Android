@@ -3,6 +3,7 @@ package com.konkuk.medicarecall.ui.login_senior.screen
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
@@ -118,7 +119,10 @@ fun LoginSeniorMedInfoScreen(
         var healthIssueList = remember { mutableStateListOf<String>() }
         Log.d("hel", "테스트")
         if (healthIssueList.isNotEmpty()) {
-            Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+            Row(
+                Modifier.horizontalScroll(rememberScrollState()),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
                 healthIssueList.forEach { healthIssue ->
                     ChipItem(healthIssue) {
                         healthIssueList.remove(healthIssue)

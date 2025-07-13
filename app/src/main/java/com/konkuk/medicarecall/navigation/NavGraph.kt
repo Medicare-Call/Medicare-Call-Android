@@ -12,6 +12,7 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 
 import androidx.navigation.navigation
+import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseGraphState
@@ -28,15 +29,30 @@ import com.konkuk.medicarecall.ui.homedetail.medicine.screen.MedicineDetail
 import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
 import com.konkuk.medicarecall.ui.homedetail.statehealth.HealthUiState
 import com.konkuk.medicarecall.ui.homedetail.statemental.MentalUiState
+import com.konkuk.medicarecall.ui.login_care_call.screen.SetCallScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
 import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginVerificationScreen
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
+import com.konkuk.medicarecall.ui.login_payment.screen.FinishSplashScreen
+import com.konkuk.medicarecall.ui.login_payment.screen.NaverPayScreen
+import com.konkuk.medicarecall.ui.login_payment.screen.PaymentScreen
 import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorMedInfoScreen
+import com.konkuk.medicarecall.ui.settings.screen.AnnouncementScreen
+import com.konkuk.medicarecall.ui.settings.screen.HealthDetailScreen
+import com.konkuk.medicarecall.ui.settings.screen.HealthInfoScreen
+import com.konkuk.medicarecall.ui.settings.screen.MyDataSettingScreen
+import com.konkuk.medicarecall.ui.settings.screen.MyDetailScreen
+import com.konkuk.medicarecall.ui.settings.screen.PersonalDetailScreen
+import com.konkuk.medicarecall.ui.settings.screen.PersonalInfoScreen
+import com.konkuk.medicarecall.ui.settings.screen.ServiceCenterScreen
+import com.konkuk.medicarecall.ui.settings.screen.SettingAlarmScreen
+import com.konkuk.medicarecall.ui.settings.screen.SettingSubscribeScreen
 import com.konkuk.medicarecall.ui.settings.screen.SettingsScreen
+import com.konkuk.medicarecall.ui.settings.screen.SubscribeDetailScreen
 import com.konkuk.medicarecall.ui.statistics.screen.StatisticsScreen
 
 
@@ -193,7 +209,7 @@ fun NavGraph(
 
             // 통계
             composable(route = Route.Statistics.route) {
-                StatisticsScreen()
+                StatisticsScreen(navController = navController)
             }
             // 설정
             composable(route = Route.Settings.route) {
@@ -392,11 +408,11 @@ fun NavGraph(
             }
         }
         composable(route = Route.HomeMealDetail.route) {
-            HomeMealDetail(navController = navController)
+            //HomeMealDetail(navController = navController)
         }
 
         composable(route = Route.HomeMedicineDetail.route) {
-            HomeMedicineDetail()
+            //HomeMedicineDetail()
         }
 
 

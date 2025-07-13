@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.home.screen
 
+import android.R.attr.onClick
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -41,6 +42,8 @@ import com.konkuk.medicarecall.ui.home.component.HomeMedicineContainer
 import com.konkuk.medicarecall.ui.home.component.HomeSleepContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateHealthContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateMentalContainer
+import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
+import com.konkuk.medicarecall.ui.homedetail.statehealth.HealthUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
 
@@ -48,12 +51,12 @@ import com.konkuk.medicarecall.ui.theme.main
 fun HomeScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
-    onNavigateToHomeMealDetail: () -> Unit,
-    onNavigateToHomeMedicineDetail: () -> Unit,
-    onNavigateToHomeSleepDetail: () -> Unit,
-    onNavigateToHomeStateHealthDetail: () -> Unit,
-    onNavigateToHomeStateMentalDetail: () -> Unit,
-    onNavigateToHomeGlucoseLevelDetail: () -> Unit,
+    onNavigateToMealDetail: () -> Unit,
+    onNavigateToMedicineDetail: () -> Unit,
+    onNavigateToSleepDetail: () -> Unit,
+    onNavigateToStateHealthDetail: () -> Unit,
+    onNavigateToStateMentalDetail: () -> Unit,
+    onNavigateToGlucoseDetail: () -> Unit,
 ) {
 
 
@@ -163,26 +166,37 @@ fun HomeScreen(
                 ) {
                     Spacer(Modifier.height(12.dp))
                     HomeMealContainer(
-                        onClick = { onNavigateToHomeMealDetail() }
+                        onClick = { onNavigateToMealDetail() }
                     )
                     Spacer(Modifier.height(12.dp))
                     HomeMedicineContainer(
-                        onClick = { navController.navigate("medicineDetail") })
+                        onClick = { onNavigateToMedicineDetail() }
+                    )
                     Spacer(Modifier.height(12.dp))
                     HomeSleepContainer(
-                        sleepHours = 7,
-                        sleepMinutes = 12,
-                        onClick = { navController.navigate("sleepDetail") })
+                        sleeps = SleepUiState(
+                            date = "2025-07-07",
+                            totalSleepHours = 8,
+                            totalSleepMinutes = 12,
+                            bedTime = "오후 10:12",
+                            wakeUpTime = "오전 06:00"
+                        ),
+                        onClick = { onNavigateToSleepDetail() }
+                    )
                     Spacer(Modifier.height(12.dp))
                     HomeStateHealthContainer(
-                        onClick = { navController.navigate("stateHealthDetail") })
+                        onClick = { onNavigateToStateHealthDetail() }
+                    )
                     Spacer(Modifier.height(12.dp))
                     HomeStateMentalContainer(
-                        onClick = { navController.navigate("stateMentalDetail") })
+                        onClick = { onNavigateToStateMentalDetail()}
+                    )
                     Spacer(Modifier.height(12.dp))
                     HomeGlucoseLevelContainer(
                         glucoseLevel = 120,
-                        onClick = { navController.navigate("glucoseLevelDetail") })
+                        onClick = { onNavigateToGlucoseDetail()}
+                    )
+                    Spacer(Modifier.height(12.dp))
                 }
             }
         }
@@ -205,11 +219,11 @@ val SpeechTail = GenericShape { size, _ ->
 fun PreviewHomeScreen() {
     HomeScreen(
         navController = rememberNavController(),
-        onNavigateToHomeMealDetail = {},
-        onNavigateToHomeMedicineDetail = {},
-        onNavigateToHomeSleepDetail = {},
-        onNavigateToHomeStateHealthDetail = {},
-        onNavigateToHomeStateMentalDetail = {},
-        onNavigateToHomeGlucoseLevelDetail = {},
+        onNavigateToMealDetail = {},
+        onNavigateToMedicineDetail = {},
+        onNavigateToSleepDetail = {},
+        onNavigateToStateHealthDetail = {},
+        onNavigateToStateMentalDetail = {},
+        onNavigateToGlucoseDetail = {},
     )
 }

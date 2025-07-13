@@ -51,7 +51,7 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
         }
     }
 
-    // ① 모든 주기의 리스트 중 하나라도 비어 있지 않은지 체크
+    // 모든 주기의 리스트 중 하나라도 비어 있지 않은지 체크
     val hasAnyMeds = medsByPeriod.values.any { it.isNotEmpty() }
 
     Column(modifier = Modifier.fillMaxWidth()) {

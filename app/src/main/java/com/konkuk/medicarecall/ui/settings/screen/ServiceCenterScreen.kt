@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,7 +22,7 @@ import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun ServiceCenterScreen(modifier: Modifier = Modifier) {
+fun ServiceCenterScreen(modifier: Modifier = Modifier, onBack : () -> Unit) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -35,7 +36,7 @@ fun ServiceCenterScreen(modifier: Modifier = Modifier) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "go_back",
-                    modifier = modifier.size(24.dp),
+                    modifier = modifier.size(24.dp).clickable{onBack()},
                     tint = Color.Black
                 )
             }
@@ -55,10 +56,4 @@ fun ServiceCenterScreen(modifier: Modifier = Modifier) {
             )
         }
     }
-}
-
-@Preview
-@Composable
-private fun ServiceCenterPreview() {
-    ServiceCenterScreen()
 }

@@ -1,7 +1,7 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -10,11 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -23,8 +20,8 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.IllnessInfoItem
@@ -32,12 +29,11 @@ import com.konkuk.medicarecall.ui.component.MedInfoItem
 import com.konkuk.medicarecall.ui.component.SpecialNoteItem
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.SpecialNoteType
-import com.konkuk.medicarecall.ui.settings.component.SettingTextField
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun HealthDetailScreen(modifier: Modifier = Modifier) {
+fun HealthDetailScreen(onBack : () -> Unit ={}, navController : NavHostController,modifier: Modifier = Modifier) {
     var noteList by remember { mutableStateOf(listOf<String>()) }
     val scrollState = rememberScrollState()
     Column(modifier = modifier
@@ -50,14 +46,16 @@ fun HealthDetailScreen(modifier: Modifier = Modifier) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "go_back",
-                    modifier = modifier.size(24.dp),
+                    modifier = modifier.size(24.dp).clickable{onBack()},
                     tint = Color.Black
                 )
             }
         )
         Column(modifier = modifier
             .fillMaxWidth()
-            .padding(20.dp),
+            .padding(20.dp)
+            .verticalScroll(rememberScrollState())
+            ,
         ) {
             // 질환 정보
             IllnessInfoItem()
@@ -91,15 +89,9 @@ fun HealthDetailScreen(modifier: Modifier = Modifier) {
             CTAButton(
                 type = CTAButtonType.GREEN,
                 text = "확인",
-                onClick = {},
+                onClick = {onBack},
                 modifier = modifier.height(50.dp),
             )
         }
     }
-}
-
-@Preview(showBackground = true)
-@Composable
-fun HealthDetailPreview(modifier: Modifier = Modifier) {
-    HealthDetailScreen()
 }

@@ -60,7 +60,141 @@ fun NavGraph(
             }
             // 설정
             composable(route = Route.Settings.route) {
-                SettingsScreen()
+                SettingsScreen(
+                    navController = navController,
+                    onNavigateToMyDataSetting = {
+                        navController.navigate(Route.MyDataSetting.route)
+                    },
+                    onNavigateToAnnouncement = {
+                        navController.navigate(Route.Announcement.route)
+                    },
+                    onNavigateToCenter = {
+                        navController.navigate(Route.ServiceCenter.route)
+                    },
+                    onNavigateToSubscribe = {
+                        navController.navigate(Route.SettingSubscribe.route)
+                    },
+                    onNavigateToPersonalInfo = {
+                        navController.navigate(Route.PersonalInfo.route)
+                    },
+                    onNavigateToHealthInfo = {
+                        navController.navigate(Route.HealthInfo.route)
+                    },
+                    onNavigateToSettingAlarm = {
+                        navController.navigate(Route.SettingAlarm.route)
+                    }
+                )
+            }
+
+            composable(
+                route = Route.MyDataSetting.route
+            ) {
+                MyDataSettingScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable (
+                route = Route.MyDetail.route
+            ) {
+                MyDetailScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.Announcement.route) {
+                AnnouncementScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.ServiceCenter.route) {
+                ServiceCenterScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    }
+                )
+            }
+
+            composable(route = Route.SettingSubscribe.route){
+                SettingSubscribeScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.SubscribeDetail.route) {
+                SubscribeDetailScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.PersonalInfo.route) {
+                PersonalInfoScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.PersonalDetail.route) {
+                PersonalDetailScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.HealthInfo.route) {
+                HealthInfoScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.HealthDetail.route) {
+                HealthDetailScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.SettingAlarm.route) {
+                SettingAlarmScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.Alarm.route) {
+                AlarmScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
             }
         }
 
@@ -83,14 +217,49 @@ fun NavGraph(
             composable(route = Route.LoginSeniorMedInfoScreen.route) {
                 LoginSeniorMedInfoScreen(navController)
             }
+
+            composable(route = Route.SetCall.route) {
+                SetCallScreen(
+                    name = "김옥자",
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController,
+                ) // 예시로 이름을 넣었지만, 실제로는 필요한 데이터를 전달해야 합니다.
+            }
+
+            composable(route = Route.Payment.route) {
+                PaymentScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.NaverPay.route) {
+                NaverPayScreen(
+                    onBack = {
+                        navController.popBackStack()
+                    },
+                    navController = navController
+                )
+            }
+
+            composable(route = Route.FinishSplash.route) {
+                FinishSplashScreen(
+                    navController = navController,
+                )
+            }
         }
         composable(route = Route.HomeMealDetail.route) {
-            HomeMealDetail()
+            HomeMealDetail(navController = navController)
         }
 
         composable(route = Route.HomeMedicineDetail.route) {
             HomeMedicineDetail()
         }
+
     }
 
 }

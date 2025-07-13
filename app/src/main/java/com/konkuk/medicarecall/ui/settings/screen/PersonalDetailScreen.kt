@@ -28,7 +28,9 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.DefaultTextField
@@ -44,7 +46,7 @@ import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
 import com.konkuk.medicarecall.ui.util.PhoneNumberVisualTransformation
 
 @Composable
-fun PersonalDetailScreen(modifier: Modifier = Modifier) {
+fun PersonalDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={}, navController : NavHostController) {
     var isMale by remember { mutableStateOf<Boolean?>(false) }
     val scrollState = rememberScrollState()
     var name by remember { mutableStateOf("김옥자") }
@@ -61,7 +63,9 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
             leftIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_settings_back),
-                    contentDescription = "setting back"
+                    contentDescription = "setting back",
+                    modifier = modifier.clickable{onBack()},
+                    tint = MediCareCallTheme.colors.black
                 )
             },
         )
@@ -69,8 +73,8 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .verticalScroll(scrollState)
-                .padding(20.dp),
+                .padding(20.dp)
+                .verticalScroll(scrollState),
         ) {
             Row() {
                 Spacer(modifier = modifier.weight(1f))
@@ -162,7 +166,7 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
                         CTAButtonType.DISABLED
                     },
                     text = "확인",
-                    onClick = {},
+                    onClick = {navController.navigate(Route.Settings.route)},
                     modifier = modifier.height(50.dp),
                 )
 
@@ -174,15 +178,9 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
                 onDelete = {
                     showDeleteDialog = false
                     // TODO : 삭제 동작 추가
+                    navController.navigate(Route.Settings.route) // 삭제 후 설정 화면으로 이동
                 }
             )
         }
     }
-}
-
-@Preview
-@Composable
-private fun PersonalDetailPreview() {
-    PersonalDetailScreen()
-
 }

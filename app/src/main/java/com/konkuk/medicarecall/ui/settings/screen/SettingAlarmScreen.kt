@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -8,6 +9,8 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -20,13 +23,15 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.component.SwitchButton
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun SettingAlarmScreen(modifier: Modifier = Modifier) {
+fun SettingAlarmScreen(modifier: Modifier = Modifier,onBack : () -> Unit = {},navController: NavHostController) {
     // 1) 상태 선언
     var masterChecked by remember { mutableStateOf(false) }
     var completeChecked by remember { mutableStateOf(false) }
@@ -43,14 +48,15 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "go_back",
-                    modifier = modifier.size(24.dp),
+                    modifier = modifier.size(24.dp).clickable{onBack()},
                     tint = Color.Black
                 )
             }
         )
         Column(modifier = modifier
             .fillMaxWidth()
-            .padding(20.dp),
+            .padding(20.dp)
+            .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp)
             ) {
             Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
@@ -91,10 +97,4 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier) {
             }
         }
     }
-}
-
-@Preview
-@Composable
-fun SettingPreview(modifier: Modifier = Modifier) {
-    SettingAlarmScreen()
 }

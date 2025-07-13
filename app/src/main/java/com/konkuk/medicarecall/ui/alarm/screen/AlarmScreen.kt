@@ -1,13 +1,18 @@
 package com.konkuk.medicarecall.ui.alarm.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.size
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.alarm.component.AlarmItem
 import com.konkuk.medicarecall.ui.model.AlarmType
@@ -15,7 +20,7 @@ import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun AlarmScreen(modifier: Modifier = Modifier) {
+fun AlarmScreen(onBack : () -> Unit, navController: NavHostController, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -26,7 +31,9 @@ fun AlarmScreen(modifier: Modifier = Modifier) {
             leftIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_settings_back),
-                    contentDescription = "setting back"
+                    contentDescription = "setting back",
+                    modifier = modifier.size(24.dp).clickable { onBack() },
+                    tint = MediCareCallTheme.colors.black
                 )
             },
         )
@@ -56,10 +63,4 @@ fun AlarmScreen(modifier: Modifier = Modifier) {
             "7월 7일 13:15"
         )
     }
-}
-
-@Preview
-@Composable
-private fun AlarmScreenPreview() {
-    AlarmScreen()
 }

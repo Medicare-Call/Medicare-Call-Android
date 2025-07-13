@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -19,9 +20,10 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
@@ -31,7 +33,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
 
 @Composable
-fun MyDetailScreen(modifier: Modifier = Modifier) {
+fun MyDetailScreen(onBack: () -> Unit = {},navController: NavHostController,modifier: Modifier = Modifier) {
     var isMale by remember { mutableStateOf<Boolean?>(false) }
     var name by remember { mutableStateOf("김미연") }
     var birth by remember { mutableStateOf("19700529") }
@@ -46,7 +48,9 @@ fun MyDetailScreen(modifier: Modifier = Modifier) {
             leftIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_settings_back),
-                    contentDescription = "setting back"
+                    contentDescription = "setting back",
+                    modifier = Modifier.clickable{onBack()},
+                    tint = MediCareCallTheme.colors.black
                 )
             },
         )
@@ -93,14 +97,8 @@ fun MyDetailScreen(modifier: Modifier = Modifier) {
             CTAButton(
                 type = if (name.isNotEmpty() && birth.isNotEmpty()) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                 text = "확인",
-                onClick = { /* TODO: 저장 로직 */ }
+                onClick = { navController.navigate(Route.Settings.route) }
             )
         }
     }
-}
-
-@Preview
-@Composable
-private fun MyDetailPreview() {
-    MyDetailScreen()
 }

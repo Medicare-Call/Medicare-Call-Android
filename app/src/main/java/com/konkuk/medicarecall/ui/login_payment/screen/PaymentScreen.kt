@@ -18,7 +18,6 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
@@ -28,18 +27,18 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_payment.component.PayResultItem
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-import com.konkuk.medicarecall.ui.theme.gray1
 
 @Composable
-fun PaymentScreen(modifier: Modifier = Modifier) {
+fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifier: Modifier = Modifier) {
     val scrollState = rememberScrollState()
     var isClicked by remember { mutableStateOf(false) }
     Column(
@@ -47,13 +46,12 @@ fun PaymentScreen(modifier: Modifier = Modifier) {
             .fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
             .padding(top = 16.dp, bottom = 20.dp)
-            .verticalScroll(scrollState)
     ) {
         Column(
             modifier = modifier
                 .padding(horizontal = 20.dp)
         ) {
-            TopBar({})
+            TopBar(onBack)
             Spacer(modifier = modifier.height(20.dp))
             Text(
                 text = "결제하기",
@@ -62,17 +60,16 @@ fun PaymentScreen(modifier: Modifier = Modifier) {
             )
             Spacer(modifier = modifier.height(26.dp))
         }
+        Box(
+            modifier = modifier
+                .fillMaxWidth()
+                .height(10.dp)
+                .background(MediCareCallTheme.colors.gray1)
+        )
         Column(
             modifier = modifier
                 .verticalScroll(scrollState)
         ) {
-            Box(
-                modifier = modifier
-                    .fillMaxWidth()
-                    .height(10.dp)
-                    .background(MediCareCallTheme.colors.gray1)
-            )
-
             Column(
                 modifier = modifier.padding(horizontal = 20.dp)
                     .padding(vertical = 20.dp)
@@ -88,7 +85,7 @@ fun PaymentScreen(modifier: Modifier = Modifier) {
                     )
                     Spacer(modifier = modifier.width(8.dp))
                     Text(
-                        text = "3명",
+                        text = "2명",
                         style = MediCareCallTheme.typography.R_14,
                         color = MediCareCallTheme.colors.gray5
                     )
@@ -140,7 +137,7 @@ fun PaymentScreen(modifier: Modifier = Modifier) {
                     ),
                     shape = RoundedCornerShape(16.dp),
                     border = BorderStroke(
-                        (1.2).dp,
+                        2.dp,
                         color = if (isClicked) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray3
                     )
                 ) {
@@ -154,14 +151,9 @@ fun PaymentScreen(modifier: Modifier = Modifier) {
                 CTAButton(
                     type = if (isClicked) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                     text = "결제하기",
-                    onClick = {})
+                    onClick = {if (isClicked) navController.navigate(Route.NaverPay.route)})
             }
         }
     }
 }
 
-@Preview
-@Composable
-private fun PaymentScreenPreview() {
-    PaymentScreen()
-}

@@ -28,7 +28,7 @@ fun TimeSettingItem(category : String, timeType : TimeSettingType, modifier: Mod
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        Text(text = category, style = MediCareCallTheme.typography.M_17)
+        Text(text = category, style = MediCareCallTheme.typography.M_17, color = MediCareCallTheme.colors.gray5)
         Spacer(modifier = modifier.height(10.dp))
         Box(
             modifier = modifier.fillMaxWidth()

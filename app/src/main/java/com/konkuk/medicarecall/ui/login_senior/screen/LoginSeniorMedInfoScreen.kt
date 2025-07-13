@@ -28,6 +28,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.ChipItem
 import com.konkuk.medicarecall.ui.component.DefaultDropdown
@@ -140,6 +141,6 @@ fun LoginSeniorMedInfoScreen(
             scrollState,
             { healthIssueList.add(it) }
         )
-        CTAButton(CTAButtonType.GREEN, "다음", {}, Modifier.padding(top = 30.dp, bottom = 20.dp))
+        CTAButton(CTAButtonType.GREEN, "다음", {navController.navigate(Route.SetCall.route)}, Modifier.padding(top = 30.dp, bottom = 20.dp))
     }
 }

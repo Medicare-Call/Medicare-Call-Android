@@ -17,6 +17,8 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.ui.NameBar
 import com.konkuk.medicarecall.ui.statistics.WeeklyGlucoseUiState
 import com.konkuk.medicarecall.ui.statistics.WeeklyMealUiState
@@ -34,14 +36,14 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 
 @Composable
-fun StatisticsScreen(modifier: Modifier = Modifier) {
+fun StatisticsScreen(modifier: Modifier = Modifier, navController: NavHostController) {
 
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MediCareCallTheme.colors.white)
     ) {
-        NameBar()
+        NameBar(navController = navController)
 
         Spacer(modifier = Modifier.height(44.dp))
 
@@ -130,14 +132,4 @@ fun StatisticsScreen(modifier: Modifier = Modifier) {
         }
 
     }
-}
-
-
-@Preview(showBackground = true, heightDp = 1200)
-@Composable
-fun PreviewStatisticsScreen(
-
-) {
-
-    StatisticsScreen()
 }

@@ -12,7 +12,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -23,30 +25,34 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.settings.component.PersonalInfoCard
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun HealthInfoScreen(modifier: Modifier = Modifier) {
+fun HealthInfoScreen(onBack : () -> Unit ={}, navController : NavHostController) {
     Column(modifier = Modifier
         .fillMaxSize()
         .background(MediCareCallTheme.colors.bg)) {
         SettingsTopAppBar(
             title = "어르신 건강정보 설정",
-            leftIcon = {Icon(painterResource(id = R.drawable.ic_settings_back), contentDescription = "setting back")},
+            leftIcon = {Icon(painterResource(id = R.drawable.ic_settings_back), contentDescription = "setting back", modifier = Modifier.clickable{onBack()}, tint = MediCareCallTheme.colors.black )},
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
-                .padding(start = 20.dp, end = 20.dp, top = 19.dp)
+                .padding(start = 20.dp, end = 20.dp)
+                .verticalScroll(rememberScrollState())
             ,
             verticalArrangement = Arrangement.spacedBy(12.dp)
         ){
-            PersonalInfoCard("김옥자")
-            PersonalInfoCard("박막례")
+            Spacer(modifier = Modifier.height(20.dp))
+            PersonalInfoCard("김옥자",  onClick = {navController.navigate(Route.HealthDetail.route)})
+            PersonalInfoCard("박막례",  onClick = {navController.navigate(Route.HealthDetail.route)})
             Row(
                 verticalAlignment = Alignment.CenterVertically,
                 modifier = Modifier
@@ -71,16 +77,11 @@ fun HealthInfoScreen(modifier: Modifier = Modifier) {
                 Text(
                     text = "어르신 더 추가하기",
                     style = MediCareCallTheme.typography.SB_14,
-                    color = MediCareCallTheme.colors.gray4
+                    color = MediCareCallTheme.colors.gray4,
                 )
             }
+            Spacer(modifier = Modifier.height(20.dp))
         }
 
     }
-}
-
-@Preview
-@Composable
-private fun HealthInfoPreview() {
-    HealthInfoScreen()
 }

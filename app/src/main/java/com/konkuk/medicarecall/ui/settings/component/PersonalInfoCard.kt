@@ -2,6 +2,7 @@ package com.konkuk.medicarecall.ui.settings.component
 
 import android.R.attr.name
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -29,7 +30,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun PersonalInfoCard(name : String,modifier: Modifier = Modifier) {
+fun PersonalInfoCard(name : String,modifier: Modifier = Modifier, onClick : () -> Unit = {}) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -39,7 +40,8 @@ fun PersonalInfoCard(name : String,modifier: Modifier = Modifier) {
                 cornerRadius = 14.dp
             )
             .clip(RoundedCornerShape(14.dp))
-            .background(MediCareCallTheme.colors.white),
+            .background(MediCareCallTheme.colors.white)
+            .clickable{onClick()},
     ) {
         Row(modifier = modifier
             .fillMaxWidth()

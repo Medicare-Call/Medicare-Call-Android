@@ -1,9 +1,11 @@
 package com.konkuk.medicarecall
 
+import android.os.Build
 import android.os.Bundle
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
+import androidx.annotation.RequiresApi
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -29,10 +31,13 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.navigation.BottomNavItem
 import com.konkuk.medicarecall.navigation.NavGraph
+import com.konkuk.medicarecall.ui.login_care_call.screen.SetCallScreen
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
+import com.konkuk.medicarecall.ui.settings.screen.PersonalDetailScreen
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 class MainActivity : ComponentActivity() {
+    @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
        enableEdgeToEdge()
@@ -68,6 +73,7 @@ class MainActivity : ComponentActivity() {
                 var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
 
                 val loginViewModel: LoginViewModel = viewModel()
+                val loginSeniorViewModel: LoginSeniorViewModel = viewModel()
                 val bottomBarRoutes = listOf("home", "statistics", "settings")
 
 
@@ -133,6 +139,7 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         navController = navController,
                         loginViewModel = loginViewModel,
+                        loginSeniorViewModel = loginSeniorViewModel,
                         modifier = Modifier
                             .padding(innerPadding)
                     )

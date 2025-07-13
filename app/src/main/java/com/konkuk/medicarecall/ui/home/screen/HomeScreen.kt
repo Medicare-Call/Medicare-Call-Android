@@ -66,7 +66,7 @@ fun HomeScreen(
 
     ) {
 
-        NameBar()
+        NameBar(navController = navController)
 
         Spacer(modifier = Modifier.height(19.dp))
 

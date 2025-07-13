@@ -14,7 +14,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.SegmentedButtonDefaults.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -29,10 +31,21 @@ import androidx.compose.material3.Icon
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
+import androidx.navigation.NavHostController
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun SettingsScreen() {
+fun SettingsScreen(
+    navController : NavHostController,
+    onNavigateToMyDataSetting : () -> Unit = {},
+    onNavigateToAnnouncement : () -> Unit = {},
+    onNavigateToCenter : () -> Unit = {},
+    onNavigateToSubscribe : () -> Unit = {},
+    onNavigateToPersonalInfo : () -> Unit = {},
+    onNavigateToHealthInfo : () -> Unit = {},
+    onNavigateToSettingAlarm : () -> Unit = {},
+) {
     Column(
         modifier = Modifier.fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
@@ -40,12 +53,13 @@ fun SettingsScreen() {
         SettingsTopAppBar(title = "설정") // 상단 TopAppBar,
         Spacer(modifier = Modifier.height(20.dp))
         Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp)
+        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp).padding(bottom = 20.dp).verticalScroll(rememberScrollState())
     ) {
 
         // 프로필
         Row(modifier = Modifier
             .fillMaxWidth()
+            .clickable{onNavigateToMyDataSetting()}
             .padding(10.dp),
             verticalAlignment = Alignment.CenterVertically
             ) {
@@ -57,12 +71,14 @@ fun SettingsScreen() {
             Spacer(modifier = Modifier.width(14.dp))
             Text(
                 text = "김미연",
-                style = MediCareCallTheme.typography.SB_18
+                style = MediCareCallTheme.typography.SB_18,
+                color = MediCareCallTheme.colors.black
+
             ) // 나중에 값 받아와서 이름 출력되도록 수정 필요
             Spacer(modifier = Modifier.width(5.dp))
-            Text(text = "님", style = MediCareCallTheme.typography.R_18)
+            Text(text = "님", style = MediCareCallTheme.typography.R_18, color = MediCareCallTheme.colors.black)
             Spacer(modifier = Modifier.width(109.dp))
-            Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(28.dp), tint = MediCareCallTheme.colors.gray2)
+            Icon(painter = painterResource(id = R.drawable.ic_arrow_big), contentDescription = "화살표 아이콘", modifier = Modifier.size(28.dp), tint = MediCareCallTheme.colors.gray2)
 
         }
             Column(
@@ -78,6 +94,7 @@ fun SettingsScreen() {
                     ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
+                        modifier = Modifier.clickable{onNavigateToAnnouncement()}
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_announcement),
@@ -94,6 +111,7 @@ fun SettingsScreen() {
                     }
 
                     Column(
+                        modifier = Modifier.clickable{onNavigateToCenter()},
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
@@ -111,6 +129,7 @@ fun SettingsScreen() {
                     }
 
                     Column(
+                        modifier = Modifier.clickable{onNavigateToSubscribe()},
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
@@ -128,6 +147,7 @@ fun SettingsScreen() {
                     }
 
                     Column(
+                        modifier = Modifier.clickable{}, // 결제내역 클릭 시 동작 추가
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
@@ -157,49 +177,34 @@ fun SettingsScreen() {
                 ) {
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth().clickable(onClick = {})
+                        modifier = Modifier.fillMaxWidth().clickable(onClick = {onNavigateToPersonalInfo()})
                     ) {
                         Text(text = "어르신 개인정보 설정", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray8)
+                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray2)
                     }
 
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth().clickable(onClick = {})
-                    ) {
-                        Text(text = "어르신 개인정보 설정", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray8)
-                    }
-
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth().clickable(onClick = {}),
+                        modifier = Modifier.fillMaxWidth().clickable(onClick = {onNavigateToHealthInfo()}),
                     ) {
                         Text(text = "어르신 건강정보 설정", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray8)
+                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray2)
                     }
 
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().clickable(onClick = {}), // 케어콜 스케줄 설정 클릭 시 동작 추가
                     ) {
                         Text(text = "케어콜 스케줄 설정", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray8)
+                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray2)
                     }
 
                     Row(
                         horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
+                        modifier = Modifier.fillMaxWidth().clickable{onNavigateToSettingAlarm()}
                     ) {
                         Text(text = "푸시 알림 설정", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray8)
-                    }
-                    Row(
-                        horizontalArrangement = Arrangement.SpaceBetween,
-                        modifier = Modifier.fillMaxWidth()
-                    ) {
-                        Text(text = "어르신 건강정보 설정", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray8)
+                        Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray2)
                     }
                 }
 
@@ -208,10 +213,3 @@ fun SettingsScreen() {
     }
     }
 
-
-@Preview(showBackground = true)
-@Composable
-private fun SettingPreview() {
-    SettingsScreen()
-    
-}

@@ -1,6 +1,8 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
+import android.R.attr.phoneNumber
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -23,20 +25,36 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
+import com.konkuk.medicarecall.ui.component.DefaultDropdown
+import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.model.RelationshipType
+import com.konkuk.medicarecall.ui.model.SeniorLivingType
+import com.konkuk.medicarecall.ui.settings.component.DeleteConfirmDialog
 import com.konkuk.medicarecall.ui.settings.component.SettingTextField
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
+import com.konkuk.medicarecall.ui.util.PhoneNumberVisualTransformation
 
 @Composable
-fun PersonalDetailScreen(modifier: Modifier = Modifier) {
+fun PersonalDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={}, navController : NavHostController) {
     var isMale by remember { mutableStateOf<Boolean?>(false) }
     val scrollState = rememberScrollState()
+    var name by remember { mutableStateOf("김옥자") }
+    var birth by remember { mutableStateOf("19390928") }
+    var phoneNum by remember { mutableStateOf("01012345678") }
+
+    var showDeleteDialog by remember { mutableStateOf(false) }
+
     Column(modifier = Modifier
         .fillMaxSize()
         .background(MediCareCallTheme.colors.bg)) {
@@ -45,7 +63,9 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
             leftIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_settings_back),
-                    contentDescription = "setting back"
+                    contentDescription = "setting back",
+                    modifier = modifier.clickable{onBack()},
+                    tint = MediCareCallTheme.colors.black
                 )
             },
         )
@@ -53,22 +73,41 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .verticalScroll(scrollState)
-                .padding(20.dp),
+                .padding(20.dp)
+                .verticalScroll(scrollState),
         ) {
             Row() {
                 Spacer(modifier = modifier.weight(1f))
                 Text(
                     text = "삭제",
                     color = MediCareCallTheme.colors.negative,
-                    style = MediCareCallTheme.typography.SB_16
+                    style = MediCareCallTheme.typography.SB_16,
+                    modifier = Modifier.clickable {
+                        showDeleteDialog = true
+                    }
                 )
             }
             Column(
                 verticalArrangement = Arrangement.spacedBy(20.dp)
             ) {
-                SettingTextField("성함", "김옥자", "성함")
-                SettingTextField("생년월일","1939 / 09 / 18", "YYYY / MM / DD")
+                Column {
+                    DefaultTextField(
+                        value = name,
+                        onValueChange = { name = it },
+                        category = "이름",
+                        placeHolder = "이름"
+                    )
+                }
+                Column {
+                    DefaultTextField(
+                        value = birth,
+                        onValueChange = { birth = it },
+                        category = "생년월일",
+                        placeHolder = "YYYY / MM / DD",
+                        keyboardType = KeyboardType.Number,
+                        visualTransformation = DateOfBirthVisualTransformation()
+                    )
+                }
                 Column() {
                     Text("성별", style = MediCareCallTheme.typography.M_17, color = MediCareCallTheme.colors.gray7)
                     Spacer(modifier = modifier.height(10.dp))
@@ -81,16 +120,30 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
                             }
                     )
                 }
-                SettingTextField("휴대폰 번호","010-1111-1111","010-1234-5678")
+                Column {
+                DefaultTextField(
+                    value = phoneNum,
+                    onValueChange = { phoneNum = it },
+                    placeHolder = "휴대폰 번호",
+                    keyboardType = KeyboardType.Number,
+                    visualTransformation = PhoneNumberVisualTransformation()
+                )}
                 Column() {
-                    Text("어르신과의 관계",)
-                    Spacer(modifier = modifier.height(10.dp))
-                    // 드롭다운
-                }
-                Column() {
-                    Text("어르신 거주방식", )
-                    Spacer(modifier = modifier.height(10.dp))
-                    // 드롭다운
+                DefaultDropdown(
+                    enumList = RelationshipType.values().map { it.displayName }
+                        .toList(),
+                    placeHolder = "관계 선택하기",
+                    category = "어르신과의 관계",
+                    scrollState
+                )}
+                Column {
+                    DefaultDropdown(
+                        enumList = SeniorLivingType.values().map { it.displayName }
+                            .toList(),
+                        placeHolder = "거주방식을 선택해주세요",
+                        category = "어르신 거주 방식",
+                        scrollState
+                    )
                 }
 
 //                Button(
@@ -107,22 +160,27 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier) {
 //                }
 
                 CTAButton(
-                    type = CTAButtonType.GREEN,
+                    type = if (name.isNotEmpty() && birth.isNotEmpty() && phoneNum.isNotEmpty()) {
+                        CTAButtonType.GREEN
+                    } else {
+                        CTAButtonType.DISABLED
+                    },
                     text = "확인",
-                    onClick = {},
+                    onClick = {navController.navigate(Route.Settings.route)},
                     modifier = modifier.height(50.dp),
                 )
 
             }
-
-
+        }
+        if (showDeleteDialog) {
+            DeleteConfirmDialog(
+                onDismiss = {showDeleteDialog = false},
+                onDelete = {
+                    showDeleteDialog = false
+                    // TODO : 삭제 동작 추가
+                    navController.navigate(Route.Settings.route) // 삭제 후 설정 화면으로 이동
+                }
+            )
         }
     }
-}
-
-@Preview
-@Composable
-private fun PersonalDetailPreview() {
-    PersonalDetailScreen()
-
 }

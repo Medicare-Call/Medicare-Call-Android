@@ -1,7 +1,7 @@
 package com.konkuk.medicarecall.ui
 
 
-import android.R.attr.text
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -16,16 +16,16 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-import java.nio.file.Files.size
 
 @Composable
 fun NameBar(
-    modifier: Modifier = Modifier
-
+    modifier: Modifier = Modifier,
+    navController: NavHostController
     ) {
     Row(
         modifier = modifier
@@ -66,16 +66,9 @@ fun NameBar(
         Icon(
             painter = painterResource(id = R.drawable.ic_bell),
             "bell",
-            tint = Color.Unspecified
+            tint = Color.Unspecified,
+            modifier = modifier.clickable{navController.navigate(route = Route.Alarm.route)}
         )
     }
-
-
-}
-
-@Preview(showBackground = true)
-@Composable
-private fun NameBarPreview() {
-    NameBar()
 
 }

@@ -34,6 +34,7 @@ import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
+import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.RelationshipType
 import com.konkuk.medicarecall.ui.model.SeniorLivingType
@@ -44,7 +45,7 @@ import com.konkuk.medicarecall.ui.util.PhoneNumberVisualTransformation
 @Composable
 fun LoginSeniorInfoScreen(
     navController: NavController,
-    loginViewModel: LoginViewModel,
+    loginSeniorViewModel: LoginSeniorViewModel,
     modifier: Modifier = Modifier
 ) {
 
@@ -70,15 +71,18 @@ fun LoginSeniorInfoScreen(
         Spacer(Modifier.height(40.dp))
         Column {
             DefaultTextField(
-                value = "",
-                onValueChange = {},
+                value = loginSeniorViewModel.name,
+                onValueChange = { loginSeniorViewModel.onNameChanged(it) },
                 category = "이름",
                 placeHolder = "이름"
             )
             Spacer(Modifier.height(20.dp))
             DefaultTextField(
-                "",
-                { },
+                loginSeniorViewModel.dateOfBirth,
+                { input ->
+                    val filtered = input.filter { it.isDigit() }.take(8)
+                    loginSeniorViewModel.onDOBChanged(filtered)
+                },
                 category = "생년월일",
                 placeHolder = "YYYY / MM / DD",
                 keyboardType = KeyboardType.Number,
@@ -92,12 +96,19 @@ fun LoginSeniorInfoScreen(
                     style = MediCareCallTheme.typography.M_17
                 )
 
-                GenderToggleButton(null) { }
+                GenderToggleButton(loginSeniorViewModel.isMale) {
+                    loginSeniorViewModel.onGenderChanged(
+                        it
+                    )
+                }
             }
             Spacer(Modifier.height(20.dp))
             DefaultTextField(
-                "",
-                { },
+                loginSeniorViewModel.phoneNumber,
+                { input ->
+                    val filtered = input.filter { it.isDigit() }.take(11)
+                    loginSeniorViewModel.onPhoneNumberChanged(filtered)
+                },
                 category = "휴대폰 번호",
                 placeHolder = "010-1234-5678",
                 keyboardType = KeyboardType.Number,

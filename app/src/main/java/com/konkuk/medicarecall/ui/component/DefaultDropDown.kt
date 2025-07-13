@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.component
 
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -37,7 +36,6 @@ import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
-import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
 
 @Composable
@@ -46,6 +44,7 @@ fun <T> DefaultDropdown(
     placeHolder: String,
     category: String? = null,
     scrollState: ScrollState,
+    onOptionSelect: (String) -> Unit = {},
     modifier: Modifier = Modifier
 ) {
 
@@ -152,6 +151,7 @@ fun <T> DefaultDropdown(
                                 }
                                 .clickable(onClick = {
                                     selectedOption = item.toString()
+                                    onOptionSelect(selectedOption!!)
                                     showDropdown = false
                                 }),
                         ) {

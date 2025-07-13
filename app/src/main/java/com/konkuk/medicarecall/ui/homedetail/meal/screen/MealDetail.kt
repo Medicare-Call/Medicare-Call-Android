@@ -16,16 +16,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.konkuk.medicarecall.ui.NameBar
+import com.konkuk.medicarecall.ui.homedetail.CalendarUiState
 import com.konkuk.medicarecall.ui.homedetail.MonthYearSelector
+import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.WeeklyCalendar
 import com.konkuk.medicarecall.ui.homedetail.getDatesForWeek
 import com.konkuk.medicarecall.ui.homedetail.meal.MealUiState
-import com.konkuk.medicarecall.ui.homedetail.meal.component.HomeMealDetailCard
+import com.konkuk.medicarecall.ui.homedetail.meal.component.MealDetailCard
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
-fun HomeMealDetail(
+fun MealDetail(
     modifier: Modifier = Modifier
 ) {
 
@@ -35,9 +36,9 @@ fun HomeMealDetail(
     ) // 주간 달력
 
     val meals = listOf(
-        MealUiState("아침", "간단히 밥과 반찬을 드셨어요.", true),
-        MealUiState("점심", "식사하지 않으셨어요.", true),
-        MealUiState("저녁", "", false)
+        MealUiState("아침", "간단히 밥과 반찬을 드셨어요.", true, true),
+        MealUiState("점심", "식사하지 않으셨어요.", true, true),
+        MealUiState("저녁", "", false,false )
     )
     Surface(
         modifier = Modifier.fillMaxSize(),
@@ -49,8 +50,9 @@ fun HomeMealDetail(
                 .fillMaxSize()
         ) {
 
-
-            NameBar() // TODO: 상단바 변경
+            TopAppBar(
+                title = "식사"
+            )
 
             Column(
                 modifier = Modifier
@@ -65,7 +67,7 @@ fun HomeMealDetail(
                     onMonthClick = { /* TODO */ }
                 )
 
-                Spacer(Modifier.height(10.dp))
+                Spacer(Modifier.height(12.dp))
 
                 HorizontalPager(
                     state = pagerState
@@ -73,19 +75,23 @@ fun HomeMealDetail(
                     val dates = getDatesForWeek(page)
 
                     WeeklyCalendar(
-                        weekDays = listOf("일", "월", "화", "수", "목", "금", "토"),
-                        dates = dates,
-                        selectedDate = 4,
-                        onDateSelected = { /* TODO */ }
+                        calendarUiState = CalendarUiState(
+                            year = 2025,
+                            month = 5,
+                            weekDates = listOf(4, 5, 6, 7, 8, 9, 10),
+                            selectedDate = 7
+                        ),
+                        onDateSelected = { /* 클릭 테스트용 */ }
                     )
                 }
                 Spacer(modifier = Modifier.height(24.dp))
 
                 meals.forEach { meal ->
-                    HomeMealDetailCard(
-                        title = meal.title,
-                        description = meal.description,
-                        isRecorded = meal.isRecorded
+                    MealDetailCard(
+                        mealTime = meal.mealTime,       // 아침 점심 저녁
+                        description = meal.description, // 식사 내용
+                        isRecorded = meal.isRecorded,   // 식사 기록 여부
+                        isEaten = meal.isEaten          // 식사 유무
                     )
 
                     Spacer(modifier = Modifier.height(8.dp))
@@ -101,7 +107,7 @@ fun HomeMealDetail(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeMealDetail() {
-    HomeMealDetail()
+fun PreviewMealDetail() {
+    MealDetail()
 
 }

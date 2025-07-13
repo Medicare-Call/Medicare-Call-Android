@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.home.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,13 +29,13 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 @Composable
 fun HomeStateMentalContainer(
     modifier: Modifier = Modifier,
-            onClick: () -> Unit = {}
+            onClick: () -> Unit
 ) {
 
 
     Card(
-        onClick = onClick,
         modifier = Modifier
+            .clickable { onClick() }
             .fillMaxWidth()
             .figmaShadow(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
@@ -104,5 +105,5 @@ fun HomeStateMentalContainer(
 fun PreviewHomeStateMentalContainer() {
 
 
-    HomeStateMentalContainer()
+    HomeStateMentalContainer(onClick = {})
 }

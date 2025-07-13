@@ -1,7 +1,6 @@
 package com.konkuk.medicarecall.ui.homedetail.meal.component
 
 
-import android.R.attr.description
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -24,10 +23,11 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun HomeMealDetailCard(
-    title: String,
+fun MealDetailCard(
+    mealTime: String,
     description: String,
     isRecorded: Boolean,
+    isEaten: Boolean?,
     modifier: Modifier = Modifier
 ) {
 
@@ -43,16 +43,19 @@ fun HomeMealDetailCard(
 
     ) {
         Column(
-            modifier = Modifier.padding(20.dp)
+            modifier = Modifier
+                .padding(20.dp)
         ) {
             //1) 아침 점심 저녁
             Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
                 verticalAlignment = Alignment.CenterVertically
 
             ) {
 
                 Text(
-                    title,
+                    mealTime,
                     style = MediCareCallTheme.typography.SB_18,
                     color = MediCareCallTheme.colors.gray8,
                 )
@@ -61,21 +64,28 @@ fun HomeMealDetailCard(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            //2) 식사 내용 및 여부
-            if (isRecorded) {
-                Text(
-                    text = description,
-                    style = MediCareCallTheme.typography.R_16,
-                    color = MediCareCallTheme.colors.gray8,
-                )
-            } else {
-                // 기록 전
-                Text(
-                    text = "식사 기록 전이에요.",
-                    style = MediCareCallTheme.typography.R_16,
-                    color = MediCareCallTheme.colors.gray4,
-                )
+            Row(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                verticalAlignment = Alignment.CenterVertically
 
+            ) {
+                //2) 식사 내용 및 여부
+                if (isRecorded) {
+                    Text(
+                        text = description,
+                        style = MediCareCallTheme.typography.R_16,
+                        color = MediCareCallTheme.colors.gray8,
+                    )
+                } else {
+                    // 기록 전
+                    Text(
+                        text = "식사 기록 전이에요.",
+                        style = MediCareCallTheme.typography.R_16,
+                        color = MediCareCallTheme.colors.gray4,
+                    )
+
+                }
             }
         }
     }
@@ -83,11 +93,12 @@ fun HomeMealDetailCard(
 
 @Preview(showBackground = true)
 @Composable
-fun PreviewHomeMealDetailCard() {
-    HomeMealDetailCard(
-        title = "아침",
+fun PreviewMealDetailCard() {
+    MealDetailCard(
+        mealTime = "아침",
         description = "간단히 밥과 반찬을 드셨어요.",
-        isRecorded = true
+        isRecorded = true,
+        isEaten = true
     )
 }
 

@@ -35,4 +35,10 @@ sealed class Route(val route: String) {
     object SettingAlarm : Route("setting_alarm")
     object SettingSubscribe : Route("setting_subscribe")
     object SubscribeDetail : Route("subscribe_detail")
+    object MealDetail : Route("home_meal_detail")
+    object MedicineDetail : Route("home_medicine_detail")
+    object SleepDetail : Route("home_sleep_detail")
+    object StateHealthDetail : Route("home_state_health_detail")
+    object StateMentalDetail : Route("home_state_mental_detail")
+    object GlucoseDetail : Route("home_glucose_detail")
 }

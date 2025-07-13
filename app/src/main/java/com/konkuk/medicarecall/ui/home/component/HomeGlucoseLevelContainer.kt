@@ -29,7 +29,7 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 fun HomeGlucoseLevelContainer(
     modifier: Modifier = Modifier,
     glucoseLevel: Int,
-    onClick: () -> Unit = {}
+    onClick: () -> Unit
 ) {
 
 
@@ -82,7 +82,7 @@ fun HomeGlucoseLevelContainer(
 
                 Row(
                     modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Bottom
                 ) {
                     Text(
                         text = "$glucoseLevel",
@@ -114,5 +114,6 @@ fun PreviewHomeGlucoseLevelContainer() {
 
     HomeGlucoseLevelContainer(
         glucoseLevel = 120,
+        onClick = {}
     )
 }

@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.home.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -21,6 +22,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
@@ -28,15 +30,14 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 @Composable
 fun HomeSleepContainer(
     modifier: Modifier = Modifier,
-    sleepHours: Int,   // ← 시간
-    sleepMinutes: Int,  // ← 분
-    onClick: () -> Unit = {}
+    sleeps: SleepUiState,
+    onClick: () -> Unit
 ) {
 
 
     Card(
-        onClick = onClick,
         modifier = Modifier
+            .clickable { onClick() }
             .fillMaxWidth()
             .figmaShadow(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
@@ -83,22 +84,23 @@ fun HomeSleepContainer(
 
                 Row(
                     modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
+                    verticalAlignment = Alignment.Bottom
                 ) {
                     Text(
-                        text = "$sleepHours",
+                        text = "${sleeps.totalSleepHours}",
                         style = MediCareCallTheme.typography.SB_22,
+                        color = MediCareCallTheme.colors.gray8,
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
                         "시간",
                         style = MediCareCallTheme.typography.R_16,
-                        color = MediCareCallTheme.colors.gray6,
+                        color = MediCareCallTheme.colors.gray8,
                     )
                     Spacer(modifier = Modifier.width(4.dp))
 
                     Text(
-                        text = "$sleepMinutes",
+                        text = "${sleeps.totalSleepMinutes}",
                         style = MediCareCallTheme.typography.SB_22
                     )
 
@@ -107,8 +109,9 @@ fun HomeSleepContainer(
                     Text(
                         "분",
                         style = MediCareCallTheme.typography.R_16,
-                        color = MediCareCallTheme.colors.gray6,
+                        color = MediCareCallTheme.colors.gray8,
                     )
+
 
 
                 }
@@ -126,7 +129,13 @@ fun PreviewHomeSleepContainer() {
 
 
     HomeSleepContainer(
-        sleepHours = 7,
-        sleepMinutes = 12
+        onClick = {},
+        sleeps = SleepUiState(
+            date = "2025-07-07",
+            totalSleepHours = 8,
+            totalSleepMinutes = 12,
+            bedTime = "오후 10:12",
+            wakeUpTime = "오전 06:00"
+        )
     )
 }

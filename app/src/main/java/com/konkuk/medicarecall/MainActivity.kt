@@ -73,6 +73,7 @@ class MainActivity : ComponentActivity() {
                 var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
 
                 val loginViewModel: LoginViewModel = viewModel()
+                val loginSeniorViewModel: LoginSeniorViewModel = viewModel()
                 val bottomBarRoutes = listOf("home", "statistics", "settings")
 
 
@@ -138,6 +139,7 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         navController = navController,
                         loginViewModel = loginViewModel,
+                        loginSeniorViewModel = loginSeniorViewModel,
                         modifier = Modifier
                             .padding(innerPadding)
                     )

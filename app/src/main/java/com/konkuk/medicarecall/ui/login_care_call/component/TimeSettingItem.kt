@@ -25,30 +25,41 @@ import com.konkuk.medicarecall.ui.model.TimeSettingType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun TimeSettingItem(category : String, timeType : TimeSettingType, timeText : String?, modifier: Modifier = Modifier) {
+fun TimeSettingItem(
+    category: String,
+    timeType: TimeSettingType,
+    timeText: String?,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        Text(text = category, style = MediCareCallTheme.typography.M_17, color = MediCareCallTheme.colors.gray5)
+        Text(
+            text = category,
+            style = MediCareCallTheme.typography.M_17,
+            color = MediCareCallTheme.colors.gray5
+        )
         Spacer(modifier = modifier.height(10.dp))
         Box(
-            modifier = modifier.fillMaxWidth()
+            modifier = modifier
+                .fillMaxWidth()
                 .background(
                     color = if (timeText == null) {
                         if (timeType == TimeSettingType.FIRST)
-                        MediCareCallTheme.colors.g200
-                    else
-                        MediCareCallTheme.colors.g50 } else{
-                            MediCareCallTheme.colors.white
-                        },
+                            MediCareCallTheme.colors.g200
+                        else
+                            MediCareCallTheme.colors.g50
+                    } else {
+                        MediCareCallTheme.colors.white
+                    },
                     shape = RoundedCornerShape(14.dp)
                 )
                 .border(
                     width = (1.2).dp,
                     color = if (timeText == null) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray3,
                     shape = RoundedCornerShape(14.dp)
-                ).padding(vertical = 12.dp)
-            ,
+                )
+                .padding(vertical = 12.dp),
             contentAlignment = Alignment.Center
         ) {
             if (timeText == null) {

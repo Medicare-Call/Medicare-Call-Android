@@ -197,12 +197,12 @@ fun SetCallScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
-                        text = "전화 시간대는 10분단위로 설정이 가능하나",
+                        text = "부재중일 경우 5분 단위로 3회 재발신, 전화 설정에서 수정 가능",
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray8
                     )
                     Text(
-                        text = "부재중일 경우 5분 단위로 3회 재발신, 전화 설정에서 수정 가능",
+                        text = "AI 특성상 인식 오류가 있을 수 있습니다",
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray8
                     )

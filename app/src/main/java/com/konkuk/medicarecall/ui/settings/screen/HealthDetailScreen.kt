@@ -53,7 +53,8 @@ fun HealthDetailScreen(onBack : () -> Unit ={}, navController : NavHostControlle
         )
         Column(modifier = modifier
             .fillMaxWidth()
-            .padding(20.dp)
+            .padding(horizontal = 20.dp)
+            .padding(top = 20.dp)
             .verticalScroll(rememberScrollState())
             ,
         ) {

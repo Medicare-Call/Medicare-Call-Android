@@ -33,23 +33,35 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
-fun TimePickerBottomSheet(visible: Boolean, onDismiss: () -> Unit, onNext: () -> Unit) {
+fun TimePickerBottomSheet(visible: Boolean,
+                          initialFirstAmPm: Int = 0,
+                          initialFirstHour: Int = 1,
+                          initialFirstMinute: Int = 0,
+                          initialSecondAmPm: Int = 0,
+                          initialSecondHour: Int = 1,
+                          initialSecondMinute: Int = 0,
+                          onDismiss: () -> Unit,
+                          onConfirm: (
+                              firstAmPm: Int, firstHour: Int, firstMinute: Int,
+                              secondAmPm: Int, secondHour: Int, secondMinute: Int
+                          ) -> Unit) {
     if (!visible) return
 
     val sheetState = rememberModalBottomSheetState(skipPartiallyExpanded = true)
 
 
     // 1차, 2차 각각의 시간 상태 관리
-    var firstAmPm by remember { mutableStateOf(0) }
-    var firstHour by remember { mutableStateOf(1) }
-    var firstMinute by remember { mutableStateOf(0) }
+    var firstAmPm   by remember { mutableStateOf(initialFirstAmPm) }
+    var firstHour   by remember { mutableStateOf(initialFirstHour) }
+    var firstMinute by remember { mutableStateOf(initialFirstMinute) }
 
-    var secondAmPm by remember { mutableStateOf(0) }
-    var secondHour by remember { mutableStateOf(1) }
-    var secondMinute by remember { mutableStateOf(0) }
+    var secondAmPm   by remember { mutableStateOf(initialSecondAmPm) }
+    var secondHour   by remember { mutableStateOf(initialSecondHour) }
+    var secondMinute by remember { mutableStateOf(initialSecondMinute) }
 
     // 탭 구성
     var tabIndex by remember {mutableStateOf(0)}
+
     val tabs = listOf("1차", "2차")
     ModalBottomSheet(
         onDismissRequest = onDismiss,
@@ -103,25 +115,31 @@ fun TimePickerBottomSheet(visible: Boolean, onDismiss: () -> Unit, onNext: () ->
             Spacer(modifier = Modifier.height(32.dp))
 
             key(tabIndex) {
-                TimeWheelPicker(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(206.dp),
-                    initialAmPm = if (tabIndex == 0) firstAmPm else secondAmPm,
-                    initialHour = if (tabIndex == 0) firstHour else secondHour,
-                    initialMinute = if (tabIndex == 0) firstMinute else secondMinute,
-                    onTimeChange = { amPm, hour, minute ->
-                        if (tabIndex == 0) {
-                            firstAmPm = amPm
-                            firstHour = hour
-                            firstMinute = minute
-                        } else {
-                            secondAmPm = amPm
-                            secondHour = hour
-                            secondMinute = minute
-                        }
+                if (tabIndex == 0) {
+                    TimeWheelPicker (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(206.dp),
+                        initialAmPm = firstAmPm,
+                        initialHour = firstHour,
+                        initialMinute = firstMinute,
+                    ) {
+                        amPm, hour, minute ->
+                        firstAmPm = amPm; firstHour = hour; firstMinute = minute
                     }
-                )
+                } else {
+                    TimeWheelPicker (
+                        modifier = Modifier
+                            .fillMaxWidth()
+                            .height(206.dp),
+                        initialAmPm = secondAmPm,
+                        initialHour = secondHour,
+                        initialMinute = secondMinute,
+                    ) {
+                        amPm, hour, minute ->
+                        secondAmPm = amPm; secondHour = hour; secondMinute = minute
+                    }
+                }
             }
             Spacer(modifier = Modifier.height(38.dp))
             if (tabIndex == 0) {
@@ -134,7 +152,13 @@ fun TimePickerBottomSheet(visible: Boolean, onDismiss: () -> Unit, onNext: () ->
                 )
             } else {
                 CTAButton(
-                    CTAButtonType.GREEN, "확인", onDismiss, modifier = Modifier
+                    CTAButtonType.GREEN, "확인",{
+                        onConfirm(
+                            firstAmPm, firstHour, firstMinute,
+                            secondAmPm, secondHour, secondMinute
+                        )
+                        onDismiss()
+                    }, modifier = Modifier
                         .fillMaxWidth()
                         .padding(
                             horizontal = 20.dp
@@ -143,16 +167,5 @@ fun TimePickerBottomSheet(visible: Boolean, onDismiss: () -> Unit, onNext: () ->
             }
         }
     }
-
-}
-
-@Preview
-@Composable
-private fun TimePickerBottomPreview() {
-        TimePickerBottomSheet(
-            visible = true,
-            onDismiss = {},
-            onNext = {}
-        )
 
 }

@@ -3,8 +3,11 @@ package com.konkuk.medicarecall.ui.login_senior.screen
 import android.util.Log
 import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
+import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
@@ -26,6 +29,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.konkuk.medicarecall.navigation.Route
@@ -78,26 +82,41 @@ fun LoginSeniorMedInfoScreen(
         // 상단 어르신 선택 Row
         Row {
             seniorList.forEachIndexed { index, senior ->
-                OutlinedButton(
-                    onClick = {
-                        loginSeniorViewModel.onSeniorChanged(index)
-                    },
-                    colors = ButtonDefaults.outlinedButtonColors(
-                        containerColor = if (index == loginSeniorViewModel.selectedSenior) MediCareCallTheme.colors.main else MediCareCallTheme.colors.white,
-                        contentColor = if (index == loginSeniorViewModel.selectedSenior) MediCareCallTheme.colors.g50 else MediCareCallTheme.colors.gray2,
-                    ),
-                    shape = CircleShape,
-                    border = BorderStroke(
-                        width = if (index == loginSeniorViewModel.selectedSenior) 0.dp else (1.2).dp,
-                        color = if (index == loginSeniorViewModel.selectedSenior) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray2
-                    ),
-                    contentPadding = PaddingValues(0.dp),
 
-                    ) {
+                Box(
+                    Modifier
+                        .clip(shape = CircleShape)
+                        .background(
+                            if (index == loginSeniorViewModel.selectedSenior)
+                                MediCareCallTheme.colors.main
+                            else MediCareCallTheme.colors.white
+                        )
+                        .border(
+                            width = 1.2.dp,
+                            color = if (index == loginSeniorViewModel.selectedSenior)
+                                MediCareCallTheme.colors.main
+                            else MediCareCallTheme.colors.gray2,
+                            shape = CircleShape
+                        )
+                        .clickable(
+                            interactionSource = null,
+                            indication = null,
+                            onClick = {
+                                loginSeniorViewModel.onSeniorChanged(index)
+
+                            }
+                        )
+
+                ) {
                     Text(
                         text = senior.name,
-                        style = MediCareCallTheme.typography.R_14,
-                        color = if (index == loginSeniorViewModel.selectedSenior) MediCareCallTheme.colors.white else MediCareCallTheme.colors.gray5
+                        style = if (index == loginSeniorViewModel.selectedSenior)
+                            MediCareCallTheme.typography.SB_14
+                        else MediCareCallTheme.typography.R_14,
+                        color = if (index == loginSeniorViewModel.selectedSenior)
+                            MediCareCallTheme.colors.white
+                        else MediCareCallTheme.colors.gray5,
+                        modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
                     )
                 }
                 Spacer(modifier = Modifier.width(8.dp)) // 버튼 간격
@@ -141,6 +160,11 @@ fun LoginSeniorMedInfoScreen(
             scrollState,
             { healthIssueList.add(it) }
         )
-        CTAButton(CTAButtonType.GREEN, "다음", {navController.navigate(Route.SetCall.route)}, Modifier.padding(top = 30.dp, bottom = 20.dp))
+        CTAButton(
+            CTAButtonType.GREEN,
+            "다음",
+            { navController.navigate(Route.SetCall.route) },
+            Modifier.padding(top = 30.dp, bottom = 20.dp)
+        )
     }
 }

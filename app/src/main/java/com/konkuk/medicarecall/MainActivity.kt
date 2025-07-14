@@ -1,11 +1,15 @@
 package com.konkuk.medicarecall
 
+import android.annotation.SuppressLint
 import android.os.Build
 import android.os.Bundle
+import android.view.View
+import android.view.WindowInsetsController
 import androidx.activity.ComponentActivity
 import androidx.activity.compose.setContent
 import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
@@ -38,10 +42,21 @@ import com.konkuk.medicarecall.ui.settings.screen.PersonalDetailScreen
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 class MainActivity : ComponentActivity() {
+    @SuppressLint("UnusedMaterial3ScaffoldPaddingParameter")
     @RequiresApi(Build.VERSION_CODES.Q)
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-       enableEdgeToEdge()
+        enableEdgeToEdge()
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
+            window.insetsController?.setSystemBarsAppearance(
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
+                WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS
+            )
+        } else {
+            @Suppress("DEPRECATION")
+            window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_STATUS_BAR
+        }
+
         setContent {
             MediCareCallTheme {
                 val navController = rememberNavController()
@@ -79,8 +94,7 @@ class MainActivity : ComponentActivity() {
 
 
                 Scaffold(
-                    modifier = Modifier
-                        .systemBarsPadding(),
+                    modifier = Modifier.background(MediCareCallTheme.colors.bg),
                     contentWindowInsets = WindowInsets.safeDrawing,
                     bottomBar = {
                         if (currentRoute in bottomBarRoutes)
@@ -136,13 +150,13 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                     }
-                ) { innerPadding ->
+                ) {
                     NavGraph(
                         navController = navController,
                         loginViewModel = loginViewModel,
                         loginSeniorViewModel = loginSeniorViewModel,
-                        modifier = Modifier
-                            .padding(innerPadding)
+//                        modifier = Modifier
+//                            .padding(innerPadding)
                     )
 
                 }

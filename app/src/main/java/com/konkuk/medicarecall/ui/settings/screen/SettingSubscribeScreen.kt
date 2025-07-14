@@ -97,11 +97,11 @@ fun SettingSubscribeScreen(modifier: Modifier = Modifier, onBack : () -> Unit, n
                 modifier = Modifier
                     .fillMaxWidth()
                     .height(50.dp)
-                    .clip(RoundedCornerShape(14.dp))
                     .figmaShadow(
                         group = MediCareCallTheme.shadow.shadow03,
                         cornerRadius = 14.dp
                     )
+                    .clip(RoundedCornerShape(14.dp))
                     .background(color = Color.White)
                     .clickable{navController.navigate(route = Route.SubscribeDetail.route)}
                     .padding(start = 20.dp)

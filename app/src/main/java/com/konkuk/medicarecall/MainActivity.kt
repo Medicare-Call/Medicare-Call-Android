@@ -33,6 +33,7 @@ import com.konkuk.medicarecall.navigation.BottomNavItem
 import com.konkuk.medicarecall.navigation.NavGraph
 import com.konkuk.medicarecall.ui.login_care_call.screen.SetCallScreen
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
+import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.settings.screen.PersonalDetailScreen
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 

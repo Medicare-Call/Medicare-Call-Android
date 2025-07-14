@@ -64,8 +64,8 @@ fun PersonalInfoScreen(onBack : () -> Unit ={},navController : NavHostController
                     )
                     .clip(RoundedCornerShape(14.dp))
                     .background(color = Color.White)
-                    .padding(start = 20.dp)
                     .clickable {} // 클릭 이벤트 추가
+                    .padding(start = 20.dp)
             ) {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_plus),

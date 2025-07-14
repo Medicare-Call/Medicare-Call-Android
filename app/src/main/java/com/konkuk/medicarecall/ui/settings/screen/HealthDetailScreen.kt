@@ -53,7 +53,8 @@ fun HealthDetailScreen(onBack : () -> Unit ={}, navController : NavHostControlle
         )
         Column(modifier = modifier
             .fillMaxWidth()
-            .padding(20.dp)
+            .padding(horizontal = 20.dp)
+            .padding(top = 20.dp)
             .verticalScroll(rememberScrollState())
             ,
         ) {
@@ -89,7 +90,7 @@ fun HealthDetailScreen(onBack : () -> Unit ={}, navController : NavHostControlle
             CTAButton(
                 type = CTAButtonType.GREEN,
                 text = "확인",
-                onClick = {onBack},
+                onClick = {onBack()},
                 modifier = modifier.height(50.dp),
             )
         }

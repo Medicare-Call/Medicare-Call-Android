@@ -166,7 +166,7 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={}, 
                         CTAButtonType.DISABLED
                     },
                     text = "확인",
-                    onClick = {navController.navigate(Route.Settings.route)},
+                    onClick = {onBack()},
                     modifier = modifier.height(50.dp),
                 )
 
@@ -178,7 +178,7 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={}, 
                 onDelete = {
                     showDeleteDialog = false
                     // TODO : 삭제 동작 추가
-                    navController.navigate(Route.Settings.route) // 삭제 후 설정 화면으로 이동
+                    onBack() // 삭제 후 설정 화면으로 이동
                 }
             )
         }

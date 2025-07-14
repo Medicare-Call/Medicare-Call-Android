@@ -97,7 +97,7 @@ fun MyDetailScreen(onBack: () -> Unit = {},navController: NavHostController,modi
             CTAButton(
                 type = if (name.isNotEmpty() && birth.isNotEmpty()) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                 text = "확인",
-                onClick = { navController.navigate(Route.Settings.route) }
+                onClick = { onBack() }
             )
         }
     }

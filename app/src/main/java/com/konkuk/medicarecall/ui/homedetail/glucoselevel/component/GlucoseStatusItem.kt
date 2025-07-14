@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.homedetail.glucoselevel.component
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -23,7 +24,8 @@ fun GlucoseStatusItem(
 ) {
 
     Row(
-        modifier = Modifier,
+        modifier = Modifier
+            .background(Color.White),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.spacedBy(18.dp)
     ) {

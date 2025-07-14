@@ -211,7 +211,7 @@ fun GlucoseDetail(
                                 Text(
                                     text = "$averageValue",
                                     style = MediCareCallTheme.typography.SB_22,
-                                    color = MediCareCallTheme.colors.gray6,
+                                    color = MediCareCallTheme.colors.gray8,
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(
@@ -257,7 +257,7 @@ fun GlucoseDetail(
                                 Text(
                                     text = "$recentValue",
                                     style = MediCareCallTheme.typography.SB_22,
-                                    color = MediCareCallTheme.colors.gray6,
+                                    color = MediCareCallTheme.colors.gray8,
                                 )
                                 Spacer(modifier = Modifier.width(4.dp))
                                 Text(

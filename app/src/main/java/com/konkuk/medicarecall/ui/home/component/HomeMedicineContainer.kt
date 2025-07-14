@@ -88,6 +88,8 @@ fun HomeMedicineContainer(
                     Text(
                         "0/5",
                         style = MediCareCallTheme.typography.SB_22,
+                        color = MediCareCallTheme.colors.gray8,
+
                     )
 
 
@@ -114,6 +116,7 @@ fun HomeMedicineContainer(
                 Text(
                     "당뇨약",
                     style = MediCareCallTheme.typography.R_16,
+                    color = MediCareCallTheme.colors.gray8,
                 )
 
                 Row(
@@ -123,6 +126,7 @@ fun HomeMedicineContainer(
                     Text(
                         "0/3",
                         style = MediCareCallTheme.typography.SB_22,
+                        color = MediCareCallTheme.colors.gray8,
                     )
 
 
@@ -164,6 +168,7 @@ fun HomeMedicineContainer(
                 Text(
                     "혈압약",
                     style = MediCareCallTheme.typography.R_16,
+                    color = MediCareCallTheme.colors.gray8,
                 )
 
                 Row(
@@ -173,6 +178,7 @@ fun HomeMedicineContainer(
                     Text(
                         "0/2",
                         style = MediCareCallTheme.typography.SB_22,
+                        color = MediCareCallTheme.colors.gray8,
                     )
 
 

@@ -59,8 +59,8 @@ fun WeeklyGlucoseCard(
 
                 Text(
                     text = "혈당",
-                    style = MediCareCallTheme.typography.SB_18,
-                    color = MediCareCallTheme.colors.gray8,
+                    style = MediCareCallTheme.typography.R_15,
+                    color = MediCareCallTheme.colors.gray5,
                 )
 
             }

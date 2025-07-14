@@ -128,7 +128,6 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
                     medsByPeriod[p]?.add(inputText.trim())
                 }
                 inputText = "" // 입력 필드 초기화
-                selectedPeriods.value = emptySet()
             }
         }
         })

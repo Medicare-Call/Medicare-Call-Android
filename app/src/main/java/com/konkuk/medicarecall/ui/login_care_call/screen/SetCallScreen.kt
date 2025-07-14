@@ -162,15 +162,16 @@ fun SetCallScreen(
                 }
             )
             Spacer(modifier = modifier.height(20.dp))
-            TimeSettingItem(
-                category = "2차",
-                timeType = TimeSettingType.SECOND,
-                timeText = secondTime?.toDisplayString(),
-                modifier = Modifier.clickable {
-                    editingSlot = TimeSettingType.SECOND
-                    showBottomSheet = true
-                }
-            ) // 여기 없앨 수도 있음
+
+//            TimeSettingItem(
+//                category = "2차",
+//                timeType = TimeSettingType.SECOND,
+//                timeText = secondTime?.toDisplayString(),
+//                modifier = Modifier.clickable {
+//                    editingSlot = TimeSettingType.SECOND
+//                    showBottomSheet = true
+//                }
+//            ) // 여기 없앨 수도 있음
             Spacer(modifier = modifier.height(30.dp))
 
             // 안내 사항

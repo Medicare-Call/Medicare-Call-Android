@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -42,12 +44,7 @@ fun WeeklySummaryCard(
     ) {
         Column(
             modifier = Modifier
-                .padding(
-                    start = 20.dp,
-                    end = 10.dp,
-                    top = 20.dp,
-                    bottom = 20.dp
-                )
+                .padding(20.dp)
         ) {
             //1) Title: 주간 요약 통계
             Row(
@@ -81,7 +78,8 @@ fun WeeklySummaryCard(
 
                 // 식사율
                 Column(
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .width(50.dp),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
@@ -114,7 +112,8 @@ fun WeeklySummaryCard(
 
                 // 복약률
                 Column(
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .width(50.dp),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
 
@@ -148,7 +147,8 @@ fun WeeklySummaryCard(
 
                 // 건강징후
                 Column(
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .width(50.dp),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
 
@@ -182,7 +182,8 @@ fun WeeklySummaryCard(
 
                 // 미응답
                 Column(
-                    modifier = Modifier,
+                    modifier = Modifier
+                        .width(50.dp),
                     verticalArrangement = Arrangement.SpaceBetween
                 ) {
 

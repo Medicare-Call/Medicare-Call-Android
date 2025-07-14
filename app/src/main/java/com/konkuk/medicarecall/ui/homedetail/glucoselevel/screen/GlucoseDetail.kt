@@ -13,7 +13,9 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Text
+import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -233,6 +235,13 @@ fun GlucoseDetail(
                                 .background(MediCareCallTheme.colors.gray2)
                         )
 
+
+                        /*VerticalDivider(
+                            modifier = Modifier.fillMaxWidth(),
+                            color = MediCareCallTheme.colors.gray2,
+                            thickness = 1.dp
+                        )*/
+
                         Spacer(modifier = Modifier.width(40.dp))
 
                         Column(
@@ -392,19 +401,12 @@ fun GlucoseDetail(
                             )
                         Spacer(modifier = Modifier.height(4.dp))
 
-                        GlucoseStatusChip(value = averageValue)
 
                         Spacer(modifier = Modifier.height(4.dp))
 
                         Row(
                             verticalAlignment = Alignment.Bottom
                         ) {
-                            Text(
-                                text = "$averageValue",
-                                style = MediCareCallTheme.typography.SB_22,
-                                color = MediCareCallTheme.colors.gray6,
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = "mg/dL",
                                 style = MediCareCallTheme.typography.R_16,
@@ -438,24 +440,16 @@ fun GlucoseDetail(
                             )
                         Spacer(modifier = Modifier.height(4.dp))
 
-                        GlucoseStatusChip(value = recentValue)
 
 
                         Spacer(modifier = Modifier.height(4.dp))
                         Row(
                             verticalAlignment = Alignment.Bottom
                         ) {
-                            Text(
-                                text = "$recentValue",
-                                style = MediCareCallTheme.typography.SB_22,
-                                color = MediCareCallTheme.colors.gray6,
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
+                             Text(
                                 text = "mg/dL",
                                 style = MediCareCallTheme.typography.R_16,
                                 color = MediCareCallTheme.colors.gray8,
-
                                 )
                         }
 

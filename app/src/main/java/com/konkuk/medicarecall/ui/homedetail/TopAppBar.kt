@@ -54,7 +54,8 @@ fun TopAppBar(
         ) {
             Text(
                 text = title,
-                style = MediCareCallTheme.typography.SB_20
+                style = MediCareCallTheme.typography.SB_20,
+                color = MediCareCallTheme.colors.black
             )
         }
 

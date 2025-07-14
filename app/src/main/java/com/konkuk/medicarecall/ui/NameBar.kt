@@ -56,14 +56,16 @@ fun NameBar(
 
             Text(
                 text = "김옥자",
-                style = MediCareCallTheme.typography.SB_24
+                style = MediCareCallTheme.typography.SB_24,
+                color = MediCareCallTheme.colors.black
             )
 
             Spacer(modifier = Modifier.width(4.dp))
 
             Text(
                 text = "님",
-                style = MediCareCallTheme.typography.R_18
+                style = MediCareCallTheme.typography.R_18,
+                color = MediCareCallTheme.colors.black
             )
 
         }

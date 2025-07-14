@@ -39,7 +39,7 @@ fun GlucoseStatusChip(
     ) {
         Text(
             text = statusText,
-            style = MediCareCallTheme.typography.SB_18,
+            style = MediCareCallTheme.typography.R_14,
             color = Color.White
         )
     }

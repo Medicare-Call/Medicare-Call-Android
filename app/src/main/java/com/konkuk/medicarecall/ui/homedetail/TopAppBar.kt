@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.homedetail
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -13,11 +14,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import com.konkuk.medicarecall.ui.theme.White
 
 
 @Composable
@@ -29,7 +32,8 @@ fun TopAppBar(
     Row(
         modifier = modifier
             .fillMaxWidth()
-            .padding(vertical = 11.dp, horizontal = 10.dp),
+            .padding(vertical = 11.dp, horizontal = 10.dp)
+            .background(Color.White),
         verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
 
@@ -72,5 +76,4 @@ private fun PreviewTopAppBar() {
     TopAppBar(
         title = "식사"
         )
-
 }

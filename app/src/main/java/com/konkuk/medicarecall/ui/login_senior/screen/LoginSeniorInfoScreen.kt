@@ -127,7 +127,9 @@ fun LoginSeniorInfoScreen(
                     .toList(),
                 placeHolder = "관계 선택하기",
                 category = "어르신과의 관계",
-                scrollState
+                scrollState,
+                { loginSeniorViewModel.onRelationshipChanged(it) },
+                loginSeniorViewModel.relationship
             )
 
 
@@ -138,7 +140,9 @@ fun LoginSeniorInfoScreen(
                     .toList(),
                 placeHolder = "거주방식을 선택해주세요",
                 category = "어르신 거주 방식",
-                scrollState
+                scrollState,
+                { loginSeniorViewModel.onLivingTypeChanged(it) },
+                loginSeniorViewModel.livingType
             )
 
             Spacer(Modifier.height(20.dp))

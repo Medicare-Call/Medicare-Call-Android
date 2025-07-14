@@ -5,12 +5,12 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.konkuk.medicarecall.ui.model.RelationshipType
+import com.konkuk.medicarecall.ui.model.SeniorLivingType
 
 class LoginSeniorViewModel : ViewModel() {
 
     // 어르신 정보 화면
-
-
     var name by mutableStateOf("")
         private set
     var dateOfBirth by mutableStateOf("")
@@ -19,6 +19,12 @@ class LoginSeniorViewModel : ViewModel() {
     var isMale by mutableStateOf<Boolean?>(null)
         private set
     var phoneNumber by mutableStateOf("")
+        private set
+
+    var relationship by mutableStateOf("")
+        private set
+
+    var livingType by mutableStateOf("")
         private set
 
     fun onPhoneNumberChanged(new: String) {
@@ -35,6 +41,14 @@ class LoginSeniorViewModel : ViewModel() {
 
     fun onGenderChanged(new: Boolean?) {
         isMale = new
+    }
+
+    fun onRelationshipChanged(new: String) {
+        relationship = new
+    }
+
+    fun onLivingTypeChanged(new: String) {
+        livingType = new
     }
 
     // 건강정보 화면

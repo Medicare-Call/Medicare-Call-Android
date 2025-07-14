@@ -63,7 +63,7 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
         MedicationTime.entries.forEach { period ->
             val list = medsByPeriod[period]!!
             if (list.isNotEmpty()) {
-                Spacer(modifier = modifier.height(10.dp))
+                Spacer(modifier = modifier.height(20.dp))
                 Text(
                     period.time,
                     style = MediCareCallTheme.typography.R_15,
@@ -88,7 +88,7 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
             }
         }
         Spacer(modifier = Modifier.height(if (hasAnyMeds) 20.dp else 10.dp))
-        Row(modifier = modifier.fillMaxWidth().padding(bottom = 20.dp)) {
+        Row(modifier = modifier.fillMaxWidth().padding(bottom = 16.dp)) {
             MedicationTime.entries.forEach { period ->
                 val selected = period in selectedPeriods.value
                 OutlinedButton(

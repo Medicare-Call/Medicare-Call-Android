@@ -33,12 +33,10 @@ fun IllnessInfoItem(modifier: Modifier = Modifier) {
         ) {
         Text(text = "질환 정보", style = MediCareCallTheme.typography.M_17, color = MediCareCallTheme.colors.gray7)
         if (illnessList.value.isNotEmpty()) {
-            Spacer(modifier = modifier.height(10.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
-                    .padding(bottom = 16.dp, top = 10.dp)
             ) {
                 illnessList.value.forEach { illness ->
                     ChipItem(

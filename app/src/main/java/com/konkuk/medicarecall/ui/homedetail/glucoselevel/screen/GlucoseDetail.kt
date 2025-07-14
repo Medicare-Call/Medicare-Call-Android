@@ -401,19 +401,12 @@ fun GlucoseDetail(
                             )
                         Spacer(modifier = Modifier.height(4.dp))
 
-                        GlucoseStatusChip(value = averageValue)
 
                         Spacer(modifier = Modifier.height(4.dp))
 
                         Row(
                             verticalAlignment = Alignment.Bottom
                         ) {
-                            Text(
-                                text = "$averageValue",
-                                style = MediCareCallTheme.typography.SB_22,
-                                color = MediCareCallTheme.colors.gray6,
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
                             Text(
                                 text = "mg/dL",
                                 style = MediCareCallTheme.typography.R_16,
@@ -447,24 +440,16 @@ fun GlucoseDetail(
                             )
                         Spacer(modifier = Modifier.height(4.dp))
 
-                        GlucoseStatusChip(value = recentValue)
 
 
                         Spacer(modifier = Modifier.height(4.dp))
                         Row(
                             verticalAlignment = Alignment.Bottom
                         ) {
-                            Text(
-                                text = "$recentValue",
-                                style = MediCareCallTheme.typography.SB_22,
-                                color = MediCareCallTheme.colors.gray6,
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
+                             Text(
                                 text = "mg/dL",
                                 style = MediCareCallTheme.typography.R_16,
                                 color = MediCareCallTheme.colors.gray8,
-
                                 )
                         }
 

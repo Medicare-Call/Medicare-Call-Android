@@ -158,7 +158,7 @@ fun LoginSeniorMedInfoScreen(
 
 
         DefaultDropdown(
-            HealthIssueType.values().map { it.displayName }.toList(),
+            HealthIssueType.entries.map { it.displayName }.toList(),
             "특이사항 선택하기",
             null,
             scrollState,

@@ -123,7 +123,7 @@ fun LoginSeniorInfoScreen(
 
 
             DefaultDropdown(
-                enumList = RelationshipType.values().map { it.displayName }
+                enumList = RelationshipType.entries.map { it.displayName }
                     .toList(),
                 placeHolder = "관계 선택하기",
                 category = "어르신과의 관계",
@@ -134,7 +134,7 @@ fun LoginSeniorInfoScreen(
             Spacer(Modifier.height(20.dp))
 
             DefaultDropdown(
-                enumList = SeniorLivingType.values().map { it.displayName }
+                enumList = SeniorLivingType.entries.map { it.displayName }
                     .toList(),
                 placeHolder = "거주방식을 선택해주세요",
                 category = "어르신 거주 방식",

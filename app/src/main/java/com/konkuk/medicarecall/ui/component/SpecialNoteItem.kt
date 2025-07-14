@@ -50,7 +50,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun <T> SpecialNoteItem(
-    enumList: List<T>, // Enum.values().map { it. displayName }.toList() 전달
+    enumList: List<T>, // Enum.entries.map { it. displayName }.toList() 전달
 noteList: List<String>,
     onAddNote: (String) -> Unit,
     onRemoveNote: (String) -> Unit,

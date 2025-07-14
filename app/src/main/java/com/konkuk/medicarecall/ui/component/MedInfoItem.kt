@@ -51,7 +51,7 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
     // 주기별 복약 리스트
     val medsByPeriod = remember {
         mutableStateMapOf<MedicationTime, SnapshotStateList<String>>().apply {
-            MedicationTime.values().forEach { period ->
+            MedicationTime.entries.forEach { period ->
                 // 각 주기별로 'mutableStateListOf()'를 할당
                 this[period] = mutableStateListOf()
             }

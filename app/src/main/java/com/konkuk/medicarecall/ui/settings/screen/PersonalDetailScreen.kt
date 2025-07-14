@@ -46,7 +46,11 @@ import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
 import com.konkuk.medicarecall.ui.util.PhoneNumberVisualTransformation
 
 @Composable
-fun PersonalDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={}, navController : NavHostController) {
+fun PersonalDetailScreen(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit = {},
+    navController: NavHostController
+) {
     var isMale by remember { mutableStateOf<Boolean?>(false) }
     val scrollState = rememberScrollState()
     var name by remember { mutableStateOf("김옥자") }
@@ -55,16 +59,18 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={}, 
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MediCareCallTheme.colors.bg)
+    ) {
         SettingsTopAppBar(
             title = "어르신 건강정보 설정",
             leftIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "setting back",
-                    modifier = modifier.clickable{onBack()},
+                    modifier = modifier.clickable { onBack() },
                     tint = MediCareCallTheme.colors.black
                 )
             },
@@ -109,7 +115,11 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={}, 
                     )
                 }
                 Column() {
-                    Text("성별", style = MediCareCallTheme.typography.M_17, color = MediCareCallTheme.colors.gray7)
+                    Text(
+                        "성별",
+                        style = MediCareCallTheme.typography.M_17,
+                        color = MediCareCallTheme.colors.gray7
+                    )
                     Spacer(modifier = modifier.height(10.dp))
                     GenderToggleButton(
                         isMale = isMale,
@@ -121,24 +131,26 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={}, 
                     )
                 }
                 Column {
-                DefaultTextField(
-                    value = phoneNum,
-                    onValueChange = { phoneNum = it },
-                    placeHolder = "휴대폰 번호",
-                    keyboardType = KeyboardType.Number,
-                    visualTransformation = PhoneNumberVisualTransformation()
-                )}
+                    DefaultTextField(
+                        value = phoneNum,
+                        onValueChange = { phoneNum = it },
+                        placeHolder = "휴대폰 번호",
+                        keyboardType = KeyboardType.Number,
+                        visualTransformation = PhoneNumberVisualTransformation()
+                    )
+                }
                 Column() {
-                DefaultDropdown(
-                    enumList = RelationshipType.values().map { it.displayName }
-                        .toList(),
-                    placeHolder = "관계 선택하기",
-                    category = "어르신과의 관계",
-                    scrollState
-                )}
+                    DefaultDropdown(
+                        enumList = RelationshipType.entries.map { it.displayName }
+                            .toList(),
+                        placeHolder = "관계 선택하기",
+                        category = "어르신과의 관계",
+                        scrollState
+                    )
+                }
                 Column {
                     DefaultDropdown(
-                        enumList = SeniorLivingType.values().map { it.displayName }
+                        enumList = SeniorLivingType.entries.map { it.displayName }
                             .toList(),
                         placeHolder = "거주방식을 선택해주세요",
                         category = "어르신 거주 방식",
@@ -166,7 +178,7 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={}, 
                         CTAButtonType.DISABLED
                     },
                     text = "확인",
-                    onClick = {onBack()},
+                    onClick = { onBack() },
                     modifier = modifier.height(50.dp),
                 )
 
@@ -174,7 +186,7 @@ fun PersonalDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={}, 
         }
         if (showDeleteDialog) {
             DeleteConfirmDialog(
-                onDismiss = {showDeleteDialog = false},
+                onDismiss = { showDeleteDialog = false },
                 onDelete = {
                     showDeleteDialog = false
                     // TODO : 삭제 동작 추가

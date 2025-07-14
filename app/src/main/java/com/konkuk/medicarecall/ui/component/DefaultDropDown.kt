@@ -41,7 +41,7 @@ import kotlinx.coroutines.delay
 
 @Composable
 fun <T> DefaultDropdown(
-    enumList: List<T>, // Enum.values().map { it. displayName }.toList() 전달
+    enumList: List<T>, // Enum.entries.map { it. displayName }.toList() 전달
     placeHolder: String,
     category: String? = null,
     scrollState: ScrollState,

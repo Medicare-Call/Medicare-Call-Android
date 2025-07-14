@@ -19,6 +19,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.NameBar
 import com.konkuk.medicarecall.ui.statistics.WeeklyGlucoseUiState
 import com.konkuk.medicarecall.ui.statistics.WeeklyMealUiState
@@ -92,7 +93,7 @@ fun StatisticsScreen(modifier: Modifier = Modifier, navController: NavHostContro
 
                 Row(
                     modifier = Modifier
-                    .fillMaxWidth()
+                        .fillMaxWidth()
                         .height(IntrinsicSize.Min),
                     horizontalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
@@ -132,4 +133,17 @@ fun StatisticsScreen(modifier: Modifier = Modifier, navController: NavHostContro
         }
 
     }
+}
+
+
+@Preview
+@Composable
+fun PreviewStatisticsScreen() {
+
+    MediCareCallTheme {
+        StatisticsScreen(
+            navController = rememberNavController()
+        )
+    }
+
 }

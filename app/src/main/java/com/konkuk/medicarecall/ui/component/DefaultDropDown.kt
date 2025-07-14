@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.component
 
+import android.R.attr.category
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -45,12 +46,13 @@ fun <T> DefaultDropdown(
     category: String? = null,
     scrollState: ScrollState,
     onOptionSelect: (String) -> Unit = {},
+    value: String = "",
     modifier: Modifier = Modifier
 ) {
 
 
     var showDropdown by remember { mutableStateOf(false) }
-    var selectedOption by remember { mutableStateOf<String?>(null) }
+    var selectedOption by remember { mutableStateOf("") }
 
     LaunchedEffect(showDropdown) {
         if (showDropdown) {
@@ -70,7 +72,7 @@ fun <T> DefaultDropdown(
 
     Column {
         OutlinedTextField(
-            value = selectedOption ?: "",
+            value = value,
             onValueChange = { },
             enabled = false,
             modifier = Modifier
@@ -151,7 +153,7 @@ fun <T> DefaultDropdown(
                                 }
                                 .clickable(onClick = {
                                     selectedOption = item.toString()
-                                    onOptionSelect(selectedOption!!)
+                                    onOptionSelect(selectedOption)
                                     showDropdown = false
                                 }),
                         ) {

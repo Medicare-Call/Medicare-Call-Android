@@ -46,12 +46,12 @@ fun StatisticsScreen(modifier: Modifier = Modifier, navController: NavHostContro
     ) {
         NameBar(navController = navController)
 
-        Spacer(modifier = Modifier.height(44.dp))
+        Spacer(modifier = Modifier.height(20.dp))
 
         Column(
             modifier = Modifier
                 .verticalScroll(rememberScrollState())
-                .padding(horizontal = 20.dp)
+                .padding(horizontal = 20.dp, vertical = 24.dp)
         ) {
             WeekendBar(title = "이번주")
             Spacer(modifier = Modifier.height(20.dp))
@@ -129,14 +129,14 @@ fun StatisticsScreen(modifier: Modifier = Modifier, navController: NavHostContro
 
             }
 
-            Spacer(modifier = Modifier.height(52.dp))
+            Spacer(modifier = Modifier.height(28.dp))
         }
 
     }
 }
 
 
-@Preview
+@Preview(showBackground = true, heightDp = 1200)
 @Composable
 fun PreviewStatisticsScreen() {
 

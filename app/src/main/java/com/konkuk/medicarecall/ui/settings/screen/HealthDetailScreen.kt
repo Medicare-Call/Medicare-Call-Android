@@ -90,7 +90,7 @@ fun HealthDetailScreen(onBack : () -> Unit ={}, navController : NavHostControlle
             CTAButton(
                 type = CTAButtonType.GREEN,
                 text = "확인",
-                onClick = {onBack},
+                onClick = {onBack()},
                 modifier = modifier.height(50.dp),
             )
         }

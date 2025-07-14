@@ -162,16 +162,17 @@ fun SetCallScreen(
                 }
             )
             Spacer(modifier = modifier.height(20.dp))
-
-//            TimeSettingItem(
-//                category = "2차",
-//                timeType = TimeSettingType.SECOND,
-//                timeText = secondTime?.toDisplayString(),
-//                modifier = Modifier.clickable {
-//                    editingSlot = TimeSettingType.SECOND
-//                    showBottomSheet = true
-//                }
-//            ) // 여기 없앨 수도 있음
+            if (secondTime != null) {
+            TimeSettingItem(
+                category = "2차",
+                timeType = TimeSettingType.SECOND,
+                timeText = secondTime?.toDisplayString(),
+                modifier = Modifier.clickable {
+                    editingSlot = TimeSettingType.SECOND
+                    showBottomSheet = true
+                }
+            ) // 여기 없앨 수도 있음
+                }
             Spacer(modifier = modifier.height(30.dp))
 
             // 안내 사항
@@ -227,8 +228,8 @@ fun SetCallScreen(
                     initialFirstHour   = firstTime?.second ?: 12,
                     initialFirstMinute = firstTime?.third  ?: 0,
                     initialSecondAmPm   = secondTime?.first  ?: 0,
-                    initialSecondHour   = secondTime?.second ?: 6,
-                    initialSecondMinute = secondTime?.third  ?: 30,
+                    initialSecondHour   = secondTime?.second ?: 12,
+                    initialSecondMinute = secondTime?.third  ?: 0,
                     onDismiss = { showBottomSheet = false },
                     onConfirm = { fAm, fH, fM, sAm, sH, sM ->
                         firstTime  = Triple(fAm,  fH,  fM)

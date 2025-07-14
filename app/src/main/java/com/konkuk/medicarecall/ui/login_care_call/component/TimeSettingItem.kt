@@ -34,11 +34,13 @@ fun TimeSettingItem(
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        Text(
-            text = category,
-            style = MediCareCallTheme.typography.M_17,
-            color = MediCareCallTheme.colors.gray5
-        )
+        if (timeText != null) {
+            Text(
+                text = category,
+                style = MediCareCallTheme.typography.M_17,
+                color = MediCareCallTheme.colors.gray5
+            )
+        }
         Spacer(modifier = modifier.height(10.dp))
         Box(
             modifier = modifier

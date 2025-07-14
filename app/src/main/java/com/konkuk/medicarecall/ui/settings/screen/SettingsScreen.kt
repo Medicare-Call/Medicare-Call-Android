@@ -13,6 +13,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -53,7 +54,8 @@ fun SettingsScreen(
         SettingsTopAppBar(title = "설정") // 상단 TopAppBar,
         Spacer(modifier = Modifier.height(20.dp))
         Column(
-        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp).padding(bottom = 20.dp).verticalScroll(rememberScrollState())
+        modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp).padding(bottom = 20.dp).verticalScroll(rememberScrollState()).systemBarsPadding()
+            // .systemBarsPadding() 추가
     ) {
 
         // 프로필

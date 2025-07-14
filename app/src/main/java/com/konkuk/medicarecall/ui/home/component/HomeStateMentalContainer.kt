@@ -87,6 +87,7 @@ fun HomeStateMentalContainer(
                     Text(
                         text = "좋음",
                         style = MediCareCallTheme.typography.SB_22,
+                        color = MediCareCallTheme.colors.gray8,
                     )
 
 

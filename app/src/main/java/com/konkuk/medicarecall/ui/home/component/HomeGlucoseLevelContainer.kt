@@ -87,6 +87,7 @@ fun HomeGlucoseLevelContainer(
                     Text(
                         text = "$glucoseLevel",
                         style = MediCareCallTheme.typography.SB_22,
+                        color = MediCareCallTheme.colors.gray8,
                     )
 
                     Spacer(modifier = Modifier.width(4.dp))
@@ -94,6 +95,7 @@ fun HomeGlucoseLevelContainer(
                     Text(
                         text = "mg/dL",
                         style = MediCareCallTheme.typography.R_16,
+                        color = MediCareCallTheme.colors.gray8,
                     )
 
 

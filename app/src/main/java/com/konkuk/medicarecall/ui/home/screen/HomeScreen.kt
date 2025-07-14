@@ -1,6 +1,6 @@
 package com.konkuk.medicarecall.ui.home.screen
 
-import android.R.attr.onClick
+
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -43,7 +43,6 @@ import com.konkuk.medicarecall.ui.home.component.HomeSleepContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateHealthContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateMentalContainer
 import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
-import com.konkuk.medicarecall.ui.homedetail.statehealth.HealthUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
 
@@ -63,6 +62,7 @@ fun HomeScreen(
     Column(
         modifier = Modifier
             .fillMaxSize()
+            .background(Color.White)
 
     ) {
 
@@ -108,6 +108,7 @@ fun HomeScreen(
                         Text(
                             text = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요.",
                             style = MediCareCallTheme.typography.R_16,
+                            color = MediCareCallTheme.colors.gray8,
                             modifier = Modifier
                                 .padding(8.dp)
                                 .background(Color.White)

@@ -84,7 +84,8 @@ fun SleepDetailCard(
 
                         Text(
                             text = "${sleeps.totalSleepMinutes}",
-                            style = MediCareCallTheme.typography.SB_22
+                            style = MediCareCallTheme.typography.SB_22,
+                            color = MediCareCallTheme.colors.gray8,
                         )
 
                         Spacer(modifier = Modifier.width(4.dp))
@@ -126,6 +127,7 @@ fun SleepDetailCard(
                         Text(
                             text = sleeps.bedTime,
                             style = MediCareCallTheme.typography.SB_16,
+                            color = MediCareCallTheme.colors.gray8,
                         )
                     }
                 }

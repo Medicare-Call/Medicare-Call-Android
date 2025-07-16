@@ -142,7 +142,8 @@ fun PreviewStatisticsScreen() {
 
     MediCareCallTheme {
         StatisticsScreen(
-            navController = rememberNavController()
+            navController = rememberNavController(),
+
         )
     }
 

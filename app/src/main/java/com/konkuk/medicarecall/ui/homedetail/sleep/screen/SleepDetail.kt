@@ -31,7 +31,7 @@ import com.konkuk.medicarecall.ui.homedetail.sleep.component.SleepDetailCard
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun SleepDetail(
-    navController: NavController,
+    navController: NavHostController,
     sleeps: SleepUiState
 
 ) {
@@ -53,7 +53,8 @@ fun SleepDetail(
 
 
             TopAppBar(
-                title = "수면"
+                title = "수면",
+                navController = navController
             )
 
             Column(

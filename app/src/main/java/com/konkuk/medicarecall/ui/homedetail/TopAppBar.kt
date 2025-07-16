@@ -1,6 +1,8 @@
 package com.konkuk.medicarecall.ui.homedetail
 
+import android.R.attr.contentDescription
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
@@ -18,6 +20,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.White
@@ -27,8 +31,9 @@ import com.konkuk.medicarecall.ui.theme.White
 fun TopAppBar(
     modifier: Modifier = Modifier,
     title: String,
+    navController: NavHostController
 
-    ) {
+) {
     Row(
         modifier = modifier
             .fillMaxWidth()
@@ -42,7 +47,10 @@ fun TopAppBar(
         // 뒤로 가기+ 상세 화면 제목
         Icon(
             modifier = Modifier
-                .size(24.dp),
+                .size(24.dp)
+                .clickable {
+                    navController.popBackStack()
+                },
             painter = painterResource(id = R.drawable.ic_arrow_big_back),
             contentDescription = "big arrow back",
         )
@@ -75,6 +83,7 @@ fun TopAppBar(
 @Composable
 private fun PreviewTopAppBar() {
     TopAppBar(
-        title = "식사"
-        )
+        title = "식사",
+        navController = rememberNavController()
+    )
 }

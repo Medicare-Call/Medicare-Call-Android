@@ -75,6 +75,8 @@ fun NavGraph(
     ) {
         // 메인 내비게이션
         navigation(startDestination = Route.Home.route, route = "main") {
+
+
             // 홈
             composable(route = Route.Home.route) {
                 HomeScreen(
@@ -90,7 +92,7 @@ fun NavGraph(
 
             // 홈 상세 화면_식사 화면
             composable(route = Route.MealDetail.route) {
-                MealDetail()
+                MealDetail( navController = navController)
             }
 
 
@@ -206,11 +208,14 @@ fun NavGraph(
             }
 
 
-
             // 통계
             composable(route = Route.Statistics.route) {
-                StatisticsScreen(navController = navController)
+                StatisticsScreen(
+                    navController = navController
+                )
             }
+
+
             // 설정
             composable(route = Route.Settings.route) {
                 SettingsScreen(
@@ -250,7 +255,7 @@ fun NavGraph(
                 )
             }
 
-            composable (
+            composable(
                 route = Route.MyDetail.route
             ) {
                 MyDetailScreen(
@@ -278,7 +283,7 @@ fun NavGraph(
                 )
             }
 
-            composable(route = Route.SettingSubscribe.route){
+            composable(route = Route.SettingSubscribe.route) {
                 SettingSubscribeScreen(
                     onBack = {
                         navController.popBackStack()
@@ -406,13 +411,6 @@ fun NavGraph(
                     navController = navController,
                 )
             }
-        }
-        composable(route = Route.HomeMealDetail.route) {
-            //HomeMealDetail(navController = navController)
-        }
-
-        composable(route = Route.HomeMedicineDetail.route) {
-            //HomeMedicineDetail()
         }
 
 

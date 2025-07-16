@@ -18,6 +18,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.homedetail.CalendarUiState
 import com.konkuk.medicarecall.ui.homedetail.MonthYearSelector
@@ -30,7 +31,7 @@ import com.konkuk.medicarecall.ui.homedetail.statemental.MentalUiState
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StateMentalDetail(
-    navController: NavController,
+    navController: NavHostController,
     mentals: MentalUiState
 ) {
 
@@ -51,7 +52,8 @@ fun StateMentalDetail(
 
 
             TopAppBar(
-                title = "심리상태 요약"
+                title = "심리상태 요약",
+                navController = navController
             )
 
             Column(

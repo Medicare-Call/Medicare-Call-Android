@@ -26,6 +26,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseGraphState
@@ -43,7 +44,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun GlucoseDetail(
 
-    navController: NavController,
+    navController: NavHostController,
     glucose: GlucoseUiState,
     graph: GlucoseGraphState
 
@@ -83,7 +84,8 @@ fun GlucoseDetail(
 
     ) {
         TopAppBar(
-            title = "혈당"
+            title = "혈당",
+            navController = navController
         )
 
         Spacer(modifier = Modifier.height(20.dp))

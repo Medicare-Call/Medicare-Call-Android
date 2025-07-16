@@ -45,7 +45,12 @@ fun AgreementItem(
             Text(
                 text,
                 color = MediCareCallTheme.colors.gray9,
-                style = MediCareCallTheme.typography.M_16
+                style = MediCareCallTheme.typography.M_16,
+                modifier = Modifier.clickable(
+                    interactionSource = null,
+                    indication = null,
+                    onClick = onCheckedChange,
+                )
             )
             Box(
                 Modifier

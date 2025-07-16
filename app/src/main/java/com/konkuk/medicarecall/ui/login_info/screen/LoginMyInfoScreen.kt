@@ -168,19 +168,12 @@ fun LoginMyInfoScreen(
                         style = MediCareCallTheme.typography.B_20,
                         modifier = modifier.padding(horizontal = 20.dp, vertical = 30.dp)
                     )
+                    var allAgreeCheckState by remember { mutableStateOf(false) }
                     Row(
                         Modifier
                             .fillMaxWidth()
-                            .padding(horizontal = 20.dp, vertical = 16.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        var allAgreeCheckState by remember { mutableStateOf(false) }
-
-                        Icon(
-                            painterResource(R.drawable.ic_check_box),
-                            contentDescription = "체크박스",
-                            tint = if (allAgreeCheckState) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray2,
-                            modifier = Modifier.clickable(
+                            .padding(horizontal = 20.dp, vertical = 16.dp)
+                            .clickable(
                                 interactionSource = null,
                                 indication = null,
                                 onClick = {
@@ -189,8 +182,16 @@ fun LoginMyInfoScreen(
                                         allAgreeCheckState
                                     }
                                 }
+                            ),
+                        verticalAlignment = Alignment.CenterVertically
+                    ) {
+
+                        Icon(
+                            painterResource(R.drawable.ic_check_box),
+                            contentDescription = "체크박스",
+                            tint = if (allAgreeCheckState) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray2,
+
                             )
-                        )
                         Spacer(Modifier.width(8.dp))
                         Text(
                             "전체 동의하기",

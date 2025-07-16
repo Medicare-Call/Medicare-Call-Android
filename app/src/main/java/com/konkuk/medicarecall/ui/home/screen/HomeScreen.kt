@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.home.screen
 
-
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
@@ -94,6 +93,12 @@ fun HomeScreen(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
 
+
+
+                    val balloonText = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요."
+                    val trimmedText = balloonText.take(40) // 글자 수 제한
+
+
                     //말풍선
                     Card(
                         modifier = Modifier
@@ -106,7 +111,7 @@ fun HomeScreen(
                     ) {
 
                         Text(
-                            text = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요.",
+                            text = trimmedText,
                             style = MediCareCallTheme.typography.R_16,
                             color = MediCareCallTheme.colors.gray8,
                             modifier = Modifier

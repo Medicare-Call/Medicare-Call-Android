@@ -27,8 +27,8 @@ fun WeeklyHealthCard(
     modifier: Modifier = Modifier
 ) {
 
-    val summaryText = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요. 전반적으로 양호하나 피곤과 호흡곤란을 호소하셨으므로 휴식과 보호자 확인이 필요해요."
-    val trimmedText = summaryText.take(100) // 글자 수 제한
+    val weeklySummaryText = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요. 전반적으로 양호하나 피곤과 호흡곤란을 호소하셨으므로 휴식과 보호자 확인이 필요해요."
+    val trimmedText = weeklySummaryText.take(100) // 글자 수 제한
 
 
     Card(

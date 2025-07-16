@@ -31,11 +31,13 @@ fun StateHealthDetailCard(
     modifier: Modifier = Modifier
 ) {
 
-//TODO: 글자 크기 배율 조정//
+    val healthSummaryText = "주요 증상으로 보아 파킨슨 병이 의심돼요. 어르신과 함께 병원에 방문해 보세요."
+    val trimmedText = healthSummaryText.take(100) // 글자 수 제한
 
     Card(
         modifier = Modifier
             .fillMaxWidth()
+            .wrapContentHeight()
             .figmaShadow(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
                 cornerRadius = 14.dp
@@ -110,7 +112,7 @@ fun StateHealthDetailCard(
 
 
                     Text(
-                        text = "증상 분석",
+                        text = trimmedText,
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray5
                     )

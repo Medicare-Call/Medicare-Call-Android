@@ -10,7 +10,14 @@ import com.konkuk.medicarecall.ui.model.SeniorLivingType
 
 class LoginSeniorViewModel : ViewModel() {
 
+
     // 어르신 정보 화면
+
+    var expandedFormIndex by mutableIntStateOf(0)
+
+
+
+
     var name by mutableStateOf("")
         private set
     var dateOfBirth by mutableStateOf("")

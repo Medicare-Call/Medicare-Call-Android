@@ -47,17 +47,17 @@ fun SeniorInputForm(
             verticalArrangement = Arrangement.Center
         ) {
             DefaultTextField(
-                value = loginSeniorViewModel.name,
-                onValueChange = { loginSeniorViewModel.onNameChanged(it) },
+                value = loginSeniorViewModel.nameList[index],
+                onValueChange = { loginSeniorViewModel.onNameChanged(index, it) },
                 category = "이름",
                 placeHolder = "이름"
             )
             Spacer(Modifier.height(20.dp))
             DefaultTextField(
-                loginSeniorViewModel.dateOfBirth,
+                loginSeniorViewModel.dateOfBirthList[index],
                 { input ->
                     val filtered = input.filter { it.isDigit() }.take(8)
-                    loginSeniorViewModel.onDOBChanged(filtered)
+                    loginSeniorViewModel.onDOBChanged(index, filtered)
                 },
                 category = "생년월일",
                 placeHolder = "YYYY / MM / DD",
@@ -72,18 +72,18 @@ fun SeniorInputForm(
                     style = MediCareCallTheme.typography.M_17
                 )
 
-                GenderToggleButton(loginSeniorViewModel.isMale) {
+                GenderToggleButton(loginSeniorViewModel.isMaleBoolList[index]) {
                     loginSeniorViewModel.onGenderChanged(
-                        it
+                        index, it
                     )
                 }
             }
             Spacer(Modifier.height(20.dp))
             DefaultTextField(
-                loginSeniorViewModel.phoneNumber,
+                loginSeniorViewModel.phoneNumberList[index],
                 { input ->
                     val filtered = input.filter { it.isDigit() }.take(11)
-                    loginSeniorViewModel.onPhoneNumberChanged(filtered)
+                    loginSeniorViewModel.onPhoneNumberChanged(index, filtered)
                 },
                 category = "휴대폰 번호",
                 placeHolder = "010-1234-5678",
@@ -99,8 +99,8 @@ fun SeniorInputForm(
                 placeHolder = "관계 선택하기",
                 category = "어르신과의 관계",
                 scrollState,
-                { loginSeniorViewModel.onRelationshipChanged(it) },
-                loginSeniorViewModel.relationship
+                { loginSeniorViewModel.onRelationshipChanged(index, it) },
+                loginSeniorViewModel.relationshipList[index]
             )
 
 
@@ -112,8 +112,8 @@ fun SeniorInputForm(
                 placeHolder = "거주방식을 선택해주세요",
                 category = "어르신 거주 방식",
                 scrollState,
-                { loginSeniorViewModel.onLivingTypeChanged(it) },
-                loginSeniorViewModel.livingType
+                { loginSeniorViewModel.onLivingTypeChanged(index, it) },
+                loginSeniorViewModel.livingTypeList[index]
             )
 
             Spacer(Modifier.height(20.dp))
@@ -139,7 +139,7 @@ fun SeniorInputForm(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        "김옥자 님",
+                        "${loginSeniorViewModel.nameList[index]} 님",
                         color = MediCareCallTheme.colors.gray8,
                         style = MediCareCallTheme.typography.SB_18
                     )
@@ -150,7 +150,7 @@ fun SeniorInputForm(
                     )
                 }
                 Text(
-                    "010-1111-1111",
+                    "${loginSeniorViewModel.phoneNumberList[index]}".replaceFirst(Regex("(\\d{3})(\\d{4})(\\d{4})"), "$1-$2-$3"),
                     color = MediCareCallTheme.colors.gray4,
                     style = MediCareCallTheme.typography.R_14
                 )

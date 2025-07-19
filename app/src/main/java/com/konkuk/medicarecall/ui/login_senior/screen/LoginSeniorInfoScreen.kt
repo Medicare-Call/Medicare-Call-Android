@@ -59,7 +59,6 @@ fun LoginSeniorInfoScreen(
     modifier: Modifier = Modifier
 ) {
 
-    var elders by remember { mutableIntStateOf(0) }
 
     var scrollState = rememberScrollState()
     Column(
@@ -84,7 +83,7 @@ fun LoginSeniorInfoScreen(
             color = MediCareCallTheme.colors.black
         )
         Spacer(Modifier.height(30.dp))
-        repeat(elders + 1) { index ->
+        repeat(loginSeniorViewModel.elders) { index ->
             SeniorInputForm(
                 loginSeniorViewModel,
                 scrollState,
@@ -109,9 +108,17 @@ fun LoginSeniorInfoScreen(
                     .padding(vertical = 16.dp)
                     .align(Alignment.Center)
                     .clickable {
-                        if (elders < 4) {
-                            elders++
-                            loginSeniorViewModel.expandedFormIndex = elders
+                        if (loginSeniorViewModel.elders < 4) {
+                            loginSeniorViewModel.elders++
+                            loginSeniorViewModel.expandedFormIndex = loginSeniorViewModel.elders - 1
+                            loginSeniorViewModel.onNameChanged(loginSeniorViewModel.expandedFormIndex, "")
+                            loginSeniorViewModel.onDOBChanged(loginSeniorViewModel.expandedFormIndex, "")
+                            loginSeniorViewModel.onRelationshipChanged(loginSeniorViewModel.expandedFormIndex, "")
+                            loginSeniorViewModel.onGenderChanged(loginSeniorViewModel.expandedFormIndex, null)
+                            loginSeniorViewModel.onLivingTypeChanged(loginSeniorViewModel.expandedFormIndex, "")
+                            loginSeniorViewModel.onPhoneNumberChanged(loginSeniorViewModel.expandedFormIndex, "")
+
+
                         }
                     }
             ) {

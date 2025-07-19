@@ -99,7 +99,7 @@ fun LoginSeniorMedInfoScreen(
                             interactionSource = null,
                             indication = null,
                             onClick = {
-                                loginSeniorViewModel.onSeniorChanged(index)
+                                loginSeniorViewModel.onSelectedSeniorChanged(index)
 
                             }
                         )

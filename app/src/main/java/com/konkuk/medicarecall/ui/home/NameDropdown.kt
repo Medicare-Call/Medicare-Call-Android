@@ -83,13 +83,13 @@ fun DropdownItem(
         Text(
             text = name,
             style = MediCareCallTheme.typography.SB_24,
-            color = if (selected) MediCareCallTheme.colors.black else MediCareCallTheme.colors.gray3
+            color = if (selected) MediCareCallTheme.colors.black else MediCareCallTheme.colors.gray4
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
             text = "님",
             style = MediCareCallTheme.typography.R_18,
-            color = if (selected) MediCareCallTheme.colors.black else MediCareCallTheme.colors.gray3
+            color = if (selected) MediCareCallTheme.colors.black else MediCareCallTheme.colors.gray4
         )
     }
 }

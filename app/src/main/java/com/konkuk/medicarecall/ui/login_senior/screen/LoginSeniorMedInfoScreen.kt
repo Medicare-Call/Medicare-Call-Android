@@ -1,7 +1,6 @@
 package com.konkuk.medicarecall.ui.login_senior.screen
 
 import android.util.Log
-import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -9,7 +8,6 @@ import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.PaddingValues
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -21,15 +19,10 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.ButtonDefaults
-import androidx.compose.material3.OutlinedButton
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -53,7 +46,7 @@ fun LoginSeniorMedInfoScreen(
     loginSeniorViewModel: LoginSeniorViewModel,
     modifier: Modifier = Modifier
 ) {
-    var scrollState = rememberScrollState()
+    val scrollState = rememberScrollState()
     Column(
         modifier
             .fillMaxSize()
@@ -74,18 +67,11 @@ fun LoginSeniorMedInfoScreen(
             color = MediCareCallTheme.colors.black
         )
         Spacer(Modifier.height(20.dp))
-        var seniorList = listOf(
-            SeniorData(
-                1, "김옥자"
-            ),
-            SeniorData(
-                2, "박막례"
-            )
-        ) // 임시, TODO: 추후 서버에서 데이터 받아와야 함
+
 
         // 상단 어르신 선택 Row
         Row {
-            seniorList.forEachIndexed { index, senior ->
+            loginSeniorViewModel.seniorDataList.forEachIndexed { index, senior ->
 
                 Box(
                     Modifier
@@ -106,7 +92,7 @@ fun LoginSeniorMedInfoScreen(
                             interactionSource = null,
                             indication = null,
                             onClick = {
-                                loginSeniorViewModel.onSeniorChanged(index)
+                                loginSeniorViewModel.onSelectedSeniorChanged(index)
 
                             }
                         )
@@ -140,7 +126,7 @@ fun LoginSeniorMedInfoScreen(
         )
         Spacer(Modifier.height(10.dp))
 
-        var healthIssueList = remember { mutableStateListOf<String>() }
+        val healthIssueList = remember { mutableStateListOf<String>() }
         Log.d("hel", "테스트")
         if (healthIssueList.isNotEmpty()) {
             Row(

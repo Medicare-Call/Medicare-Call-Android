@@ -1,6 +1,11 @@
 package com.konkuk.medicarecall.ui.model
 
 data class SeniorData(
-    val id: Int,
-    val name: String,
+    val name: String = "",
+    val birthDate: String = "",
+    val gender: Boolean? = null,
+    val phoneNumber: String = "",
+    val relationship: String = "",
+    val livingType: String = "",
+//    val id: Int,
 )

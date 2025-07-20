@@ -2,6 +2,9 @@ package com.konkuk.medicarecall.ui.login_senior.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -15,12 +18,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -38,6 +48,7 @@ import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login_senior.component.SeniorInputForm
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.RelationshipType
 import com.konkuk.medicarecall.ui.model.SeniorLivingType
@@ -62,8 +73,10 @@ fun LoginSeniorInfoScreen(
             .padding(top = 16.dp)
             .verticalScroll(scrollState)
             .systemBarsPadding()
-            .imePadding()
+            .imePadding(),
     ) {
+
+
         TopBar({
             navController.popBackStack()
         })
@@ -73,111 +86,112 @@ fun LoginSeniorInfoScreen(
             style = MediCareCallTheme.typography.B_26,
             color = MediCareCallTheme.colors.black
         )
-        Spacer(Modifier.height(40.dp))
-        Column {
-            DefaultTextField(
-                value = loginSeniorViewModel.name,
-                onValueChange = { loginSeniorViewModel.onNameChanged(it) },
-                category = "이름",
-                placeHolder = "이름"
+        Spacer(Modifier.height(30.dp))
+        repeat(loginSeniorViewModel.elders) { index ->
+            SeniorInputForm(
+                loginSeniorViewModel,
+                scrollState,
+                index == loginSeniorViewModel.expandedFormIndex,
+                index
             )
-            Spacer(Modifier.height(20.dp))
-            DefaultTextField(
-                loginSeniorViewModel.dateOfBirth,
-                { input ->
-                    val filtered = input.filter { it.isDigit() }.take(8)
-                    loginSeniorViewModel.onDOBChanged(filtered)
-                },
-                category = "생년월일",
-                placeHolder = "YYYY / MM / DD",
-                keyboardType = KeyboardType.Number,
-                visualTransformation = DateOfBirthVisualTransformation()
-            )
-            Spacer(Modifier.height(20.dp))
-            Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
-                Text(
-                    "성별",
-                    color = MediCareCallTheme.colors.gray7,
-                    style = MediCareCallTheme.typography.M_17
-                )
-
-                GenderToggleButton(loginSeniorViewModel.isMale) {
-                    loginSeniorViewModel.onGenderChanged(
-                        it
-                    )
-                }
-            }
-            Spacer(Modifier.height(20.dp))
-            DefaultTextField(
-                loginSeniorViewModel.phoneNumber,
-                { input ->
-                    val filtered = input.filter { it.isDigit() }.take(11)
-                    loginSeniorViewModel.onPhoneNumberChanged(filtered)
-                },
-                category = "휴대폰 번호",
-                placeHolder = "010-1234-5678",
-                keyboardType = KeyboardType.Number,
-                visualTransformation = PhoneNumberVisualTransformation()
-            )
-            Spacer(Modifier.height(20.dp))
-
-
-            DefaultDropdown(
-                enumList = RelationshipType.entries.map { it.displayName }
-                    .toList(),
-                placeHolder = "관계 선택하기",
-                category = "어르신과의 관계",
-                scrollState
-            )
-
-
-            Spacer(Modifier.height(20.dp))
-
-            DefaultDropdown(
-                enumList = SeniorLivingType.entries.map { it.displayName }
-                    .toList(),
-                placeHolder = "거주방식을 선택해주세요",
-                category = "어르신 거주 방식",
-                scrollState
-            )
-
-            Spacer(Modifier.height(20.dp))
-
-            Box(
-                Modifier
-                    .fillMaxWidth()
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(MediCareCallTheme.colors.g50)
-                    .border(
-                        1.2.dp,
-                        color = MediCareCallTheme.colors.main,
-                        shape = RoundedCornerShape(14.dp)
-                    )
-            ) {
-                Row(
-                    Modifier
-                        .padding(vertical = 16.dp)
-                        .align(Alignment.Center)
-                ) {
-                    Icon(
-                        painterResource(R.drawable.ic_plus), contentDescription = "플러스 아이콘",
-                        tint = MediCareCallTheme.colors.main
-                    )
-                    Spacer(Modifier.width(8.dp))
-                    Text(
-                        "어르신 더 추가하기",
-                        color = MediCareCallTheme.colors.main,
-                        style = MediCareCallTheme.typography.B_17
-                    )
-                }
-            }
-
-            Spacer(Modifier.height(30.dp))
-            CTAButton(CTAButtonType.GREEN, "다음", {
-                navController.navigate(Route.LoginSeniorMedInfoScreen.route)
-            }, modifier.padding(bottom = 20.dp))
-
-
         }
+
+
+        val interactionSource = remember { MutableInteractionSource() }
+        // interactionSource 에서 pressed 상태 감지
+        val isPressed by interactionSource.collectIsPressedAsState()
+
+        Box(
+            Modifier
+                .fillMaxWidth()
+                .clip(RoundedCornerShape(14.dp))
+                .background(
+                    if (loginSeniorViewModel.isInputComplete()) {
+                        if (isPressed)
+                            MediCareCallTheme.colors.g200
+                        else
+                            MediCareCallTheme.colors.g50
+                    } else MediCareCallTheme.colors.gray1
+                )
+                .border(
+                    1.2.dp,
+                    color = if (loginSeniorViewModel.isInputComplete())
+                        MediCareCallTheme.colors.main
+                    else
+                        MediCareCallTheme.colors.gray3,
+                    shape = RoundedCornerShape(14.dp)
+                )
+                .clickable(
+                    enabled = loginSeniorViewModel.isInputComplete(),
+                    indication = null,
+                    interactionSource = interactionSource
+                ) {
+                    if (loginSeniorViewModel.elders < 5) {
+                        loginSeniorViewModel.elders++
+                        loginSeniorViewModel.expandedFormIndex = loginSeniorViewModel.elders - 1
+                        loginSeniorViewModel.onNameChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            ""
+                        )
+                        loginSeniorViewModel.onDOBChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            ""
+                        )
+                        loginSeniorViewModel.onRelationshipChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            ""
+                        )
+                        loginSeniorViewModel.onGenderChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            null
+                        )
+                        loginSeniorViewModel.onLivingTypeChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            ""
+                        )
+                        loginSeniorViewModel.onPhoneNumberChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            ""
+                        )
+
+
+                    }
+                }
+        ) {
+            Row(
+                Modifier
+                    .padding(vertical = 16.dp)
+                    .align(Alignment.Center)
+
+            ) {
+                Icon(
+                    painterResource(R.drawable.ic_plus), contentDescription = "플러스 아이콘",
+                    tint = if (loginSeniorViewModel.isInputComplete())
+                        MediCareCallTheme.colors.main
+                    else MediCareCallTheme.colors.gray3
+                )
+                Spacer(Modifier.width(8.dp))
+                Text(
+                    "어르신 더 추가하기",
+                    color = if (loginSeniorViewModel.isInputComplete())
+                        MediCareCallTheme.colors.main
+                    else MediCareCallTheme.colors.gray3,
+                    style = MediCareCallTheme.typography.B_17
+                )
+            }
+        }
+
+        Spacer(Modifier.height(30.dp))
+        CTAButton(
+            if (loginSeniorViewModel.isInputComplete())
+                CTAButtonType.GREEN
+            else CTAButtonType.DISABLED,
+            "다음",
+            {
+                navController.navigate(Route.LoginSeniorMedInfoScreen.route)
+                loginSeniorViewModel.createSeniorDataList()
+            },
+            modifier.padding(bottom = 20.dp)
+        )
     }
 }

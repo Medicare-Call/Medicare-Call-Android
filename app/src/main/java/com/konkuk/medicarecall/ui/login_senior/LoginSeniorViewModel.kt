@@ -5,6 +5,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.konkuk.medicarecall.ui.model.SeniorData
 
 class LoginSeniorViewModel : ViewModel() {
 
@@ -86,6 +87,27 @@ class LoginSeniorViewModel : ViewModel() {
 
     fun onSelectedSeniorChanged(new: Int) {
         selectedSenior = new
+    }
+
+    var seniorDataList = mutableStateListOf<SeniorData>()
+        private set
+
+    fun createSeniorDataList() {
+        seniorDataList.clear()
+        seniorDataList.apply {
+            repeat(elders) { index ->
+                add(
+                    SeniorData(
+                        nameList[index],
+                        dateOfBirthList[index],
+                        isMaleBoolList[index],
+                        phoneNumberList[index],
+                        relationshipList[index],
+                        livingTypeList[index]
+                    )
+                )
+            }
+        }
     }
 
 

@@ -107,12 +107,11 @@ fun LoginSeniorInfoScreen(
                 .clip(RoundedCornerShape(14.dp))
                 .background(
                     if (loginSeniorViewModel.isInputComplete()) {
-                        if(isPressed)
+                        if (isPressed)
                             MediCareCallTheme.colors.g200
                         else
                             MediCareCallTheme.colors.g50
-                    }
-                    else MediCareCallTheme.colors.gray1
+                    } else MediCareCallTheme.colors.gray1
                 )
                 .border(
                     1.2.dp,
@@ -183,8 +182,16 @@ fun LoginSeniorInfoScreen(
         }
 
         Spacer(Modifier.height(30.dp))
-        CTAButton(CTAButtonType.GREEN, "다음", {
-            navController.navigate(Route.LoginSeniorMedInfoScreen.route)
-        }, modifier.padding(bottom = 20.dp))
+        CTAButton(
+            if (loginSeniorViewModel.isInputComplete())
+                CTAButtonType.GREEN
+            else CTAButtonType.DISABLED,
+            "다음",
+            {
+                navController.navigate(Route.LoginSeniorMedInfoScreen.route)
+                loginSeniorViewModel.createSeniorDataList()
+            },
+            modifier.padding(bottom = 20.dp)
+        )
     }
 }

@@ -67,18 +67,11 @@ fun LoginSeniorMedInfoScreen(
             color = MediCareCallTheme.colors.black
         )
         Spacer(Modifier.height(20.dp))
-        val seniorList = listOf(
-            SeniorData(
-                "김옥자"
-            ),
-            SeniorData(
-                "박막례"
-            )
-        ) // 임시, TODO: 추후 서버에서 데이터 받아와야 함
+
 
         // 상단 어르신 선택 Row
         Row {
-            seniorList.forEachIndexed { index, senior ->
+            loginSeniorViewModel.seniorDataList.forEachIndexed { index, senior ->
 
                 Box(
                     Modifier

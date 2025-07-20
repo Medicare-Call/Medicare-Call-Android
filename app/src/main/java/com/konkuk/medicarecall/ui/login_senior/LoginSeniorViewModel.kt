@@ -43,6 +43,19 @@ class LoginSeniorViewModel : ViewModel() {
     }
         private set
 
+    fun isInputComplete(): Boolean {
+        return (0 until elders).all { i ->
+
+            nameList[i].isNotBlank() &&
+                    dateOfBirthList[i].length == 8 &&
+                    isMaleBoolList[i] != null &&
+                    phoneNumberList[i].length == 11 &&
+                    relationshipList[i].isNotBlank() &&
+                    livingTypeList[i].isNotBlank()
+        }
+
+    }
+
     fun onPhoneNumberChanged(index: Int, new: String) {
         phoneNumberList[index] = new
     }

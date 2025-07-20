@@ -3,6 +3,8 @@ package com.konkuk.medicarecall.ui.login_senior.screen
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.interaction.MutableInteractionSource
+import androidx.compose.foundation.interaction.collectIsPressedAsState
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -20,9 +22,11 @@ import androidx.compose.foundation.lazy.LazyColumn
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.ripple.rememberRipple
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -93,18 +97,36 @@ fun LoginSeniorInfoScreen(
         }
 
 
+        val interactionSource = remember { MutableInteractionSource() }
+        // interactionSource 에서 pressed 상태 감지
+        val isPressed by interactionSource.collectIsPressedAsState()
 
         Box(
             Modifier
                 .fillMaxWidth()
                 .clip(RoundedCornerShape(14.dp))
-                .background(MediCareCallTheme.colors.g50)
+                .background(
+                    if (loginSeniorViewModel.isInputComplete()) {
+                        if(isPressed)
+                            MediCareCallTheme.colors.g200
+                        else
+                            MediCareCallTheme.colors.g50
+                    }
+                    else MediCareCallTheme.colors.gray1
+                )
                 .border(
                     1.2.dp,
-                    color = MediCareCallTheme.colors.main,
+                    color = if (loginSeniorViewModel.isInputComplete())
+                        MediCareCallTheme.colors.main
+                    else
+                        MediCareCallTheme.colors.gray3,
                     shape = RoundedCornerShape(14.dp)
                 )
-                .clickable {
+                .clickable(
+                    enabled = loginSeniorViewModel.isInputComplete(),
+                    indication = null,
+                    interactionSource = interactionSource
+                ) {
                     if (loginSeniorViewModel.elders < 5) {
                         loginSeniorViewModel.elders++
                         loginSeniorViewModel.expandedFormIndex = loginSeniorViewModel.elders - 1
@@ -145,12 +167,16 @@ fun LoginSeniorInfoScreen(
             ) {
                 Icon(
                     painterResource(R.drawable.ic_plus), contentDescription = "플러스 아이콘",
-                    tint = MediCareCallTheme.colors.main
+                    tint = if (loginSeniorViewModel.isInputComplete())
+                        MediCareCallTheme.colors.main
+                    else MediCareCallTheme.colors.gray3
                 )
                 Spacer(Modifier.width(8.dp))
                 Text(
                     "어르신 더 추가하기",
-                    color = MediCareCallTheme.colors.main,
+                    color = if (loginSeniorViewModel.isInputComplete())
+                        MediCareCallTheme.colors.main
+                    else MediCareCallTheme.colors.gray3,
                     style = MediCareCallTheme.typography.B_17
                 )
             }

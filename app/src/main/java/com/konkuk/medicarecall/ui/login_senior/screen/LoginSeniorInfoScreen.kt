@@ -92,6 +92,8 @@ fun LoginSeniorInfoScreen(
             )
         }
 
+
+
         Box(
             Modifier
                 .fillMaxWidth()
@@ -102,25 +104,44 @@ fun LoginSeniorInfoScreen(
                     color = MediCareCallTheme.colors.main,
                     shape = RoundedCornerShape(14.dp)
                 )
+                .clickable {
+                    if (loginSeniorViewModel.elders < 5) {
+                        loginSeniorViewModel.elders++
+                        loginSeniorViewModel.expandedFormIndex = loginSeniorViewModel.elders - 1
+                        loginSeniorViewModel.onNameChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            ""
+                        )
+                        loginSeniorViewModel.onDOBChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            ""
+                        )
+                        loginSeniorViewModel.onRelationshipChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            ""
+                        )
+                        loginSeniorViewModel.onGenderChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            null
+                        )
+                        loginSeniorViewModel.onLivingTypeChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            ""
+                        )
+                        loginSeniorViewModel.onPhoneNumberChanged(
+                            loginSeniorViewModel.expandedFormIndex,
+                            ""
+                        )
+
+
+                    }
+                }
         ) {
             Row(
                 Modifier
                     .padding(vertical = 16.dp)
                     .align(Alignment.Center)
-                    .clickable {
-                        if (loginSeniorViewModel.elders < 4) {
-                            loginSeniorViewModel.elders++
-                            loginSeniorViewModel.expandedFormIndex = loginSeniorViewModel.elders - 1
-                            loginSeniorViewModel.onNameChanged(loginSeniorViewModel.expandedFormIndex, "")
-                            loginSeniorViewModel.onDOBChanged(loginSeniorViewModel.expandedFormIndex, "")
-                            loginSeniorViewModel.onRelationshipChanged(loginSeniorViewModel.expandedFormIndex, "")
-                            loginSeniorViewModel.onGenderChanged(loginSeniorViewModel.expandedFormIndex, null)
-                            loginSeniorViewModel.onLivingTypeChanged(loginSeniorViewModel.expandedFormIndex, "")
-                            loginSeniorViewModel.onPhoneNumberChanged(loginSeniorViewModel.expandedFormIndex, "")
 
-
-                        }
-                    }
             ) {
                 Icon(
                     painterResource(R.drawable.ic_plus), contentDescription = "플러스 아이콘",

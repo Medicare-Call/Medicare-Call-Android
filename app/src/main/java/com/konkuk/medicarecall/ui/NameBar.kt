@@ -4,16 +4,24 @@ package com.konkuk.medicarecall.ui
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.BoxWithConstraints
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.DropdownMenu
+import androidx.compose.material3.DropdownMenuItem
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -29,66 +37,75 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun NameBar(
     modifier: Modifier = Modifier,
-    navController: NavHostController
-    ) {
-    Row(
-        modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 10.dp)
-            .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically,
-        horizontalArrangement = Arrangement.SpaceBetween
+    navController: NavHostController,
+    onDropdownClick: () -> Unit
+) {
 
-    ) {
-        // 드롭다운 화살표+텍스트
+
+    Box(modifier = modifier) {
         Row(
-            verticalAlignment = Alignment.CenterVertically
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 10.dp)
+                .background(Color.White),
+            verticalAlignment = Alignment.CenterVertically,
+            horizontalArrangement = Arrangement.SpaceBetween
+
         ) {
+
+
+            Row(
+                verticalAlignment = Alignment.CenterVertically
+            ) {
+                Icon(
+                    modifier = Modifier
+                        .clickable { onDropdownClick() }
+                        .size(24.dp),
+                    painter = painterResource(id = R.drawable.ic_arrow_down),
+                    contentDescription = "arrow down",
+                    tint = MediCareCallTheme.colors.gray3
+                )
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Text(
+                    text = "김옥자",
+                    style = MediCareCallTheme.typography.SB_24,
+                    color = MediCareCallTheme.colors.black
+                )
+
+                Spacer(modifier = Modifier.width(4.dp))
+
+                Text(
+                    text = "님",
+                    style = MediCareCallTheme.typography.R_18,
+                    color = MediCareCallTheme.colors.black
+                )
+
+            }
+
             Icon(
-                modifier = Modifier
-                .size (24.dp),
-                painter = painterResource(id = R.drawable.ic_arrow_down),
-                contentDescription = "arrow down",
-                tint = MediCareCallTheme.colors.gray3
+                painter = painterResource(id = R.drawable.ic_bell),
+                "bell",
+                tint = Color.Unspecified,
+                modifier = modifier.clickable { navController.navigate(route = Route.Alarm.route) }
             )
-
-            Spacer(modifier = Modifier.width(4.dp))
-
-            Text(
-                text = "김옥자",
-                style = MediCareCallTheme.typography.SB_24,
-                color = MediCareCallTheme.colors.black
-            )
-
-            Spacer(modifier = Modifier.width(4.dp))
-
-            Text(
-                text = "님",
-                style = MediCareCallTheme.typography.R_18,
-                color = MediCareCallTheme.colors.black
-            )
-
         }
 
-        Icon(
-            painter = painterResource(id = R.drawable.ic_bell),
-            "bell",
-            tint = Color.Unspecified,
-            modifier = modifier.clickable{navController.navigate(route = Route.Alarm.route)}
-        )
     }
-
 }
 
 
-@Preview
-@Composable
-fun PreviewNameBar() {
+    @Preview
+    @Composable
+    fun PreviewNameBar() {
 
-    MediCareCallTheme {
-        NameBar(
-            navController = rememberNavController()
-        )
+        MediCareCallTheme {
+
+            NameBar(
+                navController = rememberNavController(),
+                onDropdownClick = {}
+            )
+        }
+
     }
-    
-}

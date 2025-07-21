@@ -12,9 +12,12 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -68,6 +71,8 @@ fun HomeScreen(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
+                .statusBarsPadding()
+
 
         ) {
 
@@ -213,6 +218,7 @@ fun HomeScreen(
                         Spacer(Modifier.height(12.dp))
                     }
                 }
+                Spacer(Modifier.height(120.dp))
             }
 
         }
@@ -240,7 +246,7 @@ val SpeechTail = GenericShape { size, _ ->
     close()
 }
 
-@Preview(showBackground = true, heightDp = 1200)
+@Preview(showBackground = true, heightDp = 1500)
 @Composable
 fun PreviewHomeScreen() {
     HomeScreen(

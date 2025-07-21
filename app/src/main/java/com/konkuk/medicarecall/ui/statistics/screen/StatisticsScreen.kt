@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
@@ -47,6 +48,7 @@ fun StatisticsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
+            .statusBarsPadding()
             .background(MediCareCallTheme.colors.white)
     ) {
         NameBar(
@@ -58,6 +60,7 @@ fun StatisticsScreen(
 
         Column(
             modifier = Modifier
+                .weight(1f)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp, vertical = 24.dp)
         ) {
@@ -133,14 +136,17 @@ fun StatisticsScreen(
                         afterMealHigh = 0
                     )
                 )
+                Spacer(modifier = Modifier.height(70.dp))
 
 
             }
 
-            Spacer(modifier = Modifier.height(28.dp))
+
 
 
         }
+
+
     }
     if (dropdownOpened.value) {
         NameDropdown(

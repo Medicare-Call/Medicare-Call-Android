@@ -1,5 +1,8 @@
 package com.konkuk.medicarecall.data.dto.response
 
+import kotlinx.serialization.Serializable
+
+@Serializable
 data class VerificationResponseDto(
     val verified: Boolean,
     val message: String,

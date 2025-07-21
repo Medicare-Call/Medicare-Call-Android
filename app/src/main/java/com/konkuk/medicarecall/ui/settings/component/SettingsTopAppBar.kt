@@ -28,7 +28,9 @@ fun SettingsTopAppBar(modifier: Modifier = Modifier,
                       leftIcon: @Composable () -> Unit = {},
                       leftIconClick : () -> Unit = {},
                       rightIcon: @Composable () -> Unit = {},
-                      rightIconClick: () -> Unit = {}) {
+                      rightIconClick: () -> Unit = {}
+) {
+
 
     Column(modifier = Modifier.fillMaxWidth()) {
     Surface(

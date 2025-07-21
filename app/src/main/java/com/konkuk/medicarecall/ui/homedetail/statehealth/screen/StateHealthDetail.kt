@@ -17,6 +17,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
+import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.homedetail.CalendarUiState
 import com.konkuk.medicarecall.ui.homedetail.MonthYearSelector
@@ -29,7 +30,7 @@ import com.konkuk.medicarecall.ui.homedetail.statehealth.component.StateHealthDe
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StateHealthDetail(
-    navController: NavController,
+    navController: NavHostController,
     healths: HealthUiState
 ) {
 
@@ -50,7 +51,8 @@ fun StateHealthDetail(
 
 
             TopAppBar(
-                title = "건강징후"
+                title = "건강징후",
+                navController = navController
             )
 
             Column(

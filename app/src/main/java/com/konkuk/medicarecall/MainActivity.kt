@@ -88,7 +88,10 @@ class MainActivity : ComponentActivity() {
 
                 val loginViewModel: LoginViewModel = viewModel()
                 val loginSeniorViewModel: LoginSeniorViewModel = viewModel()
-                val bottomBarRoutes = listOf("home", "statistics", "settings")
+                val bottomBarRoutes = listOf(
+                    "home", "statistics", "settings",
+                )
+
 
 
                 Scaffold(

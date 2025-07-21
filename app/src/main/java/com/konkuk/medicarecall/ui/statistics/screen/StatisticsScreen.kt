@@ -14,13 +14,15 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.NameBar
+import com.konkuk.medicarecall.ui.home.NameDropdown
 import com.konkuk.medicarecall.ui.statistics.WeeklyGlucoseUiState
 import com.konkuk.medicarecall.ui.statistics.WeeklyMealUiState
 import com.konkuk.medicarecall.ui.statistics.WeeklyMedicineUiState
@@ -37,14 +39,20 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 
 @Composable
-fun StatisticsScreen(modifier: Modifier = Modifier, navController: NavHostController) {
-
+fun StatisticsScreen(
+    modifier: Modifier = Modifier,
+    navController: NavHostController
+) {
+    val dropdownOpened = remember { mutableStateOf(false) }
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MediCareCallTheme.colors.white)
     ) {
-        NameBar(navController = navController)
+        NameBar(
+            navController = navController,
+            onDropdownClick = { dropdownOpened.value = !dropdownOpened.value }
+        )
 
         Spacer(modifier = Modifier.height(20.dp))
 
@@ -130,9 +138,23 @@ fun StatisticsScreen(modifier: Modifier = Modifier, navController: NavHostContro
             }
 
             Spacer(modifier = Modifier.height(28.dp))
+
+
         }
+    }
+    if (dropdownOpened.value) {
+        NameDropdown(
+            items = listOf("김옥자", "박막례"),
+            selectedName = "김옥자",
+            onDismiss = { dropdownOpened.value = false },
+            onItemSelected = {
+                //TODO: 선택된 이름 처리
+            }
+        )
 
     }
+
+
 }
 
 
@@ -142,8 +164,10 @@ fun PreviewStatisticsScreen() {
 
     MediCareCallTheme {
         StatisticsScreen(
-            navController = rememberNavController()
-        )
+            navController = rememberNavController(),
+
+
+            )
     }
 
 }

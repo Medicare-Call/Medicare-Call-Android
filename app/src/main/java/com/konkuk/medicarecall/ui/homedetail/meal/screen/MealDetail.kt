@@ -16,6 +16,8 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.navigation.NavHostController
+import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.homedetail.CalendarUiState
 import com.konkuk.medicarecall.ui.homedetail.MonthYearSelector
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
@@ -27,7 +29,8 @@ import com.konkuk.medicarecall.ui.homedetail.meal.component.MealDetailCard
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MealDetail(
-    modifier: Modifier = Modifier
+    modifier: Modifier = Modifier,
+    navController: NavHostController
 ) {
 
     val pagerState = rememberPagerState(
@@ -51,7 +54,8 @@ fun MealDetail(
         ) {
 
             TopAppBar(
-                title = "식사"
+                title = "식사",
+                navController = navController
             )
 
             Column(
@@ -108,6 +112,6 @@ fun MealDetail(
 @Preview(showBackground = true)
 @Composable
 fun PreviewMealDetail() {
-    MealDetail()
+    MealDetail(  navController = rememberNavController() )
 
 }

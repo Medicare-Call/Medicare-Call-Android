@@ -48,8 +48,8 @@ fun StatisticsScreen(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .statusBarsPadding()
             .background(MediCareCallTheme.colors.white)
+            .statusBarsPadding()
     ) {
         NameBar(
             navController = navController,

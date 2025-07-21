@@ -3,6 +3,6 @@ package com.konkuk.medicarecall.data.dto.request
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PhoneVerificationRequestDto(
+data class PhoneNumberRequestDto(
     val phone: String
 )

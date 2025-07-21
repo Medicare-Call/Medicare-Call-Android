@@ -42,7 +42,7 @@ fun LoginPhoneScreen(
             .padding(horizontal = 20.dp)
             .padding(top = 16.dp)
             .verticalScroll(scrollState)
-            .systemBarsPadding()
+            .statusBarsPadding()
     ) {
         TopBar({
             loginViewModel.updateLoginUiState(LoginUiState.Start)

@@ -64,7 +64,6 @@ fun LoginMyInfoScreen(
             .padding(top = 16.dp)
             .verticalScroll(scrollState)
             .statusBarsPadding()
-            .imePadding()
     ) {
         TopBar({
             loginViewModel.updateLoginUiState(LoginUiState.EnterVerificationCode)

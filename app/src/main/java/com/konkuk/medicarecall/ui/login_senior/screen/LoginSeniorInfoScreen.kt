@@ -72,8 +72,7 @@ fun LoginSeniorInfoScreen(
             .padding(horizontal = 20.dp)
             .padding(top = 16.dp)
             .verticalScroll(scrollState)
-            .systemBarsPadding()
-            .imePadding(),
+            .statusBarsPadding()
     ) {
 
 

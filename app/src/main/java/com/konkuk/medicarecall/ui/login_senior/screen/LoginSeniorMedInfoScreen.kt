@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
@@ -54,8 +55,7 @@ fun LoginSeniorMedInfoScreen(
             .padding(horizontal = 20.dp)
             .padding(top = 16.dp)
             .verticalScroll(scrollState)
-            .systemBarsPadding()
-            .imePadding()
+            .statusBarsPadding()
     ) {
         TopBar(onClick = {
             navController.popBackStack()

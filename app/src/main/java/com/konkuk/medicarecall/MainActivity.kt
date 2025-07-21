@@ -151,13 +151,13 @@ class MainActivity : ComponentActivity() {
                                 }
                             }
                     }
-                ) {
+                ) { innerPadding ->
                     NavGraph(
                         navController = navController,
                         loginViewModel = loginViewModel,
                         loginSeniorViewModel = loginSeniorViewModel,
-//                        modifier = Modifier
-//                            .padding(innerPadding)
+                        modifier = Modifier
+                            .padding(bottom = innerPadding.calculateBottomPadding())
                     )
 
                 }

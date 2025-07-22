@@ -69,14 +69,11 @@ dependencies {
 
     implementation(libs.androidx.foundation)
     // kotlin serialization
-    implementation("org.jetbrains.kotlin:kotlin-stdlib-jdk8")
-    implementation("org.jetbrains.kotlinx:kotlinx-serialization-runtime")
-
+    implementation("org.jetbrains.kotlinx:kotlinx-serialization-json:1.8.0")
 
     // Retrofit
-    implementation("com.squareup.retrofit2:retrofit:2.9.0")
-    implementation("com.squareup.retrofit2:converter-ser:2.9.0")
-    implementation("com.jakewharton.retrofit:retrofit2-kotlinx-serialization-converter:0.5.0")
+    implementation("com.squareup.retrofit2:retrofit:2.12.0")
+    implementation("com.squareup.retrofit2:converter-kotlinx-serialization:2.12.0")
 
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.10.0")

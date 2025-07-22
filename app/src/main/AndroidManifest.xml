@@ -14,8 +14,8 @@
         android:theme="@style/Theme.MediCareCall">
         <activity
             android:name=".SplashActivity"
-            android:theme="@style/Theme.MySplashScreen"
-            android:exported="true">
+            android:exported="true"
+            android:theme="@style/Theme.MySplashScreen">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
@@ -24,12 +24,14 @@
 
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustResize"
             android:exported="true"
             android:label="@string/app_name"
-            android:theme="@style/Theme.MediCareCall">
+            android:theme="@style/Theme.MediCareCall"
+            android:windowSoftInputMode="adjustResize">
 
         </activity>
     </application>
+    <uses-permission android:name="android.permission.INTERNET" />
+
 
 </manifest>

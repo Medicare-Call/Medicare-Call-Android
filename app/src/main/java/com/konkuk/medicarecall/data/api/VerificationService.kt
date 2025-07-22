@@ -1,20 +1,18 @@
 package com.konkuk.medicarecall.data.api
 
-import com.konkuk.medicarecall.data.dto.request.ConfirmRequestDto
-import com.konkuk.medicarecall.data.dto.request.PhoneNumberRequestDto
-import com.konkuk.medicarecall.data.dto.response.VerificationResponseDto
-import retrofit2.Response
+import com.konkuk.medicarecall.data.dto.request.PhoneNumberConfirmRequestDto
+import com.konkuk.medicarecall.data.dto.request.CertificationCodeRequestDto
 import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface VerificationService {
     @POST("/verifications")
-    suspend fun phoneOnly(
-        @Body request: PhoneNumberRequestDto
+    suspend fun requestCertificationCode(
+        @Body request: CertificationCodeRequestDto
     )
 
     @POST("/verifications/confirmation")
-    suspend fun phoneConfirm(
-        @Body request: ConfirmRequestDto
+    suspend fun confirmPhoneNumber(
+        @Body request: PhoneNumberConfirmRequestDto
     )
 }

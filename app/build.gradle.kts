@@ -10,6 +10,11 @@ android {
     namespace = "com.konkuk.medicarecall"
     compileSdk = 36
 
+    buildFeatures {
+        buildConfig = true
+    }
+
+
     defaultConfig {
         applicationId = "com.konkuk.medicarecall"
         minSdk = 26
@@ -18,6 +23,9 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val baseUrl = properties["BASE_URL"].toString()
+        buildConfigField("String", "BASE_URL", baseUrl)
     }
 
     buildTypes {

@@ -53,7 +53,6 @@ fun LoginStartScreen(
                 .align(Alignment.BottomCenter)
                 .padding(bottom = 20.dp)
                 .padding(horizontal = 20.dp)
-                .navigationBarsPadding()
 
         )
 

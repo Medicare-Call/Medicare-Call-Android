@@ -7,24 +7,24 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.konkuk.medicarecall.ui.homedetail.CalendarUiState
-import com.konkuk.medicarecall.ui.homedetail.MonthYearSelector
+import com.konkuk.medicarecall.ui.calendar.CalendarUiState
+import com.konkuk.medicarecall.ui.calendar.DateSelector
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
-import com.konkuk.medicarecall.ui.homedetail.WeeklyCalendar
-import com.konkuk.medicarecall.ui.homedetail.getDatesForWeek
-import com.konkuk.medicarecall.ui.homedetail.meal.MealUiState
+import com.konkuk.medicarecall.ui.calendar.WeeklyCalendar
+import com.konkuk.medicarecall.ui.homedetail.meal.MealViewModel
 import com.konkuk.medicarecall.ui.homedetail.meal.component.MealDetailCard
 
 @OptIn(ExperimentalFoundationApi::class)
@@ -33,17 +33,12 @@ fun MealDetail(
     modifier: Modifier = Modifier,
     navController: NavHostController
 ) {
+    val viewModel = hiltViewModel<MealViewModel>()
+    val selectedDate by viewModel.selectedDate.collectAsState()
+    val weekDates = viewModel.getCurrentWeekDates()
 
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = { 52 }
-    ) // 주간 달력
+    val meals by viewModel.meals.collectAsState()
 
-    val meals = listOf(
-        MealUiState("아침", "간단히 밥과 반찬을 드셨어요.", true, true),
-        MealUiState("점심", "식사하지 않으셨어요.", true, true),
-        MealUiState("저녁", "", false,false )
-    )
     Surface(
         modifier = Modifier.fillMaxSize(),
         color = Color.White
@@ -67,29 +62,27 @@ fun MealDetail(
                     .padding(20.dp)
             ) {
 
-                MonthYearSelector(
-                    year = 2025,
-                    month = 5,
-                    onMonthClick = { /* TODO */ }
+                DateSelector(
+                    selectedDate = selectedDate,
+                    onMonthClick = { /* 모달 열기 */ },
+                    onDateSelected = { viewModel.selectDate(it) }
                 )
+
 
                 Spacer(Modifier.height(12.dp))
 
-                HorizontalPager(
-                    state = pagerState
-                ) { page ->
-                    val dates = getDatesForWeek(page)
 
-                    WeeklyCalendar(
-                        calendarUiState = CalendarUiState(
-                            year = 2025,
-                            month = 5,
-                            weekDates = listOf(4, 5, 6, 7, 8, 9, 10),
-                            selectedDate = 7
-                        ),
-                        onDateSelected = { /* 클릭 테스트용 */ }
-                    )
-                }
+
+                WeeklyCalendar(
+                    calendarUiState = CalendarUiState(
+                        currentYear = selectedDate.year,
+                        currentMonth = selectedDate.monthValue,
+                        weekDates = viewModel.getCurrentWeekDates(),  // selectedDate 기준
+                        selectedDate = selectedDate
+                    ),
+                    onDateSelected = { viewModel.selectDate(it) }
+                )
+
                 Spacer(modifier = Modifier.height(24.dp))
 
                 meals.forEach { meal ->
@@ -114,6 +107,6 @@ fun MealDetail(
 @Preview(showBackground = true)
 @Composable
 fun PreviewMealDetail() {
-    MealDetail(  navController = rememberNavController() )
+    MealDetail(navController = rememberNavController())
 
 }

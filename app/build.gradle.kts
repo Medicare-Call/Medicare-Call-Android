@@ -1,10 +1,16 @@
+import org.gradle.api.internal.DocumentationRegistry.BASE_URL
 import org.gradle.kotlin.dsl.implementation
+import java.util.Properties
+import kotlin.apply
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
+    kotlin("plugin.serialization") version "2.0.21"
+
 }
+
 
 android {
     namespace = "com.konkuk.medicarecall"
@@ -24,7 +30,11 @@ android {
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
 
-        val baseUrl = properties["BASE_URL"].toString()
+        val properties = Properties().apply {
+            load(project.rootProject.file("local.properties").inputStream())
+        }
+
+        val baseUrl = properties["base.url"].toString()
         buildConfigField("String", "BASE_URL", baseUrl)
     }
 

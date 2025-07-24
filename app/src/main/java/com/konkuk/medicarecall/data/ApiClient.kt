@@ -11,12 +11,13 @@ import retrofit2.converter.kotlinx.serialization.asConverterFactory
 object ApiClient {
     private val client = OkHttpClient.Builder().build()
 
-    private val json = Json { ignoreUnknownKeys = true }
+    val contentType = "application/json".toMediaType()
+    val json = Json { ignoreUnknownKeys = true }
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.BASE_URL)
         .client(client)
-        .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
+        .addConverterFactory(json.asConverterFactory(contentType))
         .build()
     val verificationService: VerificationService = retrofit.create(VerificationService::class.java)
 }

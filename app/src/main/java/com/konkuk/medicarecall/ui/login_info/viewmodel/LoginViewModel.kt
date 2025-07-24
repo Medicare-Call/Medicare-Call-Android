@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.login_info.viewmodel
 
+import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -90,7 +91,30 @@ class LoginViewModel(
     // 서버 통신 함수
     fun postPhoneNumber(phone: String) {
         viewModelScope.launch {
-            verificationRepository.requestCertificationCode(phone)
+            verificationRepository.requestCertificationCode(phone).fold(
+                onSuccess = {
+                    Log.d("phoneveri", "성공, ${it.message()}")
+                },
+                onFailure = { error ->
+                    Log.d("phoneveri", "실패, ${error.message.toString()}")
+                }
+            )
+        }
+    }
+
+    fun postCertificationCode(phone: String, code: String) {
+        viewModelScope.launch {
+            verificationRepository.confirmPhoneNumber(phone, code).fold(
+                onSuccess = {
+                    Log.d(
+                        "phoneveri",
+                        "성공, ${it.message} ${it.memberStatus} ${it.token} ${it.verified} ${it.nextAction}"
+                    )
+                },
+                onFailure = { error ->
+                    Log.d("phoneveri", "실패, ${error.message.toString()}")
+                }
+            )
         }
     }
 

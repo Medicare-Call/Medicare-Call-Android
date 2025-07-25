@@ -8,12 +8,12 @@ import retrofit2.http.Body
 import retrofit2.http.POST
 
 interface VerificationService {
-    @POST("/verifications")
+    @POST("api/verifications")
     suspend fun requestCertificationCode(
         @Body request: CertificationCodeRequestDto
     ): Response<Unit>
 
-    @POST("/verifications/confirmation")
+    @POST("api/verifications/confirmation")
     suspend fun confirmPhoneNumber(
         @Body request: PhoneNumberConfirmRequestDto
     ): Response<VerificationResponseDto>

@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.homedetail.statehealth.component
+package com.konkuk.medicarecall.ui.homedetail.statemental.component
 
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
@@ -20,7 +21,7 @@ import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.konkuk.medicarecall.ui.homedetail.statemental.MentalUiState
+import com.konkuk.medicarecall.ui.homedetail.statemental.model.MentalUiState
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
@@ -28,7 +29,7 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 @Composable
 fun StateMentalDetailCard(
 
-    mentals: MentalUiState,
+    mental: MentalUiState,
     modifier: Modifier = Modifier
 ) {
 
@@ -72,31 +73,41 @@ fun StateMentalDetailCard(
 
                 }
 
+                Spacer(modifier = Modifier.height(4.dp))
 
                 Row(
                     modifier = Modifier
                         .fillMaxWidth()
                 ) {
-                    Column(
-                        modifier = Modifier,
 
-                        ) {
-                        mentals.mentalSummary.forEach { mentalSummary ->
-                            Row(verticalAlignment = Alignment.Top) {
-                                Text(
-                                    text = "•",
-                                    style = MediCareCallTheme.typography.R_16,
-                                    color = MediCareCallTheme.colors.gray8
-                                )
-                                Spacer(modifier = Modifier.width(8.dp))
-                                Text(
-                                    text = mentalSummary,
-                                    style = MediCareCallTheme.typography.R_16,
-                                    color = MediCareCallTheme.colors.gray8
-                                )
+                    if (!mental.isRecorded) {
+                        Text(
+                            text = "건강징후 기록 전이에요.",
+                            style = MediCareCallTheme.typography.R_16,
+                            color = MediCareCallTheme.colors.gray4
+                        )
+                    } else {
+
+                        Column(
+                            modifier = Modifier,
+
+                            ) {
+                            mental.mentalSummary.forEach { mentalSummary ->
+                                Row(verticalAlignment = Alignment.Top) {
+                                    Text(
+                                        text = "•",
+                                        style = MediCareCallTheme.typography.R_16,
+                                        color = MediCareCallTheme.colors.gray8
+                                    )
+                                    Spacer(modifier = Modifier.width(8.dp))
+                                    Text(
+                                        text = mentalSummary,
+                                        style = MediCareCallTheme.typography.R_16,
+                                        color = MediCareCallTheme.colors.gray8
+                                    )
+                                }
+
                             }
-
-
                         }
                     }
                 }
@@ -112,7 +123,7 @@ fun StateMentalDetailCard(
 @Composable
 fun PreviewStateMentalDetailCard() {
     StateMentalDetailCard(
-        mentals = MentalUiState(
+        mental = MentalUiState(
             mentalSummary = listOf(
                 "날씨가 좋아서 기분이 좋음",
                 "여느 때와 비슷함"

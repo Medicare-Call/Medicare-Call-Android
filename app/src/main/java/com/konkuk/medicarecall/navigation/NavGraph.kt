@@ -5,11 +5,9 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 
 import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
@@ -20,15 +18,15 @@ import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseTiming
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseUiState
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen.GlucoseDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.MealDetail
-import com.konkuk.medicarecall.ui.homedetail.meal.screen.SleepDetail
-import com.konkuk.medicarecall.ui.homedetail.meal.screen.StateHealthDetail
-import com.konkuk.medicarecall.ui.homedetail.meal.screen.StateMentalDetail
-import com.konkuk.medicarecall.ui.homedetail.medicine.DoseStatus
-import com.konkuk.medicarecall.ui.homedetail.medicine.MedicineUiState
+import com.konkuk.medicarecall.ui.homedetail.sleep.screen.SleepDetail
+import com.konkuk.medicarecall.ui.homedetail.statehealth.screen.StateHealthDetail
+import com.konkuk.medicarecall.ui.homedetail.statemental.screen.StateMentalDetail
+import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatus
+import com.konkuk.medicarecall.ui.homedetail.medicine.model.MedicineUiState
 import com.konkuk.medicarecall.ui.homedetail.medicine.screen.MedicineDetail
-import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
-import com.konkuk.medicarecall.ui.homedetail.statehealth.HealthUiState
-import com.konkuk.medicarecall.ui.homedetail.statemental.MentalUiState
+import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepUiState
+import com.konkuk.medicarecall.ui.homedetail.statehealth.model.HealthUiState
+import com.konkuk.medicarecall.ui.homedetail.statemental.model.MentalUiState
 import com.konkuk.medicarecall.ui.login_care_call.screen.SetCallScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
@@ -96,84 +94,26 @@ fun NavGraph(
             }
 
 
-            // 홈 상세 화면_복용 화면 // 테스트
+            // 홈 상세 화면_복용 화면
             composable(route = Route.MedicineDetail.route) {
-                MedicineDetail(
-                    navController = navController,
-                    medicines = listOf(
-                        MedicineUiState(
-                            medicineName = "당뇨약",
-                            todayTakenCount = 2,
-                            todayRequiredCount = 3,
-                            nextDoseTime = null,
-                            doseStatusList = listOf(
-                                DoseStatus.TAKEN,
-                                DoseStatus.TAKEN,
-                                DoseStatus.NOT_RECORDED
-                            )
-                        ),
-                        MedicineUiState(
-                            medicineName = "혈압약",
-                            todayTakenCount = 0,
-                            todayRequiredCount = 2,
-                            nextDoseTime = null,
-                            doseStatusList = listOf(
-                                DoseStatus.SKIPPED,
-                                DoseStatus.NOT_RECORDED
-                            )
-                        )
-                    )
-                )
+                MedicineDetail(navController = navController)
             }
 
-            //홈 상세 화면_수면 화면 // 테스트
-
+            //홈 상세 화면_수면 화면
             composable(route = Route.SleepDetail.route) {
-                SleepDetail(
-                    navController = navController,
-                    sleeps = SleepUiState(
-                        date = "2025-07-07",
-                        totalSleepHours = 8,
-                        totalSleepMinutes = 12,
-                        bedTime = "오후 10:12",
-                        wakeUpTime = "오전 06:00",
-                    )
-                )
+                SleepDetail(navController = navController)
             }
 
 
-            //홈 상세 화면_건강 징후 화면 // 테스트
-
+            //홈 상세 화면_건강 징후 화면
             composable(route = Route.StateHealthDetail.route) {
-                StateHealthDetail(
-                    navController = navController,
-                    healths = HealthUiState(
-                        symptoms = listOf(
-                            "손 떨림 증상",
-                            "거동 불편",
-                            "몸이 느려짐"
-                        ),
-                        //TODO: 병명 볼드처리
-                        symptomAnalysis = "주요 증상으로 보아 파킨슨 병이 의심돼요. 어르신과 함께 병원에 방문해 보세요.",
-                        isRecorded = true
-                    )
-                )
+                StateHealthDetail(navController = navController)
             }
 
 
-            //홈 상세 화면_심리 상태 화면 // 테스트
-
+            //홈 상세 화면_심리 상태 화면
             composable(route = Route.StateMentalDetail.route) {
-                StateMentalDetail(
-                    navController = navController,
-                    mentals = MentalUiState(
-                        mentalSummary = listOf(
-                            "날씨가 좋아서 기분이 좋음",
-                            "여느 때와 비슷함"
-                        ),
-                        isRecorded = true
-                    )
-                )
+                StateMentalDetail(navController = navController)
             }
 
 

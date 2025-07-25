@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.homedetail.statemental
+package com.konkuk.medicarecall.ui.homedetail.statemental.model
 
 data class MentalUiState(
     val mentalSummary : List<String>, //심리 상태 요약 3줄

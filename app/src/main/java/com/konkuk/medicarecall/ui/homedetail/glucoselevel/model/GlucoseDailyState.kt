@@ -1,7 +1,7 @@
-package com.konkuk.medicarecall.ui.homedetail.glucoselevel
+package com.konkuk.medicarecall.ui.homedetail.glucoselevel.model
 
 
-data class GlucoseUiState(
+data class GlucoseDailyState(
     val selectedTiming: GlucoseTiming,// BEFORE_MEAL(공복) / AFTER_MEAL(식후)
 
     val dailyAverageBeforeMeal: Int, // 오늘 하루 평균 공복 혈당

@@ -69,6 +69,10 @@ fun LoginVerificationScreen(
             "확인",
             onClick = {
                 // TODO: 서버에 인증번호 보내서 확인하기
+                loginViewModel.postCertificationCode(
+                    loginViewModel.phoneNumber,
+                    loginViewModel.verificationCode
+                )
                 navController.navigate("login_my_info")
                 loginViewModel.updateLoginUiState(LoginUiState.EnterMyInfo)
                 loginViewModel.onVerificationCodeChanged("")

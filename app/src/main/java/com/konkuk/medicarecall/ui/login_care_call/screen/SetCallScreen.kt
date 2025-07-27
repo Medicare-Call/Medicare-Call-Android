@@ -43,6 +43,7 @@ import com.konkuk.medicarecall.ui.login_care_call.component.BenefitItem
 import com.konkuk.medicarecall.ui.login_care_call.component.TimePickerBottomSheet
 import com.konkuk.medicarecall.ui.login_care_call.component.TimeSettingItem
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
+import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.TimeSettingType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -66,19 +67,14 @@ fun Triple<Int, Int, Int>.toDisplayString(): String {
 fun SetCallScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
-    navController: NavHostController
+    navController: NavHostController,
+    loginSeniorViewModel: LoginSeniorViewModel
 ) {
     val scrollState = rememberScrollState() // 스크롤 상태
     var showBottomSheet by remember { mutableStateOf(false) } // 하단 시트 제어
-    val seniors = listOf("김옥자", "이순신", "홍길동","박막례","최길순") // 어르신 이름 리스트
-    // 추후 어르신 등록 시점에 등록된 어르신 이름 받아와서 등록하도록 수정 필요
+    val seniors = loginSeniorViewModel.seniorDataList.map { it.name } // 어르신 이름 리스트
+
     var selectedIndex by remember { mutableStateOf(0) } // 선택된 어르신 인덱스
-
-    var editingSlot by remember { mutableStateOf(TimeSettingType.FIRST) }
-
-    var firstTime by remember { mutableStateOf<Triple<Int, Int, Int>?>(null) }
-    var secondTime by remember { mutableStateOf<Triple<Int, Int, Int>?>(null) }
-    var thirdTime by remember { mutableStateOf<Triple<Int, Int, Int>?>(null) }
 
     // 어르신별 시간 저장 맵
     val timeMap = remember {
@@ -86,6 +82,8 @@ fun SetCallScreen(
             seniors.forEach { put(it, CallTimes()) }
         }
     }
+
+    val allComplete = seniors.isNotEmpty() && timeMap.values.all { it.first != null && it.second != null && it.third != null }
 
     Column(
         modifier = modifier
@@ -221,7 +219,6 @@ fun SetCallScreen(
                     timeType = TimeSettingType.FIRST,
                     timeText = null,
                     modifier = Modifier.clickable {
-                        editingSlot = TimeSettingType.FIRST
                         showBottomSheet = true
                     }
                 )
@@ -297,9 +294,9 @@ fun SetCallScreen(
             }
             Spacer(modifier = modifier.height(30.dp))
             CTAButton(
-                CTAButtonType.GREEN,
+                if (allComplete) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                 text = "확인",
-                { navController.navigate(Route.Payment.route) }) // 입력여부에 따라 Type 바뀌도록 수정 필요
+                { if (allComplete) navController.navigate(Route.Payment.route) }) // 입력여부에 따라 Type 바뀌도록 수정 필요
             if (showBottomSheet) {
                 TimePickerBottomSheet(
                     visible = true,

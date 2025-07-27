@@ -16,7 +16,7 @@ fun TopBar(onClick: () -> Unit, modifier: Modifier = Modifier) {
         modifier.fillMaxWidth()
     ) {
         Icon(
-            painter = painterResource(R.drawable.ic_back),
+            painter = painterResource(R.drawable.ic_settings_back),
             contentDescription = null,
             modifier = Modifier.clickable(
                 onClick = onClick

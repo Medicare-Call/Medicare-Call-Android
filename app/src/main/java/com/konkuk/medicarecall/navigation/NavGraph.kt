@@ -380,7 +380,6 @@ fun NavGraph(
 
             composable(route = Route.SetCall.route) {
                 SetCallScreen(
-                    name = "김옥자",
                     onBack = {
                         navController.popBackStack()
                     },

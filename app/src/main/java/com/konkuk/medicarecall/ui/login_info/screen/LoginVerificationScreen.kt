@@ -9,8 +9,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -22,6 +27,9 @@ import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlin.text.isDigit
 
 @Composable
@@ -31,6 +39,9 @@ fun LoginVerificationScreen(
     modifier: Modifier = Modifier
 ) {
     var scrollState = rememberScrollState()
+    val snackBarState = remember { SnackbarHostState() }
+    val coroutineScope = rememberCoroutineScope()
+
 
 
     Column(
@@ -64,15 +75,32 @@ fun LoginVerificationScreen(
         )
 
         Spacer(Modifier.height(30.dp))
+
         CTAButton(
             type = if (loginViewModel.verificationCode.length == 6) CTAButtonType.GREEN else CTAButtonType.DISABLED,
             "확인",
             onClick = {
                 // TODO: 서버에 인증번호 보내서 확인하기
-                navController.navigate("login_my_info")
-                loginViewModel.updateLoginUiState(LoginUiState.EnterMyInfo)
-                loginViewModel.onVerificationCodeChanged("")
-            })
+                coroutineScope.launch {
+                    if (loginViewModel.postCertificationCode(
+                            loginViewModel.phoneNumber,
+                            loginViewModel.verificationCode
+                        )
+                    ) {
+                        navController.navigate("login_my_info")
+                        loginViewModel.updateLoginUiState(LoginUiState.EnterMyInfo)
+                        loginViewModel.onVerificationCodeChanged("")
+                    } else {
+                        coroutineScope.launch {
+                            snackBarState.showSnackbar(
+                                message = "인증번호가 올바르지 않습니다",
+                                duration = SnackbarDuration.Long
+                            )
+                        }
+                    }
 
+                }
+            })
     }
+    SnackbarHost(snackBarState)
 }

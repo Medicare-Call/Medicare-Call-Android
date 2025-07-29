@@ -10,7 +10,7 @@ data class GlucoseDailyState(
     val recentAfterMeal: Int,        // 어제 마지막 평균 식후 혈당
     val glucoseLevelStatusBeforeMeal: String,  // 공복 혈당 상태 (낮음/정상/높음)
     val glucoseLevelStatusAfterMeal: String,   // 식후 혈당 상태 (낮음/정상/높음)
-    val isRecorded: Boolean           // 기록 여부
+    val isRecorded: Boolean? = false        // 기록 여부
 
 )
 

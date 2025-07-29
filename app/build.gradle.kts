@@ -34,8 +34,8 @@ android {
             load(project.rootProject.file("local.properties").inputStream())
         }
 
-        val baseUrl = properties["base.url"]?.toString()?.let { "\"$it\"" } ?: "\"\""
-        buildConfigField("String", "BASE_URL", baseUrl)
+        val baseUrl: String by project
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 
     buildTypes {

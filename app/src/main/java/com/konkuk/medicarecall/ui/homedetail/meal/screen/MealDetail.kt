@@ -35,8 +35,6 @@ fun MealDetail(
 ) {
     val viewModel = hiltViewModel<MealViewModel>()
     val selectedDate by viewModel.selectedDate.collectAsState()
-    val weekDates = viewModel.getCurrentWeekDates()
-
     val meals by viewModel.meals.collectAsState()
 
     Surface(

@@ -1,6 +1,6 @@
 package com.konkuk.medicarecall.ui.homedetail.meal.model
 
-data class MealResponse(
+data class MealResponseDto(
     val date: String,
     val meals: MealData
 )

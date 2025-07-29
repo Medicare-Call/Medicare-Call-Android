@@ -1,10 +1,13 @@
+import org.gradle.api.internal.DocumentationRegistry.BASE_URL
+import org.gradle.kotlin.dsl.implementation
 import java.util.Properties
+import kotlin.apply
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "1.8.10"
+    kotlin("plugin.serialization") version "2.0.21"
 
 }
 
@@ -31,8 +34,8 @@ android {
             load(project.rootProject.file("local.properties").inputStream())
         }
 
-        val baseUrl = properties["base.url"].toString()
-        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
+        val baseUrl = properties["base.url"]?.toString()?.let { "\"$it\"" } ?: "\"\""
+        buildConfigField("String", "BASE_URL", baseUrl)
     }
 
     buildTypes {

@@ -9,11 +9,13 @@ import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.data.repository.VerificationRepository
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
+import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import kotlinx.coroutines.withContext
 
 
 class LoginViewModel(
@@ -102,20 +104,31 @@ class LoginViewModel(
         }
     }
 
-    fun postCertificationCode(phone: String, code: String) {
-        viewModelScope.launch {
+    var isVerified = false
+    var token = ""
+        private set
+
+    suspend fun postCertificationCode(phone: String, code: String): Boolean {
+        return withContext(Dispatchers.IO) {
             verificationRepository.confirmPhoneNumber(phone, code).fold(
                 onSuccess = {
                     Log.d(
                         "phoneveri",
-                        "성공, ${it.message} ${it.memberStatus} ${it.token} ${it.verified} ${it.nextAction}"
+                        "${it.message} ${it.memberStatus} ${it.token} ${it.verified} ${it.nextAction}"
                     )
+                    isVerified = it.verified
+                    if (isVerified) {
+                        token = it.token
+                    }
+                    it.verified
+
                 },
                 onFailure = { error ->
                     Log.d("phoneveri", "실패, ${error.message.toString()}")
+                    false
                 }
             )
         }
     }
-
 }
+

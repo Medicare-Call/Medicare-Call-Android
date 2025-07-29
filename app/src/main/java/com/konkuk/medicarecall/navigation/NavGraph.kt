@@ -13,20 +13,15 @@ import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseGraphState
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseTiming
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseUiState
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseWeeklyState
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseDailyState
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen.GlucoseDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.MealDetail
 import com.konkuk.medicarecall.ui.homedetail.sleep.screen.SleepDetail
 import com.konkuk.medicarecall.ui.homedetail.statehealth.screen.StateHealthDetail
 import com.konkuk.medicarecall.ui.homedetail.statemental.screen.StateMentalDetail
-import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatus
-import com.konkuk.medicarecall.ui.homedetail.medicine.model.MedicineUiState
 import com.konkuk.medicarecall.ui.homedetail.medicine.screen.MedicineDetail
-import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepUiState
-import com.konkuk.medicarecall.ui.homedetail.statehealth.model.HealthUiState
-import com.konkuk.medicarecall.ui.homedetail.statemental.model.MentalUiState
 import com.konkuk.medicarecall.ui.login_care_call.screen.SetCallScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
@@ -117,34 +112,10 @@ fun NavGraph(
             }
 
 
-            //홈 상세 화면_혈당 화면 // 테스트
+            //홈 상세 화면_혈당 화면
 
             composable(route = Route.GlucoseDetail.route) {
-                GlucoseDetail(
-                    navController = navController,
-
-                    glucose = GlucoseUiState(
-                        selectedTiming = GlucoseTiming.BEFORE_MEAL,   // 공복 기본 선택
-
-                        dailyAverageBeforeMeal = 120,   // 오늘 하루 평균 공복 혈당
-                        dailyAverageAfterMeal = 120,    // 오늘 하루 평균 식후 혈당
-                        recentBeforeMeal = 127,         // 어제 마지막 공복 혈당
-                        recentAfterMeal = 127,          // 어제 마지막 식후 혈당
-                        glucoseLevelStatusBeforeMeal = "정상",   // 공복 상태
-                        glucoseLevelStatusAfterMeal = "정상",     // 식후 상태
-                        isRecorded = true           // 기록 여부
-                    ),
-
-                    graph = GlucoseGraphState(
-
-                        beforeMealGraph = listOf(60, 75, 90, 110, 200, 130, 100),  // 공복 주간 데이터
-                        afterMealGraph = listOf(60, 75, 90, 110, 200, 130, 100),   // 식후 주간 데이터
-                        weekLabels = listOf("일", "월", "화", "수", "목", "금", "토")
-
-                    )
-
-
-                )
+                GlucoseDetail(navController = navController)
             }
 
 

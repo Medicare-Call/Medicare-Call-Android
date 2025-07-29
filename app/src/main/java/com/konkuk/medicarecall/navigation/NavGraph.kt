@@ -7,9 +7,11 @@ import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 
 import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
@@ -398,11 +400,16 @@ fun NavGraph(
                 )
             }
 
-            composable(route = Route.NaverPay.route) {
+            composable(
+                route = Route.NaverPay.route,
+                arguments = listOf(navArgument("payUrl") {
+                    type = NavType.StringType
+                })
+            ) { backStackEntry ->
+                val url = backStackEntry.arguments!!.getString("payUrl")!!
                 NaverPayScreen(
-                    onBack = {
-                        navController.popBackStack()
-                    },
+                    payUrl = url,
+                    onBack = { navController.popBackStack() },
                     navController = navController
                 )
             }

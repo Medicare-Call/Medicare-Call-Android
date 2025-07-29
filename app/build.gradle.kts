@@ -1,13 +1,10 @@
-import org.gradle.api.internal.DocumentationRegistry.BASE_URL
-import org.gradle.kotlin.dsl.implementation
 import java.util.Properties
-import kotlin.apply
 
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
-    kotlin("plugin.serialization") version "2.0.21"
+    kotlin("plugin.serialization") version "1.8.10"
 
 }
 
@@ -35,7 +32,7 @@ android {
         }
 
         val baseUrl = properties["base.url"].toString()
-        buildConfigField("String", "BASE_URL", baseUrl)
+        buildConfigField("String", "BASE_URL", "\"$baseUrl\"")
     }
 
     buildTypes {
@@ -96,6 +93,11 @@ dependencies {
     // OkHttp
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
+
+    // AndroidX WebView
+    implementation("androidx.webkit:webkit:1.5.0")
+    // 또는 Accompanist WebView (Compose 특화)
+    //implementation("com.google.accompanist:accompanist-webview:0.30.1")
 
 
 }

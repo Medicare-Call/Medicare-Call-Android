@@ -28,8 +28,8 @@ fun GlucoseStatusChip(
 
     val statusColor = when (statusText) {
         "높음" -> MediCareCallTheme.colors.negative
-        "낮음" -> MediCareCallTheme.colors.positive
-        else -> MediCareCallTheme.colors.main
+        "낮음" -> MediCareCallTheme.colors.active
+        else -> MediCareCallTheme.colors.positive
     }
 
 

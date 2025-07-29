@@ -72,6 +72,7 @@ fun LoginPhoneScreen(
             "인증번호 받기",
             {
                 // TODO: 서버에 인증번호 요청하기
+                loginViewModel.postPhoneNumber(loginViewModel.phoneNumber)
                 loginViewModel.updateLoginUiState(LoginUiState.EnterVerificationCode)
                 navController.navigate("login_verification")
             })

@@ -1,8 +1,10 @@
 package com.konkuk.medicarecall.ui.login_care_call.screen
 
+import android.R.attr.name
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -13,50 +15,75 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.lazy.LazyRow
+import androidx.compose.foundation.lazy.itemsIndexed
+import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
+import com.konkuk.medicarecall.ui.component.ChipItem
 import com.konkuk.medicarecall.ui.login_care_call.component.BenefitItem
 import com.konkuk.medicarecall.ui.login_care_call.component.TimePickerBottomSheet
 import com.konkuk.medicarecall.ui.login_care_call.component.TimeSettingItem
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
+import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.TimeSettingType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import kotlinx.coroutines.launch
 
+// 어르신별 세 번의 콜 타임을 저장할 데이터 클래스
+data class CallTimes(
+    val first: Triple<Int, Int, Int>? = null,
+    val second: Triple<Int, Int, Int>? = null,
+    val third: Triple<Int, Int, Int>? = null
+)
+
+// helper: Triple을 "오전/오후 hh시 mm분" 형태로 바꿔주는 함수
+fun Triple<Int, Int, Int>.toDisplayString(): String {
+    val (amPm, h, m) = this
+    val period = if (amPm == 0) "오전" else "오후"
+    return "${period} ${h.toString().padStart(2, '0')}시 ${m.toString().padStart(2, '0')}분"
+}
 
 @Composable
 fun SetCallScreen(
     modifier: Modifier = Modifier,
-    name: String,
     onBack: () -> Unit = {},
-    navController: NavHostController
+    navController: NavHostController,
+    loginSeniorViewModel: LoginSeniorViewModel
 ) {
-    val scrollState = rememberScrollState()
-    var showBottomSheet by remember { mutableStateOf(false) }
-    var editingSlot by remember { mutableStateOf(TimeSettingType.FIRST) }
+    val scrollState = rememberScrollState() // 스크롤 상태
+    var showBottomSheet by remember { mutableStateOf(false) } // 하단 시트 제어
+    val seniors = loginSeniorViewModel.seniorDataList.map { it.name } // 어르신 이름 리스트
 
-    var firstTime by remember { mutableStateOf<Triple<Int, Int, Int>?>(null) }
-    var secondTime by remember { mutableStateOf<Triple<Int, Int, Int>?>(null) }
+    var selectedIndex by remember { mutableStateOf(0) } // 선택된 어르신 인덱스
 
-    // helper: Triple을 "오전/오후 hh시 mm분" 형태로 바꿔주는 함수
-    fun Triple<Int, Int, Int>.toDisplayString(): String {
-        val (amPm, h, m) = this
-        val period = if (amPm == 0) "오전" else "오후"
-        return "${period} ${h.toString().padStart(2, '0')}시 ${m.toString().padStart(2, '0')}분"
+    // 어르신별 시간 저장 맵
+    val timeMap = remember {
+        mutableStateMapOf<String, CallTimes>().apply {
+            seniors.forEach { put(it, CallTimes()) }
+        }
     }
+
+    val allComplete = seniors.isNotEmpty() && timeMap.values.all { it.first != null && it.second != null && it.third != null }
 
     Column(
         modifier = modifier
@@ -72,18 +99,11 @@ fun SetCallScreen(
             modifier = modifier.verticalScroll(scrollState)
         ) {
             Text(
-                text = "케이콜 설정",
+                text = "케이콜 설정하기",
                 style = MediCareCallTheme.typography.M_17,
                 color = MediCareCallTheme.colors.gray8
             )
             Spacer(modifier = modifier.height(20.dp))
-            Text(
-                text = "$name 님께 맞는\n 맞춤형 케어플랜을 만들었어요",
-                style = MediCareCallTheme.typography.B_26,
-                color = MediCareCallTheme.colors.black,
-                modifier = modifier.fillMaxWidth()
-            )
-            Spacer(modifier = modifier.height(24.dp))
             Column(
                 modifier = modifier
                     .fillMaxWidth()
@@ -151,28 +171,85 @@ fun SetCallScreen(
                 style = MediCareCallTheme.typography.M_17,
                 color = MediCareCallTheme.colors.gray8
             )
+            Spacer(modifier = modifier.height(10.dp))
+            val listState = rememberLazyListState()
+            val scope = rememberCoroutineScope()
+
+            LazyRow(
+                state = listState,
+                modifier = Modifier
+                    .fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(10.dp)
+            ) {
+                itemsIndexed(seniors) { idx, name ->
+                    Text(
+                        text = name,
+                        modifier = Modifier
+                            .border(
+                                width = if (idx == selectedIndex) 0.dp else (1.2).dp,
+                                color = if (idx == selectedIndex) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray2,
+                                shape = RoundedCornerShape(100.dp)
+                            )
+                            .background(
+                                color = if (idx == selectedIndex) MediCareCallTheme.colors.main else Color.Transparent,
+                                shape = RoundedCornerShape(100.dp)
+                            )
+                            .clickable {
+                                selectedIndex = idx
+                                scope.launch {
+                                    listState.animateScrollToItem(idx)
+                                }
+                            }
+                            .padding(vertical = 6.dp, horizontal = 24.dp),
+                        color = if (idx == selectedIndex) MediCareCallTheme.colors.g50 else MediCareCallTheme.colors.gray5,
+                        style = if (idx == selectedIndex) MediCareCallTheme.typography.SB_14 else MediCareCallTheme.typography.R_14
+                    )
+                }
+            }
             Spacer(modifier = modifier.height(30.dp))
-            TimeSettingItem(
-                category = "1차",
-                timeType = TimeSettingType.FIRST,
-                timeText = firstTime?.toDisplayString(),
-                modifier = Modifier.clickable {
-                    editingSlot = TimeSettingType.FIRST
-                    showBottomSheet = true
-                }
-            )
-            Spacer(modifier = modifier.height(20.dp))
-            if (secondTime != null) {
-            TimeSettingItem(
-                category = "2차",
-                timeType = TimeSettingType.SECOND,
-                timeText = secondTime?.toDisplayString(),
-                modifier = Modifier.clickable {
-                    editingSlot = TimeSettingType.SECOND
-                    showBottomSheet = true
-                }
-            ) // 여기 없앨 수도 있음
-                }
+
+            // 시간 설정 항목
+            val selectedName = seniors[selectedIndex]
+            val callTimes = timeMap[selectedName]!!
+
+
+            if (callTimes.first == null) {
+                TimeSettingItem(
+                    category = "1차",
+                    timeType = TimeSettingType.FIRST,
+                    timeText = null,
+                    modifier = Modifier.clickable {
+                        showBottomSheet = true
+                    }
+                )
+            } else {
+                TimeSettingItem(
+                    category = "1차",
+                    timeType = TimeSettingType.FIRST,
+                    timeText = callTimes.first.toDisplayString(),
+                    modifier = Modifier.clickable {
+                        showBottomSheet = true
+                    }
+                )
+                    Spacer(modifier = modifier.height(20.dp))
+                    TimeSettingItem(
+                        category = "2차",
+                        timeType = TimeSettingType.SECOND,
+                        timeText = callTimes.second?.toDisplayString(),
+                        modifier = Modifier.clickable {
+                            showBottomSheet = true
+                        }
+                    )
+                    Spacer(modifier = modifier.height(20.dp))
+                    TimeSettingItem(
+                        category = "3차",
+                        timeType = TimeSettingType.THIRD,
+                        timeText = callTimes.third?.toDisplayString(),
+                        modifier = Modifier.clickable {
+                            showBottomSheet = true
+                        }
+                    )
+            }
             Spacer(modifier = modifier.height(30.dp))
 
             // 안내 사항
@@ -199,7 +276,7 @@ fun SetCallScreen(
                     verticalArrangement = Arrangement.spacedBy(10.dp)
                 ) {
                     Text(
-                        text = "부재중일 경우 5분 단위로 3회 재발신, 전화 설정에서 수정 가능",
+                        text = "부재중일 경우 5분 단위로 3회 재발신, 전화 설정에서 수정 가능합니다",
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray8
                     )
@@ -217,23 +294,29 @@ fun SetCallScreen(
             }
             Spacer(modifier = modifier.height(30.dp))
             CTAButton(
-                CTAButtonType.GREEN,
+                if (allComplete) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                 text = "확인",
-                { navController.navigate(Route.Payment.route) }) // 입력여부에 따라 Type 바뀌도록 수정 필요
+                { if (allComplete) navController.navigate(Route.Payment.route) }) // 입력여부에 따라 Type 바뀌도록 수정 필요
             if (showBottomSheet) {
                 TimePickerBottomSheet(
                     visible = true,
                     // 기존에 선택됐던 값을 다시 초기값으로 넘겨주면 UX가 매끄러워집니다.
-                    initialFirstAmPm   = firstTime?.first  ?: 0,
-                    initialFirstHour   = firstTime?.second ?: 12,
-                    initialFirstMinute = firstTime?.third  ?: 0,
-                    initialSecondAmPm   = secondTime?.first  ?: 0,
-                    initialSecondHour   = secondTime?.second ?: 12,
-                    initialSecondMinute = secondTime?.third  ?: 0,
+                    initialFirstAmPm   = callTimes.first?.first  ?: 0,
+                    initialFirstHour   = callTimes.first?.second ?: 12,
+                    initialFirstMinute = callTimes.first?.third  ?: 0,
+                    initialSecondAmPm   = callTimes.second?.first  ?: 0,
+                    initialSecondHour   = callTimes.second?.second ?: 12,
+                    initialSecondMinute = callTimes.second?.third  ?: 0,
+                    initialThirdAmPm   = callTimes.third?.first  ?: 0,
+                    initialThirdHour   = callTimes.third?.second ?: 12,
+                    initialThirdMinute = callTimes.third?.third  ?: 0,
                     onDismiss = { showBottomSheet = false },
-                    onConfirm = { fAm, fH, fM, sAm, sH, sM ->
-                        firstTime  = Triple(fAm,  fH,  fM)
-                        secondTime = Triple(sAm,  sH,  sM)
+                    onConfirm = { fAm, fH, fM, sAm, sH, sM, tAm,tH,tM ->
+                        timeMap[selectedName] = CallTimes(
+                            first  = Triple(fAm, fH, fM),
+                            second = Triple(sAm, sH, sM),
+                            third  = Triple(tAm, tH, tM)
+                        )
                         showBottomSheet = false
                     },
                 )

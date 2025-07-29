@@ -4,6 +4,7 @@ import androidx.compose.foundation.BorderStroke
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -34,13 +35,15 @@ import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_payment.component.PayResultItem
+import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifier: Modifier = Modifier) {
+fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifier: Modifier = Modifier, loginSeniorViewModel : LoginSeniorViewModel) {
     val scrollState = rememberScrollState()
     var isClicked by remember { mutableStateOf(false) }
+    val seniors = loginSeniorViewModel.seniorDataList.map { it.name }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -58,20 +61,11 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                 style = MediCareCallTheme.typography.B_26,
                 color = MediCareCallTheme.colors.black
             )
-            Spacer(modifier = modifier.height(26.dp))
+            Spacer(modifier = modifier.height(56.dp))
         }
-        Box(
-            modifier = modifier
-                .fillMaxWidth()
-                .height(10.dp)
-                .background(MediCareCallTheme.colors.gray1)
-        )
-        Column(
-            modifier = modifier
-                .verticalScroll(scrollState)
-        ) {
+
             Column(
-                modifier = modifier.padding(horizontal = 20.dp)
+                modifier = modifier.verticalScroll(scrollState).padding(horizontal = 20.dp)
                     .padding(vertical = 20.dp)
             ) {
                 Row(
@@ -85,7 +79,7 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                     )
                     Spacer(modifier = modifier.width(8.dp))
                     Text(
-                        text = "2명",
+                        text = "${seniors.size}명",
                         style = MediCareCallTheme.typography.R_14,
                         color = MediCareCallTheme.colors.gray5
                     )
@@ -102,10 +96,12 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                         .background(
                             MediCareCallTheme.colors.white, shape = RoundedCornerShape(14.dp)
                         )
-                        .padding(16.dp)
+                        .padding(16.dp),
+                    verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    PayResultItem("김옥자", "29,000")
-                    PayResultItem("박막례", "29,000")
+                    seniors.forEach { senior ->
+                        PayResultItem(senior, "29,000")
+                    }
                 }
             }
 
@@ -153,7 +149,7 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                     text = "결제하기",
                     onClick = {if (isClicked) navController.navigate(Route.NaverPay.route)})
             }
-        }
+
     }
 }
 

@@ -1,14 +1,22 @@
+
 plugins {
     alias(libs.plugins.android.application)
     alias(libs.plugins.kotlin.android)
     alias(libs.plugins.kotlin.compose)
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
+    kotlin("plugin.serialization") version "2.0.21"
 }
+
 
 android {
     namespace = "com.konkuk.medicarecall"
     compileSdk = 36
+
+    buildFeatures {
+        buildConfig = true
+    }
+
 
     defaultConfig {
         applicationId = "com.konkuk.medicarecall"
@@ -18,6 +26,13 @@ android {
         versionName = "1.0"
 
         testInstrumentationRunner = "androidx.test.runner.AndroidJUnitRunner"
+
+        val properties = Properties().apply {
+            load(project.rootProject.file("local.properties").inputStream())
+        }
+
+        val baseUrl = properties["base.url"]?.toString()?.let { "\"$it\"" } ?: "\"\""
+        buildConfigField("String", "BASE_URL", baseUrl)
     }
 
     buildTypes {

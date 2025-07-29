@@ -291,11 +291,11 @@ fun NavGraph(
 
             composable(route = Route.SetCall.route) {
                 SetCallScreen(
-                    name = "김옥자",
                     onBack = {
                         navController.popBackStack()
                     },
                     navController = navController,
+                    loginSeniorViewModel = loginSeniorViewModel
                 ) // 예시로 이름을 넣었지만, 실제로는 필요한 데이터를 전달해야 합니다.
             }
 
@@ -304,7 +304,8 @@ fun NavGraph(
                     onBack = {
                         navController.popBackStack()
                     },
-                    navController = navController
+                    navController = navController,
+                    loginSeniorViewModel = loginSeniorViewModel
                 )
             }
 

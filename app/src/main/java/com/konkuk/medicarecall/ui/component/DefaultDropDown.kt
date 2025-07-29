@@ -6,6 +6,7 @@ import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -24,6 +25,7 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
@@ -53,11 +55,16 @@ fun <T> DefaultDropdown(
 
     var showDropdown by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf("") }
+    var scrollNow by remember { mutableIntStateOf(0)}
 
     LaunchedEffect(showDropdown) {
+
         if (showDropdown) {
-            delay(250L)
-            scrollState.animateScrollTo(scrollState.maxValue)
+            scrollNow = scrollState.value
+            scrollState.animateScrollTo(scrollState.value+200)
+        }
+        else {
+            scrollState.animateScrollTo(scrollNow)
         }
     }
 
@@ -107,7 +114,7 @@ fun <T> DefaultDropdown(
         )
 
 
-        AnimatedVisibility(visible = showDropdown) {
+        AnimatedVisibility(showDropdown) {
             val dropdownScrollState = rememberScrollState()
 
 

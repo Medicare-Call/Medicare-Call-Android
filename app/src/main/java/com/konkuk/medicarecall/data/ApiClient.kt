@@ -13,7 +13,6 @@ object ApiClient {
 
     val contentType = "application/json".toMediaType()
     val json = Json { ignoreUnknownKeys = true
-        explicitNulls = false
     }
 
     private val retrofit = Retrofit.Builder()

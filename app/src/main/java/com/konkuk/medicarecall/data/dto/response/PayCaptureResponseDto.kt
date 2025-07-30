@@ -1,9 +1,8 @@
 package com.konkuk.medicarecall.data.dto.response
 
-import android.os.Message
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class PayCaptureResponse(
+data class PayCaptureResponseDto(
     val message: String
 )

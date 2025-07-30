@@ -2,7 +2,7 @@ package com.konkuk.medicarecall.data.api
 
 import com.konkuk.medicarecall.data.dto.request.PayCaptureRequestDto
 import com.konkuk.medicarecall.data.dto.request.PayRequestDto
-import com.konkuk.medicarecall.data.dto.response.PayCaptureResponse
+import com.konkuk.medicarecall.data.dto.response.PayCaptureResponseDto
 import com.konkuk.medicarecall.data.dto.response.PayResponse
 import retrofit2.Response
 import retrofit2.http.Body
@@ -19,5 +19,5 @@ interface NaverPayService {
     @POST("naverpay/capture")
     suspend fun postPayCaptureData(
         @Body payCaptureRequestDto: PayCaptureRequestDto
-    ): Response<PayCaptureResponse>
+    ): Response<PayCaptureResponseDto>
 }

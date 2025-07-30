@@ -28,6 +28,9 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -38,10 +41,14 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.NameBar
+import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
+import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.home.NameDropdown
 import com.konkuk.medicarecall.ui.home.component.HomeGlucoseLevelContainer
 import com.konkuk.medicarecall.ui.home.component.HomeMealContainer
@@ -49,9 +56,12 @@ import com.konkuk.medicarecall.ui.home.component.HomeMedicineContainer
 import com.konkuk.medicarecall.ui.home.component.HomeSleepContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateHealthContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateMentalContainer
-import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
+import com.konkuk.medicarecall.ui.home.model.HomeUiState
+import com.konkuk.medicarecall.ui.homedetail.meal.MealViewModel
+import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
+
 import kotlin.collections.listOf
 
 @Composable
@@ -65,7 +75,21 @@ fun HomeScreen(
     onNavigateToStateMentalDetail: () -> Unit,
     onNavigateToGlucoseDetail: () -> Unit,
 ) {
+    val calendarViewModel: CalendarViewModel = hiltViewModel()
+    val homeViewModel: HomeViewModel = hiltViewModel()
+
+    val selectedDate by calendarViewModel.selectedDate.collectAsState()
+    val homeUiState by homeViewModel.homeUiState.collectAsState(initial = HomeUiState.EMPTY)
+    LaunchedEffect(selectedDate) {
+        homeViewModel.selectDate(selectedDate)
+    }
+
+
     val dropdownOpened = remember { mutableStateOf(false) }
+
+
+
+
     Box(modifier = Modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
@@ -109,6 +133,7 @@ fun HomeScreen(
 
 
                         val balloonText = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요."
+                        //val balloonText = homeUiState?.balloonMessage ?: "기본 메시지"
                         val trimmedText = balloonText.take(40) // 글자 수 제한
 
 
@@ -147,7 +172,7 @@ fun HomeScreen(
                     //캐릭터 그림자
                     Image(
                         painter = painterResource(id = R.drawable.char_medi_shadow),
-                        contentDescription = null,
+                        contentDescription = "캐릭터 그림자",
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .offset(x = (-52.13).dp, y = -56.19.dp)
@@ -156,7 +181,7 @@ fun HomeScreen(
                     //캐릭터
                     Image(
                         painter = painterResource(id = R.drawable.char_medi),
-                        contentDescription = null, //캐릭터 이미지
+                        contentDescription = "캐릭터 이미지",
                         modifier = Modifier
                             .align(Alignment.BottomEnd)
                             .offset(x = (-7.75).dp, y = -55.12.dp)
@@ -185,6 +210,9 @@ fun HomeScreen(
                     ) {
                         Spacer(Modifier.height(12.dp))
                         HomeMealContainer(
+                            breakfastEaten = homeUiState.breakfastEaten,
+                            lunchEaten = homeUiState.lunchEaten,
+                            dinnerEaten = homeUiState.dinnerEaten,
                             onClick = { onNavigateToMealDetail() }
                         )
                         Spacer(Modifier.height(12.dp))
@@ -198,16 +226,19 @@ fun HomeScreen(
                                 totalSleepHours = 8,
                                 totalSleepMinutes = 12,
                                 bedTime = "오후 10:12",
-                                wakeUpTime = "오전 06:00"
+                                wakeUpTime = "오전 06:00",
+                                isRecorded = true
                             ),
                             onClick = { onNavigateToSleepDetail() }
                         )
                         Spacer(Modifier.height(12.dp))
                         HomeStateHealthContainer(
+                            healthStatus = homeUiState.healthStatus,
                             onClick = { onNavigateToStateHealthDetail() }
                         )
                         Spacer(Modifier.height(12.dp))
                         HomeStateMentalContainer(
+                            mentalStatus = homeUiState.mentalStatus,
                             onClick = { onNavigateToStateMentalDetail() }
                         )
                         Spacer(Modifier.height(12.dp))

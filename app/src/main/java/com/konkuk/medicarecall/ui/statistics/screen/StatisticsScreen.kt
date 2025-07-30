@@ -24,10 +24,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.NameBar
 import com.konkuk.medicarecall.ui.home.NameDropdown
-import com.konkuk.medicarecall.ui.statistics.WeeklyGlucoseUiState
-import com.konkuk.medicarecall.ui.statistics.WeeklyMealUiState
-import com.konkuk.medicarecall.ui.statistics.WeeklyMedicineUiState
-import com.konkuk.medicarecall.ui.statistics.WeeklyMentalUiState
+import com.konkuk.medicarecall.ui.statistics.model.WeeklyGlucoseUiState
+import com.konkuk.medicarecall.ui.statistics.model.WeeklyMealUiState
+import com.konkuk.medicarecall.ui.statistics.model.WeeklyMedicineUiState
+import com.konkuk.medicarecall.ui.statistics.model.WeeklyMentalUiState
 import com.konkuk.medicarecall.ui.statistics.component.WeekendBar
 import com.konkuk.medicarecall.ui.statistics.weeklycard.WeeklyGlucoseCard
 import com.konkuk.medicarecall.ui.statistics.weeklycard.WeeklyHealthCard
@@ -60,7 +60,6 @@ fun StatisticsScreen(
 
         Column(
             modifier = Modifier
-                .weight(1f)
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 20.dp, vertical = 24.dp)
         ) {
@@ -159,8 +158,6 @@ fun StatisticsScreen(
         )
 
     }
-
-
 }
 
 

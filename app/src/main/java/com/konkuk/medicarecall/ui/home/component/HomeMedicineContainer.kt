@@ -71,7 +71,7 @@ fun HomeMedicineContainer(
 
             Spacer(modifier = Modifier.height(8.dp))
 
-            //2) 복용횟수
+            //2) 복약 횟수
 
 
             // 전체

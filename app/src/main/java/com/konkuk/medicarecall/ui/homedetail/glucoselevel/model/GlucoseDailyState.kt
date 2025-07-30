@@ -1,7 +1,7 @@
-package com.konkuk.medicarecall.ui.homedetail.glucoselevel
+package com.konkuk.medicarecall.ui.homedetail.glucoselevel.model
 
 
-data class GlucoseUiState(
+data class GlucoseDailyState(
     val selectedTiming: GlucoseTiming,// BEFORE_MEAL(공복) / AFTER_MEAL(식후)
 
     val dailyAverageBeforeMeal: Int, // 오늘 하루 평균 공복 혈당
@@ -10,7 +10,7 @@ data class GlucoseUiState(
     val recentAfterMeal: Int,        // 어제 마지막 평균 식후 혈당
     val glucoseLevelStatusBeforeMeal: String,  // 공복 혈당 상태 (낮음/정상/높음)
     val glucoseLevelStatusAfterMeal: String,   // 식후 혈당 상태 (낮음/정상/높음)
-    val isRecorded: Boolean           // 기록 여부
+    val isRecorded: Boolean? = false        // 기록 여부
 
 )
 

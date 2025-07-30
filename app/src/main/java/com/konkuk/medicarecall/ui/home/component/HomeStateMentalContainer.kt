@@ -29,6 +29,7 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 @Composable
 fun HomeStateMentalContainer(
     modifier: Modifier = Modifier,
+    mentalStatus: String,
             onClick: () -> Unit
 ) {
 
@@ -85,7 +86,7 @@ fun HomeStateMentalContainer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "좋음",
+                        text = mentalStatus.ifBlank { "미기록" },
                         style = MediCareCallTheme.typography.SB_22,
                         color = MediCareCallTheme.colors.gray8,
                     )
@@ -105,6 +106,8 @@ fun HomeStateMentalContainer(
 @Composable
 fun PreviewHomeStateMentalContainer() {
 
-
-    HomeStateMentalContainer(onClick = {})
+    HomeStateMentalContainer(
+        mentalStatus = "좋음",
+        onClick = {}
+    )
 }

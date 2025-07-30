@@ -19,7 +19,7 @@ import androidx.compose.ui.graphics.Color
 
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.konkuk.medicarecall.ui.homedetail.sleep.SleepUiState
+import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepUiState
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
@@ -59,7 +59,7 @@ fun SleepDetailCard(
                 Column {
 
                     Text(
-                        text = "건강징후 요약",
+                        text = "총 수면시간",
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray5
                     )
@@ -70,20 +70,20 @@ fun SleepDetailCard(
                         verticalAlignment = Alignment.Bottom
                     ) {
                         Text(
-                            text = "${sleeps.totalSleepHours}",
+                            text = if (sleeps.isRecorded) "${sleeps.totalSleepHours}" else "--",
                             style = MediCareCallTheme.typography.SB_22,
                             color = MediCareCallTheme.colors.gray8,
                         )
                         Spacer(modifier = Modifier.width(4.dp))
                         Text(
-                            "시간",
+                            "시",
                             style = MediCareCallTheme.typography.R_16,
                             color = MediCareCallTheme.colors.gray8,
                         )
                         Spacer(modifier = Modifier.width(4.dp))
 
                         Text(
-                            text = "${sleeps.totalSleepMinutes}",
+                            text = if (sleeps.isRecorded) "${sleeps.totalSleepMinutes}" else "--",
                             style = MediCareCallTheme.typography.SB_22,
                             color = MediCareCallTheme.colors.gray8,
                         )
@@ -175,7 +175,8 @@ fun PreviewSleepDetailCard() {
             totalSleepHours = 8,
             totalSleepMinutes = 12,
             bedTime = "오후 10:12",
-            wakeUpTime = "오전 06:00"
+            wakeUpTime = "오전 06:00",
+            isRecorded = true
         )
     )
 

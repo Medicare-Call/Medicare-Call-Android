@@ -408,7 +408,7 @@ fun NavGraph(
             ) { backStackEntry ->
                 val url = backStackEntry.arguments!!.getString("payUrl")!!
                 NaverPayScreen(
-                    payUrl = url,
+//                    payUrl = url,
                     onBack = { navController.popBackStack() },
                     navController = navController
                 )

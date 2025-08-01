@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.homedetail
+package com.konkuk.medicarecall.ui.calendar
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
@@ -19,15 +19,16 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import java.time.LocalDate
 
 @Composable
 fun WeeklyCalendar(
+    calendarUiState: CalendarUiState,        // 현재 선택된 연/월/주차 날짜 상태
+    onDateSelected: (LocalDate) -> Unit      // 날짜 클릭 시 동작할 콜백
 
-    calendarUiState: CalendarUiState,
-    onDateSelected: (Int) -> Unit
 
 ) {
-    val weekDays = listOf("일", "월", "화", "수", "목", "금", "토")
+    val weekDays = listOf("일", "월", "화", "수", "목", "금", "토") // 요일 표시
 
     Column(modifier = Modifier.fillMaxWidth()) {
 
@@ -64,24 +65,24 @@ fun WeeklyCalendar(
             horizontalArrangement = Arrangement.SpaceBetween
         ) {
             calendarUiState.weekDates.forEach { date ->
+
+                val isSelected = date == calendarUiState.selectedDate
+
                 Box(
                     modifier = Modifier
                         .size(29.dp)
                         .clip(CircleShape)
-                        .background(
-                            if (date == calendarUiState.selectedDate) MediCareCallTheme.colors.main else Color.Transparent
-                        )
-                        .clickable { onDateSelected(date) },
+                        .background(if (isSelected) MediCareCallTheme.colors.main else Color.Transparent)
+                        .clickable {onDateSelected(date)},
                     contentAlignment = Alignment.Center
                 ) {
 
 
                     Text(
                         modifier = Modifier,
-                        text = "$date",
+                        text = "${date.dayOfMonth}",
                         style = MediCareCallTheme.typography.R_18,
-                        color = if (date == calendarUiState.selectedDate) Color.White
-                                else MediCareCallTheme.colors.gray4
+                        color = if (isSelected) Color.White else MediCareCallTheme.colors.gray4
                     )
                 }
 
@@ -94,14 +95,16 @@ fun WeeklyCalendar(
 @Preview(showBackground = true)
 @Composable
 fun PreviewWeeklyCalendar() {
+    val baseDate = LocalDate.of(2025, 5, 5)
+    val week = (0..6).map { baseDate.plusDays(it.toLong()) }
+
     WeeklyCalendar(
         calendarUiState = CalendarUiState(
-            year = 2025,
-            month = 5,
-            weekDates = listOf(4, 5, 6, 7, 8, 9, 10),
-            selectedDate = 7
+            currentYear = baseDate.year,
+            currentMonth = baseDate.monthValue,
+            weekDates = week,
+            selectedDate = baseDate.plusDays(2)
         ),
-        onDateSelected = { /* 클릭 테스트용 */ }
-
+        onDateSelected = {}
     )
 }

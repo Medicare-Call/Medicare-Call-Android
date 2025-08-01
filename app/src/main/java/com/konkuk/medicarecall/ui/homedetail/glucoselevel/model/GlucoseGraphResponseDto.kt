@@ -3,7 +3,7 @@ package com.konkuk.medicarecall.ui.homedetail.glucoselevel.model
 data class GlucoseGraphResponseDto(
     val period: PeriodDto,
     val data: List<GlucoseDayValueDto>,
-    val average: GlucoseStatDto?,  // 주간 평균 (nullable)// 수정
+    val average: GlucoseStatDto?,  // 하루 평균 (nullable)
     val latest: GlucoseStatDto?    // 가장 최근 값 (nullable)
 )
 

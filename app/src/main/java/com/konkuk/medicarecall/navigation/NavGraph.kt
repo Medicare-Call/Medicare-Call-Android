@@ -65,7 +65,9 @@ fun NavGraph(
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         modifier = modifier
-    ) {
+    )
+
+    {
         // 메인 내비게이션
         navigation(startDestination = Route.Home.route, route = "main") {
 

@@ -31,10 +31,22 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 @Composable
 fun HomeMealContainer(
     modifier: Modifier = Modifier,
+    breakfastEaten: Boolean?,
+    lunchEaten: Boolean?,
+    dinnerEaten: Boolean?,
     onClick: () -> Unit
 ) {
 
+    fun getRiceBowlIcon(isEaten: Boolean?): Int {
+        return when (isEaten) {
+            true -> R.drawable.ic_ricebowl_eat      // 밥 먹음
+            false -> R.drawable.ic_ricebowl_skip     // 밥 안먹음
+            null -> R.drawable.ic_ricebowl_uncheck   // 미기록
+        }
+    }
 
+
+    
     Card(
         modifier = Modifier
             .clickable { onClick() }
@@ -88,12 +100,12 @@ fun HomeMealContainer(
                     modifier = Modifier,
                     horizontalAlignment = Alignment.CenterHorizontally
                 ) {
-                    Image(   //TODO: 밥그릇 아이콘 기본으로 변경 후 색상 적용
+                    Image(
                         modifier = Modifier
                             .padding(horizontal = 7.dp)
                             .size(48.dp),
-                        painter = painterResource(id = R.drawable.ic_ricebowl_eat),
-                        contentDescription = "ricebowl icon_eat",
+                        painter = painterResource(id = getRiceBowlIcon(breakfastEaten)),
+                        contentDescription = "아침 식사 기록",
 
                         )
 
@@ -115,8 +127,8 @@ fun HomeMealContainer(
                         modifier = Modifier
                             .padding(horizontal = 7.dp)
                             .size(48.dp),
-                        painter = painterResource(id = R.drawable.ic_ricebowl_skip),
-                        contentDescription = "ricebowl icon_eat",
+                        painter = painterResource(id = getRiceBowlIcon(lunchEaten)),
+                        contentDescription = "점심 식사 기록",
 
                         )
 
@@ -138,8 +150,8 @@ fun HomeMealContainer(
                         modifier = Modifier
                             .padding(horizontal = 7.dp)
                             .size(48.dp),
-                        painter = painterResource(id = R.drawable.ic_ricebowl_uncheck),
-                        contentDescription = "ricebowl icon_eat",
+                        painter = painterResource(id = getRiceBowlIcon(dinnerEaten)),
+                        contentDescription = "저녁 식사 기록",
 
                         )
 
@@ -164,6 +176,11 @@ fun HomeMealContainer(
 fun PreviewHomeMealContainer() {
 
 
-    HomeMealContainer(onClick = {})
+    HomeMealContainer(
+        breakfastEaten = true,
+        lunchEaten = false,
+        dinnerEaten = null,
+        onClick = {}
+    )
 
 }

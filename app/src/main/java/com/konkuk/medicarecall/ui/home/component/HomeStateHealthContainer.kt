@@ -29,6 +29,7 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 @Composable
 fun HomeStateHealthContainer(
     modifier: Modifier = Modifier,
+    healthStatus: String,
     onClick: () -> Unit
 ) {
 
@@ -85,11 +86,10 @@ fun HomeStateHealthContainer(
                     verticalAlignment = Alignment.CenterVertically
                 ) {
                     Text(
-                        text = "좋음",
+                        text = healthStatus.ifBlank { "미기록" },
                         style = MediCareCallTheme.typography.SB_22,
                         color = MediCareCallTheme.colors.gray8
                     )
-
 
 
                 }
@@ -105,5 +105,8 @@ fun HomeStateHealthContainer(
 @Composable
 fun PreviewHomeStateHealthContainer() {
 
-    HomeStateHealthContainer(onClick = {})
+    HomeStateHealthContainer(
+        healthStatus = "좋음",
+        onClick = {}
+    )
 }

@@ -23,7 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.ui.homedetail.medicine.DoseStatus
+import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatus
+import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatusItem
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
@@ -32,8 +33,8 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 fun MedicineDetailCard(
     medicineName: String,               // 약 이름
     todayTakenCount: Int,               // 오늘 복약 완료 횟수
-    todayRequiredCount: Int,            // 오늘 복용 해야 하는 횟수
-    doseStatusList: List<DoseStatus>,   // 복용 상태 리스트 (초록/빨강/회색)
+    todayRequiredCount: Int,            // 목표 복약 횟수
+    doseStatusList: List<DoseStatusItem>,   // 복용 상태 리스트 (초록/빨강/회색)
     modifier: Modifier = Modifier
 ) {
 
@@ -76,8 +77,8 @@ fun MedicineDetailCard(
 
             //복약 아이콘 리스트
             Row {
-                doseStatusList.forEach { doseStatus ->
-                    val tintColor = when (doseStatus) {
+                doseStatusList.forEach { doseStatusItem ->
+                    val tintColor = when (doseStatusItem.status) {
                         DoseStatus.TAKEN -> MediCareCallTheme.colors.positive  // 초록
                         DoseStatus.SKIPPED -> MediCareCallTheme.colors.negative // 빨강
                         DoseStatus.NOT_RECORDED -> MediCareCallTheme.colors.gray2 // 회색
@@ -106,9 +107,10 @@ fun PreviewMedicineDetailCard() {
         todayTakenCount = 2,
         todayRequiredCount = 3,
         doseStatusList = listOf(
-            DoseStatus.TAKEN,
-            DoseStatus.TAKEN,
-            DoseStatus.NOT_RECORDED
+            DoseStatusItem(time = "MORNING", status = DoseStatus.TAKEN),
+            DoseStatusItem(time = "LUNCH", status = DoseStatus.TAKEN),
+            DoseStatusItem(time = "DINNER", status = DoseStatus.NOT_RECORDED)
+
         )
     )
 }

@@ -13,11 +13,12 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
-import androidx.compose.material3.HorizontalDivider
+import androidx.compose.foundation.pager.HorizontalPager
+import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
-import androidx.compose.material3.VerticalDivider
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
@@ -26,14 +27,12 @@ import androidx.compose.ui.draw.blur
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseGraphState
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseStatusUtil
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseTiming
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseUiState
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseViewModel
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.component.GlucoseGraph
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.component.GlucoseStatusChip
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.component.GlucoseStatusItem
@@ -44,38 +43,32 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GlucoseDetail(
-
+    modifier: Modifier = Modifier,
     navController: NavHostController,
-    glucose: GlucoseUiState,
-    graph: GlucoseGraphState
-
-
+    viewModel: GlucoseViewModel = hiltViewModel()
 ) {
-    // ✅ 현재 선택된 공복/식후 상태를 remember로 관리
-    val (selectedTiming, setSelectedTiming) = remember {
-        mutableStateOf(glucose.selectedTiming)
+
+    val uiState by viewModel.uiState
+    val pagerState = rememberPagerState(
+        initialPage = 0,
+        pageCount = { uiState.weeklyData.size }
+    )
+
+
+    val currentWeekState = uiState.weeklyData.getOrNull(pagerState.currentPage)
+    val glucose = currentWeekState?.let { viewModel.dailyData(it) }
+    val selectedTiming = remember { mutableStateOf(glucose?.selectedTiming ?: GlucoseTiming.BEFORE_MEAL) }
+
+
+    val isBeforeMeal = selectedTiming.value == GlucoseTiming.BEFORE_MEAL
+    val averageValue = if (isBeforeMeal) glucose?.dailyAverageBeforeMeal ?: 0 else glucose?.dailyAverageAfterMeal ?: 0
+    val recentValue = if (isBeforeMeal) glucose?.recentBeforeMeal ?: 0 else glucose?.recentAfterMeal ?: 0
+    LaunchedEffect(Unit) {
+        viewModel.loadDummyWeek()
+        // 테스트용 ID
+        // viewModel.loadNextWeek(guardianId = 1)
     }
 
-    // ✅ 선택된 상태가 공복인지 여부
-    val isBeforeMeal = selectedTiming == GlucoseTiming.BEFORE_MEAL
-
-    // ✅ 선택된 상태에 따라 오늘 하루 평균 혈당 값 가져오기
-    val averageValue = if (isBeforeMeal) {
-        glucose.dailyAverageBeforeMeal
-    } else {
-        glucose.dailyAverageAfterMeal
-    }
-
-    // ✅ 선택된 상태에 따라 최근 혈당 값 가져오기
-    val recentValue = if (isBeforeMeal) {
-        glucose.recentBeforeMeal
-    } else {
-        glucose.recentAfterMeal
-    }
-
-    // ✅ 선택된 상태에 따라 혈당 상태(낮음/정상/높음) 계산하기
-    val averageStatus = GlucoseStatusUtil.getStatus(averageValue)
-    val recentStatus = GlucoseStatusUtil.getStatus(recentValue)
 
 
     Column(
@@ -100,14 +93,14 @@ fun GlucoseDetail(
         ) {
             GlucoseTimingButton(
                 text = "공복",
-                selected = selectedTiming == GlucoseTiming.BEFORE_MEAL,
-                onClick = { setSelectedTiming(GlucoseTiming.BEFORE_MEAL) }
+                selected = selectedTiming.value == GlucoseTiming.BEFORE_MEAL,
+                onClick = { selectedTiming.value = GlucoseTiming.BEFORE_MEAL }
             )
 
             GlucoseTimingButton(
                 text = "식후",
-                selected = selectedTiming == GlucoseTiming.AFTER_MEAL,
-                onClick = { setSelectedTiming(GlucoseTiming.AFTER_MEAL) }
+                selected = selectedTiming.value == GlucoseTiming.AFTER_MEAL,
+                onClick = { selectedTiming.value = GlucoseTiming.AFTER_MEAL }
             )
         }
 
@@ -118,7 +111,7 @@ fun GlucoseDetail(
                 .padding(horizontal = 20.dp)
         ) {
 
-            if (glucose.isRecorded) {
+            if (glucose != null && glucose.isRecorded == true) {
                 Column(
                     modifier = Modifier
                 ) {
@@ -138,46 +131,13 @@ fun GlucoseDetail(
                         modifier = Modifier
                             .fillMaxWidth()
                     ) {
-                        GlucoseGraph(
+                        HorizontalPager(
+                            state = pagerState,
+                        ) { pageIndex ->
 
-                            glucose = GlucoseUiState(
-                                selectedTiming = GlucoseTiming.BEFORE_MEAL,
-                                dailyAverageBeforeMeal = 120,
-                                dailyAverageAfterMeal = 120,
-                                recentBeforeMeal = 127,
-                                recentAfterMeal = 127,
-                                glucoseLevelStatusBeforeMeal = "정상",
-                                glucoseLevelStatusAfterMeal = "정상",
-                                isRecorded = true
-                            ),
-                            graph = GlucoseGraphState(
-                                beforeMealGraph = listOf(80, 110, 129, 180, 131, 125, 115),
-                                afterMealGraph = listOf(80, 110, 129, 180, 131, 125, 115),
-                                weekLabels = listOf("일", "월", "화", "수", "목", "금", "토")
-                            ),
-                            selectedTiming = GlucoseTiming.BEFORE_MEAL
-                        )
-                    }
-                    Spacer(modifier = Modifier.height(10.dp))
-
-
-                    val weekLabels = listOf("5.15", "5.16", "5.17", "5.18", "5.19", "5.20", "5.21")
-
-
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                            .padding(end = 20.dp),
-                        horizontalArrangement = Arrangement.SpaceBetween
-
-                    ) {
-                        weekLabels.forEach {
-                            Text(
-                                text = it,
-                                style = MediCareCallTheme.typography.R_14,
-                                color = MediCareCallTheme.colors.gray4,
-                                modifier = Modifier.weight(1f, fill = false)
+                            GlucoseGraph(
+                                graph = uiState.weeklyData[pageIndex],
+                                selectedTiming = selectedTiming.value
                             )
                         }
                     }
@@ -289,7 +249,7 @@ fun GlucoseDetail(
                 Box(
                     modifier = Modifier
                         .fillMaxWidth()
-                        .wrapContentHeight()
+                        .height(200.dp)
                 ) {
                     // 1️⃣ 원래 그래프 그대로 그리기
                     Column(
@@ -311,47 +271,11 @@ fun GlucoseDetail(
                             modifier = Modifier
                                 .fillMaxWidth()
                         ) {
-                            GlucoseGraph(
+                            HorizontalPager(
+                                state = pagerState,
+                                modifier = Modifier.height(200.dp)
+                            ) { pageIndex ->
 
-                                glucose = GlucoseUiState(
-                                    selectedTiming = GlucoseTiming.BEFORE_MEAL,
-                                    dailyAverageBeforeMeal = 120,
-                                    dailyAverageAfterMeal = 120,
-                                    recentBeforeMeal = 127,
-                                    recentAfterMeal = 127,
-                                    glucoseLevelStatusBeforeMeal = "정상",
-                                    glucoseLevelStatusAfterMeal = "정상",
-                                    isRecorded = true
-                                ),
-                                graph = GlucoseGraphState(
-                                    beforeMealGraph = listOf(80, 110, 129, 180, 131, 125, 115),
-                                    afterMealGraph = listOf(80, 110, 129, 180, 131, 125, 115),
-                                    weekLabels = listOf("일", "월", "화", "수", "목", "금", "토")
-                                ),
-                                selectedTiming = GlucoseTiming.BEFORE_MEAL
-                            )
-                        }
-                        Spacer(modifier = Modifier.height(10.dp))
-
-
-                        val weekLabels = listOf("5.15", "5.16", "5.17", "5.18", "5.19", "5.20", "5.21")
-
-
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                                .padding(end = 20.dp),
-                            horizontalArrangement = Arrangement.SpaceBetween
-
-                        ) {
-                            weekLabels.forEach {
-                                Text(
-                                    text = it,
-                                    style = MediCareCallTheme.typography.R_14,
-                                    color = MediCareCallTheme.colors.gray4,
-                                    modifier = Modifier.weight(1f, fill = false)
-                                )
                             }
                         }
                     } // 실제로는 원본 그대로 or 배경 컨텐츠
@@ -373,12 +297,6 @@ fun GlucoseDetail(
                             )
 
                 }
-
-
-
-
-
-
 
 
                 Spacer(modifier = Modifier.height(40.dp))
@@ -423,6 +341,7 @@ fun GlucoseDetail(
                     Spacer(modifier = Modifier.width(40.dp))
 
                     // 세로 구분선
+
                     Box(
                         modifier = Modifier
                             .width(1.dp)
@@ -469,31 +388,8 @@ fun GlucoseDetail(
 @Preview(showBackground = true)
 @Composable
 fun PreviewGlucoseDetail() {
-
     GlucoseDetail(
-        navController = rememberNavController(),
-
-        glucose = GlucoseUiState(
-            selectedTiming = GlucoseTiming.BEFORE_MEAL,   // 공복 기본 선택
-
-            dailyAverageBeforeMeal = 120,   // 오늘 하루 평균 공복 혈당
-            dailyAverageAfterMeal = 120,    // 오늘 하루 평균 식후 혈당
-            recentBeforeMeal = 127,         // 어제 마지막 공복 혈당
-            recentAfterMeal = 127,          // 어제 마지막 식후 혈당
-            glucoseLevelStatusBeforeMeal = "정상",   // 공복 상태
-            glucoseLevelStatusAfterMeal = "정상",     // 식후 상태
-            isRecorded = true           // 기록 여부
-        ),
-
-        graph = GlucoseGraphState(
-
-            beforeMealGraph = listOf(60, 75, 90, 110, 200, 130, 100),  // 공복 주간 데이터
-            afterMealGraph = listOf(60, 75, 90, 110, 200, 130, 100),   // 식후 주간 데이터
-            weekLabels = listOf("일", "월", "화", "수", "목", "금", "토")
-
-        )
-
-
+        navController = rememberNavController()
     )
 
 
@@ -505,21 +401,6 @@ fun PreviewGlucoseDetail() {
 @Composable
 fun PreviewGlucoseDetailEmpty() {
     GlucoseDetail(
-        navController = rememberNavController(),
-        glucose = GlucoseUiState(
-            selectedTiming = GlucoseTiming.BEFORE_MEAL,
-            dailyAverageBeforeMeal = 0,
-            dailyAverageAfterMeal = 0,
-            recentBeforeMeal = 0,
-            recentAfterMeal = 0,
-            glucoseLevelStatusBeforeMeal = "",
-            glucoseLevelStatusAfterMeal = "",
-            isRecorded = false
-        ),
-        graph = GlucoseGraphState(
-            beforeMealGraph = emptyList(),
-            afterMealGraph = emptyList(),
-            weekLabels = emptyList()
-        )
+        navController = rememberNavController()
     )
 }

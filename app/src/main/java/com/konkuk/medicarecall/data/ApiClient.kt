@@ -12,7 +12,8 @@ object ApiClient {
     private val client = OkHttpClient.Builder().build()
 
     val contentType = "application/json".toMediaType()
-    val json = Json { ignoreUnknownKeys = true }
+    val json = Json { ignoreUnknownKeys = true
+    }
 
     private val retrofit = Retrofit.Builder()
         .baseUrl(BuildConfig.BASE_URL)

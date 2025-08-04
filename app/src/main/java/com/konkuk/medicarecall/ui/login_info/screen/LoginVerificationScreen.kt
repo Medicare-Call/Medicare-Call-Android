@@ -82,22 +82,22 @@ fun LoginVerificationScreen(
             onClick = {
                 // TODO: 서버에 인증번호 보내서 확인하기
                 coroutineScope.launch {
-//                    if (loginViewModel.postCertificationCode(
-//                            loginViewModel.phoneNumber,
-//                            loginViewModel.verificationCode
-//                        )
-//                    ) {
+                    if (loginViewModel.postCertificationCode(
+                            loginViewModel.phoneNumber,
+                            loginViewModel.verificationCode
+                        )
+                    ) {
                         navController.navigate("login_my_info")
                         loginViewModel.updateLoginUiState(LoginUiState.EnterMyInfo)
                         loginViewModel.onVerificationCodeChanged("")
-//                    } else {
-//                        coroutineScope.launch {
-//                            snackBarState.showSnackbar(
-//                                message = "인증번호가 올바르지 않습니다",
-//                                duration = SnackbarDuration.Long
-//                            )
-//                        }
-//                    }
+                    } else {
+                        coroutineScope.launch {
+                            snackBarState.showSnackbar(
+                                message = "인증번호가 올바르지 않습니다",
+                                duration = SnackbarDuration.Long
+                            )
+                        }
+                    }
 
                 }
             })

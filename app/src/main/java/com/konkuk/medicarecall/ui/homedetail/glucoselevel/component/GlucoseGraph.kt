@@ -2,240 +2,178 @@ package com.konkuk.medicarecall.ui.homedetail.glucoselevel.component
 
 import androidx.compose.foundation.Canvas
 import androidx.compose.foundation.background
-import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Divider
+import androidx.compose.foundation.gestures.detectTapGestures
+import androidx.compose.foundation.horizontalScroll
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.fillMaxWidth
+import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
 import androidx.compose.ui.graphics.PathEffect
-import androidx.compose.ui.platform.LocalDensity
+import androidx.compose.ui.graphics.nativeCanvas
+import androidx.compose.ui.input.pointer.pointerInput
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
+import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseWeeklyState
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
-import com.konkuk.medicarecall.ui.theme.LocalMediCareCallColorsProvider
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GraphDataPoint
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun GlucoseGraph(
-
-    graph: GlucoseWeeklyState,
-    selectedTiming: GlucoseTiming,
-    weekLabels: List<String> = graph.weekLabels
+    data: List<GraphDataPoint>,
+    selectedIndex: Int,
+    onPointClick: (Int) -> Unit,
 ) {
-
-    val colors = LocalMediCareCallColorsProvider.current
-    val density = LocalDensity.current
+    val colors = MediCareCallTheme.colors
     val lineColor = colors.gray2
+    val iconRadiusDp = 4.dp
+    val graphDrawingHeightDp = 200.dp
+    val labelStyle = MediCareCallTheme.typography.R_14
+    val minGlucose = 60f
+    val maxGlucose = 200f
+    val scrollState = rememberScrollState()
+    val sectionWidth: Dp = 60.dp
+    val totalGraphWidth = sectionWidth * data.size // 데이터 개수에 따라 그래프의 전체 가로 길이 계산
 
-    val graphData = if (selectedTiming == GlucoseTiming.BEFORE_MEAL) {
-        graph.beforeMealGraph.map { it.toFloat() }
-    } else {
-        graph.afterMealGraph.map { it.toFloat() }
+    LaunchedEffect(data.size) {
+        scrollState.scrollTo(scrollState.maxValue)
     }
-    Column(
+    // [스크롤되는 그래프 영역 | 고정된 Y축 라벨]
+    Row(
         modifier = Modifier
             .fillMaxWidth()
-            .background(MediCareCallTheme.colors.white)
+            .background(MediCareCallTheme.colors.white),
+        verticalAlignment = Alignment.Top
     ) {
-        Box(
+
+        Row(
             modifier = Modifier
-                .fillMaxWidth()
-                .background(MediCareCallTheme.colors.white)
+                .weight(1f)
+                .horizontalScroll(scrollState)
         ) {
 
-            // ✅ 1) 배경 가이드라인
-            Column(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .wrapContentSize()
-            ) {
-                // 200
-                Row(verticalAlignment = Alignment.CenterVertically) {
+            Column {
 
-                    Divider(
-                        modifier = Modifier.weight(1f),
-                        color = lineColor,
-                        thickness = 1.dp
-                    )
-                    Text(
-                        text = "200",
-                        style = MediCareCallTheme.typography.R_14,
-                        color = lineColor
-                    )
-                }
-                Spacer(modifier = Modifier.height(98.dp))
-
-                // 130
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Canvas(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(1.dp)
-                    ) {
-                        drawLine(
-                            color = lineColor,
-                            start = Offset(0f, 0f),
-                            end = Offset(size.width, 0f),
-                            strokeWidth = 1.dp.toPx(),
-                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
-                        )
-                    }
-                    Text(
-                        "130",
-                        style = MediCareCallTheme.typography.R_14,
-                        color = lineColor
-                    )
-                }
-                Spacer(modifier = Modifier.height(66.dp))
-
-                // 90
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Canvas(
-                        modifier = Modifier
-                            .weight(1f)
-                            .height(1.dp)
-                    ) {
-                        drawLine(
-                            color = lineColor,
-                            start = Offset(0f, 0f),
-                            end = Offset(size.width, 0f),
-                            strokeWidth = 1.dp.toPx(),
-                            pathEffect = PathEffect.dashPathEffect(floatArrayOf(10f, 10f))
-                        )
-                    }
-                    Spacer(modifier = Modifier.width(9.dp))
-
-                    Text("90", style = MediCareCallTheme.typography.R_14, color = lineColor)
-                }
-                Spacer(Modifier.height(11.dp))
-
-                // 60
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Divider(
-                        modifier = Modifier.weight(1f),
-                        color = lineColor,
-                        thickness = 1.dp
-                    )
-                    Spacer(modifier = Modifier.width(9.dp))
-                    Text(
-                        "60",
-                        style = MediCareCallTheme.typography.R_14,
-                        color = lineColor
-                    )
-
-                }
-            }
-
-
-            // ✅ 2) 그래프
-
-            val spacingDp = 44.dp         // 점 간 간격 고정
-            val iconSizeDp = 8.dp
-
-            val graphHeightDp = 242.dp //고점과 저점의 높이 차이
-
-            val graphHeightPx = with(density) { graphHeightDp.toPx() }
-            val iconSizePx = with(density) { iconSizeDp.toPx() }
-            val halfIcon = iconSizePx / 2f
-
-            val spacingPx = with(density) { spacingDp.toPx() }
-            Row(
-                Modifier
-                    .fillMaxWidth()
-                    .padding(start = 10.dp, top = 4.dp, bottom = 4.dp, end = 36.dp)
-            ) {
-                //TODO: 그래프 스와이프 기능 추가
-                BoxWithConstraints(
+                //그래프
+                Canvas(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .height(graphHeightDp)
-                ) {
-                    val canvasWidth = constraints.maxWidth.toFloat()
-                    val canvasHeight = with(density) { this@BoxWithConstraints.maxHeight.toPx() }
-
-                    val spacing = canvasWidth / (graphData.size - 1)
-
-                    Canvas(modifier = Modifier.fillMaxSize()) {
-                        val points = graphData.mapIndexed { index, v ->
-                            val x = spacing * index
-                            val y = valueToY(v, canvasHeight)
-                            Offset(x, y)
-                        }
-
-                        // 선
-                        for (i in 0 until points.size - 1) {
-                            drawLine(
-                                color = lineColor,
-                                start = points[i],
-                                end = points[i + 1],
-                                strokeWidth = 1.dp.toPx()
-                            )
-                        }
-
-                        // 점
-                        points.forEachIndexed { index, point ->
-                            val value = graphData[index]
-                            val color = when {
-                                value < 90f -> colors.active
-                                value < 130f -> colors.main
-                                else -> colors.negative
+                        .width(totalGraphWidth)
+                        .height(graphDrawingHeightDp)
+                        // pointerInput으로 사용자의 터치(탭) 입력을 감지
+                        .pointerInput(data) {
+                            detectTapGestures { tapOffset ->
+                                val sectionWidthPx = sectionWidth.toPx()
+                                val clickedIndex = (tapOffset.x / sectionWidthPx).toInt()
+                                if (clickedIndex in data.indices) {
+                                    onPointClick(clickedIndex)
+                                }
                             }
-
-                            drawCircle(
-                                color = color,
-                                radius = 4.dp.toPx(),
-                                center = point
-                            )
                         }
+                ) {
+                    // 혈당 값(value)을 Canvas의 Y좌표로 변환하는 함수
+                    fun valueToY(v: Float): Float {
+                        val ratio = ((v - minGlucose) / (maxGlucose - minGlucose)).coerceIn(0f, 1f)
+                        return size.height * (1f - ratio)
+                    }
+                    val points = data.mapIndexed { idx, pointData ->
+                        val x = (idx * sectionWidth.toPx()) + (sectionWidth.toPx() / 2)
+                        val y = valueToY(pointData.value)
+                        Offset(x, y)
+                    }
+                    // 200, 130, 90, 60 가로 가이드라인
+                    listOf(200f, 130f, 90f, 60f).forEach { value ->
+                        drawLine(
+                            color = if (value == 200f || value == 60f) lineColor else lineColor.copy(alpha = 0.5f),
+                            start = Offset(0f, valueToY(value)),
+                            end = Offset(size.width, valueToY(value)),
+                            strokeWidth = 1.dp.toPx(),
+                            pathEffect = if (value == 130f || value == 90f) PathEffect.dashPathEffect(floatArrayOf(10f, 10f)) else null
+                        )
+                    }
+                    //선
+                    for (i in 0 until points.size - 1) {
+                        drawLine(color = lineColor, start = points[i], end = points[i + 1], strokeWidth = 1.5.dp.toPx())
+                    }
+                    //점
+                    points.forEachIndexed { index, point ->
+                        val value = data[index].value
+                        val color = when {
+                            value < 90f -> colors.active
+                            value < 130f -> colors.main
+                            else -> colors.negative
+                        }
+                        if (index == selectedIndex) {
+                            drawCircle(color = color.copy(alpha = 0.2f), radius = iconRadiusDp.toPx() * 3, center = point)
+                        }
+                        drawCircle(color = color, radius = iconRadiusDp.toPx(), center = point)
+                    }
+                }
+                // 날짜 라벨
+                Row(modifier = Modifier.width(totalGraphWidth)) {
+                    data.forEach { pointData ->
+                        Text(
+                            text = pointData.date.format(DateTimeFormatter.ofPattern("M.d")),
+                            modifier = Modifier.width(sectionWidth),
+                            style = labelStyle,
+                            color = colors.gray4,
+                            textAlign = TextAlign.Center
+                        )
                     }
                 }
             }
-
         }
-            Spacer(modifier = Modifier.height(10.dp))
-
-
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .padding(end = 20.dp),
-                horizontalArrangement = Arrangement.SpaceBetween
-
-            ) {
-                weekLabels.forEach {
-                    Text(
-                        text = it,
-                        style = MediCareCallTheme.typography.R_14,
-                        color = MediCareCallTheme.colors.gray4,
-                        modifier = Modifier.weight(1f, fill = false)
-                    )
-                }
+        // Y축 라벨 (오른쪽에 고정)
+        Canvas(
+            modifier = Modifier
+                .width(40.dp)
+                .height(graphDrawingHeightDp)
+        ) {
+            // 그래프와 동일한 Y좌표 계산 방식을 사용
+            fun valueToY(v: Float): Float {
+                val ratio = ((v - minGlucose) / (maxGlucose - minGlucose)).coerceIn(0f, 1f)
+                return size.height * (1f - ratio)
             }
+            // Paint를 사용하여 Canvas에 직접 글씨를 씀
+            val paint = android.graphics.Paint().apply {
+                color = android.graphics.Color.GRAY
+                textSize = labelStyle.fontSize.toPx()
+                textAlign = android.graphics.Paint.Align.LEFT
+            }
+            val labelX = 8.dp.toPx()
+            drawContext.canvas.nativeCanvas.drawText("200", labelX, valueToY(200f) + 5.dp.toPx(), paint)
+            drawContext.canvas.nativeCanvas.drawText("130", labelX, valueToY(130f) + 5.dp.toPx(), paint)
+            drawContext.canvas.nativeCanvas.drawText("90", labelX, valueToY(90f) + 5.dp.toPx(), paint)
+            drawContext.canvas.nativeCanvas.drawText("60", labelX, valueToY(60f) + 5.dp.toPx(), paint)
         }
     }
-
-
-
-
-// ✅ height == 그래프 Box 높이
-private fun valueToY(v: Float, height: Float): Float {
-    val ratio = (v - 60f) / (200f - 60f)
-    return height * (1f - ratio) // 값이 클수록 위로
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, widthDp = 360)
 @Composable
 fun PreviewGlucoseGraph() {
-    GlucoseGraph(
-        graph = GlucoseWeeklyState(
-            beforeMealGraph = listOf(80, 110, 129, 180, 131, 125, 115),
-            afterMealGraph = listOf(80, 110, 129, 180, 131, 125, 115),
-            weekLabels = listOf("7.21", "7.22", "7.23", "7.24", "7.25", "7.26", "7.27")
-        ),
-        selectedTiming = GlucoseTiming.BEFORE_MEAL
-    )
+    // 14일치 가상 데이터
+    val sampleData = (0..13).map {
+        GraphDataPoint(
+            date = LocalDate.now().minusDays(it.toLong()),
+            value = (70..210).random().toFloat()
+        )
+    }.reversed()
+    MediCareCallTheme {
+        GlucoseGraph(
+            data = sampleData,
+            selectedIndex = sampleData.lastIndex,
+            onPointClick = {}
+        )
+    }
 }

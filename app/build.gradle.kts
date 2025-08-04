@@ -100,10 +100,8 @@ dependencies {
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
 
-    // AndroidX WebView
-    implementation("androidx.webkit:webkit:1.5.0")
-    // 또는 Accompanist WebView (Compose 특화)
-    //implementation("com.google.accompanist:accompanist-webview:0.30.1")
+    // WebView
+    implementation("com.google.accompanist:accompanist-webview:0.24.13-rc")
 
 
     // Hilt

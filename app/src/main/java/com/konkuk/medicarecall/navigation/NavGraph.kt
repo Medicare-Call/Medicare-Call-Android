@@ -13,9 +13,6 @@ import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseWeeklyState
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseDailyState
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen.GlucoseDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.MealDetail
 import com.konkuk.medicarecall.ui.homedetail.sleep.screen.SleepDetail

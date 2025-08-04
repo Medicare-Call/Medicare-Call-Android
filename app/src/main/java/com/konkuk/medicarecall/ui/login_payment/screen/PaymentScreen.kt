@@ -39,6 +39,8 @@ import com.konkuk.medicarecall.ui.login_payment.component.PayResultItem
 import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import java.text.NumberFormat
+import java.util.Locale
 
 @Composable
 fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifier: Modifier = Modifier, loginSeniorViewModel : LoginSeniorViewModel) {
@@ -120,8 +122,12 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                         color = MediCareCallTheme.colors.black
                     )
                     Spacer(modifier = modifier.weight(1f))
+                    val totalAmount = seniors.size * 29000 // Assuming 29,000 is the monthly fee per senior
+                    val formatted = NumberFormat.getNumberInstance(Locale.KOREA).format(totalAmount)
+                    val displayText = "₩$formatted/월"
                     Text(
-                        text = "₩58,000/월",
+                        //text = "₩58,000/월",
+                        text = displayText,
                         style = MediCareCallTheme.typography.SB_14,
                         color = MediCareCallTheme.colors.main
                     )

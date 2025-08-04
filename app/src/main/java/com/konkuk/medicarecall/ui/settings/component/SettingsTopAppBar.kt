@@ -38,7 +38,6 @@ fun SettingsTopAppBar(modifier: Modifier = Modifier,
             .fillMaxWidth()
             .height(48.dp)
         ,
-        color = Color.White,
     ) {
 
         Box(

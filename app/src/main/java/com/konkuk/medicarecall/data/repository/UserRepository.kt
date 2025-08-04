@@ -4,13 +4,13 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.data.api.SettingService
 import com.konkuk.medicarecall.data.dto.request.UserUpdateRequestDto
-import com.konkuk.medicarecall.data.dto.response.MyInfoResponse
+import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import kotlin.onSuccess
 
 class UserRepository(private val api: SettingService) {
-    suspend fun updateMe(dto: UserUpdateRequestDto): Result<MyInfoResponse> =
+    suspend fun updateMe(dto: UserUpdateRequestDto): Result<MyInfoResponseDto> =
         runCatching {
             val resp = api.updateMyInfo(dto)
             if (resp.isSuccessful) resp.body()!!

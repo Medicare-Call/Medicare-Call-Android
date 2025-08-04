@@ -6,7 +6,7 @@ import kotlinx.serialization.Serializable
 
 
 @Serializable
-data class MyInfoResponse(
+data class MyInfoResponseDto(
     val name : String,
     val birthDate : String,
     val gender : GenderType,

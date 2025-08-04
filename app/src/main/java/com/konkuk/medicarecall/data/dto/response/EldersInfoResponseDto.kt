@@ -6,7 +6,7 @@ import com.konkuk.medicarecall.ui.model.SeniorLivingType
 import kotlinx.serialization.Serializable
 
 @Serializable
-data class EldersInfoResponse(
+data class EldersInfoResponseDto(
     val elders: List<ElderInfo>
 )
 

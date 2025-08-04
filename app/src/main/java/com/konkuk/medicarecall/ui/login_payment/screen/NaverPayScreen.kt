@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -30,7 +31,8 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 fun NaverPayScreen(onBack : () -> Unit, navController: NavHostController,modifier: Modifier = Modifier) {
     Column(modifier = modifier
         .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)) {
+        .background(MediCareCallTheme.colors.bg)
+        .statusBarsPadding()) {
         SettingsTopAppBar(
             modifier = modifier,
             title = "결제하기",

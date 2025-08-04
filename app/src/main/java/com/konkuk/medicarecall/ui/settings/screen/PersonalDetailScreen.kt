@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
@@ -63,6 +64,7 @@ fun PersonalDetailScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
+            .statusBarsPadding()
     ) {
         SettingsTopAppBar(
             title = "어르신 건강정보 설정",
@@ -145,7 +147,8 @@ fun PersonalDetailScreen(
                             .toList(),
                         placeHolder = "관계 선택하기",
                         category = "어르신과의 관계",
-                        scrollState
+                        scrollState,
+                        value = RelationshipType.entries.component1().displayName,
                     )
                 }
                 Column {
@@ -154,7 +157,8 @@ fun PersonalDetailScreen(
                             .toList(),
                         placeHolder = "거주방식을 선택해주세요",
                         category = "어르신 거주 방식",
-                        scrollState
+                        scrollState,
+                        value = SeniorLivingType.entries.component1().displayName,
                     )
                 }
 

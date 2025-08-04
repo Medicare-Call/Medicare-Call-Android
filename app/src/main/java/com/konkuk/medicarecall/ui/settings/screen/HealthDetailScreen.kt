@@ -9,6 +9,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -38,7 +39,8 @@ fun HealthDetailScreen(onBack : () -> Unit ={}, navController : NavHostControlle
     val scrollState = rememberScrollState()
     Column(modifier = modifier
         .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)) {
+        .background(MediCareCallTheme.colors.bg)
+        .statusBarsPadding()) {
         SettingsTopAppBar(
             modifier = modifier,
             title = "어르신 건강정보 설정",
@@ -72,7 +74,7 @@ fun HealthDetailScreen(onBack : () -> Unit ={}, navController : NavHostControlle
                 onRemoveNote = { noteList = noteList - it },
                 placeHolder = "특이사항 선택하기",
                 category = "특이사항",
-                scrollState = scrollState
+                scrollState = scrollState,
             )
 //            Button(
 //                modifier = modifier.fillMaxWidth().height(50.dp),

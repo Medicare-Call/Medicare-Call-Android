@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -43,7 +44,8 @@ fun SubscribeDetailScreen(
     val scrollState = rememberScrollState()
     Column(modifier = modifier
         .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)) {
+        .background(MediCareCallTheme.colors.bg)
+        .statusBarsPadding()) {
         SettingsTopAppBar(
             modifier = modifier,
             title = "구독 관리",

@@ -11,6 +11,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,7 +38,8 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 fun HealthInfoScreen(onBack : () -> Unit ={}, navController : NavHostController) {
     Column(modifier = Modifier
         .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)) {
+        .background(MediCareCallTheme.colors.bg)
+        .statusBarsPadding()) {
         SettingsTopAppBar(
             title = "어르신 건강정보 설정",
             leftIcon = {Icon(painterResource(id = R.drawable.ic_settings_back), contentDescription = "setting back", modifier = Modifier.clickable{onBack()}, tint = MediCareCallTheme.colors.black )},

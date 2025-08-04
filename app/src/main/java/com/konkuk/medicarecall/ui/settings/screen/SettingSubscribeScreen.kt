@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -37,7 +38,8 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
 fun SettingSubscribeScreen(modifier: Modifier = Modifier, onBack : () -> Unit, navController: NavHostController) {
-    Column(modifier = modifier.fillMaxSize().background(MediCareCallTheme.colors.bg)) {
+    Column(modifier = modifier.fillMaxSize().background(MediCareCallTheme.colors.bg)
+        .statusBarsPadding()) {
         SettingsTopAppBar(modifier = modifier, title = "구독관리", leftIcon = {Icon(painter = painterResource(id = R.drawable.ic_settings_back), contentDescription = "go_back", modifier = modifier.size(24.dp).clickable{onBack()}, tint = Color.Black)}
         )
         Column(

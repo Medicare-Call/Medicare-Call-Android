@@ -8,6 +8,7 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
@@ -30,7 +31,9 @@ fun FinishSplashScreen(modifier: Modifier = Modifier, navController: NavHostCont
         modifier = modifier
             .fillMaxSize()
             .background(MediCareCallTheme.colors.main)
-            .padding(top = 91.dp),
+            .padding(top = 91.dp)
+            .statusBarsPadding()
+        ,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
         Icon(painter = painterResource(id = R.drawable.ic_complete),

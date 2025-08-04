@@ -110,17 +110,18 @@ fun GlucoseDetailLayout(
         Spacer(modifier = Modifier.height(20.dp))
 
         Row(
-            modifier = Modifier
-                .padding(horizontal = 20.dp)
-                .fillMaxWidth(),
-            horizontalArrangement = Arrangement.SpaceBetween
+            modifier = Modifier .fillMaxWidth()
+                .padding(horizontal = 20.dp),
+            horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
             GlucoseTimingButton(
+                modifier = Modifier.weight(1f),
                 text = "공복",
                 selected = selectedTiming == GlucoseTiming.BEFORE_MEAL,
                 onClick = { onTimingChange(GlucoseTiming.BEFORE_MEAL) }
             )
             GlucoseTimingButton(
+                modifier = Modifier.weight(1f),
                 text = "식후",
                 selected = selectedTiming == GlucoseTiming.AFTER_MEAL,
                 onClick = { onTimingChange(GlucoseTiming.AFTER_MEAL) }

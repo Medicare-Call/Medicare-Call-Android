@@ -9,11 +9,14 @@ sealed class Route(val route: String) {
     object LoginSeniorMedInfoScreen : Route("login_senior_med_info")
     object SetCall : Route("set_call")
     object Payment : Route("payment")
-    object NaverPay : Route("naver_pay")
+    object NaverPay : Route("naver_pay/{payUrl}")
     object FinishSplash : Route("finish_splash")
     object Home : Route("home")
     object Statistics : Route("statistics")
     object Settings : Route("settings")
+    companion object {
+        fun naverPayRoute(payUrl: String) = "naver_pay/$payUrl"
+    }
 
     object Alarm: Route("alarm")
 

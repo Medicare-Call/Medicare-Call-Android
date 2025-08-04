@@ -1,4 +1,7 @@
+import org.gradle.api.internal.DocumentationRegistry.BASE_URL
+import org.gradle.kotlin.dsl.implementation
 import java.util.Properties
+import kotlin.apply
 
 plugins {
     alias(libs.plugins.android.application)
@@ -7,6 +10,7 @@ plugins {
     alias(libs.plugins.hilt)
     alias(libs.plugins.ksp)
     kotlin("plugin.serialization") version "2.0.21"
+
 }
 
 
@@ -61,6 +65,7 @@ android {
 
 dependencies {
 
+
     implementation(libs.androidx.core.ktx)
     implementation(libs.androidx.lifecycle.runtime.ktx)
     implementation(libs.androidx.activity.compose)
@@ -94,6 +99,10 @@ dependencies {
     implementation("com.squareup.okhttp3:okhttp:4.10.0")
     implementation("com.squareup.okhttp3:logging-interceptor:4.10.0")
     implementation("com.squareup.retrofit2:converter-gson:2.9.0")
+
+    // WebView
+    implementation("com.google.accompanist:accompanist-webview:0.24.13-rc")
+
 
     // Hilt
     implementation(libs.hilt.android)

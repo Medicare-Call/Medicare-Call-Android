@@ -29,7 +29,7 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.konkuk.medicarecall.ui.model.MedicationTime
+import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
@@ -37,11 +37,11 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var inputText by remember { mutableStateOf("") }
     // 복약 주기 선택 상태
-    val selectedPeriods = remember { mutableStateOf(setOf<MedicationTime>()) }
+    val selectedPeriods = remember { mutableStateOf(setOf<MedicationTimeType>()) }
     // 주기별 복약 리스트
     val medsByPeriod = remember {
-        mutableStateMapOf<MedicationTime, SnapshotStateList<String>>().apply {
-            MedicationTime.entries.forEach { period ->
+        mutableStateMapOf<MedicationTimeType, SnapshotStateList<String>>().apply {
+            MedicationTimeType.entries.forEach { period ->
                 // 각 주기별로 'mutableStateListOf()'를 할당
                 this[period] = mutableStateListOf()
             }
@@ -57,7 +57,7 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
             style = MediCareCallTheme.typography.M_17,
             color = MediCareCallTheme.colors.gray7
         )
-        MedicationTime.entries.forEach { period ->
+        MedicationTimeType.entries.forEach { period ->
             val list = medsByPeriod[period]!!
             if (list.isNotEmpty()) {
                 Spacer(modifier = modifier.height(20.dp))
@@ -90,7 +90,7 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
                 .fillMaxWidth()
                 .padding(bottom = 16.dp)
         ) {
-            MedicationTime.entries.forEach { period ->
+            MedicationTimeType.entries.forEach { period ->
                 val selected = period in selectedPeriods.value
                 Box(
                     Modifier

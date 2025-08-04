@@ -6,8 +6,11 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
+import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.rememberNavController
+import androidx.navigation.navArgument
 
 import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
@@ -65,9 +68,7 @@ fun NavGraph(
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         modifier = modifier
-    )
-
-    {
+    ) {
         // 메인 내비게이션
         navigation(startDestination = Route.Home.route, route = "main") {
 

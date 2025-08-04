@@ -1,9 +1,9 @@
 package com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen
 
 import androidx.compose.foundation.ExperimentalFoundationApi
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -11,34 +11,35 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.pager.HorizontalPager
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.blur
-import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
+import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseViewModel
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.component.GlucoseGraph
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.component.GlucoseStatusChip
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.component.GlucoseListItem
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.component.GlucoseStatusItem
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.component.GlucoseTimingButton
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseUiState
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GraphDataPoint
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -47,42 +48,65 @@ fun GlucoseDetail(
     navController: NavHostController,
     viewModel: GlucoseViewModel = hiltViewModel()
 ) {
-
     val uiState by viewModel.uiState
-    val pagerState = rememberPagerState(
-        initialPage = 0,
-        pageCount = { uiState.weeklyData.size }
-    )
+    val selectedIndex = remember { mutableIntStateOf(-1) }
 
-
-    val currentWeekState = uiState.weeklyData.getOrNull(pagerState.currentPage)
-    val glucose = currentWeekState?.let { viewModel.dailyData(it) }
-    val selectedTiming = remember { mutableStateOf(glucose?.selectedTiming ?: GlucoseTiming.BEFORE_MEAL) }
-
-
-    val isBeforeMeal = selectedTiming.value == GlucoseTiming.BEFORE_MEAL
-    val averageValue = if (isBeforeMeal) glucose?.dailyAverageBeforeMeal ?: 0 else glucose?.dailyAverageAfterMeal ?: 0
-    val recentValue = if (isBeforeMeal) glucose?.recentBeforeMeal ?: 0 else glucose?.recentAfterMeal ?: 0
+    // 선택된 점(selectedIndex)을 자동으로 업데이트해주는 역할
+    LaunchedEffect(uiState.graphDataPoints) {
+        if (uiState.graphDataPoints.isNotEmpty()) {
+            selectedIndex.intValue = uiState.graphDataPoints.lastIndex
+        } else {
+            selectedIndex.intValue = -1
+            // 아무것도 선택되지 않았다는 의미로 -1을 저장 (오류 방지용)
+        }
+    }
+    // 더미 데이터 요청
     LaunchedEffect(Unit) {
         viewModel.loadDummyWeek()
-        // 테스트용 ID
-        // viewModel.loadNextWeek(guardianId = 1)
     }
 
+    GlucoseDetailLayout(
+        modifier = modifier,
+        uiState = uiState,
 
+        selectedTiming = uiState.selectedTiming,
+        selectedIndex = selectedIndex.intValue,
+
+        // '공복'/'식후' 버튼
+        onTimingChange = { newTiming ->
+            viewModel.updateTiming(newTiming)
+        },
+        // 그래프 점
+        onPointClick = { newIndex -> selectedIndex.intValue = newIndex },
+        navController = navController
+    )
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun GlucoseDetailLayout(
+    modifier: Modifier = Modifier,
+    uiState: GlucoseUiState,
+    selectedTiming: GlucoseTiming,
+    selectedIndex: Int,
+    onTimingChange: (GlucoseTiming) -> Unit,
+    onPointClick: (Int) -> Unit,
+    navController: NavHostController,
+) {
+
+
+    val isDataAvailable = uiState.graphDataPoints.isNotEmpty()
 
     Column(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxSize()
             .statusBarsPadding()
             .background(MediCareCallTheme.colors.white)
-
     ) {
         TopAppBar(
             title = "혈당",
             navController = navController
         )
-
         Spacer(modifier = Modifier.height(20.dp))
 
         Row(
@@ -93,314 +117,126 @@ fun GlucoseDetail(
         ) {
             GlucoseTimingButton(
                 text = "공복",
-                selected = selectedTiming.value == GlucoseTiming.BEFORE_MEAL,
-                onClick = { selectedTiming.value = GlucoseTiming.BEFORE_MEAL }
+                selected = selectedTiming == GlucoseTiming.BEFORE_MEAL,
+                onClick = { onTimingChange(GlucoseTiming.BEFORE_MEAL) }
             )
-
             GlucoseTimingButton(
                 text = "식후",
-                selected = selectedTiming.value == GlucoseTiming.AFTER_MEAL,
-                onClick = { selectedTiming.value = GlucoseTiming.AFTER_MEAL }
+                selected = selectedTiming == GlucoseTiming.AFTER_MEAL,
+                onClick = { onTimingChange(GlucoseTiming.AFTER_MEAL) }
             )
         }
 
-        Spacer(modifier = Modifier.height(32.dp))
 
-        Column(
-            modifier = Modifier
-                .padding(horizontal = 20.dp)
-        ) {
+        if (isDataAvailable) {
 
-            if (glucose != null && glucose.isRecorded == true) {
-                Column(
-                    modifier = Modifier
-                ) {
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        GlucoseStatusItem()
-                    }
+            Spacer(modifier = Modifier.height(32.dp))
 
-                    Spacer(modifier = Modifier.height(10.dp))
+            Column(
+                modifier = Modifier
+            ) {
 
-
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth()
-                    ) {
-                        HorizontalPager(
-                            state = pagerState,
-                        ) { pageIndex ->
-
-                            GlucoseGraph(
-                                graph = uiState.weeklyData[pageIndex],
-                                selectedTiming = selectedTiming.value
-                            )
-                        }
-                    }
-
-
-                    Spacer(modifier = Modifier.height(40.dp))
-
-
-                    //하루 평균 혈당 + 최근(어제) 혈당
-                    Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
-                        horizontalArrangement = Arrangement.Center,
-                        verticalAlignment = Alignment.CenterVertically
-
-                    ) {
-                        Column(
-                            modifier = Modifier,
-                            horizontalAlignment = Alignment.CenterHorizontally
-
-                        ) {
-                            Text(
-                                text = "하루 평균 혈당",
-                                style = MediCareCallTheme.typography.R_16,
-                                color = MediCareCallTheme.colors.gray6,
-
-                                )
-                            Spacer(modifier = Modifier.height(4.dp))
-
-                            GlucoseStatusChip(value = averageValue)
-
-                            Spacer(modifier = Modifier.height(4.dp))
-
-                            Row(
-                                verticalAlignment = Alignment.Bottom
-                            ) {
-                                Text(
-                                    text = "$averageValue",
-                                    style = MediCareCallTheme.typography.SB_22,
-                                    color = MediCareCallTheme.colors.gray8,
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = "mg/dL",
-                                    style = MediCareCallTheme.typography.R_16,
-                                    color = MediCareCallTheme.colors.gray8,
-
-                                    )
-                            }
-
-                        }
-                        Spacer(modifier = Modifier.width(40.dp))
-
-                        // 세로 구분선
-                        Box(
-                            modifier = Modifier
-                                .width(1.dp)
-                                .height(80.dp)
-                                .background(MediCareCallTheme.colors.gray2)
-                        )
-
-
-                        /*VerticalDivider(
-                            modifier = Modifier.fillMaxWidth(),
-                            color = MediCareCallTheme.colors.gray2,
-                            thickness = 1.dp
-                        )*/
-
-                        Spacer(modifier = Modifier.width(40.dp))
-
-                        Column(
-                            modifier = Modifier,
-                            horizontalAlignment = Alignment.CenterHorizontally
-                        ) {
-                            Text(
-                                text = "최근 혈당",
-                                style = MediCareCallTheme.typography.R_16,
-                                color = MediCareCallTheme.colors.gray6,
-
-                                )
-                            Spacer(modifier = Modifier.height(4.dp))
-
-                            GlucoseStatusChip(value = recentValue)
-
-
-                            Spacer(modifier = Modifier.height(4.dp))
-                            Row(
-                                verticalAlignment = Alignment.Bottom
-                            ) {
-                                Text(
-                                    text = "$recentValue",
-                                    style = MediCareCallTheme.typography.SB_22,
-                                    color = MediCareCallTheme.colors.gray8,
-                                )
-                                Spacer(modifier = Modifier.width(4.dp))
-                                Text(
-                                    text = "mg/dL",
-                                    style = MediCareCallTheme.typography.R_16,
-                                    color = MediCareCallTheme.colors.gray8,
-
-                                    )
-                            }
-
-                        }
-                    }
-                }
-            } else {
-                // ✅ 기록 없을 때 : Empty View
-                Box(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                        .height(200.dp)
-                ) {
-                    // 1️⃣ 원래 그래프 그대로 그리기
-                    Column(
-                        modifier = Modifier
-                    ) {
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth(),
-                            horizontalArrangement = Arrangement.Center,
-                            verticalAlignment = Alignment.CenterVertically
-                        ) {
-                            GlucoseStatusItem()
-                        }
-
-                        Spacer(modifier = Modifier.height(10.dp))
-
-
-                        Row(
-                            modifier = Modifier
-                                .fillMaxWidth()
-                        ) {
-                            HorizontalPager(
-                                state = pagerState,
-                                modifier = Modifier.height(200.dp)
-                            ) { pageIndex ->
-
-                            }
-                        }
-                    } // 실제로는 원본 그대로 or 배경 컨텐츠
-
-                    // 2️⃣ 흐림 + 반투명 배경 덮기
-                    Box(
-                        Modifier
-                            .matchParentSize()
-                            .background(Color.White.copy(alpha = 0.5f))
-                            .blur(3.dp)
-                    )
-
-                        Text(
-                            text = "기록이 없습니다.",
-                            modifier = Modifier.align(Alignment.Center),
-                            style = MediCareCallTheme.typography.M_20,
-                            color = MediCareCallTheme.colors.black,
-
-                            )
-
-                }
-
-
-                Spacer(modifier = Modifier.height(40.dp))
-
-
-                //하루 평균 혈당 + 최근(어제) 혈당
                 Row(
                     modifier = Modifier
-                        .fillMaxWidth(),
+                        .fillMaxWidth()
+                        .padding(horizontal = 20.dp),
                     horizontalArrangement = Arrangement.Center,
                     verticalAlignment = Alignment.CenterVertically
-
                 ) {
-                    Column(
-                        modifier = Modifier,
-                        horizontalAlignment = Alignment.CenterHorizontally
-
-                    ) {
-                        Text(
-                            text = "하루 평균 혈당",
-                            style = MediCareCallTheme.typography.R_16,
-                            color = MediCareCallTheme.colors.gray6,
-
-                            )
-                        Spacer(modifier = Modifier.height(4.dp))
-
-
-                        Spacer(modifier = Modifier.height(4.dp))
-
-                        Row(
-                            verticalAlignment = Alignment.Bottom
-                        ) {
-                            Text(
-                                text = "mg/dL",
-                                style = MediCareCallTheme.typography.R_16,
-                                color = MediCareCallTheme.colors.gray8,
-
-                                )
-                        }
-
-                    }
-                    Spacer(modifier = Modifier.width(40.dp))
-
-                    // 세로 구분선
-
-                    Box(
-                        modifier = Modifier
-                            .width(1.dp)
-                            .height(80.dp)
-                            .background(MediCareCallTheme.colors.gray2)
-                    )
-
-                    Spacer(modifier = Modifier.width(40.dp))
-
-                    Column(
-                        modifier = Modifier,
-                        horizontalAlignment = Alignment.CenterHorizontally
-                    ) {
-                        Text(
-                            text = "최근 혈당",
-                            style = MediCareCallTheme.typography.R_16,
-                            color = MediCareCallTheme.colors.gray6,
-
-                            )
-                        Spacer(modifier = Modifier.height(4.dp))
-
-
-
-                        Spacer(modifier = Modifier.height(4.dp))
-                        Row(
-                            verticalAlignment = Alignment.Bottom
-                        ) {
-                             Text(
-                                text = "mg/dL",
-                                style = MediCareCallTheme.typography.R_16,
-                                color = MediCareCallTheme.colors.gray8,
-                                )
-                        }
-
-                    }
+                    GlucoseStatusItem()
                 }
 
+                Spacer(modifier = Modifier.height(20.dp))
+
+                //혈당 그래프
+                GlucoseGraph(
+                    data = uiState.graphDataPoints,
+                    selectedIndex = selectedIndex,
+                    onPointClick = onPointClick
+                )
+                Spacer(modifier = Modifier.height(24.dp))
+
+                //그래프 점 클릭시
+                val selectedPoint = uiState.graphDataPoints.getOrNull(selectedIndex)
+                if (selectedPoint != null) {
+                    val timingLabel = if (selectedTiming == GlucoseTiming.BEFORE_MEAL) "아침 | 공복" else "저녁 | 식후"
+
+                    // 날짜 표시
+                    val dateText = selectedPoint.date.format(
+                        DateTimeFormatter.ofPattern("M월 d일 (E)")
+                    )
+                    //혈당 상세 정보
+                    GlucoseListItem(
+                        date = dateText,
+                        timingLabel = timingLabel,
+                        value = selectedPoint.value.toInt()
+                    )
+                }
+            }
+        } else {
+            // EMPTY VIEW
+            Column(
+                modifier = Modifier
+                    .fillMaxWidth()
+                    .padding(top = 177.dp),
+                horizontalAlignment = Alignment.CenterHorizontally
+            ) {
+                Image(
+                    painter = painterResource(id = R.drawable.ic_no_record),
+                    contentDescription = null,
+                    modifier = Modifier
+                        .size(100.dp)
+                )
+                Spacer(modifier = Modifier.height(20.dp))
+
+                Text(text = "아직 기록이 없어요", style = MediCareCallTheme.typography.R_18, color = MediCareCallTheme.colors.gray6)
             }
         }
     }
-
-}
-
-@Preview(showBackground = true)
-@Composable
-fun PreviewGlucoseDetail() {
-    GlucoseDetail(
-        navController = rememberNavController()
-    )
-
-
 }
 
 
-
-@Preview(showBackground = true)
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, name = "데이터 있을 때")
 @Composable
-fun PreviewGlucoseDetailEmpty() {
-    GlucoseDetail(
-        navController = rememberNavController()
-    )
+fun PreviewGlucoseDetail_DataAvailable() {
+    // 프리뷰 용 더미 데이터
+    val today = LocalDate.now()
+    val sampleData = (0..6).map { i ->
+        GraphDataPoint(
+            date = today.minusDays(i.toLong()),
+            value = (100..200).random().toFloat()
+        )
+    }.reversed()
+    val dummyUiState = GlucoseUiState(graphDataPoints = sampleData)
+
+    MediCareCallTheme {
+        GlucoseDetailLayout(
+            uiState = dummyUiState,
+            selectedTiming = GlucoseTiming.BEFORE_MEAL,
+            selectedIndex = sampleData.lastIndex,
+            onTimingChange = {},
+            onPointClick = {},
+            navController = rememberNavController()
+        )
+    }
+}
+
+@OptIn(ExperimentalFoundationApi::class)
+@Preview(showBackground = true, name = "데이터 없을 때 (Empty View)")
+@Composable
+fun PreviewGlucoseDetail_Empty() {
+    // Empty View 프리뷰
+    val dummyUiState = GlucoseUiState(graphDataPoints = emptyList())
+
+    MediCareCallTheme {
+        GlucoseDetailLayout(
+            uiState = dummyUiState,
+            selectedTiming = GlucoseTiming.AFTER_MEAL,
+            selectedIndex = -1,
+            onTimingChange = {},
+            onPointClick = {},
+            navController = rememberNavController()
+        )
+    }
 }

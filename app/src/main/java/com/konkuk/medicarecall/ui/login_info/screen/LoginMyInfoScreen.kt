@@ -24,12 +24,15 @@ import androidx.compose.material3.ModalBottomSheet
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
@@ -56,6 +59,13 @@ fun LoginMyInfoScreen(
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
     var scrollState = rememberScrollState()
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
+
+
     Column(
         modifier
             .fillMaxSize()
@@ -87,7 +97,8 @@ fun LoginMyInfoScreen(
                 {
                     loginViewModel.onNameChanged(it)
                 },
-                placeHolder = "이름"
+                placeHolder = "이름",
+                textFieldModifier = Modifier.focusRequester(focusRequester)
             )
         }
         Spacer(Modifier.height(20.dp))

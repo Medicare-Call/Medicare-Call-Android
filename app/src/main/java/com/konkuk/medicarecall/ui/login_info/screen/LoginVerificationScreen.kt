@@ -14,9 +14,12 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
@@ -40,6 +43,12 @@ fun LoginVerificationScreen(
     val snackBarState = remember { SnackbarHostState() }
     val coroutineScope = rememberCoroutineScope()
 
+    val focusRequester = remember { FocusRequester() }
+
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
 
     Column(
@@ -69,7 +78,8 @@ fun LoginVerificationScreen(
                 loginViewModel.onVerificationCodeChanged(filtered)
             },
             placeHolder = "인증번호 입력",
-            keyboardType = KeyboardType.Number
+            keyboardType = KeyboardType.Number,
+            textFieldModifier = Modifier.focusRequester(focusRequester)
         )
 
         Spacer(Modifier.height(30.dp))

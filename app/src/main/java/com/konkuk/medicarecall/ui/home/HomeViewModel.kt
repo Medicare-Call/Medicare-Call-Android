@@ -33,7 +33,7 @@ class HomeViewModel @Inject constructor(
             try {
                 val response = homeApi.getHomeSummary(
                     elderId = 1, // 실제 elderId를 넘겨야함
-                    date = date.toString()
+                    //date = date.toString()
                 )
 
                 val uiState = HomeUiState.from(response)

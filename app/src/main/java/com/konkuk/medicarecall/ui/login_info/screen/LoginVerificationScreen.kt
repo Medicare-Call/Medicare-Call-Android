@@ -27,8 +27,6 @@ import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.text.isDigit
 
@@ -82,7 +80,7 @@ fun LoginVerificationScreen(
             onClick = {
                 // TODO: 서버에 인증번호 보내서 확인하기
                 coroutineScope.launch {
-                    if (loginViewModel.postCertificationCode(
+                    if (loginViewModel.confirmPhoneNumber(
                             loginViewModel.phoneNumber,
                             loginViewModel.verificationCode
                         )

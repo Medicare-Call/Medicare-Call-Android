@@ -107,18 +107,24 @@ class LoginViewModel(
     var isVerified = false
     var token = ""
         private set
+    var accessToken = ""
+        private set
+    var refreshToken = ""
+        private set
 
-    suspend fun postCertificationCode(phone: String, code: String): Boolean {
+    suspend fun confirmPhoneNumber(phone: String, code: String): Boolean {
         return withContext(Dispatchers.IO) {
             verificationRepository.confirmPhoneNumber(phone, code).fold(
                 onSuccess = {
                     Log.d(
                         "phoneveri",
-                        "${it.message} ${it.memberStatus} ${it.token} ${it.verified} ${it.nextAction}"
+                        "${it.message} ${it.memberStatus} ${it.accessToken} ${it.refreshToken} ${it.verified} "
                     )
                     isVerified = it.verified
                     if (isVerified) {
                         token = it.token
+                        accessToken = it.accessToken ?: "" // 임시
+                        refreshToken = it.refreshToken ?: "" // 임시
                     }
                     it.verified
 

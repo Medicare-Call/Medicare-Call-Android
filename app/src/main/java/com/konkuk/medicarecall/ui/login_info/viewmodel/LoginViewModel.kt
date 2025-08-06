@@ -91,16 +91,19 @@ class LoginViewModel(
     }
 
     // 서버 통신 함수
+    private val debug = true
     fun postPhoneNumber(phone: String) {
-        viewModelScope.launch {
-            verificationRepository.requestCertificationCode(phone).fold(
-                onSuccess = {
-                    Log.d("phoneveri", "성공, ${it.message()}")
-                },
-                onFailure = { error ->
-                    Log.d("phoneveri", "실패, ${error.message.toString()}")
-                }
-            )
+        if (!debug) {
+            viewModelScope.launch {
+                verificationRepository.requestCertificationCode(phone).fold(
+                    onSuccess = {
+                        Log.d("phoneveri", "성공, ${it.message()}")
+                    },
+                    onFailure = { error ->
+                        Log.d("phoneveri", "실패, ${error.message.toString()}")
+                    }
+                )
+            }
         }
     }
 
@@ -113,28 +116,30 @@ class LoginViewModel(
         private set
 
     suspend fun confirmPhoneNumber(phone: String, code: String): Boolean {
-        return withContext(Dispatchers.IO) {
-            verificationRepository.confirmPhoneNumber(phone, code).fold(
-                onSuccess = {
-                    Log.d(
-                        "phoneveri",
-                        "${it.message} ${it.memberStatus} ${it.accessToken} ${it.refreshToken} ${it.verified} "
-                    )
-                    isVerified = it.verified
-                    if (isVerified) {
-                        token = it.token
-                        accessToken = it.accessToken ?: "" // 임시
-                        refreshToken = it.refreshToken ?: "" // 임시
-                    }
-                    it.verified
+        if (!debug) {
+            return withContext(Dispatchers.IO) {
+                verificationRepository.confirmPhoneNumber(phone, code).fold(
+                    onSuccess = {
+                        Log.d(
+                            "phoneveri",
+                            "${it.message} ${it.memberStatus} ${it.accessToken} ${it.refreshToken} ${it.verified} "
+                        )
+                        isVerified = it.verified
+                        if (isVerified) {
+                            token = it.token
+                            accessToken = it.accessToken ?: "" // 임시
+                            refreshToken = it.refreshToken ?: "" // 임시
+                        }
+                        it.verified
 
-                },
-                onFailure = { error ->
-                    Log.d("phoneveri", "실패, ${error.message.toString()}")
-                    false
-                }
-            )
-        }
+                    },
+                    onFailure = { error ->
+                        Log.d("phoneveri", "실패, ${error.message.toString()}")
+                        false
+                    }
+                )
+            }
+        } else return true
     }
 }
 

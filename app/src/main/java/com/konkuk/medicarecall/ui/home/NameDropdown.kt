@@ -50,7 +50,7 @@ fun NameDropdown(
         // 드롭다운 메뉴
         Column(
             modifier = Modifier
-                .padding(start = 20.dp, top = 92.dp)
+                .padding(start = 20.dp, top = 68.dp)
                 .zIndex(11f)
                 .background(Color.White, shape = RoundedCornerShape(14.dp))
         ) {

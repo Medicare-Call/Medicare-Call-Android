@@ -6,7 +6,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface MentalApi {
-    @GET("view/dailyMentalAnalysis")
+    @GET("/elders/{elderId}/mental-analysis?date=2025-07-16")
     suspend fun getDailyMental(
         @Query("guardianId") guardianId: Int,
         @Query("date") date: String

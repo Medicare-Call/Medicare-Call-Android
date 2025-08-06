@@ -1,9 +1,7 @@
 package com.konkuk.medicarecall.ui.home.screen
 
-import android.util.Log.i
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -12,12 +10,10 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.heightIn
-import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
@@ -42,7 +38,6 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
@@ -57,12 +52,9 @@ import com.konkuk.medicarecall.ui.home.component.HomeSleepContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateHealthContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateMentalContainer
 import com.konkuk.medicarecall.ui.home.model.HomeUiState
-import com.konkuk.medicarecall.ui.homedetail.meal.MealViewModel
 import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
-
-import kotlin.collections.listOf
 
 @Composable
 fun HomeScreen(
@@ -132,17 +124,17 @@ fun HomeScreen(
                     ) {
 
 
-                        val balloonText = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요."
-                        //val balloonText = homeUiState?.balloonMessage ?: "기본 메시지"
-                        val trimmedText = balloonText.take(40) // 글자 수 제한
+                        //val balloonText = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요."
+                        val balloonText = homeUiState?.balloonMessage ?: "기본 메시지"
+                        val trimmedText = balloonText.take(45) // 글자 수 제한
 
 
                         //말풍선
                         Card(
                             modifier = Modifier
                                 //텍스트에 따라 말풍선 늘리기
-                                .wrapContentHeight()
                                 .width(196.dp)
+                                .heightIn(min = 94.dp)
                                 .zIndex(2f), //겹치는 도형 위로 올림
                             colors = CardDefaults.cardColors(containerColor = Color.White),
                             shape = RoundedCornerShape(10.dp)

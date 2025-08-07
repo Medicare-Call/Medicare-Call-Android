@@ -61,7 +61,7 @@ fun TimeSettingItem(
                     color = if (timeText == null) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray3,
                     shape = RoundedCornerShape(14.dp)
                 )
-                .padding(vertical = 12.dp),
+                .padding(vertical = 18.dp),
             contentAlignment = Alignment.Center
         ) {
             if (timeText == null) {

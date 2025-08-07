@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.home
 
+import android.graphics.drawable.ColorDrawable
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
@@ -11,14 +12,19 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.SideEffect
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.platform.LocalView
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.compose.ui.window.Popup
+import androidx.compose.ui.window.Dialog
+import androidx.compose.ui.window.DialogProperties
+import androidx.compose.ui.window.DialogWindowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import android.graphics.Color as AndroidColor
 
 @Composable
 fun NameDropdown(
@@ -27,15 +33,24 @@ fun NameDropdown(
     onDismiss: () -> Unit,
     onItemSelected: (String) -> Unit
 ) {
-    Popup(
-        alignment = Alignment.TopStart,
-        onDismissRequest = { onDismiss() }
+    Dialog(
+        onDismissRequest = onDismiss,
+        properties = DialogProperties(
+            usePlatformDefaultWidth = false, // 너비 제한 해제
+            decorFitsSystemWindows = false // 시스템 UI 위에 그려지도록 설정
+        )
     ) {
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-        ) {
+        val dialogWindow = (LocalView.current.parent as? DialogWindowProvider)?.window
+        SideEffect {
+            dialogWindow?.apply {
+                setDimAmount(0f)
+                setBackgroundDrawable(ColorDrawable(AndroidColor.TRANSPARENT)) // 2. Dialog 자체의 배경을 투명하게 만듬
+            }
+        }
+
+
+        Box(modifier = Modifier.fillMaxSize()) {
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -43,16 +58,14 @@ fun NameDropdown(
                     .clickable(
                         indication = null,
                         interactionSource = remember { MutableInteractionSource() }
-                    ) {
-                        onDismiss()
-                    }
+                    ) { onDismiss() }
             )
 
             // 드롭다운 메뉴
 
             Column(
                 modifier = Modifier
-                    .padding(start = 10.dp, top = 44.dp)
+                    .padding(start = 10.dp, top = 72.dp)
                     .background(Color.White, shape = RoundedCornerShape(10.dp))
             ) {
                 items.forEach { item ->
@@ -69,6 +82,7 @@ fun NameDropdown(
         }
     }
 }
+
 @Composable
 fun DropdownItem(
     name: String,

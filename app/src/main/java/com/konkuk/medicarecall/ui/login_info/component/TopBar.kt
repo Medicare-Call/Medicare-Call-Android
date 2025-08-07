@@ -1,5 +1,7 @@
 package com.konkuk.medicarecall.ui.login_info.component
 
+import android.R.attr.onClick
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -13,7 +15,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun TopBar(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
-        modifier.fillMaxWidth()
+        modifier.fillMaxWidth().background(MediCareCallTheme.colors.bg)
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_settings_back),

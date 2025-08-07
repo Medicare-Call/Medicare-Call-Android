@@ -65,7 +65,7 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                 style = MediCareCallTheme.typography.B_26,
                 color = MediCareCallTheme.colors.black
             )
-            Spacer(modifier = modifier.height(56.dp))
+            Spacer(modifier = modifier.height(10.dp))
         }
 
             Column(
@@ -107,12 +107,7 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                         PayResultItem(senior, "29,000")
                     }
                 }
-            }
-
-            Column(
-                modifier = modifier.padding(horizontal = 20.dp)
-                    .padding(top = 20.dp)
-            ) {
+                Spacer(modifier = modifier.height(50.dp))
                 Row(
                     modifier = modifier.fillMaxWidth()
                 ) {
@@ -126,7 +121,6 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                     val formatted = NumberFormat.getNumberInstance(Locale.KOREA).format(totalAmount)
                     val displayText = "₩$formatted/월"
                     Text(
-                        //text = "₩58,000/월",
                         text = displayText,
                         style = MediCareCallTheme.typography.SB_14,
                         color = MediCareCallTheme.colors.main
@@ -134,7 +128,7 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                 }
                 Spacer(modifier = modifier.height(20.dp))
                 Button(
-                    modifier = modifier.fillMaxWidth().padding(vertical = 16.dp),
+                    modifier = modifier.fillMaxWidth().padding(vertical = 18.dp),
                     onClick = { if (isClicked) isClicked = false else isClicked = true },
                     colors = ButtonDefaults.buttonColors(
                         containerColor = MediCareCallTheme.colors.bg
@@ -151,7 +145,7 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                         modifier = modifier.height(18.dp).width(61.dp)
                     )
                 }
-                Spacer(modifier = modifier.height(88.dp))
+                Spacer(modifier = modifier.weight(1f))
                 CTAButton(
                     type = if (isClicked) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                     text = "결제하기",

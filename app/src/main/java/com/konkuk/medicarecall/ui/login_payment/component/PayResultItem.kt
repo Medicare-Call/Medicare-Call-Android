@@ -22,7 +22,7 @@ fun PayResultItem(name: String, price : String,modifier: Modifier = Modifier) {
         Text(text = "$name 님", style = MediCareCallTheme.typography.M_17, color = MediCareCallTheme.colors.gray8)
         Spacer(modifier = modifier.height(8.dp))
         Row(
-            modifier = modifier.fillMaxWidth().background(color = MediCareCallTheme.colors.gray1, shape = RoundedCornerShape(6.dp)).padding(horizontal = 10.dp, vertical = 8.dp)
+            modifier = modifier.fillMaxWidth().background(color = MediCareCallTheme.colors.bg, shape = RoundedCornerShape(6.dp)).padding(horizontal = 10.dp, vertical = 8.dp)
         ) {
             Text(text = "주문 금액", style = MediCareCallTheme.typography.R_14, color = MediCareCallTheme.colors.gray8)
             Spacer(modifier = modifier.weight(1f))

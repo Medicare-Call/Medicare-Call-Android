@@ -204,3 +204,15 @@ fun TimePickerBottomSheet(
     }
 
 }
+
+@Preview
+@Composable
+private fun TimePickerBottomSheetPreview() {
+    MediCareCallTheme {
+        TimePickerBottomSheet(
+            visible = true,
+            onDismiss = {},
+            onConfirm = { _, _, _, _, _, _, _, _, _ -> }
+        )
+    }
+}

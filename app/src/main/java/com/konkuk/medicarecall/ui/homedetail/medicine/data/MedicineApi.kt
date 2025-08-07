@@ -5,7 +5,7 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface MedicineApi {
-    @GET("/api/view/dailyMedication")
+    @GET("/elders/{elderId}/medication")
     suspend fun getDailyMedication(
         @Query("guardianId") guardianId: Int,
         @Query("date") date: String

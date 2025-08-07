@@ -18,7 +18,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Popup
-import androidx.compose.ui.zIndex
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
@@ -28,16 +27,15 @@ fun NameDropdown(
     onDismiss: () -> Unit,
     onItemSelected: (String) -> Unit
 ) {
-
     Popup(
         alignment = Alignment.TopStart,
         onDismissRequest = { onDismiss() }
     ) {
+
         Box(
             modifier = Modifier
                 .fillMaxSize()
         ) {
-            // Dim 영역 (클릭 시 드롭다운 닫음)
             Box(
                 modifier = Modifier
                     .fillMaxSize()
@@ -54,8 +52,7 @@ fun NameDropdown(
 
             Column(
                 modifier = Modifier
-                    .padding(start = 10.dp, top = 46.dp)
-                    .zIndex(11f)
+                    .padding(start = 10.dp, top = 44.dp)
                     .background(Color.White, shape = RoundedCornerShape(10.dp))
             ) {
                 items.forEach { item ->
@@ -81,7 +78,7 @@ fun DropdownItem(
     Row(
         modifier = Modifier
             .clickable(onClick = onClick)
-            .padding(start = 10.dp, bottom = 10.dp,top = 10.dp,end = 82.dp),
+            .padding(start = 10.dp, bottom = 10.dp, top = 10.dp, end = 82.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(

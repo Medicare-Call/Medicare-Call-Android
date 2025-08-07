@@ -9,30 +9,29 @@ import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
 import androidx.navigation.navArgument
-
 import androidx.navigation.navigation
+import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionBody
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen.GlucoseDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.MealDetail
+import com.konkuk.medicarecall.ui.homedetail.medicine.screen.MedicineDetail
 import com.konkuk.medicarecall.ui.homedetail.sleep.screen.SleepDetail
 import com.konkuk.medicarecall.ui.homedetail.statehealth.screen.StateHealthDetail
 import com.konkuk.medicarecall.ui.homedetail.statemental.screen.StateMentalDetail
-import com.konkuk.medicarecall.ui.homedetail.medicine.screen.MedicineDetail
 import com.konkuk.medicarecall.ui.login_care_call.screen.SetCallScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
-import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginVerificationScreen
+import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.login_payment.screen.FinishSplashScreen
 import com.konkuk.medicarecall.ui.login_payment.screen.NaverPayScreen
 import com.konkuk.medicarecall.ui.login_payment.screen.PaymentScreen
 import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorInfoScreen
 import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorMedInfoScreen
 import com.konkuk.medicarecall.ui.settings.screen.AnnouncementScreen
 import com.konkuk.medicarecall.ui.settings.screen.HealthDetailScreen
@@ -47,6 +46,9 @@ import com.konkuk.medicarecall.ui.settings.screen.SettingSubscribeScreen
 import com.konkuk.medicarecall.ui.settings.screen.SettingsScreen
 import com.konkuk.medicarecall.ui.settings.screen.SubscribeDetailScreen
 import com.konkuk.medicarecall.ui.statistics.screen.StatisticsScreen
+import kotlinx.serialization.json.Json
+import java.net.URLDecoder
+import java.nio.charset.StandardCharsets
 
 
 @Composable
@@ -85,7 +87,7 @@ fun NavGraph(
 
             // 홈 상세 화면_식사 화면
             composable(route = Route.MealDetail.route) {
-                MealDetail( navController = navController)
+                MealDetail(navController = navController)
             }
 
 
@@ -203,12 +205,18 @@ fun NavGraph(
                 )
             }
 
-            composable(route = Route.SubscribeDetail.route) {
+            composable(
+                route = "subscribe_detail/{elderJson}",
+                // elderJson을 NavArgument로 받아옴
+                arguments = listOf(navArgument("elderJson") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val encodedJson = backStackEntry.arguments?.getString("elderJson") ?: ""
+                val decodedJson = URLDecoder.decode(encodedJson, StandardCharsets.UTF_8.toString())
+                val elderInfo = Json.decodeFromString<EldersSubscriptionBody>(decodedJson)
+
                 SubscribeDetailScreen(
-                    onBack = {
-                        navController.popBackStack()
-                    },
-                    navController = navController
+                    elderInfo = elderInfo,
+                    onBack = { navController.popBackStack() }
                 )
             }
 
@@ -296,7 +304,7 @@ fun NavGraph(
                     },
                     navController = navController,
                     loginSeniorViewModel = loginSeniorViewModel
-                ) // 예시로 이름을 넣었지만, 실제로는 필요한 데이터를 전달해야 합니다.
+                )
             }
 
             composable(route = Route.Payment.route) {

@@ -12,12 +12,12 @@ import javax.inject.Singleton
 @InstallIn(SingletonComponent::class)
 object NetworkModule {
 
-    @Provides
-    @Singleton
-    fun provideRetrofit(): Retrofit {
-        return Retrofit.Builder()
-            .baseUrl("https://medicare-call.shop/api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-    }
+//    @Provides
+//    @Singleton
+//    fun provideRetrofit(): Retrofit {
+//        return Retrofit.Builder()
+//            .baseUrl("https://medicare-call.shop/api/")
+//            .addConverterFactory(GsonConverterFactory.create())
+//            .build()
+//    }
 }

@@ -4,9 +4,14 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class NoticesResponseDto(
-    val id : Int,
-    val title : String,
-    val author : String,
-    val contents : String,
-    val publishedAt : String
+    val notices : List<NoticeBody>
+)
+
+@Serializable
+data class NoticeBody(
+    val id: Int,
+    val title: String,
+    val author: String,
+    val contents: String,
+    val publishedAt: String
 )

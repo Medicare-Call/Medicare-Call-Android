@@ -2,12 +2,11 @@ package com.konkuk.medicarecall.data.api
 
 import com.konkuk.medicarecall.data.dto.request.UserUpdateRequestDto
 import com.konkuk.medicarecall.data.dto.response.DelElderInfoResponseDto
-import com.konkuk.medicarecall.data.dto.response.ElderHealth
 import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
-import com.konkuk.medicarecall.data.dto.response.NoticiesResponseDto
+import com.konkuk.medicarecall.data.dto.response.NoticesResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -43,8 +42,4 @@ interface SettingService {
     // 어르신 구독 정보 불러오기
     @GET("elders/subscriptions")
     suspend fun getElderSubscriptions(): Response<EldersSubscriptionResponseDto>
-
-    // 공지사항 조회
-    @GET("notices")
-    suspend fun getNotices(): Response<NoticiesResponseDto>
 }

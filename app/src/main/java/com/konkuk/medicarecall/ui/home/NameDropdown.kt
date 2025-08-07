@@ -6,10 +6,8 @@ import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
-import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -19,6 +17,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.window.Popup
 import androidx.compose.ui.zIndex
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
@@ -29,45 +28,50 @@ fun NameDropdown(
     onDismiss: () -> Unit,
     onItemSelected: (String) -> Unit
 ) {
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .zIndex(10f)
+
+    Popup(
+        alignment = Alignment.TopStart,
+        onDismissRequest = { onDismiss() }
     ) {
-        // Dim 영역 (클릭 시 드롭다운 닫음)
         Box(
             modifier = Modifier
                 .fillMaxSize()
-                .background(Color.Black.copy(alpha = 0.4f))
-                .clickable(
-                    indication = null,
-                    interactionSource = remember { MutableInteractionSource() }
-                ) {
-                    onDismiss()
-                }
-        )
-
-        // 드롭다운 메뉴
-        Column(
-            modifier = Modifier
-                .padding(start = 20.dp, top = 68.dp)
-                .zIndex(11f)
-                .background(Color.White, shape = RoundedCornerShape(14.dp))
         ) {
-            items.forEach { item ->
-                DropdownItem(
-                    name = item,
-                    selected = item == selectedName,
-                    onClick = {
-                        onItemSelected(item)
+            // Dim 영역 (클릭 시 드롭다운 닫음)
+            Box(
+                modifier = Modifier
+                    .fillMaxSize()
+                    .background(Color.Black.copy(alpha = 0.4f))
+                    .clickable(
+                        indication = null,
+                        interactionSource = remember { MutableInteractionSource() }
+                    ) {
                         onDismiss()
                     }
-                )
+            )
+
+            // 드롭다운 메뉴
+
+            Column(
+                modifier = Modifier
+                    .padding(start = 10.dp, top = 46.dp)
+                    .zIndex(11f)
+                    .background(Color.White, shape = RoundedCornerShape(10.dp))
+            ) {
+                items.forEach { item ->
+                    DropdownItem(
+                        name = item,
+                        selected = item == selectedName,
+                        onClick = {
+                            onItemSelected(item)
+                            onDismiss()
+                        }
+                    )
+                }
             }
         }
     }
 }
-
 @Composable
 fun DropdownItem(
     name: String,
@@ -77,18 +81,12 @@ fun DropdownItem(
     Row(
         modifier = Modifier
             .clickable(onClick = onClick)
-            .padding(horizontal = 38.dp, vertical = 10.dp),
+            .padding(start = 10.dp, bottom = 10.dp,top = 10.dp,end = 82.dp),
         verticalAlignment = Alignment.CenterVertically
     ) {
         Text(
             text = name,
-            style = MediCareCallTheme.typography.SB_24,
-            color = if (selected) MediCareCallTheme.colors.black else MediCareCallTheme.colors.gray4
-        )
-        Spacer(modifier = Modifier.width(4.dp))
-        Text(
-            text = "님",
-            style = MediCareCallTheme.typography.R_18,
+            style = MediCareCallTheme.typography.SB_18,
             color = if (selected) MediCareCallTheme.colors.black else MediCareCallTheme.colors.gray4
         )
     }
@@ -98,11 +96,13 @@ fun DropdownItem(
 @Composable
 fun PreviewNameDropdown() {
     MediCareCallTheme {
-        NameDropdown(
-            items = listOf("김옥자", "박막례"),
-            selectedName = "김옥자",
-            onDismiss = {},
-            onItemSelected = {}
-        )
+        Box(modifier = Modifier.fillMaxSize()) {
+            NameDropdown(
+                items = listOf("김옥자", "박막례"),
+                selectedName = "김옥자",
+                onDismiss = {},
+                onItemSelected = {}
+            )
+        }
     }
 }

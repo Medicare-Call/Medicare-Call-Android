@@ -18,10 +18,10 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.konkuk.medicarecall.ui.statistics.component.WeeklyGlucoseStatusChip
 import com.konkuk.medicarecall.ui.statistics.model.WeeklyGlucoseUiState
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -33,7 +33,7 @@ fun WeeklyGlucoseCard(
     weeklyGlucose: WeeklyGlucoseUiState
 ) {
     Card(
-        modifier = Modifier
+        modifier = modifier
             .fillMaxWidth()
             .wrapContentHeight()
             .figmaShadow(
@@ -42,107 +42,79 @@ fun WeeklyGlucoseCard(
             ),
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(14.dp)
-
     ) {
         Column(
             modifier = Modifier
                 .padding(20.dp)
-
         ) {
-            //Title: 혈당
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-
-            ) {
-
-                Text(
-                    text = "혈당",
-                    style = MediCareCallTheme.typography.R_15,
-                    color = MediCareCallTheme.colors.gray5,
-                )
-
-            }
-
-            // 공복 + 식후
+            Text(
+                text = "혈당",
+                style = MediCareCallTheme.typography.R_15,
+                color = MediCareCallTheme.colors.gray5,
+            )
+            Spacer(modifier = Modifier.height(12.dp))
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .padding(horizontal = 18.dp),
                 horizontalArrangement = Arrangement.SpaceBetween,
                 verticalAlignment = Alignment.Top
-
-
-                ) {
-                Column(
-                    modifier = Modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally
-
-                ) {
+            ) {
+                // --- 공복 혈당 ---
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "공복",
                         style = MediCareCallTheme.typography.M_16,
                         color = MediCareCallTheme.colors.gray6,
-
-                        )
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    GlucoseStatusRow("정상", 5)
-                    GlucoseStatusRow("높음", 2)
-                    GlucoseStatusRow("낮음", 1)
+                    if (weeklyGlucose.beforeMealNormal > 0) GlucoseStatusRow("정상", weeklyGlucose.beforeMealNormal)
+                    if (weeklyGlucose.beforeMealHigh > 0) GlucoseStatusRow("높음", weeklyGlucose.beforeMealHigh)
+                    if (weeklyGlucose.beforeMealLow > 0) GlucoseStatusRow("낮음", weeklyGlucose.beforeMealLow)    }
 
-
-
-                }
                 Spacer(modifier = Modifier.width(40.dp))
-
-                // 세로 구분선
                 Box(
                     modifier = Modifier
                         .width(1.dp)
                         .height(107.dp)
                         .background(MediCareCallTheme.colors.gray1)
                 )
-
                 Spacer(modifier = Modifier.width(40.dp))
 
-                Column(
-                    modifier = Modifier,
-                    horizontalAlignment = Alignment.CenterHorizontally
-                ) {
+                // --- 식후 혈당 ---
+                Column(horizontalAlignment = Alignment.CenterHorizontally) {
                     Text(
                         text = "식후",
                         style = MediCareCallTheme.typography.M_16,
                         color = MediCareCallTheme.colors.gray6,
-
-                        )
+                    )
                     Spacer(modifier = Modifier.height(4.dp))
 
-                    GlucoseStatusRow("정상", 5)
-                    GlucoseStatusRow("낮음", 2)
-
+                    if (weeklyGlucose.afterMealNormal > 0) GlucoseStatusRow("정상", weeklyGlucose.afterMealNormal)
+                    if (weeklyGlucose.afterMealHigh > 0) GlucoseStatusRow("높음", weeklyGlucose.afterMealHigh)
+                    if (weeklyGlucose.afterMealLow > 0) GlucoseStatusRow("낮음", weeklyGlucose.afterMealLow)
 
                 }
-
-
             }
         }
     }
-
 }
 
 @Composable
-fun GlucoseStatusRow(
+private fun GlucoseStatusRow(
     status: String,
     count: Int
 ) {
+    if (count == 0) return
     Row(
         verticalAlignment = Alignment.CenterVertically,
-        modifier = Modifier
-            .padding(vertical = 4.dp)
+        modifier = Modifier.padding(vertical = 4.dp)
     ) {
-        GlucoseStatusChip(status = status)
+        WeeklyGlucoseStatusChip(statusText = status)
+
         Spacer(modifier = Modifier.width(8.dp))
+
         Text(
             text = "${count}번",
             style = MediCareCallTheme.typography.R_14,
@@ -151,30 +123,6 @@ fun GlucoseStatusRow(
     }
 }
 
-// 임시 칩: value → status 받도록
-@Composable
-fun GlucoseStatusChip(status: String) {
-    val statusColor = when (status) {
-        "정상" -> MediCareCallTheme.colors.positive
-        "낮음" -> MediCareCallTheme.colors.active
-        "높음" -> MediCareCallTheme.colors.negative
-        else -> MediCareCallTheme.colors.gray4
-    }
-
-    Box(
-        modifier = Modifier
-            .clip(RoundedCornerShape(10))
-            .background(statusColor)
-            .padding(horizontal = 10.dp, vertical = 2.dp),
-        contentAlignment = Alignment.Center
-    ) {
-        Text(
-            text = status,
-            style = MediCareCallTheme.typography.R_14,
-            color = Color.White
-        )
-    }
-}
 
 @Preview
 @Composable
@@ -189,5 +137,4 @@ fun PreviewWeeklyGlucoseCard() {
             afterMealHigh = 0
         )
     )
-
 }

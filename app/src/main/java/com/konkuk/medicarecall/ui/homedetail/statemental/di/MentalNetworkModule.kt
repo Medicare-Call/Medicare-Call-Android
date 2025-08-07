@@ -6,7 +6,6 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -15,11 +14,7 @@ object MentalNetworkModule {
 
     @Provides
     @Singleton
-    fun provideMentalApi(): MentalApi {
-        return Retrofit.Builder()
-            .baseUrl("https://medicare-call.shop/api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(MentalApi::class.java)
+    fun provideMentalApi(retrofit: Retrofit): MentalApi {
+        return retrofit.create(MentalApi::class.java)
     }
 }

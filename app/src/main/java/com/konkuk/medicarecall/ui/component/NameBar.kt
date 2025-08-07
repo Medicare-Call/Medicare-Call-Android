@@ -34,11 +34,11 @@ fun NameBar(
 ) {
 
 
-    Box(modifier = modifier) {
+    Box(modifier = modifier.background(Color.White)) {
         Row(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(horizontal = 10.dp)
+                .padding(horizontal = 10.dp, vertical = 13.5.dp)
                 .background(Color.White),
             verticalAlignment = Alignment.CenterVertically,
             horizontalArrangement = Arrangement.SpaceBetween
@@ -49,29 +49,20 @@ fun NameBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-                Icon(
-                    modifier = Modifier
-                        .clickable { onDropdownClick() }
-                        .size(24.dp),
-                    painter = painterResource(id = R.drawable.ic_arrow_down),
-                    contentDescription = "arrow down",
-                    tint = MediCareCallTheme.colors.gray3
-                )
-
-                Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
                     text = "김옥자",
                     style = MediCareCallTheme.typography.SB_24,
                     color = MediCareCallTheme.colors.black
                 )
-
                 Spacer(modifier = Modifier.width(4.dp))
-
-                Text(
-                    text = "님",
-                    style = MediCareCallTheme.typography.R_18,
-                    color = MediCareCallTheme.colors.black
+                Icon(
+                    modifier = Modifier
+                        .clickable { onDropdownClick() }
+                        .size(18.dp),
+                    painter = painterResource(id = R.drawable.ic_arrow_down),
+                    contentDescription = "arrow down",
+                    tint = MediCareCallTheme.colors.gray3
                 )
 
             }

@@ -23,16 +23,17 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.ui.statistics.model.WeeklyGlucoseUiState
+import com.konkuk.medicarecall.ui.statistics.model.WeeklyMentalUiState
+import com.konkuk.medicarecall.ui.statistics.model.WeeklySummaryUiState
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
-import kotlin.time.Duration.Companion.hours
 
 @Composable
 fun WeeklySleepCard(
     modifier: Modifier = Modifier,
-    hours: Int,
-    minutes: Int
+    summary: WeeklySummaryUiState
 ) {
 
     Card(
@@ -80,7 +81,7 @@ fun WeeklySleepCard(
                 verticalAlignment = Alignment.Bottom
             ) {
                 Text(
-                    text = "$hours",
+                    text = "${summary.weeklySleepHours}",
                     style = MediCareCallTheme.typography.SB_22,
                     color = MediCareCallTheme.colors.gray8,
                 )
@@ -93,7 +94,7 @@ fun WeeklySleepCard(
                 Spacer(modifier = Modifier.width(4.dp))
 
                 Text(
-                    text = "$minutes",
+                    text = "${summary.weeklySleepMinutes}",
                     style = MediCareCallTheme.typography.SB_22,
                     color = MediCareCallTheme.colors.gray8,
                 )
@@ -117,10 +118,29 @@ fun WeeklySleepCard(
 @Preview
 @Composable
 fun PreviewWeeklySleepCard() {
+    val dummySummary = WeeklySummaryUiState(
+        weeklySleepHours = 7,
+        weeklySleepMinutes = 12,
+
+        weeklyMealRate = 0,
+        weeklyMedicineRate = 0,
+        weeklyHealthIssueCount = 0,
+        weeklyUnansweredCount = 0,
+        weeklyMeals = emptyList(),
+        weeklyMedicines = emptyList(),
+        weeklyHealthNote = "",
+        weeklyMental = WeeklyMentalUiState(good = 0, normal = 0, bad = 0),
+        weeklyGlucose = WeeklyGlucoseUiState(
+            beforeMealNormal = 0,
+            beforeMealHigh = 0,
+            beforeMealLow = 0,
+            afterMealNormal = 0,
+            afterMealHigh = 0,
+            afterMealLow = 0
+        )
+    )
     WeeklySleepCard(
-        modifier = Modifier
-            .size(150.dp,140.dp),
-        hours = 7,
-        minutes = 12
+        modifier = Modifier.size(150.dp, 140.dp),
+        summary = dummySummary
     )
 }

@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.login_info.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.focusable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -12,11 +13,14 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
@@ -24,6 +28,7 @@ import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.PhoneNumberVisualTransformation
+import kotlinx.coroutines.delay
 import kotlin.text.isDigit
 
 @Composable
@@ -33,7 +38,12 @@ fun LoginPhoneScreen(
     modifier: Modifier = Modifier
 ) {
     var scrollState = rememberScrollState()
+    val focusRequester = remember { FocusRequester() }
 
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+    }
 
     Column(
         modifier
@@ -45,7 +55,6 @@ fun LoginPhoneScreen(
             .statusBarsPadding()
     ) {
         TopBar({
-            loginViewModel.updateLoginUiState(LoginUiState.Start)
             navController.popBackStack()
         })
         Spacer(Modifier.height(20.dp))
@@ -63,7 +72,9 @@ fun LoginPhoneScreen(
             },
             placeHolder = "휴대폰 번호",
             keyboardType = KeyboardType.Number,
-            visualTransformation = PhoneNumberVisualTransformation()
+            visualTransformation = PhoneNumberVisualTransformation(),
+            textFieldModifier = Modifier
+                .focusRequester(focusRequester)
         )
 
         Spacer(Modifier.height(30.dp))
@@ -73,9 +84,11 @@ fun LoginPhoneScreen(
             {
                 // TODO: 서버에 인증번호 요청하기
                 loginViewModel.postPhoneNumber(loginViewModel.phoneNumber)
-                loginViewModel.updateLoginUiState(LoginUiState.EnterVerificationCode)
                 navController.navigate("login_verification")
             })
 
     }
+
+
+
 }

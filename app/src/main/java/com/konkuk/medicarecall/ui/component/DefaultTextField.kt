@@ -10,6 +10,7 @@ import androidx.compose.material3.OutlinedTextFieldDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.text.input.VisualTransformation
 import androidx.compose.ui.unit.dp
@@ -22,7 +23,8 @@ fun DefaultTextField(
     category: String? = null,
     placeHolder: String,
     keyboardType: KeyboardType = KeyboardType.Text,
-    visualTransformation: VisualTransformation = VisualTransformation.None
+    visualTransformation: VisualTransformation = VisualTransformation.None,
+    textFieldModifier: Modifier = Modifier
 ) {
 
     if (category != null) {
@@ -37,7 +39,7 @@ fun DefaultTextField(
     OutlinedTextField(
         value = value,
         onValueChange = onValueChange,
-        modifier = Modifier.fillMaxWidth(),
+        modifier = textFieldModifier.fillMaxWidth(),
         placeholder = { Text(placeHolder, style = MediCareCallTheme.typography.M_16) },
         shape = RoundedCornerShape(14.dp),
         visualTransformation = visualTransformation,

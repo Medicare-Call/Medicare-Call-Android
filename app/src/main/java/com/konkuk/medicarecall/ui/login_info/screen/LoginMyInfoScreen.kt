@@ -21,31 +21,42 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.data.dto.request.MemberRegisterRequestDto
 import com.konkuk.medicarecall.navigation.Route
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
 import com.konkuk.medicarecall.ui.login_info.component.AgreementItem
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
+import com.konkuk.medicarecall.ui.login_info.uistate.LoginEvent
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
+import kotlin.math.log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
@@ -55,7 +66,36 @@ fun LoginMyInfoScreen(
     modifier: Modifier = Modifier
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
+    val snackBarState = remember { SnackbarHostState() }
     var scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
+    val focusRequester = remember { FocusRequester() }
+
+    LaunchedEffect(Unit) {
+        focusRequester.requestFocus()
+        loginViewModel.events.collect { event ->
+            when (event) {
+                is LoginEvent.MemberRegisterSuccess -> {
+                    // 인증 성공 시 회원정보 화면으로 이동
+                    navController.navigate(Route.LoginSeniorInfoScreen.route)
+                }
+
+                is LoginEvent.MemberRegisterFailure -> {
+                    coroutineScope.launch {
+                        snackBarState.showSnackbar(
+                            message = "오류, 회원등록에 실패했습니다",
+                            duration = SnackbarDuration.Long
+                        )
+                    }
+                }
+
+                else -> { /* 다른 이벤트 무시 */
+                }
+            }
+        }
+    }
+
+
     Column(
         modifier
             .fillMaxSize()
@@ -66,7 +106,6 @@ fun LoginMyInfoScreen(
             .statusBarsPadding()
     ) {
         TopBar({
-            loginViewModel.updateLoginUiState(LoginUiState.EnterVerificationCode)
             navController.popBackStack()
         })
         Spacer(Modifier.height(20.dp))
@@ -87,7 +126,8 @@ fun LoginMyInfoScreen(
                 {
                     loginViewModel.onNameChanged(it)
                 },
-                placeHolder = "이름"
+                placeHolder = "이름",
+                textFieldModifier = Modifier.focusRequester(focusRequester)
             )
         }
         Spacer(Modifier.height(20.dp))
@@ -220,8 +260,13 @@ fun LoginMyInfoScreen(
                     if (isCheckedAll) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                     "다음",
                     {
-                        navController.navigate(Route.LoginSeniorInfoScreen.route)
-                        loginViewModel.updateLoginUiState(LoginUiState.EnterSeniorInfo)
+                        loginViewModel.memberRegister(
+                            loginViewModel.name,
+                            loginViewModel.dateOfBirth,
+                            if (loginViewModel.isMale
+                                    ?: true
+                            ) GenderType.MALE else GenderType.FEMALE
+                        )
                     },
                     modifier
                         .padding(horizontal = 20.dp)

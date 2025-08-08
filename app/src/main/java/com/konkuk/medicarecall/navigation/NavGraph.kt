@@ -25,7 +25,6 @@ import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginVerificationScreen
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.login_payment.screen.FinishSplashScreen
 import com.konkuk.medicarecall.ui.login_payment.screen.NaverPayScreen
@@ -58,8 +57,7 @@ fun NavGraph(
     loginSeniorViewModel: LoginSeniorViewModel,
     modifier: Modifier = Modifier
 ) {
-    val loginState = loginViewModel.loginState.collectAsState()
-    val startDestination = if (loginState.value == LoginState.LoggedIn) "main" else "login"
+    val startDestination = if (loginViewModel.isLoggedIn) "main" else "login"
     // navController = navController, startDestination = Route.Home.route, // 시작 화면
     NavHost(
         navController = navController,

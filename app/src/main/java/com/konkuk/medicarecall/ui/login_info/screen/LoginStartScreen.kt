@@ -15,7 +15,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
@@ -46,7 +45,6 @@ fun LoginStartScreen(
             type = CTAButtonType.WHITE,
             "시작하기",
             {
-                loginViewModel.updateLoginUiState(LoginUiState.EnterPhoneNumber)
                 navController.navigate("login_phone")
             },
             modifier

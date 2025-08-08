@@ -3,9 +3,11 @@ package com.konkuk.medicarecall.data
 import android.content.Context
 import android.util.Log
 import com.konkuk.medicarecall.BuildConfig
+import com.konkuk.medicarecall.data.api.MemberRegisterService
 import com.konkuk.medicarecall.data.api.NoticeService
 import com.konkuk.medicarecall.data.api.VerificationService
 import com.konkuk.medicarecall.data.repository.DataStoreRepository
+import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
 import dagger.Module
@@ -90,6 +92,21 @@ object AppModule {
     ): VerificationRepository {
         return VerificationRepository(service)
     }
+
+    @Provides
+    @Singleton
+    fun provideMemberRegisterService(retrofit: Retrofit): MemberRegisterService {
+        return retrofit.create(MemberRegisterService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMemberRegisterRepository(
+        service: MemberRegisterService
+    ): MemberRegisterRepository {
+        return MemberRegisterRepository(service)
+    }
+
 
     @Provides
     @Singleton

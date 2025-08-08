@@ -11,10 +11,12 @@ import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.konkuk.medicarecall.data.dto.request.MemberRegisterRequestDto
 import com.konkuk.medicarecall.data.repository.DataStoreRepository
+import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
+import com.konkuk.medicarecall.ui.model.GenderType
+import com.konkuk.medicarecall.ui.util.formatAsDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -25,27 +27,17 @@ import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
 import javax.inject.Inject
 
-
 @HiltViewModel
 class LoginViewModel @Inject constructor(
     private val verificationRepository: VerificationRepository,
+    private val memberRegisterRepository: MemberRegisterRepository,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     val isLoggedIn = false // TODO: 추후 서버나 로컬에서 정보 받아오기
 
     ///// 홈 작업을 위해 트루로 변경///////
-    // 로그인 되어 있는지 아닌 지에 대한 정보
-    private val _loginState = MutableStateFlow<LoginState>(LoginState.Loading)
-    val loginState: StateFlow<LoginState> = _loginState.asStateFlow()
 
-    // 현재 가입 단계에 대한 정보
-    private val _loginUiState = MutableStateFlow<LoginUiState>(LoginUiState.Start)
-    val loginUiState: StateFlow<LoginUiState> = _loginUiState.asStateFlow()
-
-    fun updateLoginUiState(newState: LoginUiState) {
-        _loginUiState.update { newState }
-    }
 
     // 휴대폰 번호 입력 value
     var phoneNumber by mutableStateOf("")
@@ -84,21 +76,8 @@ class LoginViewModel @Inject constructor(
     }
 
 
-    init {
-        checkLoginStatus()
-    }
 
-    fun checkLoginStatus() {
-        viewModelScope.launch {
-            _loginState.value = LoginState.Loading
-        }
-        if (isLoggedIn) {
-            _loginState.value = LoginState.LoggedIn
-        } else {
-            _loginState.value = LoginState.NotLoggedIn
-        }
 
-    }
 
     // 서버 통신 함수
     private val debug = false
@@ -107,10 +86,10 @@ class LoginViewModel @Inject constructor(
             viewModelScope.launch {
                 verificationRepository.requestCertificationCode(phone).fold(
                     onSuccess = {
-                        Log.d("phoneveri", "성공, ${it.message()}")
+                        Log.d("httplog", "성공, ${it.message()}")
                     },
                     onFailure = { error ->
-                        Log.d("phoneveri", "실패, ${error.message.toString()}")
+                        Log.d("httplog", "실패, ${error.message.toString()}")
                     }
                 )
             }
@@ -121,29 +100,54 @@ class LoginViewModel @Inject constructor(
 
     suspend fun confirmPhoneNumber(phone: String, code: String): Boolean {
         if (!debug) {
-            return withContext(Dispatchers.IO) {
-                verificationRepository.confirmPhoneNumber(phone, code).fold(
-                    onSuccess = {
-                        Log.d(
-                            "phoneveri",
-                            "${it.message} ${it.memberStatus} ${it.accessToken} ${it.refreshToken} ${it.verified} ${it.token} "
-                        )
-                        isVerified = it.verified
-                        if (isVerified) {
-                            dataStoreRepository.saveToken(it.token)
-                            dataStoreRepository.saveAccessToken(it.accessToken ?: "")
-                            dataStoreRepository.saveRefreshToken(it.refreshToken ?: "")
-                        }
-                        it.verified
-
-                    },
-                    onFailure = { error ->
-                        Log.d("phoneveri", "실패, ${error.message.toString()}")
-                        false
+            return verificationRepository.confirmPhoneNumber(phone, code).fold(
+                onSuccess = {
+                    Log.d(
+                        "httplog",
+                        "${it.message} ${it.memberStatus} ${it.accessToken} ${it.refreshToken} ${it.verified} ${it.token} "
+                    )
+                    isVerified = it.verified
+                    if (isVerified) {
+                        dataStoreRepository.saveToken(it.token)
+                        dataStoreRepository.saveAccessToken(it.accessToken ?: "")
+                        dataStoreRepository.saveRefreshToken(it.refreshToken ?: "")
                     }
-                )
-            }
+                    it.verified
+
+                },
+                onFailure = { error ->
+                    Log.d("httplog", "실패, ${error.message.toString()}")
+                    false
+                }
+            )
+
         } else return true
     }
+
+    fun memberRegister(name: String, birthDate: String, gender: GenderType) {
+        viewModelScope.launch {
+            val result = memberRegisterRepository.registerMember(name, birthDate.formatAsDate(), gender).fold(
+                onSuccess = {
+                    // 성공 로직
+                    // responseDto에는 MemberRegisterResponseDto 객체가 들어있음
+                    // 예: 성공 메시지 표시, 다음 화면으로 이동
+                    Log.d("httplog", "성공, ${it.accessToken} ${it.refreshToken}")
+                    dataStoreRepository.saveAccessToken(it.accessToken)
+                    dataStoreRepository.saveRefreshToken(it.refreshToken)
+                    true
+                },
+                onFailure = { exception ->
+                    // 실패 로직
+                    // exception에는 API 호출 중 발생한 예외가 들어있음
+                    // 예: 에러 메시지 표시
+                    Log.e("httplog", "회원가입 실패: ${exception.message}")
+                    false
+                }
+            )
+        }
+
+
+    }
+
 }
 

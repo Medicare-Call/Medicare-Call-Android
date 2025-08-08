@@ -21,7 +21,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
@@ -56,7 +55,6 @@ fun LoginPhoneScreen(
             .statusBarsPadding()
     ) {
         TopBar({
-            loginViewModel.updateLoginUiState(LoginUiState.Start)
             navController.popBackStack()
         })
         Spacer(Modifier.height(20.dp))
@@ -86,7 +84,6 @@ fun LoginPhoneScreen(
             {
                 // TODO: 서버에 인증번호 요청하기
                 loginViewModel.postPhoneNumber(loginViewModel.phoneNumber)
-                loginViewModel.updateLoginUiState(LoginUiState.EnterVerificationCode)
                 navController.navigate("login_verification")
             })
 

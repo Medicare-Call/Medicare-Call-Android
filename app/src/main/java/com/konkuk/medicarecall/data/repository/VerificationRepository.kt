@@ -15,21 +15,18 @@ class VerificationRepository @Inject constructor(
         runCatching { verificationService.requestCertificationCode(CertificationCodeRequestDto(phone)) }
 
 
-    suspend fun confirmPhoneNumber(phone: String, code: String): Result<VerificationResponseDto> {
-        return try {
-            val response =
-                verificationService.confirmPhoneNumber(PhoneNumberConfirmRequestDto(phone, code))
+    suspend fun confirmPhoneNumber(phone: String, code: String): Result<VerificationResponseDto> =
+        runCatching {
+            val response = verificationService.confirmPhoneNumber(
+                PhoneNumberConfirmRequestDto(phone, code)
+            )
+
             if (response.isSuccessful) {
-                response.body()?.let {
-                    Result.success(it)
-                } ?: Result.failure(Exception("Empty response body"))
+                response.body() ?: throw IllegalStateException("Response body is null")
             } else {
-                Result.failure(Exception("Request failed with code ${response.code()}"))
+                throw Exception("Request failed with code ${response.code()}")
             }
-        } catch (e: Exception) {
-            Result.failure(e)
         }
 
-    }
 
 }

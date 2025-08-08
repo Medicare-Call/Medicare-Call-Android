@@ -23,7 +23,6 @@ import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
@@ -61,7 +60,6 @@ fun LoginVerificationScreen(
             .statusBarsPadding()
     ) {
         TopBar({
-            loginViewModel.updateLoginUiState(LoginUiState.EnterPhoneNumber)
             navController.popBackStack()
         })
         Spacer(Modifier.height(20.dp))
@@ -96,7 +94,6 @@ fun LoginVerificationScreen(
                         )
                     ) {
                         navController.navigate("login_my_info")
-                        loginViewModel.updateLoginUiState(LoginUiState.EnterMyInfo)
                         loginViewModel.onVerificationCodeChanged("")
                     } else {
                         coroutineScope.launch {

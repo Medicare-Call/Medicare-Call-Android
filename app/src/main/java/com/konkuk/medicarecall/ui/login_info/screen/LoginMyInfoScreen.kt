@@ -38,8 +38,8 @@ import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.data.dto.request.MemberRegisterRequestDto
 import com.konkuk.medicarecall.navigation.Route
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
 import com.konkuk.medicarecall.ui.login_info.component.AgreementItem
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultTextField
@@ -47,6 +47,7 @@ import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
 
@@ -76,7 +77,6 @@ fun LoginMyInfoScreen(
             .statusBarsPadding()
     ) {
         TopBar({
-            loginViewModel.updateLoginUiState(LoginUiState.EnterVerificationCode)
             navController.popBackStack()
         })
         Spacer(Modifier.height(20.dp))
@@ -231,8 +231,14 @@ fun LoginMyInfoScreen(
                     if (isCheckedAll) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                     "다음",
                     {
+                        loginViewModel.memberRegister(
+                            loginViewModel.name,
+                            loginViewModel.dateOfBirth,
+                            if (loginViewModel.isMale
+                                    ?: true
+                            ) GenderType.MALE else GenderType.FEMALE
+                        )
                         navController.navigate(Route.LoginSeniorInfoScreen.route)
-                        loginViewModel.updateLoginUiState(LoginUiState.EnterSeniorInfo)
                     },
                     modifier
                         .padding(horizontal = 20.dp)

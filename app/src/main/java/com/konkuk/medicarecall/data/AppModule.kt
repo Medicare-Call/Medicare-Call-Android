@@ -13,7 +13,9 @@ import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
+import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
+import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
 import retrofit2.Retrofit
@@ -26,15 +28,48 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideRetrofit(): Retrofit {
+    fun provideAuthInterceptor(dataStoreRepository: DataStoreRepository): Interceptor {
+        return Interceptor { chain ->
+            val originalRequest = chain.request()
+
+            if (originalRequest.url.encodedPath.contains("verifications")) {
+                chain.proceed(originalRequest)
+            } else {
+                // runBlocking을 사용하여 코루틴 Flow에서 토큰을 동기적으로 가져옴
+                val token = runBlocking {
+                    dataStoreRepository.getToken() // DataStore에서 토큰을 가져오는 함수 호출
+                }
+
+                val requestBuilder = originalRequest.newBuilder()
+                    .header("Authorization", "Bearer $token")
+                    .method(originalRequest.method, originalRequest.body)
+
+                chain.proceed(requestBuilder.build())
+            }
+        }
+    }
+
+    @Provides
+    @Singleton
+    fun provideOkHttpClient(authInterceptor: Interceptor): OkHttpClient {
+        return OkHttpClient.Builder()
+            .addInterceptor(authInterceptor)
+            .build()
+    }
+
+
+    @Provides
+    @Singleton
+    fun provideRetrofit(okHttpClient: OkHttpClient): Retrofit {
         Log.d("Retrofit", "Base URL: ${BuildConfig.BASE_URL}")
         val json = Json { ignoreUnknownKeys = true }
         return Retrofit.Builder()
             .baseUrl(BuildConfig.BASE_URL) // BuildConfig에서 baseUrl 가져오는 경우
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
-            .client(OkHttpClient.Builder().build())
+            .client(okHttpClient)
             .build()
     }
+
 
     @Provides
     @Singleton

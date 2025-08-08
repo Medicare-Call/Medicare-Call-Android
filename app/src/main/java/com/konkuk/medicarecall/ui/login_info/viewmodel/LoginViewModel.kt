@@ -1,11 +1,17 @@
 package com.konkuk.medicarecall.ui.login_info.viewmodel
 
+import android.content.Context
 import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.datastore.core.DataStore
+import androidx.datastore.preferences.core.Preferences
+import androidx.datastore.preferences.core.stringPreferencesKey
+import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.konkuk.medicarecall.data.repository.DataStoreRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
@@ -22,7 +28,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginViewModel @Inject constructor(
-    private val verificationRepository: VerificationRepository
+    private val verificationRepository: VerificationRepository,
+    private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
 
     val isLoggedIn = false // TODO: 추후 서버나 로컬에서 정보 받아오기
@@ -111,12 +118,6 @@ class LoginViewModel @Inject constructor(
     }
 
     var isVerified = false
-    var token = ""
-        private set
-    var accessToken = ""
-        private set
-    var refreshToken = ""
-        private set
 
     suspend fun confirmPhoneNumber(phone: String, code: String): Boolean {
         if (!debug) {
@@ -125,13 +126,13 @@ class LoginViewModel @Inject constructor(
                     onSuccess = {
                         Log.d(
                             "phoneveri",
-                            "${it.message} ${it.memberStatus} ${it.accessToken} ${it.refreshToken} ${it.verified} "
+                            "${it.message} ${it.memberStatus} ${it.accessToken} ${it.refreshToken} ${it.verified} ${it.token} "
                         )
                         isVerified = it.verified
                         if (isVerified) {
-                            token = it.token
-                            accessToken = it.accessToken ?: "" // 임시
-                            refreshToken = it.refreshToken ?: "" // 임시
+                            dataStoreRepository.saveToken(it.token)
+                            dataStoreRepository.saveAccessToken(it.accessToken ?: "")
+                            dataStoreRepository.saveRefreshToken(it.refreshToken ?: "")
                         }
                         it.verified
 

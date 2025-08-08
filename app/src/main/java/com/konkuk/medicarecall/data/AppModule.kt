@@ -1,14 +1,17 @@
 package com.konkuk.medicarecall.data
 
+import android.content.Context
 import android.util.Log
 import com.konkuk.medicarecall.BuildConfig
 import com.konkuk.medicarecall.data.api.NoticeService
 import com.konkuk.medicarecall.data.api.VerificationService
+import com.konkuk.medicarecall.data.repository.DataStoreRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
+import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType
@@ -31,6 +34,12 @@ object AppModule {
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .client(OkHttpClient.Builder().build())
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideDataStoreRepository(@ApplicationContext context: Context): DataStoreRepository {
+        return DataStoreRepository(context)
     }
 
     @Provides

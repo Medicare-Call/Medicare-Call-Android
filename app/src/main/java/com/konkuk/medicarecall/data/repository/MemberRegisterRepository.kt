@@ -2,7 +2,7 @@ package com.konkuk.medicarecall.data.repository
 
 import com.konkuk.medicarecall.data.api.MemberRegisterService
 import com.konkuk.medicarecall.data.dto.request.MemberRegisterRequestDto
-import com.konkuk.medicarecall.data.dto.response.MemberRegisterResponseDto
+import com.konkuk.medicarecall.data.dto.response.MemberTokenResponseDto
 import com.konkuk.medicarecall.ui.model.GenderType
 import javax.inject.Inject
 
@@ -14,7 +14,7 @@ class MemberRegisterRepository @Inject constructor(
         name: String,
         birthDate: String,
         gender: GenderType
-    ): Result<MemberRegisterResponseDto> =
+    ): Result<MemberTokenResponseDto> =
         runCatching {
             val response = memberRegisterService.postMemberRegister(
                 "Bearer $token",

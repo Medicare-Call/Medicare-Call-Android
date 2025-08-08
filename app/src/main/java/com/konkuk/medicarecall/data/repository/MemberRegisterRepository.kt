@@ -10,12 +10,14 @@ class MemberRegisterRepository @Inject constructor(
     private val memberRegisterService: MemberRegisterService
 ) {
     suspend fun registerMember(
+        token: String,
         name: String,
         birthDate: String,
         gender: GenderType
     ): Result<MemberRegisterResponseDto> =
         runCatching {
             val response = memberRegisterService.postMemberRegister(
+                "Bearer $token",
                 MemberRegisterRequestDto(
                     name,
                     birthDate,

@@ -19,20 +19,8 @@ class DataStoreRepository(private val context: Context) {
 
 
     companion object {
-        val TOKEN_KEY = stringPreferencesKey("token")
         val ACCESS_TOKEN_KEY = stringPreferencesKey("access_token")
         val REFRESH_TOKEN_KEY = stringPreferencesKey("refresh_token")
-    }
-
-    suspend fun saveToken(token: String) {
-        context.tokenDataStore.edit { preferences ->
-            preferences[TOKEN_KEY] = token
-        }
-    }
-
-    suspend fun getToken(): String? {
-        val preferences = context.tokenDataStore.data.first()
-        return preferences[TOKEN_KEY]
     }
 
     suspend fun saveAccessToken(token: String) {
@@ -56,12 +44,5 @@ class DataStoreRepository(private val context: Context) {
         val preferences = context.tokenDataStore.data.first()
         return preferences[REFRESH_TOKEN_KEY]
     }
-
-
-    val tokenFlow: Flow<String?> = context.tokenDataStore.data
-        .map { preferences ->
-            preferences[TOKEN_KEY]
-        }
-
 
 }

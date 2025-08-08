@@ -76,9 +76,6 @@ class LoginViewModel @Inject constructor(
     }
 
 
-
-
-
     // 서버 통신 함수
     private val debug = false
     fun postPhoneNumber(phone: String) {
@@ -97,6 +94,8 @@ class LoginViewModel @Inject constructor(
     }
 
     var isVerified = false
+    var token = ""
+        private set
 
     suspend fun confirmPhoneNumber(phone: String, code: String): Boolean {
         if (!debug) {
@@ -108,7 +107,7 @@ class LoginViewModel @Inject constructor(
                     )
                     isVerified = it.verified
                     if (isVerified) {
-                        dataStoreRepository.saveToken(it.token)
+                        token = it.token ?: ""
                         dataStoreRepository.saveAccessToken(it.accessToken ?: "")
                         dataStoreRepository.saveRefreshToken(it.refreshToken ?: "")
                     }
@@ -126,24 +125,31 @@ class LoginViewModel @Inject constructor(
 
     fun memberRegister(name: String, birthDate: String, gender: GenderType) {
         viewModelScope.launch {
-            val result = memberRegisterRepository.registerMember(name, birthDate.formatAsDate(), gender).fold(
-                onSuccess = {
-                    // 성공 로직
-                    // responseDto에는 MemberRegisterResponseDto 객체가 들어있음
-                    // 예: 성공 메시지 표시, 다음 화면으로 이동
-                    Log.d("httplog", "성공, ${it.accessToken} ${it.refreshToken}")
-                    dataStoreRepository.saveAccessToken(it.accessToken)
-                    dataStoreRepository.saveRefreshToken(it.refreshToken)
-                    true
-                },
-                onFailure = { exception ->
-                    // 실패 로직
-                    // exception에는 API 호출 중 발생한 예외가 들어있음
-                    // 예: 에러 메시지 표시
-                    Log.e("httplog", "회원가입 실패: ${exception.message}")
-                    false
-                }
-            )
+            val result =
+                memberRegisterRepository.registerMember(
+                    token,
+                    name,
+                    birthDate.formatAsDate(),
+                    gender
+                )
+                    .fold(
+                        onSuccess = {
+                            // 성공 로직
+                            // responseDto에는 MemberRegisterResponseDto 객체가 들어있음
+                            // 예: 성공 메시지 표시, 다음 화면으로 이동
+                            Log.d("httplog", "성공, ${it.accessToken} ${it.refreshToken}")
+                            dataStoreRepository.saveAccessToken(it.accessToken)
+                            dataStoreRepository.saveRefreshToken(it.refreshToken)
+                            true
+                        },
+                        onFailure = { exception ->
+                            // 실패 로직
+                            // exception에는 API 호출 중 발생한 예외가 들어있음
+                            // 예: 에러 메시지 표시
+                            Log.e("httplog", "회원가입 실패: ${exception.message}")
+                            false
+                        }
+                    )
         }
 
 

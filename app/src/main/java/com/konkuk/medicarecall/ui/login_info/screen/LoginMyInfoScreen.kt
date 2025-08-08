@@ -50,6 +50,7 @@ import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
+import kotlin.math.log
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable

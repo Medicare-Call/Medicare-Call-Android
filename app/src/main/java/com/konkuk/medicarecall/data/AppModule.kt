@@ -34,16 +34,16 @@ object AppModule {
         return Interceptor { chain ->
             val originalRequest = chain.request()
 
-            if (originalRequest.url.encodedPath.contains("verifications")) {
+            if (originalRequest.url.encodedPath.contains("verifications") or originalRequest.url.encodedPath.contains("members")) {
                 chain.proceed(originalRequest)
             } else {
                 // runBlocking을 사용하여 코루틴 Flow에서 토큰을 동기적으로 가져옴
-                val token = runBlocking {
-                    dataStoreRepository.getToken() // DataStore에서 토큰을 가져오는 함수 호출
+                val accessToken = runBlocking {
+                    dataStoreRepository.getAccessToken() // DataStore에서 토큰을 가져오는 함수 호출
                 }
 
                 val requestBuilder = originalRequest.newBuilder()
-                    .header("Authorization", "Bearer $token")
+                    .header("Authorization", "Bearer $accessToken")
                     .method(originalRequest.method, originalRequest.body)
 
                 chain.proceed(requestBuilder.build())

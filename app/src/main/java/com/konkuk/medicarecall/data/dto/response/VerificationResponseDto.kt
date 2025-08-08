@@ -7,7 +7,7 @@ data class VerificationResponseDto(
     val verified: Boolean,
     val message: String,
     val memberStatus: String,
-    val token: String,
+    val token: String?,
     val accessToken: String?,
     val refreshToken: String?
 )

@@ -6,8 +6,9 @@ import com.konkuk.medicarecall.data.dto.request.CertificationCodeRequestDto
 import com.konkuk.medicarecall.data.dto.request.PhoneNumberConfirmRequestDto
 import com.konkuk.medicarecall.data.dto.response.VerificationResponseDto
 import retrofit2.Response
+import javax.inject.Inject
 
-class VerificationRepository(
+class VerificationRepository @Inject constructor(
     private val verificationService: VerificationService
 ) {
     suspend fun requestCertificationCode(phone: String) =

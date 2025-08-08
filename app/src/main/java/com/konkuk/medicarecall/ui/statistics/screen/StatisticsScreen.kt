@@ -22,7 +22,7 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
-import com.konkuk.medicarecall.ui.NameBar
+import com.konkuk.medicarecall.ui.component.NameBar
 import com.konkuk.medicarecall.ui.home.NameDropdown
 import com.konkuk.medicarecall.ui.statistics.model.WeeklyGlucoseUiState
 import com.konkuk.medicarecall.ui.statistics.model.WeeklyMealUiState

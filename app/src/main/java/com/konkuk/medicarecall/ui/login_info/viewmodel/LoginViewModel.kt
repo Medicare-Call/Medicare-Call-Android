@@ -9,6 +9,7 @@ import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.data.repository.VerificationRepository
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.login_info.uistate.LoginUiState
+import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
@@ -16,9 +17,11 @@ import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.withContext
+import javax.inject.Inject
 
 
-class LoginViewModel(
+@HiltViewModel
+class LoginViewModel @Inject constructor(
     private val verificationRepository: VerificationRepository
 ) : ViewModel() {
 
@@ -91,7 +94,7 @@ class LoginViewModel(
     }
 
     // 서버 통신 함수
-    private val debug = true
+    private val debug = false
     fun postPhoneNumber(phone: String) {
         if (!debug) {
             viewModelScope.launch {

@@ -82,7 +82,7 @@ class LoginViewModel @Inject constructor(
 
 
     // 서버 통신 함수
-    private val debug = false
+    private val debug = true
     fun postPhoneNumber(phone: String) {
         if (!debug) {
             viewModelScope.launch {
@@ -118,7 +118,7 @@ class LoginViewModel @Inject constructor(
                             dataStoreRepository.saveRefreshToken(it.refreshToken ?: "")
                         }
                         if (it.memberStatus == "EXISTING_MEMBER")
-                            _events.emit(LoginEvent.VerificationSuccessNew)
+                            _events.emit(LoginEvent.VerificationSuccessExisting)
                         else
                             _events.emit(LoginEvent.VerificationSuccessNew)
                     }

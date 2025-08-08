@@ -78,10 +78,11 @@ fun SettingsScreen(
             ) // 나중에 값 받아와서 이름 출력되도록 수정 필요
             Spacer(modifier = Modifier.width(5.dp))
             Text(text = "님", style = MediCareCallTheme.typography.R_18, color = MediCareCallTheme.colors.black)
-            Spacer(modifier = Modifier.width(109.dp))
+            Spacer(modifier = Modifier.weight(1f))
             Icon(painter = painterResource(id = R.drawable.ic_arrow_big), contentDescription = "화살표 아이콘", modifier = Modifier.size(28.dp), tint = MediCareCallTheme.colors.gray2)
 
         }
+            Spacer(modifier = Modifier.height(20.dp))
             Column(
                 modifier = Modifier.fillMaxWidth(),
             ) {
@@ -91,7 +92,6 @@ fun SettingsScreen(
                 )
                     .clip(RoundedCornerShape(14.dp))
                     .background(MediCareCallTheme.colors.white).padding(20.dp),
-                    horizontalArrangement = Arrangement.SpaceEvenly
                     ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -110,7 +110,7 @@ fun SettingsScreen(
                             color = MediCareCallTheme.colors.gray8,
                         )
                     }
-
+                    Spacer(modifier = Modifier.weight(1f))
                     Column(
                         modifier = Modifier.clickable{onNavigateToCenter()},
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -128,7 +128,7 @@ fun SettingsScreen(
                             color = MediCareCallTheme.colors.gray8,
                         )
                     }
-
+                    Spacer(modifier = Modifier.weight(1f))
                     Column(
                         modifier = Modifier.clickable{onNavigateToSubscribe()},
                         horizontalAlignment = Alignment.CenterHorizontally
@@ -146,7 +146,7 @@ fun SettingsScreen(
                             color = MediCareCallTheme.colors.gray8,
                         )
                     }
-
+                    Spacer(modifier = Modifier.weight(1f))
                     Column(
                         modifier = Modifier.clickable{}, // 결제내역 클릭 시 동작 추가
                         horizontalAlignment = Alignment.CenterHorizontally

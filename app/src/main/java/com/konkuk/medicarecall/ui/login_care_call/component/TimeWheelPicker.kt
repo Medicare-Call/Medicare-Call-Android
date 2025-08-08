@@ -46,6 +46,8 @@ fun TimeWheelPicker(
     val g200 = MediCareCallTheme.colors.g200.copy()
     val minuteOptions = arrayOf("00", "10", "20", "30", "40", "50")
 
+    val style = MediCareCallTheme.typography.M_20
+
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -75,8 +77,17 @@ fun TimeWheelPicker(
                         setOnValueChangedListener { _, _, newVal ->
                             amPm = newVal
                             onTimeChange(amPm, hour, minute)
+
+                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                         }
                         setPickerTextColor(mainColor)
+                        for (i in 0 until childCount) {
+                            val child = getChildAt(i)
+                            if (child is EditText) {
+                                child.textSize = 20f
+                                child.typeface = Typeface.DEFAULT_BOLD
+                            }
+                        }
                         @SuppressLint("DiscouragedPrivateApi", "SoonBlockedPrivateApi", "UseKtx")
                         fun hideDividers() {
                             try {
@@ -106,6 +117,32 @@ fun TimeWheelPicker(
                 },
                 update = { picker ->
                     picker.value = amPm
+                    @SuppressLint("DiscouragedPrivateApi", "SoonBlockedPrivateApi", "UseKtx")
+                    fun hideDividers() {
+                        try {
+                            // mSelectionDivider(드로어블)를 투명 Drawable 로 교체
+                            val dividerField = NumberPicker::class.java
+                                .getDeclaredField("mSelectionDivider")
+                                .apply { isAccessible = true }
+                            dividerField.set(this,
+                                android.graphics.Color.TRANSPARENT.toDrawable())
+
+                            // mSelectionDividerHeight(높이)를 0 으로
+                            val heightField = NumberPicker::class.java
+                                .getDeclaredField("mSelectionDividerHeight")
+                                .apply { isAccessible = true }
+                            heightField.setInt(this, 0)
+                        } catch (ignored: Exception) { }
+                    }
+                    hideDividers()
+                    for (i in 0 until picker.childCount) {
+                        val child = picker.getChildAt(i)
+                        if (child is EditText) {
+                            child.textSize = 20f
+                            child.typeface = Typeface.DEFAULT_BOLD
+                        }
+                    }
+                    picker.setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                 }
             )
             Spacer(Modifier.width(32.dp))
@@ -119,8 +156,16 @@ fun TimeWheelPicker(
                         setOnValueChangedListener { _, _, newVal ->
                             hour = newVal
                             onTimeChange(amPm, hour, minute)
+                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                         }
                         setPickerTextColor(mainColor) // 텍스트 색상 변경
+                        for (i in 0 until childCount) {
+                            val child = getChildAt(i)
+                            if (child is EditText) {
+                                child.textSize = 20f
+                                child.typeface = Typeface.DEFAULT_BOLD
+                            }
+                        }
                         @SuppressLint("DiscouragedPrivateApi", "SoonBlockedPrivateApi")
                         fun hideDividers() {
                             try {
@@ -149,7 +194,32 @@ fun TimeWheelPicker(
                 },
                 update = { picker ->
                     picker.value = hour
+                    @SuppressLint("DiscouragedPrivateApi", "SoonBlockedPrivateApi", "UseKtx")
+                    fun hideDividers() {
+                        try {
+                            // mSelectionDivider(드로어블)를 투명 Drawable 로 교체
+                            val dividerField = NumberPicker::class.java
+                                .getDeclaredField("mSelectionDivider")
+                                .apply { isAccessible = true }
+                            dividerField.set(this,
+                                android.graphics.Color.TRANSPARENT.toDrawable())
 
+                            // mSelectionDividerHeight(높이)를 0 으로
+                            val heightField = NumberPicker::class.java
+                                .getDeclaredField("mSelectionDividerHeight")
+                                .apply { isAccessible = true }
+                            heightField.setInt(this, 0)
+                        } catch (ignored: Exception) { }
+                    }
+                    hideDividers()
+                    for (i in 0 until picker.childCount) {
+                        val child = picker.getChildAt(i)
+                        if (child is EditText) {
+                            child.textSize = 20f
+                            child.typeface = Typeface.DEFAULT_BOLD
+                        }
+                    }
+                    picker.setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                 }
             )
             Spacer(modifier = Modifier.width(18.dp))
@@ -167,8 +237,16 @@ fun TimeWheelPicker(
                         setOnValueChangedListener { _, _, newValue ->
                             minute = newValue * 10 // Convert index to actual minute value
                             onTimeChange(amPm, hour, minute)
+                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                         }
                         setPickerTextColor(mainColor)
+                        for (i in 0 until childCount) {
+                            val child = getChildAt(i)
+                            if (child is EditText) {
+                                child.textSize = 20f
+                                child.typeface = Typeface.DEFAULT_BOLD
+                            }
+                        }
                         @SuppressLint("DiscouragedPrivateApi", "SoonBlockedPrivateApi")
                         fun hideDividers() {
                             try {
@@ -197,6 +275,32 @@ fun TimeWheelPicker(
                 },
                 update = { picker ->
                     picker.value = minuteOptions.indexOf(minute.toString().padStart(2, '0'))
+                    @SuppressLint("DiscouragedPrivateApi", "SoonBlockedPrivateApi", "UseKtx")
+                    fun hideDividers() {
+                        try {
+                            // mSelectionDivider(드로어블)를 투명 Drawable 로 교체
+                            val dividerField = NumberPicker::class.java
+                                .getDeclaredField("mSelectionDivider")
+                                .apply { isAccessible = true }
+                            dividerField.set(this,
+                                android.graphics.Color.TRANSPARENT.toDrawable())
+
+                            // mSelectionDividerHeight(높이)를 0 으로
+                            val heightField = NumberPicker::class.java
+                                .getDeclaredField("mSelectionDividerHeight")
+                                .apply { isAccessible = true }
+                            heightField.setInt(this, 0)
+                        } catch (ignored: Exception) { }
+                    }
+                    hideDividers()
+                    for (i in 0 until picker.childCount) {
+                        val child = picker.getChildAt(i)
+                        if (child is EditText) {
+                            child.textSize = 20f
+                            child.typeface = Typeface.DEFAULT_BOLD
+                        }
+                    }
+                    picker.setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                 }
             )
         }
@@ -238,6 +342,38 @@ fun NumberPicker.setPickerTextColor(color: Int) {
             }
 
             // 다시 그리기
+            invalidate()
+        } catch (e: Exception) {
+            e.printStackTrace()
+        }
+    }
+}
+
+@SuppressLint("DiscouragedPrivateApi")
+fun NumberPicker.setPickerTextStyle(color: Int, textSizeSp: Float, typeface: Typeface) {
+    if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+        this.setTextColor(color)
+    } else {
+        try {
+            // mSelectorWheelPaint 설정
+            val selectorWheelPaintField = NumberPicker::class.java
+                .getDeclaredField("mSelectorWheelPaint")
+                .apply { isAccessible = true }
+
+            val paint = selectorWheelPaintField.get(this) as Paint
+            paint.color = color
+            paint.textSize = textSizeSp * context.resources.displayMetrics.scaledDensity
+            paint.typeface = typeface
+
+            // 내부 EditText 설정
+            for (i in 0 until childCount) {
+                (getChildAt(i) as? EditText)?.apply {
+                    setTextColor(color)
+                    setTextSize(android.util.TypedValue.COMPLEX_UNIT_SP, textSizeSp)
+                    setTypeface(typeface)
+                }
+            }
+
             invalidate()
         } catch (e: Exception) {
             e.printStackTrace()

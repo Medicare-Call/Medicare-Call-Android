@@ -30,16 +30,20 @@ import androidx.compose.ui.unit.dp
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionBody
 import com.konkuk.medicarecall.ui.settings.component.SettingInfoItem
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
+import java.text.NumberFormat
+import java.text.SimpleDateFormat
+import java.util.Locale
 
 @Composable
 fun SubscribeDetailScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
-    navController: NavHostController
+    elderInfo : EldersSubscriptionBody
 ) {
     val scrollState = rememberScrollState()
     Column(modifier = modifier
@@ -82,28 +86,34 @@ fun SubscribeDetailScreen(
                     style = MediCareCallTheme.typography.SB_18,
                     color = MediCareCallTheme.colors.gray8
                 )
-                SettingInfoItem("어르신 성함", "김옥자")
+                SettingInfoItem("어르신 성함", elderInfo.name)
                 Column(
-                    modifier = modifier.fillMaxWidth()
+                    modifier = modifier.fillMaxWidth(),
+                    verticalArrangement = Arrangement.spacedBy(5.dp)
                 ) {
                     Text(
                         text = "구독 플랜",
                         style = MediCareCallTheme.typography.R_14,
                         color = MediCareCallTheme.colors.gray4
                     )
+                    val planInfo = when (elderInfo.plan) {
+                        "BASIC" -> "베이직 플랜"
+                        "PREMIUM" -> "프리미엄 플랜"
+                        else -> "알 수 없는 플랜"
+                    }
                     Text(
-                        text = "프리미엄 플랜",
+                        text = planInfo,
                         style = MediCareCallTheme.typography.SB_18,
                         color = MediCareCallTheme.colors.main
                     )
                     Text(
-                        text = "월 29,000원",
+                        text = "월 ${"%,d".format(elderInfo.price)}원",
                         style = MediCareCallTheme.typography.SB_16,
                         color = MediCareCallTheme.colors.gray8
                     )
                 }
-                SettingInfoItem("결제 예정일", "2025년 7월 10일")
-                SettingInfoItem("최초 가입일", "2025년 5월 10일")
+                SettingInfoItem("결제 예정일", formatDateToKorean(elderInfo.nextBillingDate))
+                SettingInfoItem("최초 가입일", formatDateToKorean(elderInfo.startDate))
             }
 
             // 결제 수단 변경하기 컴포넌트
@@ -121,13 +131,6 @@ fun SubscribeDetailScreen(
                     .padding(start = 20.dp)
                     .clickable {} // 클릭 이벤트 추가
             ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_plus),
-                    contentDescription = "추가 아이콘",
-                    modifier = Modifier.size(20.dp),
-                    tint = MediCareCallTheme.colors.gray4
-                )
-                Spacer(modifier = Modifier.width(8.dp))
                 Text(
                     text = "결제수단 변경하기",
                     style = MediCareCallTheme.typography.SB_14,
@@ -145,5 +148,16 @@ fun SubscribeDetailScreen(
                 )
             }
         }
+    }
+}
+
+fun formatDateToKorean(dateStr: String): String {
+    return try {
+        val inputFormat = SimpleDateFormat("yyyy-MM-dd", Locale.KOREA)
+        val outputFormat = SimpleDateFormat("yyyy년 M월 d일", Locale.KOREA)
+        val date = inputFormat.parse(dateStr)
+        outputFormat.format(date!!)
+    } catch (e: Exception) {
+        dateStr // 파싱 실패 시 원래 문자열 반환
     }
 }

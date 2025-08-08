@@ -1,6 +1,8 @@
 package com.konkuk.medicarecall.data
 
 import com.konkuk.medicarecall.BuildConfig
+import com.konkuk.medicarecall.data.api.NoticeService
+import com.konkuk.medicarecall.data.api.SettingService
 import com.konkuk.medicarecall.data.api.VerificationService
 import kotlinx.serialization.json.Json
 import okhttp3.MediaType.Companion.toMediaType

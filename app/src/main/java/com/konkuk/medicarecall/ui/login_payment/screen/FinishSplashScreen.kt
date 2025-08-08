@@ -31,7 +31,7 @@ fun FinishSplashScreen(modifier: Modifier = Modifier, navController: NavHostCont
         modifier = modifier
             .fillMaxSize()
             .background(MediCareCallTheme.colors.main)
-            .padding(top = 91.dp)
+            .padding(top = 146.dp)
             .statusBarsPadding()
         ,
         horizontalAlignment = Alignment.CenterHorizontally
@@ -51,10 +51,11 @@ fun FinishSplashScreen(modifier: Modifier = Modifier, navController: NavHostCont
                 .height(266.dp)
                 .width(316.dp),
         )
-        Spacer(modifier = modifier.height(73.dp))
+        Spacer(modifier = modifier.weight(1f))
         CTAButton(CTAButtonType.WHITE, "확인",
             onClick = {navController.navigate(Route.Home.route)},
             modifier = modifier.padding(horizontal = 20.dp)
             )
+        Spacer(modifier = modifier.height(30.dp))
     }
 }

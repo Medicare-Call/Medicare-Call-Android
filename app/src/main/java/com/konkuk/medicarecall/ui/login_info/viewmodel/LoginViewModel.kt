@@ -15,12 +15,15 @@ import com.konkuk.medicarecall.data.dto.request.MemberRegisterRequestDto
 import com.konkuk.medicarecall.data.repository.DataStoreRepository
 import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
+import com.konkuk.medicarecall.ui.login_info.uistate.LoginEvent
 import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.util.formatAsDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.flow.MutableSharedFlow
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.asSharedFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
@@ -33,6 +36,8 @@ class LoginViewModel @Inject constructor(
     private val memberRegisterRepository: MemberRegisterRepository,
     private val dataStoreRepository: DataStoreRepository
 ) : ViewModel() {
+    private val _events = MutableSharedFlow<LoginEvent>()
+    val events = _events.asSharedFlow()
 
     val isLoggedIn = false // TODO: 추후 서버나 로컬에서 정보 받아오기
 
@@ -97,59 +102,68 @@ class LoginViewModel @Inject constructor(
     var token = ""
         private set
 
-    suspend fun confirmPhoneNumber(phone: String, code: String): Boolean {
-        if (!debug) {
-            return verificationRepository.confirmPhoneNumber(phone, code).fold(
-                onSuccess = {
-                    Log.d(
-                        "httplog",
-                        "${it.message} ${it.memberStatus} ${it.accessToken} ${it.refreshToken} ${it.verified} ${it.token} "
-                    )
-                    isVerified = it.verified
-                    if (isVerified) {
-                        token = it.token ?: ""
-                        dataStoreRepository.saveAccessToken(it.accessToken ?: "")
-                        dataStoreRepository.saveRefreshToken(it.refreshToken ?: "")
+    fun confirmPhoneNumber(phone: String, code: String) {
+        viewModelScope.launch {
+            if (!debug) {
+                verificationRepository.confirmPhoneNumber(phone, code)
+                    .onSuccess {
+                        Log.d(
+                            "httplog",
+                            "${it.message} ${it.memberStatus} ${it.accessToken} ${it.refreshToken} ${it.verified} ${it.token} "
+                        )
+                        isVerified = it.verified
+                        if (isVerified) {
+                            token = it.token ?: ""
+                            dataStoreRepository.saveAccessToken(it.accessToken ?: "")
+                            dataStoreRepository.saveRefreshToken(it.refreshToken ?: "")
+                        }
+                        if (it.memberStatus == "EXISTING_MEMBER")
+                            _events.emit(LoginEvent.VerificationSuccessNew)
+                        else
+                            _events.emit(LoginEvent.VerificationSuccessNew)
                     }
-                    it.verified
+                    .onFailure { error ->
+                        Log.d("httplog", "실패, ${error.message.toString()}")
+                        _events.emit(LoginEvent.VerificationFailure)
+                    }
 
-                },
-                onFailure = { error ->
-                    Log.d("httplog", "실패, ${error.message.toString()}")
-                    false
-                }
-            )
-
-        } else return true
+            } else {
+                _events.emit(LoginEvent.VerificationSuccessNew)
+            }
+        }
     }
 
     fun memberRegister(name: String, birthDate: String, gender: GenderType) {
         viewModelScope.launch {
-            val result =
+
+            if (!debug) {
                 memberRegisterRepository.registerMember(
                     token,
                     name,
                     birthDate.formatAsDate(),
                     gender
                 )
-                    .fold(
-                        onSuccess = {
-                            // 성공 로직
-                            // responseDto에는 MemberRegisterResponseDto 객체가 들어있음
-                            // 예: 성공 메시지 표시, 다음 화면으로 이동
-                            Log.d("httplog", "성공, ${it.accessToken} ${it.refreshToken}")
-                            dataStoreRepository.saveAccessToken(it.accessToken)
-                            dataStoreRepository.saveRefreshToken(it.refreshToken)
-                            true
-                        },
-                        onFailure = { exception ->
-                            // 실패 로직
-                            // exception에는 API 호출 중 발생한 예외가 들어있음
-                            // 예: 에러 메시지 표시
-                            Log.e("httplog", "회원가입 실패: ${exception.message}")
-                            false
-                        }
-                    )
+                    .onSuccess {
+                        // 성공 로직
+                        // responseDto에는 MemberRegisterResponseDto 객체가 들어있음
+                        // 예: 성공 메시지 표시, 다음 화면으로 이동
+                        Log.d("httplog", "성공, ${it.accessToken} ${it.refreshToken}")
+                        dataStoreRepository.saveAccessToken(it.accessToken)
+                        dataStoreRepository.saveRefreshToken(it.refreshToken)
+                        _events.emit(LoginEvent.MemberRegisterSuccess)
+                    }
+                    .onFailure { exception ->
+                        // 실패 로직
+                        // exception에는 API 호출 중 발생한 예외가 들어있음
+                        // 예: 에러 메시지 표시
+                        Log.e("httplog", "회원가입 실패: ${exception.message}")
+                        _events.emit(LoginEvent.MemberRegisterFailure)
+
+                    }
+            } else {
+                _events.emit(LoginEvent.MemberRegisterSuccess)
+            }
+
         }
 
 

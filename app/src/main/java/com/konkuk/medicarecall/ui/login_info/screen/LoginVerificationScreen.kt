@@ -22,10 +22,13 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
+import com.konkuk.medicarecall.ui.login_info.uistate.LoginEvent
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -47,6 +50,31 @@ fun LoginVerificationScreen(
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+        loginViewModel.events.collect { event ->
+            when (event) {
+                is LoginEvent.VerificationSuccessNew -> {
+                    // 인증 성공 시 회원정보 화면으로 이동
+                    navController.navigate(Route.LoginMyInfo.route)
+                }
+
+                is LoginEvent.VerificationSuccessExisting -> {
+                    navController.navigate(Route.Home.route)
+                }
+
+                is LoginEvent.VerificationFailure -> {
+                    // 인증 실패 시 스낵바 표시
+                    coroutineScope.launch {
+                        snackBarState.showSnackbar(
+                            message = "인증번호가 올바르지 않습니다",
+                            duration = SnackbarDuration.Long
+                        )
+                    }
+                }
+
+                else -> { /* 다른 이벤트 무시 */
+                }
+            }
+        }
     }
 
 
@@ -87,24 +115,14 @@ fun LoginVerificationScreen(
             "확인",
             onClick = {
                 // TODO: 서버에 인증번호 보내서 확인하기
-                coroutineScope.launch {
-                    if (loginViewModel.confirmPhoneNumber(
-                            loginViewModel.phoneNumber,
-                            loginViewModel.verificationCode
-                        )
-                    ) {
-                        navController.navigate("login_my_info")
-                        loginViewModel.onVerificationCodeChanged("")
-                    } else {
-                        coroutineScope.launch {
-                            snackBarState.showSnackbar(
-                                message = "인증번호가 올바르지 않습니다",
-                                duration = SnackbarDuration.Long
-                            )
-                        }
-                    }
+                loginViewModel.confirmPhoneNumber(
+                    loginViewModel.phoneNumber,
+                    loginViewModel.verificationCode
+                )
 
-                }
+                loginViewModel.onVerificationCodeChanged("")
+
+
             })
     }
     SnackbarHost(snackBarState)

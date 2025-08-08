@@ -21,6 +21,8 @@ import androidx.compose.material3.ExperimentalMaterial3Api
 import androidx.compose.material3.HorizontalDivider
 import androidx.compose.material3.Icon
 import androidx.compose.material3.ModalBottomSheet
+import androidx.compose.material3.SnackbarDuration
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
@@ -28,6 +30,7 @@ import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -45,11 +48,14 @@ import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
+import com.konkuk.medicarecall.ui.login_info.uistate.LoginEvent
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
+import kotlinx.coroutines.coroutineScope
+import kotlinx.coroutines.launch
 import kotlin.math.log
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -60,11 +66,33 @@ fun LoginMyInfoScreen(
     modifier: Modifier = Modifier
 ) {
     var showBottomSheet by remember { mutableStateOf(false) }
+    val snackBarState = remember { SnackbarHostState() }
     var scrollState = rememberScrollState()
+    val coroutineScope = rememberCoroutineScope()
     val focusRequester = remember { FocusRequester() }
 
     LaunchedEffect(Unit) {
         focusRequester.requestFocus()
+        loginViewModel.events.collect { event ->
+            when (event) {
+                is LoginEvent.MemberRegisterSuccess -> {
+                    // 인증 성공 시 회원정보 화면으로 이동
+                    navController.navigate(Route.LoginSeniorInfoScreen.route)
+                }
+
+                is LoginEvent.MemberRegisterFailure -> {
+                    coroutineScope.launch {
+                        snackBarState.showSnackbar(
+                            message = "오류, 회원등록에 실패했습니다",
+                            duration = SnackbarDuration.Long
+                        )
+                    }
+                }
+
+                else -> { /* 다른 이벤트 무시 */
+                }
+            }
+        }
     }
 
 
@@ -239,7 +267,6 @@ fun LoginMyInfoScreen(
                                     ?: true
                             ) GenderType.MALE else GenderType.FEMALE
                         )
-                        navController.navigate(Route.LoginSeniorInfoScreen.route)
                     },
                     modifier
                         .padding(horizontal = 20.dp)

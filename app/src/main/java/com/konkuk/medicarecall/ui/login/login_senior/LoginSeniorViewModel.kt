@@ -3,6 +3,7 @@ package com.konkuk.medicarecall.ui.login.login_senior
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import com.konkuk.medicarecall.ui.model.SeniorData
@@ -88,6 +89,11 @@ class LoginSeniorViewModel : ViewModel() {
     fun onSelectedSeniorChanged(new: Int) {
         selectedSenior = new
     }
+
+    var diseaseText = mutableStateOf("")
+    var diseaseList = mutableStateListOf<String>()
+
+    // 기타 데이터
 
     var seniorDataList = mutableStateListOf<SeniorData>()
         private set

@@ -82,6 +82,7 @@ fun LoginSeniorInfoScreen(
         // interactionSource 에서 pressed 상태 감지
         val isPressed by interactionSource.collectIsPressedAsState()
 
+        // 어르신 더 추가하기 버튼
         Box(
             Modifier
                 .fillMaxWidth()

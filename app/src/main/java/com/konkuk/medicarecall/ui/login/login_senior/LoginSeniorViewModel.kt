@@ -48,11 +48,11 @@ class LoginSeniorViewModel : ViewModel() {
         return (0 until elders).all { i ->
 
             nameList[i].isNotBlank() &&
-                    dateOfBirthList[i].length == 8 &&
-                    isMaleBoolList[i] != null &&
-                    phoneNumberList[i].length == 11 &&
-                    relationshipList[i].isNotBlank() &&
-                    livingTypeList[i].isNotBlank()
+            dateOfBirthList[i].length == 8 &&
+            isMaleBoolList[i] != null &&
+            phoneNumberList[i].length == 11 &&
+            relationshipList[i].isNotBlank() &&
+            livingTypeList[i].isNotBlank()
         }
 
     }

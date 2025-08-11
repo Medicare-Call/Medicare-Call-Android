@@ -42,7 +42,11 @@ fun SeniorInputForm(
     index: Int,
     modifier: Modifier = Modifier
 ) {
-    AnimatedVisibility(isExpanded, enter = fadeIn() + expandVertically() , exit = fadeOut() + shrinkVertically()) {
+    AnimatedVisibility(
+        isExpanded,
+        enter = fadeIn() + expandVertically(),
+        exit = fadeOut() + shrinkVertically()
+    ) {
         Column(
             verticalArrangement = Arrangement.Center
         ) {
@@ -144,13 +148,24 @@ fun SeniorInputForm(
                         style = MediCareCallTheme.typography.SB_18
                     )
                     Text(
-                        "어르신 정보 보기",
-                        color = MediCareCallTheme.colors.gray8,
-                        style = MediCareCallTheme.typography.R_14
+                        "삭제하기",
+                        color = MediCareCallTheme.colors.negative,
+                        style = MediCareCallTheme.typography.R_14,
+                        modifier = Modifier.clickable(
+                            indication = null,
+                            interactionSource = null,
+                            onClick = {
+                                loginSeniorViewModel.elders--
+                                loginSeniorViewModel.expandedFormIndex = 0
+                            }
+                        )
                     )
                 }
                 Text(
-                    "${loginSeniorViewModel.phoneNumberList[index]}".replaceFirst(Regex("(\\d{3})(\\d{4})(\\d{4})"), "$1-$2-$3"),
+                    loginSeniorViewModel.phoneNumberList[index].replaceFirst(
+                        Regex("(\\d{3})(\\d{4})(\\d{4})"),
+                        "$1-$2-$3"
+                    ),
                     color = MediCareCallTheme.colors.gray4,
                     style = MediCareCallTheme.typography.R_14
                 )

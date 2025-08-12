@@ -326,6 +326,7 @@ fun NavGraph(
             composable(route = Route.FinishSplash.route) {
                 FinishSplashScreen(
                     navController = navController,
+                    loginSeniorViewModel
                 )
             }
         }

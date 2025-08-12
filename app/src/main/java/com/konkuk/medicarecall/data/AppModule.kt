@@ -3,6 +3,7 @@ package com.konkuk.medicarecall.data
 import android.content.Context
 import android.util.Log
 import com.konkuk.medicarecall.BuildConfig
+import com.konkuk.medicarecall.data.api.ElderRegisterService
 import com.konkuk.medicarecall.data.api.MemberRegisterService
 import com.konkuk.medicarecall.data.api.NoticeService
 import com.konkuk.medicarecall.data.api.TokenRefreshService
@@ -10,6 +11,7 @@ import com.konkuk.medicarecall.data.api.VerificationService
 import com.konkuk.medicarecall.data.network.AuthAuthenticator
 import com.konkuk.medicarecall.data.network.AuthInterceptor
 import com.konkuk.medicarecall.data.repository.DataStoreRepository
+import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
 import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
@@ -101,6 +103,18 @@ object AppModule {
         service: MemberRegisterService
     ): MemberRegisterRepository {
         return MemberRegisterRepository(service)
+    }
+
+    @Provides
+    @Singleton
+    fun provideElderRegisterService(retrofit: Retrofit): ElderRegisterService {
+        return retrofit.create(ElderRegisterService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideElderRegisterRepository(service: ElderRegisterService): ElderRegisterRepository {
+        return ElderRegisterRepository(service)
     }
 
 

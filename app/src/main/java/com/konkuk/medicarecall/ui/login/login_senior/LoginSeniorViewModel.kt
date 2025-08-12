@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.login.login_senior
 
+import android.util.Log
 import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
@@ -9,16 +10,19 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
+import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
 import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.model.SeniorData
 import com.konkuk.medicarecall.ui.model.SeniorHealthData
-import kotlin.collections.getValue
-import kotlin.collections.mutableMapOf
-import kotlin.collections.setValue
+import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import javax.inject.Inject
 
-class LoginSeniorViewModel : ViewModel() {
-
-
+@HiltViewModel
+class LoginSeniorViewModel @Inject constructor(
+    private val elderRegisterRepository: ElderRegisterRepository
+) : ViewModel() {
     // 어르신 정보 화면
 
     var expandedFormIndex by mutableIntStateOf(0)
@@ -119,7 +123,7 @@ class LoginSeniorViewModel : ViewModel() {
                     SeniorData(
                         nameList[index],
                         dateOfBirthList[index],
-                        isMaleBoolList[index],
+                        isMaleBoolList[index] ?: true,
                         phoneNumberList[index],
                         relationshipList[index],
                         livingTypeList[index]
@@ -160,6 +164,24 @@ class LoginSeniorViewModel : ViewModel() {
                     )
                 )
             }
+        }
+    }
+
+
+    // ------------------API 요청------------------
+    fun postElderAndHealth() {
+        viewModelScope.launch {
+            elderRegisterRepository.registerElderAndHealth(
+                elders = elders,
+                elderInfo = seniorDataList,
+                elderHealthInfo = seniorHealthDataList
+            )
+                .onSuccess {
+                    Log.d("httplog", "어르신 및 건강정보 전부 등록 성공!")
+                }
+                .onFailure { exception ->
+                    Log.e("httplog", "어르신 정보 or 건강정보 등록 실패: ${exception.message}")
+                }
         }
     }
 

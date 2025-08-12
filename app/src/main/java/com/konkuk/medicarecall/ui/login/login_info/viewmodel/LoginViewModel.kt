@@ -70,7 +70,7 @@ class LoginViewModel @Inject constructor(
 
 
     // 서버 통신 함수
-    private val debug = true
+    private val debug = false
     fun postPhoneNumber(phone: String) {
         if (!debug) {
             viewModelScope.launch {
@@ -97,7 +97,7 @@ class LoginViewModel @Inject constructor(
                     .onSuccess {
                         Log.d(
                             "httplog",
-                            "${it.message} ${it.memberStatus} ${it.accessToken} ${it.refreshToken} ${it.verified} ${it.token} "
+                            "${it.message} ${it.memberStatus} 액세스토큰: ${it.accessToken} 리프레시 토큰: ${it.refreshToken} ${it.verified} ${it.token} "
                         )
                         isVerified = it.verified
                         if (isVerified) {

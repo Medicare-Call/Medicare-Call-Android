@@ -57,7 +57,7 @@ fun LoginVerificationScreen(
                 }
 
                 is LoginEvent.VerificationSuccessExisting -> {
-                    navController.navigate(Route.Home.route)
+                    navController.navigate(Route.LoginSeniorInfoScreen.route)
                 }
 
                 is LoginEvent.VerificationFailure -> {

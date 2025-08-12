@@ -89,12 +89,10 @@ class MainActivity : ComponentActivity() {
                 var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
 
                 val loginViewModel: LoginViewModel = hiltViewModel()
-                val loginSeniorViewModel: LoginSeniorViewModel = viewModel()
+                val loginSeniorViewModel: LoginSeniorViewModel = hiltViewModel()
                 val bottomBarRoutes = listOf(
                     "home", "statistics", "settings",
                 )
-
-
 
                 Scaffold(
                     modifier = Modifier.background(MediCareCallTheme.colors.bg),

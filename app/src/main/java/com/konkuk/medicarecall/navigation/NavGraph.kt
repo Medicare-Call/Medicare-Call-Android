@@ -3,7 +3,6 @@ package com.konkuk.medicarecall.navigation
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -20,18 +19,18 @@ import com.konkuk.medicarecall.ui.homedetail.medicine.screen.MedicineDetail
 import com.konkuk.medicarecall.ui.homedetail.sleep.screen.SleepDetail
 import com.konkuk.medicarecall.ui.homedetail.statehealth.screen.StateHealthDetail
 import com.konkuk.medicarecall.ui.homedetail.statemental.screen.StateMentalDetail
-import com.konkuk.medicarecall.ui.login_care_call.screen.SetCallScreen
-import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
-import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
-import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
-import com.konkuk.medicarecall.ui.login_info.screen.LoginVerificationScreen
-import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
-import com.konkuk.medicarecall.ui.login_payment.screen.FinishSplashScreen
-import com.konkuk.medicarecall.ui.login_payment.screen.NaverPayScreen
-import com.konkuk.medicarecall.ui.login_payment.screen.PaymentScreen
-import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
-import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorInfoScreen
-import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorMedInfoScreen
+import com.konkuk.medicarecall.ui.login.login_care_call.screen.SetCallScreen
+import com.konkuk.medicarecall.ui.login.login_info.screen.LoginMyInfoScreen
+import com.konkuk.medicarecall.ui.login.login_info.screen.LoginPhoneScreen
+import com.konkuk.medicarecall.ui.login.login_info.screen.LoginStartScreen
+import com.konkuk.medicarecall.ui.login.login_info.screen.LoginVerificationScreen
+import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
+import com.konkuk.medicarecall.ui.login.login_payment.screen.FinishSplashScreen
+import com.konkuk.medicarecall.ui.login.login_payment.screen.NaverPayScreen
+import com.konkuk.medicarecall.ui.login.login_payment.screen.PaymentScreen
+import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login.login_senior.screen.LoginSeniorInfoScreen
+import com.konkuk.medicarecall.ui.login.login_senior.screen.LoginSeniorMedInfoScreen
 import com.konkuk.medicarecall.ui.settings.screen.AnnouncementScreen
 import com.konkuk.medicarecall.ui.settings.screen.HealthDetailScreen
 import com.konkuk.medicarecall.ui.settings.screen.HealthInfoScreen
@@ -327,6 +326,7 @@ fun NavGraph(
             composable(route = Route.FinishSplash.route) {
                 FinishSplashScreen(
                     navController = navController,
+                    loginSeniorViewModel
                 )
             }
         }

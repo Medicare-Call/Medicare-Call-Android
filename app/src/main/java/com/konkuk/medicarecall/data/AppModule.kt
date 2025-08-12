@@ -3,10 +3,15 @@ package com.konkuk.medicarecall.data
 import android.content.Context
 import android.util.Log
 import com.konkuk.medicarecall.BuildConfig
+import com.konkuk.medicarecall.data.api.ElderRegisterService
 import com.konkuk.medicarecall.data.api.MemberRegisterService
 import com.konkuk.medicarecall.data.api.NoticeService
+import com.konkuk.medicarecall.data.api.TokenRefreshService
 import com.konkuk.medicarecall.data.api.VerificationService
+import com.konkuk.medicarecall.data.network.AuthAuthenticator
+import com.konkuk.medicarecall.data.network.AuthInterceptor
 import com.konkuk.medicarecall.data.repository.DataStoreRepository
+import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
 import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
@@ -24,6 +29,7 @@ import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Singleton
 
+
 @Module
 @InstallIn(SingletonComponent::class)
 object AppModule {
@@ -31,24 +37,16 @@ object AppModule {
     @Provides
     @Singleton
     fun provideAuthInterceptor(dataStoreRepository: DataStoreRepository): Interceptor {
-        return Interceptor { chain ->
-            val originalRequest = chain.request()
+        return AuthInterceptor(dataStoreRepository)
+    }
 
-            if (originalRequest.url.encodedPath.contains("verifications") or originalRequest.url.encodedPath.contains("members")) {
-                chain.proceed(originalRequest)
-            } else {
-                // runBlocking을 사용하여 코루틴 Flow에서 토큰을 동기적으로 가져옴
-                val accessToken = runBlocking {
-                    dataStoreRepository.getAccessToken() // DataStore에서 토큰을 가져오는 함수 호출
-                }
-
-                val requestBuilder = originalRequest.newBuilder()
-                    .header("Authorization", "Bearer $accessToken")
-                    .method(originalRequest.method, originalRequest.body)
-
-                chain.proceed(requestBuilder.build())
-            }
-        }
+    @Provides
+    @Singleton
+    fun provideAuthAuthenticator(
+        dataStoreRepository: DataStoreRepository,
+        tokenRefreshService: dagger.Lazy<TokenRefreshService>
+    ): AuthAuthenticator {
+        return AuthAuthenticator(dataStoreRepository, tokenRefreshService)
     }
 
     @Provides
@@ -105,6 +103,18 @@ object AppModule {
         service: MemberRegisterService
     ): MemberRegisterRepository {
         return MemberRegisterRepository(service)
+    }
+
+    @Provides
+    @Singleton
+    fun provideElderRegisterService(retrofit: Retrofit): ElderRegisterService {
+        return retrofit.create(ElderRegisterService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideElderRegisterRepository(service: ElderRegisterService): ElderRegisterRepository {
+        return ElderRegisterRepository(service)
     }
 
 

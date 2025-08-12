@@ -17,7 +17,7 @@ interface ElderRegisterService {
         @Body request: ElderRegisterRequestDto
     ): Response<ElderRegisterResponseDto>
 
-    @POST("elder/{elderId}/health-info")
+    @POST("elders/{elderId}/health-info")
     suspend fun postElderHealthInfo(
         @Path("elderId") elderId: Int,
         @Body request: ElderHealthRegisterRequestDto

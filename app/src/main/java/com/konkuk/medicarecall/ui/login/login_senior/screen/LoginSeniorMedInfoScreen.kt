@@ -32,6 +32,7 @@ import com.konkuk.medicarecall.ui.component.ChipItem
 import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.DiseaseNamesItem
 import com.konkuk.medicarecall.ui.component.MedInfoItem
+import com.konkuk.medicarecall.ui.component.MedicationItem
 import com.konkuk.medicarecall.ui.login.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
@@ -113,7 +114,7 @@ fun LoginSeniorMedInfoScreen(
         DiseaseNamesItem(loginSeniorViewModel.diseaseInputText, loginSeniorViewModel.diseaseList)
         Spacer(Modifier.height(20.dp))
 
-        MedInfoItem()
+        MedicationItem(loginSeniorViewModel.medMap, loginSeniorViewModel.medInputText)
 
         Spacer(Modifier.height(20.dp))
         Text(

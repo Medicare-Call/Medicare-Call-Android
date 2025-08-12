@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.component
 
-import android.widget.Toast
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column

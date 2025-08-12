@@ -14,8 +14,8 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
@@ -65,15 +65,10 @@ fun MedicationItem(
     modifier: Modifier = Modifier
 ) {
     // UI에 표시할 제목을 Map으로 정의하여 관리 용이성을 높임
-    val timeTypeToTitle = mapOf(
-        MedicationTimeType.MORNING to "아침",
-        MedicationTimeType.LUNCH to "점심",
-        MedicationTimeType.DINNER to "저녁"
-    )
+
 
     Column(
         modifier = modifier,
-        verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
         Text(
             "복약 정보",
@@ -81,24 +76,29 @@ fun MedicationItem(
             style = MediCareCallTheme.typography.M_17
         )
         Spacer(Modifier.height(10.dp))
-
-        timeTypeToTitle.forEach { (timeType, title) ->
+        MedicationTimeType.entries.forEach { timeType ->
             // 해당 시간대에 약이 없는 경우를 안전하게 처리
             val medList = medicationSchedule[timeType]
-            if (medList != null) {
+            if (!medList.isNullOrEmpty()) {
+                Spacer(Modifier.height(10.dp))
                 MedicationTimeSection(
-                    title = title,
+                    title = timeType.time,
                     medications = medList,
                     onRemoveChip = { medicationToRemove ->
                         // 상태를 직접 변경하여 Compose가 UI를 다시 그리도록 함
-                        medList.remove(medicationToRemove)
+                        val newList = medList.toMutableList()
+                        newList.remove(medicationToRemove)
+                        medicationSchedule[timeType] = newList
                     }
                 )
             }
         }
+
+        if (!medicationSchedule.values.all { it.isEmpty() })
+            Spacer(Modifier.height(20.dp))
+
         val selectedList = remember { mutableStateListOf<MedicationTimeType>() }
         Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
-
             MedicationTimeType.entries.forEach {
                 Box(
                     Modifier
@@ -132,15 +132,25 @@ fun MedicationItem(
                 }
             }
         }
-        Spacer(Modifier.height(10.dp))
+        Spacer(Modifier.height(20.dp))
         AddTextField(
             inputText.value,
             placeHolder = "예시) 당뇨약",
             onTextChange = { inputText.value = it },
             clickPlus = {
-                selectedList.forEach { time ->
-                    medicationSchedule.getValue(time).add(inputText.value)
+                if (inputText.value.isNotBlank()) { // 입력값이 있을 때만 동작
+                    selectedList.forEach { time ->
+                        val currentList = medicationSchedule.getValue(time)
+                        if(inputText.value !in currentList) {
+                            val newList = currentList + inputText.value
+                            medicationSchedule[time] = newList.toMutableList()
+                        }
+                    }
+
+                    // 사용성 개선: 약 추가 후 입력 필드와 선택된 시간 초기화
+                    inputText.value = ""
                 }
+
             }
         )
     }
@@ -150,11 +160,13 @@ fun MedicationItem(
 @Composable
 private fun MedicationItemPrev() {
     val inputText = remember { mutableStateOf("") }
-    val medSchedule by remember {  mutableStateOf(mutableMapOf(
-        MedicationTimeType.MORNING to
-                mutableListOf("감기약", "당뇨약"),
-        MedicationTimeType.DINNER to
-                mutableListOf("당뇨약")
-    ))}
+    val medSchedule = remember {
+        mutableStateMapOf(
+            MedicationTimeType.MORNING to
+                    mutableListOf("감기약", "당뇨약"),
+            MedicationTimeType.DINNER to
+                    mutableListOf("당뇨약")
+        )
+    }
     MedicationItem(medSchedule, inputText)
 }

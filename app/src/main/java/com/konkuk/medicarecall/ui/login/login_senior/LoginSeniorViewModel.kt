@@ -3,10 +3,15 @@ package com.konkuk.medicarecall.ui.login.login_senior
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
+import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
+import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.model.SeniorData
+import kotlin.collections.getValue
+import kotlin.collections.mutableMapOf
+import kotlin.collections.setValue
 
 class LoginSeniorViewModel : ViewModel() {
 
@@ -49,11 +54,11 @@ class LoginSeniorViewModel : ViewModel() {
         return (0 until elders).all { i ->
 
             nameList[i].isNotBlank() &&
-            dateOfBirthList[i].length == 8 &&
-            isMaleBoolList[i] != null &&
-            phoneNumberList[i].length == 11 &&
-            relationshipList[i].isNotBlank() &&
-            livingTypeList[i].isNotBlank()
+                    dateOfBirthList[i].length == 8 &&
+                    isMaleBoolList[i] != null &&
+                    phoneNumberList[i].length == 11 &&
+                    relationshipList[i].isNotBlank() &&
+                    livingTypeList[i].isNotBlank()
         }
 
     }
@@ -93,7 +98,15 @@ class LoginSeniorViewModel : ViewModel() {
     var diseaseInputText = mutableStateOf("")
     var diseaseList = mutableStateListOf<String>()
 
+    var medMap = mutableStateMapOf<MedicationTimeType, MutableList<String>>(
+        MedicationTimeType.MORNING to mutableListOf(),
+        MedicationTimeType.LUNCH to mutableListOf(),
+        MedicationTimeType.DINNER to mutableListOf()
+
+    )
+
     var medInputText = mutableStateOf("")
+
 
     // 기타 데이터
 

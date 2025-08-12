@@ -40,6 +40,7 @@ import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GraphDataPoint
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -164,11 +165,11 @@ fun GlucoseDetailLayout(
 
                     // 날짜 표시
                     val dateText = selectedPoint.date.format(
-                        DateTimeFormatter.ofPattern("M월 d일 (E)")
+                        DateTimeFormatter.ofPattern("M월 d일 (E)", Locale.KOREAN)
                     )
                     //혈당 상세 정보
                     GlucoseListItem(
-                        date = dateText,
+                        date = selectedPoint.date,
                         timingLabel = timingLabel,
                         value = selectedPoint.value.toInt()
                     )

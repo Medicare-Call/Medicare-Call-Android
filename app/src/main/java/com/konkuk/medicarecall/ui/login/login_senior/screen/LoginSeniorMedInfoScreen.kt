@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.login.login_senior.screen
 
+import android.system.Os.remove
 import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -111,10 +112,16 @@ fun LoginSeniorMedInfoScreen(
             }
         }
         Spacer(Modifier.height(20.dp))
-        DiseaseNamesItem(loginSeniorViewModel.diseaseInputText, loginSeniorViewModel.diseaseList)
+        DiseaseNamesItem(
+            loginSeniorViewModel.diseaseInputText[loginSeniorViewModel.selectedSenior],
+            loginSeniorViewModel.diseaseList[loginSeniorViewModel.selectedSenior]
+        )
         Spacer(Modifier.height(20.dp))
 
-        MedicationItem(loginSeniorViewModel.medMap, loginSeniorViewModel.medInputText)
+        MedicationItem(
+            loginSeniorViewModel.medMap[loginSeniorViewModel.selectedSenior],
+            loginSeniorViewModel.medInputText[loginSeniorViewModel.selectedSenior],
+        )
 
         Spacer(Modifier.height(20.dp))
         Text(
@@ -124,16 +131,16 @@ fun LoginSeniorMedInfoScreen(
         )
         Spacer(Modifier.height(10.dp))
 
-        val healthIssueList = remember { mutableStateListOf<String>() }
-        Log.d("hel", "테스트")
-        if (healthIssueList.isNotEmpty()) {
+        if (loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior].isNotEmpty()) {
             Row(
                 Modifier.horizontalScroll(rememberScrollState()),
                 horizontalArrangement = Arrangement.spacedBy(8.dp)
             ) {
-                healthIssueList.forEach { healthIssue ->
+                loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior].forEach { healthIssue ->
                     ChipItem(healthIssue) {
-                        healthIssueList.remove(healthIssue)
+                        loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior].remove(
+                            healthIssue
+                        )
                     }
                 }
             }
@@ -146,12 +153,15 @@ fun LoginSeniorMedInfoScreen(
             "특이사항 선택하기",
             null,
             scrollState,
-            { healthIssueList.add(it) }
+            { loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior].add(it) }
         )
         CTAButton(
             CTAButtonType.GREEN,
             "다음",
-            { navController.navigate(Route.SetCall.route) },
+            {
+                navController.navigate(Route.SetCall.route)
+                loginSeniorViewModel.createSeniorHealthDataList()
+            },
             Modifier.padding(top = 30.dp, bottom = 20.dp)
         )
     }

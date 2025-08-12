@@ -1,14 +1,17 @@
 package com.konkuk.medicarecall.ui.login.login_senior
 
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
+import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.model.SeniorData
+import com.konkuk.medicarecall.ui.model.SeniorHealthData
 import kotlin.collections.getValue
 import kotlin.collections.mutableMapOf
 import kotlin.collections.setValue
@@ -95,24 +98,19 @@ class LoginSeniorViewModel : ViewModel() {
         selectedSenior = new
     }
 
-    var diseaseInputText = mutableStateOf("")
-    var diseaseList = mutableStateListOf<String>()
+    var diseaseInputText = mutableStateListOf<MutableState<String>>()
+    var diseaseList = mutableStateListOf(mutableStateListOf<String>())
 
-    var medMap = mutableStateMapOf<MedicationTimeType, MutableList<String>>(
-        MedicationTimeType.MORNING to mutableListOf(),
-        MedicationTimeType.LUNCH to mutableListOf(),
-        MedicationTimeType.DINNER to mutableListOf()
+    var medMap = mutableStateListOf<SnapshotStateMap<MedicationTimeType, MutableList<String>>>(
 
     )
-
-    var medInputText = mutableStateOf("")
+    var medInputText = mutableStateListOf<MutableState<String>>()
+    var healthIssueList = mutableStateListOf(mutableStateListOf<String>())
 
 
     // 기타 데이터
 
-    var seniorDataList = mutableStateListOf<SeniorData>()
-        private set
-
+    val seniorDataList = mutableStateListOf<SeniorData>()
     fun createSeniorDataList() {
         seniorDataList.clear()
         seniorDataList.apply {
@@ -125,6 +123,40 @@ class LoginSeniorViewModel : ViewModel() {
                         phoneNumberList[index],
                         relationshipList[index],
                         livingTypeList[index]
+                    )
+                )
+            }
+        }
+        initHealthData()
+    }
+
+    private fun initHealthData() {
+        repeat(elders - diseaseInputText.size) {
+            diseaseInputText.add(mutableStateOf(""))
+            diseaseList.add(mutableStateListOf())
+            medInputText.add(mutableStateOf(""))
+            medMap.add(
+                mutableStateMapOf(
+                    MedicationTimeType.MORNING to mutableListOf(),
+                    MedicationTimeType.LUNCH to mutableListOf(),
+                    MedicationTimeType.DINNER to mutableListOf()
+                )
+            )
+            healthIssueList.add(mutableStateListOf())
+        }
+    }
+
+    val seniorHealthDataList = mutableStateListOf<SeniorHealthData>()
+
+    fun createSeniorHealthDataList() {
+        seniorHealthDataList.clear()
+        seniorHealthDataList.apply {
+            repeat(elders) { index ->
+                add(
+                    SeniorHealthData(
+                        diseaseNames = diseaseList[index],
+                        medicationMap = medMap[index],
+                        notes = healthIssueList[index],
                     )
                 )
             }

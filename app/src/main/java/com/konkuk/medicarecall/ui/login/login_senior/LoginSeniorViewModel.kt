@@ -90,8 +90,10 @@ class LoginSeniorViewModel : ViewModel() {
         selectedSenior = new
     }
 
-    var diseaseText = mutableStateOf("")
+    var diseaseInputText = mutableStateOf("")
     var diseaseList = mutableStateListOf<String>()
+
+    var medInputText = mutableStateOf("")
 
     // 기타 데이터
 

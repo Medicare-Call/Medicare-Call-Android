@@ -27,7 +27,7 @@ class LoginViewModel @Inject constructor(
     private val _events = MutableSharedFlow<LoginEvent>()
     val events = _events.asSharedFlow()
 
-    val isLoggedIn = false // TODO: 추후 서버나 로컬에서 정보 받아오기
+    val isLoggedIn = true // TODO: 추후 서버나 로컬에서 정보 받아오기
 
     ///// 홈 작업을 위해 트루로 변경///////
 

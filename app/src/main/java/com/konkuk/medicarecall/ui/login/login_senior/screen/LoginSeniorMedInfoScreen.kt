@@ -159,8 +159,13 @@ fun LoginSeniorMedInfoScreen(
             CTAButtonType.GREEN,
             "다음",
             {
+                if (loginSeniorViewModel.getElderIds().isNotEmpty()) {
+                    loginSeniorViewModel.createSeniorHealthDataList()
+                    loginSeniorViewModel.postElderAndHealth()
+                } else { // TODO: 어르신 정보 수정 API 사용
+
+                }
                 navController.navigate(Route.SetCall.route)
-                loginSeniorViewModel.createSeniorHealthDataList()
             },
             Modifier.padding(top = 30.dp, bottom = 20.dp)
         )

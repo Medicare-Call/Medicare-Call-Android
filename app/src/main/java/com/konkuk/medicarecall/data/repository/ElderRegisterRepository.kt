@@ -59,7 +59,8 @@ class ElderRegisterRepository @Inject constructor(
 
                 // postElder가 성공적으로 끝나야만 이 라인으로 넘어올 수 있음
                 val id = elderResponse.id
-                elderIdRepository.addElderId(id)
+                val name = elderResponse.name
+                elderIdRepository.addElderId(name, id)
                 Log.d("httplog", "어르신 등록 성공, id: $id")
                 postElderHealthInfo(
                     id,

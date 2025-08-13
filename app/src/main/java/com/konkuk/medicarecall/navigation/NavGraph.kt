@@ -47,6 +47,7 @@ import com.konkuk.medicarecall.ui.settings.screen.SettingAlarmScreen
 import com.konkuk.medicarecall.ui.settings.screen.SettingSubscribeScreen
 import com.konkuk.medicarecall.ui.settings.screen.SettingsScreen
 import com.konkuk.medicarecall.ui.settings.screen.SubscribeDetailScreen
+import com.konkuk.medicarecall.ui.splash.screen.SplashScreen
 import com.konkuk.medicarecall.ui.statistics.screen.StatisticsScreen
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
@@ -97,15 +98,20 @@ fun NavGraph(
     loginSeniorViewModel: LoginSeniorViewModel,
     modifier: Modifier = Modifier
 ) {
-    val startDestination = if (loginViewModel.isLoggedIn) "main" else "login"
+//    val startDestination = if (loginViewModel.isLoggedIn) "main" else "login"
     // navController = navController, startDestination = Route.Home.route, // 시작 화면
     NavHost(
         navController = navController,
-        startDestination = startDestination, // 시작 화면
+        startDestination = Route.AppSplash.route, // 시작 화면
         enterTransition = { EnterTransition.None },
         exitTransition = { ExitTransition.None },
         modifier = modifier
     ) {
+        composable(route = Route.AppSplash.route) {
+            SplashScreen(navController)
+        }
+
+
         // 메인 내비게이션
         navigation(startDestination = Route.Home.route, route = "main") {
 
@@ -316,6 +322,7 @@ fun NavGraph(
             }
         }
 
+        // 로그인 내비게이션
         navigation(startDestination = Route.LoginStart.route, route = "login") {
 
 
@@ -370,7 +377,6 @@ fun NavGraph(
             composable(route = Route.FinishSplash.route) {
                 FinishSplashScreen(
                     navController = navController,
-                    loginSeniorViewModel
                 )
             }
         }

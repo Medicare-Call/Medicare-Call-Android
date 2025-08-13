@@ -30,7 +30,6 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun FinishSplashScreen(
     navController: NavHostController,
-    loginSeniorViewModel: LoginSeniorViewModel,
     modifier: Modifier = Modifier,
 ) {
     Column(
@@ -64,8 +63,9 @@ fun FinishSplashScreen(
         Spacer(modifier = modifier.weight(1f))
         CTAButton(
             CTAButtonType.WHITE, "확인",
+            onClick = { navController.navigate(Route.Home.route) },
             onClick = {  navController.navigateToMainAfterLogin()
-                      loginSeniorViewModel.postElderAndHealth()},
+                      },
             modifier = modifier.padding(horizontal = 20.dp)
         )
         Spacer(modifier = modifier.height(30.dp))

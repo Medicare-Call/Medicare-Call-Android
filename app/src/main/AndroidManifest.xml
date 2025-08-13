@@ -13,22 +13,15 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MediCareCall">
         <activity
-            android:name=".SplashActivity"
+            android:name=".MainActivity"
             android:exported="true"
-            android:theme="@style/Theme.MySplashScreen">
+            android:label="@string/app_name"
+            android:theme="@style/Theme.App.Starting"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
-        </activity>
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.MediCareCall"
-            android:windowSoftInputMode="adjustResize">
-
         </activity>
     </application>
     <uses-permission android:name="android.permission.INTERNET" />

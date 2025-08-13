@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.navigation
 
 sealed class Route(val route: String) {
+    object AppSplash : Route("app_splash")
     object LoginStart : Route("login_start")
     object LoginPhone : Route("login_phone")
     object LoginVerification : Route("login_verification")
@@ -18,7 +19,7 @@ sealed class Route(val route: String) {
         fun naverPayRoute(payUrl: String) = "naver_pay/$payUrl"
     }
 
-    object Alarm: Route("alarm")
+    object Alarm : Route("alarm")
 
     object Announcement : Route("announcement")
     object HealthInfo : Route("health_info")

@@ -111,11 +111,11 @@ object AppModule {
         return retrofit.create(ElderRegisterService::class.java)
     }
 
-    @Provides
-    @Singleton
-    fun provideElderRegisterRepository(service: ElderRegisterService): ElderRegisterRepository {
-        return ElderRegisterRepository(service)
-    }
+//    @Provides
+//    @Singleton
+//    fun provideElderRegisterRepository(service: ElderRegisterService): ElderRegisterRepository {
+//        return ElderRegisterRepository(service)
+//    }
 
 
     @Provides

@@ -180,7 +180,7 @@ fun SettingsScreen(
                         horizontalArrangement = Arrangement.SpaceBetween,
                         modifier = Modifier.fillMaxWidth().clickable(onClick = {onNavigateToPersonalInfo()})
                     ) {
-                        Text(text = "신어르신 개인정보 설정", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
+                        Text(text = "어르신 개인정보 설정", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
                         Icon(painter = painterResource(id = R.drawable.ic_arrow_right), contentDescription = "화살표 아이콘", modifier = Modifier.size(24.dp), tint = MediCareCallTheme.colors.gray2)
                     }
 

@@ -2,14 +2,14 @@ package com.konkuk.medicarecall.data.repository
 
 import com.konkuk.medicarecall.data.api.EldersInfoService
 import com.konkuk.medicarecall.data.dto.request.ElderRegisterRequestDto
-import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
+import com.konkuk.medicarecall.data.dto.response.ElderInfo
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import javax.inject.Inject
 
 class EldersInfoRepository @Inject constructor(
     private val eldersInfoService: EldersInfoService
 ) {
-    suspend fun getElders(): Result<EldersInfoResponseDto> = runCatching {
+    suspend fun getElders(): Result<List<ElderInfo>> = runCatching {
         val response = eldersInfoService.getElders()
         if (response.isSuccessful) {
             response.body() ?: throw IllegalStateException("Response body is null")

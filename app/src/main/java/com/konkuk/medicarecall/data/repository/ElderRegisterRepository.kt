@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.data.repository
 
+import android.net.http.HttpException
 import android.util.Log
 import com.konkuk.medicarecall.data.api.ElderRegisterService
 import com.konkuk.medicarecall.data.dto.request.ElderHealthRegisterRequestDto

@@ -1,10 +1,9 @@
 package com.konkuk.medicarecall.ui.login_care_call.screen
 
-import android.R.attr.name
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
@@ -24,8 +23,8 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -34,15 +33,15 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
-import com.konkuk.medicarecall.ui.component.ChipItem
 import com.konkuk.medicarecall.ui.login_care_call.component.BenefitItem
 import com.konkuk.medicarecall.ui.login_care_call.component.TimePickerBottomSheet
 import com.konkuk.medicarecall.ui.login_care_call.component.TimeSettingItem
+import com.konkuk.medicarecall.ui.login_care_call.viewmodel.CallTimeViewModel
 import com.konkuk.medicarecall.ui.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
@@ -69,22 +68,20 @@ fun SetCallScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
     navController: NavHostController,
-    loginSeniorViewModel: LoginSeniorViewModel
+    loginSeniorViewModel: LoginSeniorViewModel,
+    callTimeViewModel: CallTimeViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState() // 스크롤 상태
     var showBottomSheet by remember { mutableStateOf(false) } // 하단 시트 제어
-    val seniors = loginSeniorViewModel.seniorDataList.map { it.name } // 어르신 이름 리스트
+    val seniorNames = loginSeniorViewModel.seniorDataList.map { it.name } // 어르신 이름 리스트
+    val seniors = loginSeniorViewModel.seniorDataList // 어르신 데이터 리스트
 
-    var selectedIndex by remember { mutableStateOf(0) } // 선택된 어르신 인덱스
+    var selectedIndex by remember { mutableIntStateOf(0) } // 선택된 어르신 인덱스
+    val selectedName = seniorNames.getOrNull(selectedIndex).orEmpty() // 선택된 어르신 이름
+    val saved = callTimeViewModel.timeMap[selectedName] ?: CallTimes()
 
-    // 어르신별 시간 저장 맵
-    val timeMap = remember {
-        mutableStateMapOf<String, CallTimes>().apply {
-            seniors.forEach { put(it, CallTimes()) }
-        }
-    }
-
-    val allComplete = seniors.isNotEmpty() && timeMap.values.all { it.first != null && it.second != null && it.third != null }
+    val allComplete = callTimeViewModel.isAllComplete(seniorNames)
+//    val allComplete = seniorNames.isNotEmpty() && timeMap.values.all { it.first != null && it.second != null && it.third != null }
 
     Column(
         modifier = modifier
@@ -182,7 +179,7 @@ fun SetCallScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                itemsIndexed(seniors) { idx, name ->
+                itemsIndexed(seniorNames) { idx, name ->
                     Text(
                         text = name,
                         modifier = Modifier
@@ -210,11 +207,10 @@ fun SetCallScreen(
             Spacer(modifier = modifier.height(30.dp))
 
             // 시간 설정 항목
-            val selectedName = seniors[selectedIndex]
-            val callTimes = timeMap[selectedName]!!
+//            val callTimes = timeMap[selectedName]!!
 
 
-            if (callTimes.first == null) {
+            if (saved.first == null) {
                 TimeSettingItem(
                     category = "1차",
                     timeType = TimeSettingType.FIRST,
@@ -227,7 +223,7 @@ fun SetCallScreen(
                 TimeSettingItem(
                     category = "1차",
                     timeType = TimeSettingType.FIRST,
-                    timeText = callTimes.first.toDisplayString(),
+                    timeText = saved.first.toDisplayString(),
                     modifier = Modifier.clickable {
                         showBottomSheet = true
                     }
@@ -236,7 +232,7 @@ fun SetCallScreen(
                     TimeSettingItem(
                         category = "2차",
                         timeType = TimeSettingType.SECOND,
-                        timeText = callTimes.second?.toDisplayString(),
+                        timeText = saved.second?.toDisplayString(),
                         modifier = Modifier.clickable {
                             showBottomSheet = true
                         }
@@ -245,7 +241,7 @@ fun SetCallScreen(
                     TimeSettingItem(
                         category = "3차",
                         timeType = TimeSettingType.THIRD,
-                        timeText = callTimes.third?.toDisplayString(),
+                        timeText = saved.third?.toDisplayString(),
                         modifier = Modifier.clickable {
                             showBottomSheet = true
                         }
@@ -297,26 +293,33 @@ fun SetCallScreen(
             CTAButton(
                 if (allComplete) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                 text = "확인",
-                { if (allComplete) navController.navigate(Route.Payment.route) }) // 입력여부에 따라 Type 바뀌도록 수정 필요
+                { if (allComplete) {navController.navigate(Route.Payment.route)
+                   // 각 값이 어떻게 저장됐는지 확인
+                    Log.d("SetCallScreen", "Selected Name: $selectedName")
+                    Log.d("SetCallScreen", "Saved Times: $saved")
+                } }) // 입력여부에 따라 Type 바뀌도록 수정 필요
             if (showBottomSheet) {
                 TimePickerBottomSheet(
                     visible = true,
                     // 기존에 선택됐던 값을 다시 초기값으로 넘겨주면 UX가 매끄러워집니다.
-                    initialFirstAmPm   = callTimes.first?.first  ?: 0,
-                    initialFirstHour   = callTimes.first?.second ?: 12,
-                    initialFirstMinute = callTimes.first?.third  ?: 0,
-                    initialSecondAmPm   = callTimes.second?.first  ?: 0,
-                    initialSecondHour   = callTimes.second?.second ?: 12,
-                    initialSecondMinute = callTimes.second?.third  ?: 0,
-                    initialThirdAmPm   = callTimes.third?.first  ?: 0,
-                    initialThirdHour   = callTimes.third?.second ?: 12,
-                    initialThirdMinute = callTimes.third?.third  ?: 0,
+                    initialFirstAmPm   = saved.first?.first  ?: 0,
+                    initialFirstHour   = saved.first?.second ?: 9,
+                    initialFirstMinute = saved.first?.third  ?: 0,
+                    initialSecondAmPm   = saved.second?.first  ?: 1,
+                    initialSecondHour   = saved.second?.second ?: 12,
+                    initialSecondMinute = saved.second?.third  ?: 0,
+                    initialThirdAmPm   = saved.third?.first  ?: 1,
+                    initialThirdHour   = saved.third?.second ?: 6,
+                    initialThirdMinute = saved.third?.third  ?: 0,
                     onDismiss = { showBottomSheet = false },
                     onConfirm = { fAm, fH, fM, sAm, sH, sM, tAm,tH,tM ->
-                        timeMap[selectedName] = CallTimes(
-                            first  = Triple(fAm, fH, fM),
-                            second = Triple(sAm, sH, sM),
-                            third  = Triple(tAm, tH, tM)
+                        callTimeViewModel.setTimes(
+                            selectedName,
+                            CallTimes(
+                                first  = Triple(fAm, fH, fM),
+                                second = Triple(sAm, sH, sM),
+                                third  = Triple(tAm, tH, tM)
+                            )
                         )
                         showBottomSheet = false
                     },

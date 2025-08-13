@@ -5,10 +5,6 @@ import android.util.Log
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
-import androidx.datastore.core.DataStore
-import androidx.datastore.preferences.core.Preferences
-import androidx.datastore.preferences.core.stringPreferencesKey
-import androidx.datastore.preferences.preferencesDataStore
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.data.dto.request.MemberRegisterRequestDto
@@ -82,7 +78,7 @@ class LoginViewModel @Inject constructor(
 
 
     // 서버 통신 함수
-    private val debug = true
+    private val debug = false
     fun postPhoneNumber(phone: String) {
         if (!debug) {
             viewModelScope.launch {

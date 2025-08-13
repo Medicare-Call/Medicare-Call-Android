@@ -4,7 +4,6 @@ import android.annotation.SuppressLint
 import android.graphics.Paint
 import android.graphics.Typeface
 import android.os.Build
-import android.provider.SyncStateContract.Helpers.update
 import android.widget.EditText
 import android.widget.NumberPicker
 import androidx.compose.foundation.layout.Arrangement
@@ -22,13 +21,12 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
-import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import androidx.core.graphics.drawable.toDrawable
+import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
 fun TimeWheelPicker(
@@ -51,16 +49,6 @@ fun TimeWheelPicker(
     Box(
         modifier = modifier
             .fillMaxWidth()
-            .drawBehind {
-                // 가운데 Highlight 영역 그리기
-                val highlightHeight = 44.dp.toPx()
-                val centerY = size.height / 2
-                drawRect(
-                    color = g200,
-                    topLeft = androidx.compose.ui.geometry.Offset(0f, centerY - highlightHeight / 2),
-                    size = androidx.compose.ui.geometry.Size(size.width, highlightHeight)
-                )
-            }
     ) {
         Row(
             modifier = modifier.fillMaxWidth(),

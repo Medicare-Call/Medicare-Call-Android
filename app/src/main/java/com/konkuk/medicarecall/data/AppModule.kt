@@ -5,10 +5,12 @@ import android.util.Log
 import com.konkuk.medicarecall.BuildConfig
 import com.konkuk.medicarecall.data.api.MemberRegisterService
 import com.konkuk.medicarecall.data.api.NoticeService
+import com.konkuk.medicarecall.data.api.SetCallService
 import com.konkuk.medicarecall.data.api.VerificationService
 import com.konkuk.medicarecall.data.repository.DataStoreRepository
 import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
+import com.konkuk.medicarecall.data.repository.SetCallRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
 import dagger.Module
 import dagger.Provides
@@ -120,5 +122,17 @@ object AppModule {
         service: NoticeService
     ): NoticeRepository {
         return NoticeRepository(service)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSetCallService(retrofit: Retrofit): SetCallService {
+        return retrofit.create(SetCallService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingRepository(service: SetCallService): SetCallRepository {
+       return SetCallRepository(service)
     }
 }

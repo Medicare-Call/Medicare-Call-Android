@@ -18,8 +18,8 @@ class NoticeRepository @Inject constructor(
             Log.d("NoticeRepository", "공지사항 응답 코드: ${response.code()}")
             if (response.isSuccessful) {
                 val body = response.body() ?: throw NullPointerException("Response body is null")
-                Log.d("NoticeRepository", "응답 바디: ${body?.notices?.size}개")
-                body.notices
+                Log.d("NoticeRepository", "응답 바디: ${body.size}개")
+                body
             } else {
                 val error = response.errorBody()?.string()
                 Log.e("NoticeRepository", "응답 실패: $error")

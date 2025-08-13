@@ -4,7 +4,6 @@ import android.util.Log
 import com.konkuk.medicarecall.data.api.ElderRegisterService
 import com.konkuk.medicarecall.data.dto.request.ElderHealthRegisterRequestDto
 import com.konkuk.medicarecall.data.dto.request.ElderRegisterRequestDto
-import com.konkuk.medicarecall.data.dto.request.PhoneNumberConfirmRequestDto
 import com.konkuk.medicarecall.data.dto.response.ElderRegisterResponseDto
 import com.konkuk.medicarecall.data.mapper.ElderHealthMapper
 import com.konkuk.medicarecall.ui.model.GenderType
@@ -15,9 +14,12 @@ import com.konkuk.medicarecall.ui.model.SeniorHealthData
 import com.konkuk.medicarecall.ui.model.SeniorLivingType
 import com.konkuk.medicarecall.ui.util.formatAsDate
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class ElderRegisterRepository @Inject constructor(
-    private val elderRegisterService: ElderRegisterService
+    private val elderRegisterService: ElderRegisterService,
+    private val elderIdRepository: ElderIdRepository
 ) {
     private suspend fun postElder(request: ElderRegisterRequestDto): ElderRegisterResponseDto {
         val response = elderRegisterService.postElder(request)
@@ -57,6 +59,7 @@ class ElderRegisterRepository @Inject constructor(
 
                 // postElder가 성공적으로 끝나야만 이 라인으로 넘어올 수 있음
                 val id = elderResponse.id
+                elderIdRepository.addElderId(id)
                 Log.d("httplog", "어르신 등록 성공, id: $id")
                 postElderHealthInfo(
                     id,

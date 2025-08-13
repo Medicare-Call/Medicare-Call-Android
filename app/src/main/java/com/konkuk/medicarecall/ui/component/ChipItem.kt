@@ -26,18 +26,18 @@ fun ChipItem(text: String, onRemove: () -> Unit) {
         shape = RoundedCornerShape(100.dp),
         color = MediCareCallTheme.colors.g50,
         modifier = Modifier
-            .height(33.dp)
             .border((1.2).dp, MediCareCallTheme.colors.main, shape = RoundedCornerShape(100.dp))
             .padding(),
     ) {
         Row(
+            Modifier.padding(horizontal = 12.dp, vertical = 10.dp),
             verticalAlignment = Alignment.CenterVertically,
         ) {
             Text(
                 text,
                 color = MediCareCallTheme.colors.main,
                 style = MediCareCallTheme.typography.R_14,
-                modifier = Modifier.padding(start = 16.dp)
+                modifier = Modifier.padding(start = 4.dp)
             )
             Spacer(Modifier.width(8.dp))
             Icon(
@@ -48,7 +48,6 @@ fun ChipItem(text: String, onRemove: () -> Unit) {
                     .clickable { onRemove() },
                 tint = MediCareCallTheme.colors.main
             )
-            Spacer(Modifier.width(12.dp))
         }
     }
 }

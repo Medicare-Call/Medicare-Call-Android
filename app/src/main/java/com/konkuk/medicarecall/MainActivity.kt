@@ -35,8 +35,8 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.navigation.BottomNavItem
 import com.konkuk.medicarecall.navigation.NavGraph
-import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
-import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
+import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -89,12 +89,10 @@ class MainActivity : ComponentActivity() {
                 var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
 
                 val loginViewModel: LoginViewModel = hiltViewModel()
-                val loginSeniorViewModel: LoginSeniorViewModel = viewModel()
+                val loginSeniorViewModel: LoginSeniorViewModel = hiltViewModel()
                 val bottomBarRoutes = listOf(
                     "home", "statistics", "settings",
                 )
-
-
 
                 Scaffold(
                     modifier = Modifier.background(MediCareCallTheme.colors.bg),

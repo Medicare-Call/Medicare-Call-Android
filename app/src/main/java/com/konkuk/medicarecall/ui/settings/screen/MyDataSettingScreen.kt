@@ -18,6 +18,10 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.remember
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -29,6 +33,7 @@ import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.navigation.Route
+import com.konkuk.medicarecall.ui.settings.component.LogoutConfirmDialog
 import com.konkuk.medicarecall.ui.settings.component.SettingInfoItem
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -36,12 +41,14 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
 fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modifier: Modifier = Modifier) {
+    var showLogoutDialog by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
             .fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
             .statusBarsPadding()
     ) {
+
         SettingsTopAppBar(
             modifier = modifier,
             title = "내 정보 설정",
@@ -117,7 +124,10 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
                 Text(
                     text = "로그아웃",
                     style = MediCareCallTheme.typography.R_16,
-                    color = MediCareCallTheme.colors.gray8
+                    color = MediCareCallTheme.colors.gray8,
+                    modifier = Modifier.clickable {
+                        showLogoutDialog = true
+                    }
                 )
 
                 Text(
@@ -129,6 +139,17 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
             Spacer(modifier = Modifier.height(20.dp))
         }
 
+    }
+    if (showLogoutDialog) {
+        LogoutConfirmDialog(
+            onDismiss = { showLogoutDialog = false },
+            onLogout = {
+                showLogoutDialog = false
+                // 로컬에 저장된 토큰 값 지우기
+                navController.navigate(Route.LoginStart.route)
+                // 로그아웃 동작 추가
+    }
+        )
     }
 }
 

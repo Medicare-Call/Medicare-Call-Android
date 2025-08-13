@@ -1,13 +1,17 @@
 package com.konkuk.medicarecall.navigation
 
+import android.app.Activity
+import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
+import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionBody
@@ -49,6 +53,43 @@ import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
 
 
+
+// ----- 헬퍼: 탑레벨 전환은 back stack 확장 없이 -----
+fun NavHostController.navigateTopLevel(route: String) {
+    navigate(route) {
+        // 그래프 시작점까지 popUp + 상태 저장/복원
+        popUpTo(graph.startDestinationId) {
+            saveState = true
+        }
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
+// ---- 헬퍼: 로그인 성공 후 인증 그래프 제거하고 main으로 ---
+fun NavHostController.navigateToMainAfterLogin() {
+    navigate("main") {
+        popUpTo("login") { inclusive = true }
+        launchSingleTop = true
+        restoreState = true
+    }
+}
+
+// ----- 컴포저블: 탑레벨에서 뒤로가기 = 앱 백그라운드 이동 -----
+@Composable
+private fun TopLevelBackHandler(navController: NavHostController) {
+    val activity = LocalContext.current as? Activity
+    val topLevel = setOf(Route.Home.route, Route.Statistics.route, Route.Settings.route)
+    val currentRoute = navController.currentBackStackEntryAsState().value?.destination?.route
+    val isTopLevel = currentRoute in topLevel
+
+    if (isTopLevel && activity != null) {
+        BackHandler(true) {
+            activity.moveTaskToBack(true)
+        }
+    }
+}
+
 @Composable
 fun NavGraph(
     navController: NavHostController,
@@ -71,6 +112,7 @@ fun NavGraph(
 
             // 홈
             composable(route = Route.Home.route) {
+                TopLevelBackHandler(navController)
                 HomeScreen(
                     navController = navController,
                     onNavigateToMealDetail = { navController.navigate(Route.MealDetail.route) },
@@ -120,6 +162,7 @@ fun NavGraph(
 
             // 통계
             composable(route = Route.Statistics.route) {
+                TopLevelBackHandler(navController)
                 StatisticsScreen(
                     navController = navController
                 )
@@ -128,6 +171,7 @@ fun NavGraph(
 
             // 설정
             composable(route = Route.Settings.route) {
+                TopLevelBackHandler(navController)
                 SettingsScreen(
                     navController = navController,
                     onNavigateToMyDataSetting = {

@@ -21,6 +21,7 @@ import androidx.wear.compose.material3.Icon
 import androidx.wear.compose.material3.Text
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.navigation.Route
+import com.konkuk.medicarecall.navigation.navigateToMainAfterLogin
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
@@ -63,7 +64,7 @@ fun FinishSplashScreen(
         Spacer(modifier = modifier.weight(1f))
         CTAButton(
             CTAButtonType.WHITE, "확인",
-            onClick = { navController.navigate(Route.Home.route)
+            onClick = {  navController.navigateToMainAfterLogin()
                       loginSeniorViewModel.postElderAndHealth()},
             modifier = modifier.padding(horizontal = 20.dp)
         )

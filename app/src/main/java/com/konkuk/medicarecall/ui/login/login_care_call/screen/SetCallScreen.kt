@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.login.login_care_call.screen
 
 import android.util.Log
+import android.widget.Toast
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -25,7 +26,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
@@ -33,7 +33,6 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
@@ -42,20 +41,15 @@ import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login.login_care_call.component.BenefitItem
 import com.konkuk.medicarecall.ui.login.login_care_call.component.TimePickerBottomSheet
 import com.konkuk.medicarecall.ui.login.login_care_call.component.TimeSettingItem
-import com.konkuk.medicarecall.ui.login.login_care_call.viewmodel.CallTimeViewModel
 import com.konkuk.medicarecall.ui.login.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login.login_care_call.viewmodel.CallTimeViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.model.CallTimes
 import com.konkuk.medicarecall.ui.model.TimeSettingType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import kotlinx.coroutines.launch
 
-// 어르신별 세 번의 콜 타임을 저장할 데이터 클래스
-data class CallTimes(
-    val first: Triple<Int, Int, Int>? = null,
-    val second: Triple<Int, Int, Int>? = null,
-    val third: Triple<Int, Int, Int>? = null
-)
 
 // helper: Triple을 "오전/오후 hh시 mm분" 형태로 바꿔주는 함수
 fun Triple<Int, Int, Int>.toDisplayString(): String {
@@ -294,11 +288,24 @@ fun SetCallScreen(
             CTAButton(
                 if (allComplete) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                 text = "확인",
-                { if (allComplete) {navController.navigate(Route.Payment.route)
-                   // 각 값이 어떻게 저장됐는지 확인
-                    Log.d("SetCallScreen", "Selected Name: $selectedName")
-                    Log.d("SetCallScreen", "Saved Times: $saved")
-                } }) // 입력여부에 따라 Type 바뀌도록 수정 필요
+                onClick = {
+                    if (!allComplete) return@CTAButton
+                    callTimeViewModel.submitAllUsingRepoOrder(
+                        seniorNamesInOrder = seniorNames,
+                        onSuccess = { navController.navigate(Route.Payment.route)
+                            Log.d("SetCallScreen", "콜 시간 설정이 완료되었습니다.")
+                                    },
+                        onError = {
+                        Log.e("SetCallScreen", "Error submitting call times: $it")
+                            Toast.makeText(
+                                navController.context,
+                                "콜 시간 설정에 실패했습니다. 다시 시도해주세요.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+
+                    )
+                }) // 입력여부에 따라 Type 바뀌도록 수정 필요
             if (showBottomSheet) {
                 TimePickerBottomSheet(
                     visible = true,
@@ -317,9 +324,9 @@ fun SetCallScreen(
                         callTimeViewModel.setTimes(
                             selectedName,
                             CallTimes(
-                                first  = Triple(fAm, fH, fM),
+                                first = Triple(fAm, fH, fM),
                                 second = Triple(sAm, sH, sM),
-                                third  = Triple(tAm, tH, tM)
+                                third = Triple(tAm, tH, tM)
                             )
                         )
                         showBottomSheet = false

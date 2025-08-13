@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.konkuk.medicarecall.data.repository.ElderIdRepository
 import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
 import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.model.SeniorData
@@ -21,7 +22,8 @@ import javax.inject.Inject
 
 @HiltViewModel
 class LoginSeniorViewModel @Inject constructor(
-    private val elderRegisterRepository: ElderRegisterRepository
+    private val elderRegisterRepository: ElderRegisterRepository,
+    private val elderIdRepository: ElderIdRepository
 ) : ViewModel() {
     // 어르신 정보 화면
 
@@ -167,6 +169,10 @@ class LoginSeniorViewModel @Inject constructor(
         }
     }
 
+    // ------------------repo에서 elderId 가져오기------------------
+    fun getElderIds(): List<Map<String, Int>> {
+        return elderIdRepository.getElderIds()
+    }
 
     // ------------------API 요청------------------
     fun postElderAndHealth() {

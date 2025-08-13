@@ -5,12 +5,12 @@ import javax.inject.Singleton
 
 @Singleton
 class ElderIdRepository @Inject constructor() {
-    private var elderIds: MutableList<Int> = mutableListOf()
-    fun addElderId(id: Int) {
-        this.elderIds.add(id)
+    private var elderIds: MutableList<Map<String, Int>> = mutableListOf()
+    fun addElderId(name:String, id: Int) {
+        this.elderIds.add(mapOf(name to id))
     }
 
-    fun getElderIds(): List<Int> {
+    fun getElderIds(): List<Map<String, Int>> {
         return elderIds
     }
 }

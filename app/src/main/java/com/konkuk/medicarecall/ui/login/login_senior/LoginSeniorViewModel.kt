@@ -170,7 +170,7 @@ class LoginSeniorViewModel @Inject constructor(
     }
 
     // ------------------repo에서 elderId 가져오기------------------
-    fun getElderIds(): List<Int> {
+    fun getElderIds(): List<Map<String, Int>> {
         return elderIdRepository.getElderIds()
     }
 

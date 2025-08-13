@@ -34,7 +34,7 @@ fun SettingsTopAppBar(modifier: Modifier = Modifier,
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
+            .height(56.dp)
         ,
     ) {
 

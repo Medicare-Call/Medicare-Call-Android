@@ -36,6 +36,7 @@ import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.navigation.BottomNavItem
 import com.konkuk.medicarecall.navigation.NavGraph
+import com.konkuk.medicarecall.navigation.navigateTopLevel
 import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -127,10 +128,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onClick = {
                                             selectedIndex = index
-                                            navController.navigate(item.route) {
-                                                launchSingleTop = true
-
-                                            }
+                                            navController.navigateTopLevel(item.route) // 네비게이션 아이템 클릭 시 해당 라우트로 이동
                                         },
                                         icon = {
                                             Icon(
@@ -144,9 +142,9 @@ class MainActivity : ComponentActivity() {
                                         },
                                         colors = NavigationBarItemDefaults.colors(
                                             indicatorColor = Color.Transparent,
-                                            selectedIconColor = MediCareCallTheme.colors.main, // 선택된 아이콘 색상
+                                            selectedIconColor = MediCareCallTheme.colors.main, // 선택된 아이콘 색
                                             unselectedIconColor = Color.Black, // 선택되지 않은 아이콘 색상
-                                            selectedTextColor = MediCareCallTheme.colors.main, // 선택된 텍스트 색상
+                                            selectedTextColor = MediCareCallTheme.colors.main, // 선택된 텍스트 색
                                             unselectedTextColor = Color.Black // 선택되지 않은 텍스트 색상
                                         )
                                     )

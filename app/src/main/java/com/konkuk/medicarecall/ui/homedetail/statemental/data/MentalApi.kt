@@ -11,5 +11,5 @@ interface MentalApi {
     suspend fun getDailyMental(
         @Path("elderIdId") elderIdId: Int,
         @Query("date") date: String
-    ): MentalResponseDto
+    ): retrofit2.Response<MentalResponseDto>
 }

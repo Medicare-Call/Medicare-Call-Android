@@ -10,12 +10,12 @@ class GlucoseRepository @Inject constructor(
 
 
     suspend fun getGlucoseGraph(
-        guardianId: Int,
+        elderId: Int,
         startDate: String,
         type: GlucoseType
     ): GlucoseGraphResponseDto {
         return glucoseApi.getGlucoseGraph(
-            guardianId = guardianId,
+            elderId = elderId,
             startDate = startDate,
             type = type
         )

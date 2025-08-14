@@ -1,10 +1,12 @@
 package com.konkuk.medicarecall.ui.homedetail.medicine.data
 
-import com.konkuk.medicarecall.data.dto.response.BaseResponse
 import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatus
 import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatusItem
 import com.konkuk.medicarecall.ui.homedetail.medicine.model.MedicineUiState
 import kotlinx.serialization.json.Json
+import kotlinx.serialization.json.contentOrNull
+import kotlinx.serialization.json.jsonObject
+import kotlinx.serialization.json.jsonPrimitive
 import java.time.LocalDate
 import javax.inject.Inject
 
@@ -12,16 +14,9 @@ class MedicineRepositoryImpl @Inject constructor(
     private val medicineApi: MedicineApi
 ) : MedicineRepository {
 
-    private fun mapTimeToKor(time: String): String {
-        return when (time) {
-            "MORNING" -> "아침"
-            "LUNCH" -> "점심"
-            "DINNER" -> "저녁"
-            else -> time
-        }
-    }
-
     private val json = Json { ignoreUnknownKeys = true }
+
+    private var lastTemplate: List<Pair<String, Int>> = emptyList()
 
     override suspend fun getMedicineUiStateList(
         elderId: Int,
@@ -31,10 +26,10 @@ class MedicineRepositoryImpl @Inject constructor(
             val res = medicineApi.getDailyMedication(elderId, date.toString())
 
             if (res.isSuccessful) {
-                val dto = res.body() ?: return emptyList()
-                if (dto.medications.isEmpty()) return emptyList()
+                val dto = res.body() ?: return buildUnrecordedCardsOrMessage(serverMsg = null)
+                if (dto.medications.isEmpty()) return buildUnrecordedCardsOrMessage(serverMsg = null)
 
-                dto.medications.map { m ->
+                val ui = dto.medications.map { m ->
                     MedicineUiState(
                         medicineName = m.type,
                         todayTakenCount = m.takenCount,
@@ -43,28 +38,56 @@ class MedicineRepositoryImpl @Inject constructor(
                             DoseStatusItem(
                                 time = when (t.time) {
                                     "MORNING" -> "아침"
-                                    "LUNCH" -> "점심"
-                                    "DINNER" -> "저녁"
-                                    else -> t.time
+                                    "LUNCH"   -> "점심"
+                                    "DINNER"  -> "저녁"
+                                    else      -> t.time
                                 },
                                 doseStatus = if (t.taken) DoseStatus.TAKEN else DoseStatus.SKIPPED
                             )
                         }
                     )
                 }
-            } else {
 
-                if (res.code() == 404) {
-                    val parsed = res.errorBody()?.string()?.let {
-                        runCatching { json.decodeFromString<BaseResponse<Nothing>>(it) }.getOrNull()
-                    }
-                    emptyList()
-                } else {
-                    emptyList()
+
+                lastTemplate = dto.medications.map { it.type to it.goalCount }
+                ui
+            } else {
+                // ✅ 서버 메시지(400/404 등) 파싱
+                val serverMsg = res.errorBody()?.string()?.let { body ->
+                    runCatching {
+                        json.parseToJsonElement(body)
+                            .jsonObject["message"]?.jsonPrimitive?.contentOrNull
+                    }.getOrNull()
                 }
+                buildUnrecordedCardsOrMessage(serverMsg)
             }
         } catch (_: Exception) {
-            emptyList()
+            buildUnrecordedCardsOrMessage(serverMsg = null)
         }
+    }
+
+
+    private fun buildUnrecordedCardsOrMessage(serverMsg: String?): List<MedicineUiState> {
+        if (lastTemplate.isNotEmpty()) {
+
+            return lastTemplate.map { (name, goal) ->
+                MedicineUiState(
+                    medicineName = name,
+                    todayTakenCount = 0,
+                    todayRequiredCount = goal,
+                    doseStatusList = List(goal) {
+                        DoseStatusItem(time = "", doseStatus = DoseStatus.NOT_RECORDED)
+                    }
+                )
+            }
+        }
+        return listOf(
+            MedicineUiState(
+                medicineName = serverMsg ?: "복약 기록 전이에요.",
+                todayTakenCount = 0,
+                todayRequiredCount = 0,
+                doseStatusList = emptyList()
+            )
+        )
     }
 }

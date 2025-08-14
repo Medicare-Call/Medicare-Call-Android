@@ -50,7 +50,7 @@ fun TopAppBar(
                 },
             painter = painterResource(id = R.drawable.ic_arrow_big_back),
             contentDescription = "big arrow back",
-            tint = Color.Black
+            tint = MediCareCallTheme.colors.gray3
         )
 
 

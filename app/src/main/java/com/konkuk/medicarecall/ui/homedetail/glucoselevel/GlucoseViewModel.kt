@@ -3,6 +3,7 @@ package com.konkuk.medicarecall.ui.homedetail.glucoselevel
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.data.GlucoseRepository
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseUiState
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GraphDataPoint
@@ -12,7 +13,7 @@ import javax.inject.Inject
 
 @HiltViewModel
 class GlucoseViewModel @Inject constructor(
-    // private val glucoseRepository: GlucoseRepository
+    private val glucoseRepository: GlucoseRepository
 ) : ViewModel() {
 
     private val _uiState = mutableStateOf(GlucoseUiState())

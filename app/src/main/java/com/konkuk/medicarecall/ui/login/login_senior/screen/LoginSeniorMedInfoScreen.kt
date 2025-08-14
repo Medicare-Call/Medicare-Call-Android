@@ -159,7 +159,7 @@ fun LoginSeniorMedInfoScreen(
             CTAButtonType.GREEN,
             "다음",
             {
-                if (loginSeniorViewModel.getElderIds().isNotEmpty()) {
+                if (loginSeniorViewModel.getElderIds().isEmpty()) {
                     loginSeniorViewModel.createSeniorHealthDataList()
                     loginSeniorViewModel.postElderAndHealth()
                 } else { // TODO: 어르신 정보 수정 API 사용

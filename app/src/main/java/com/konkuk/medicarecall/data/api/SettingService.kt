@@ -2,7 +2,7 @@ package com.konkuk.medicarecall.data.api
 
 import com.konkuk.medicarecall.data.dto.request.UserUpdateRequestDto
 import com.konkuk.medicarecall.data.dto.response.DelElderInfoResponseDto
-import com.konkuk.medicarecall.data.dto.response.ElderInfo
+import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
@@ -26,7 +26,7 @@ interface SettingService {
 
     // 노인 개인 정보 불러오기
     @GET("elders/settings")
-    suspend fun getEldersPersonalInfo(): Response<List<ElderInfo>>
+    suspend fun getEldersPersonalInfo(): Response<List<EldersInfoResponseDto>>
 
     // 노인 개인정보 삭제
     @DELETE("elders/{elderId}/settings")

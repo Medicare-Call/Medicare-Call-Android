@@ -4,6 +4,7 @@ import android.content.Context
 import android.util.Log
 import com.konkuk.medicarecall.BuildConfig
 import com.konkuk.medicarecall.data.api.ElderRegisterService
+import com.konkuk.medicarecall.data.api.EldersInfoService
 import com.konkuk.medicarecall.data.api.MemberRegisterService
 import com.konkuk.medicarecall.data.api.NoticeService
 import com.konkuk.medicarecall.data.api.SetCallService
@@ -14,6 +15,7 @@ import com.konkuk.medicarecall.data.network.AuthAuthenticator
 import com.konkuk.medicarecall.data.network.AuthInterceptor
 import com.konkuk.medicarecall.data.repository.DataStoreRepository
 import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
+import com.konkuk.medicarecall.data.repository.EldersInfoRepository
 import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import com.konkuk.medicarecall.data.repository.SetCallRepository
@@ -72,6 +74,18 @@ object AppModule {
             .addConverterFactory(json.asConverterFactory("application/json".toMediaType()))
             .client(okHttpClient)
             .build()
+    }
+
+    @Provides
+    @Singleton
+    fun provideEldersInfoService(retrofit: Retrofit): EldersInfoService {
+        return retrofit.create(EldersInfoService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEldersInfoRepository(service: EldersInfoService): EldersInfoRepository {
+        return EldersInfoRepository(service)
     }
 
 

@@ -7,6 +7,8 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
@@ -18,6 +20,7 @@ import androidx.navigation.NavOptions
 import com.konkuk.medicarecall.MainActivity
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.navigation.Route
+import com.konkuk.medicarecall.ui.model.NavigationDestination
 import com.konkuk.medicarecall.ui.splash.viewmodel.SplashViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import kotlinx.coroutines.delay
@@ -27,15 +30,23 @@ fun SplashScreen(navController: NavController) {
 
     val viewModel: SplashViewModel = hiltViewModel()
 
-    LaunchedEffect(key1 = Unit) {
+    val navigationDestination by viewModel.navigationDestination.collectAsState()
 
-        delay(1500L)
-        navController.navigate(Route.LoginStart.route) {
-            popUpTo(Route.AppSplash.route) {
-                inclusive = true
+    LaunchedEffect(navigationDestination) {
+        navigationDestination?.let { destination ->
+            val route = when (destination) {
+                is NavigationDestination.GoToLogin -> Route.LoginStart.route
+                is NavigationDestination.GoToRegisterElder -> Route.LoginSeniorInfoScreen.route
+                is NavigationDestination.GoToTimeSetting -> Route.SetCall.route
+                is NavigationDestination.GoToPayment -> Route.Payment.route
+                is NavigationDestination.GoToHome -> Route.Home.route
+
             }
-        }
+            navController.navigate(route) {
+                popUpTo(Route.AppSplash.route) { inclusive = true }
+            }
 
+        }
     }
 
     Box(

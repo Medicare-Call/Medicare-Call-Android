@@ -24,7 +24,6 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -41,8 +40,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.ui.NameBar
-import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
+import com.konkuk.medicarecall.ui.component.NameBar
 import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.home.NameDropdown
 import com.konkuk.medicarecall.ui.home.component.HomeGlucoseLevelContainer
@@ -52,7 +50,6 @@ import com.konkuk.medicarecall.ui.home.component.HomeSleepContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateHealthContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateMentalContainer
 import com.konkuk.medicarecall.ui.home.model.HomeUiState
-import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
 
@@ -60,6 +57,7 @@ import com.konkuk.medicarecall.ui.theme.main
 fun HomeScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = hiltViewModel(),
     onNavigateToMealDetail: () -> Unit,
     onNavigateToMedicineDetail: () -> Unit,
     onNavigateToSleepDetail: () -> Unit,
@@ -67,44 +65,59 @@ fun HomeScreen(
     onNavigateToStateMentalDetail: () -> Unit,
     onNavigateToGlucoseDetail: () -> Unit,
 ) {
-    val calendarViewModel: CalendarViewModel = hiltViewModel()
-    val homeViewModel: HomeViewModel = hiltViewModel()
-
-    val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val homeUiState by homeViewModel.homeUiState.collectAsState(initial = HomeUiState.EMPTY)
-    LaunchedEffect(selectedDate) {
-        homeViewModel.selectDate(selectedDate)
-    }
 
 
     val dropdownOpened = remember { mutableStateOf(false) }
 
+    HomeScreenLayout(
+        modifier = modifier,
+        navController = navController,
+        homeUiState = homeUiState,
+        dropdownOpened = dropdownOpened.value,
+        onDropdownClick = { dropdownOpened.value = !dropdownOpened.value },
+        onDropdownDismiss = { dropdownOpened.value = false },
+        onNavigateToMealDetail = onNavigateToMealDetail,
+        onNavigateToMedicineDetail = onNavigateToMedicineDetail,
+        onNavigateToSleepDetail = onNavigateToSleepDetail,
+        onNavigateToStateHealthDetail = onNavigateToStateHealthDetail,
+        onNavigateToStateMentalDetail = onNavigateToStateMentalDetail,
+        onNavigateToGlucoseDetail = onNavigateToGlucoseDetail
+    )
+}
 
 
-
-    Box(modifier = Modifier.fillMaxSize()) {
+@Composable
+fun HomeScreenLayout(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    homeUiState: HomeUiState,
+    dropdownOpened: Boolean,
+    onDropdownClick: () -> Unit,
+    onDropdownDismiss: () -> Unit,
+    onNavigateToMealDetail: () -> Unit,
+    onNavigateToMedicineDetail: () -> Unit,
+    onNavigateToSleepDetail: () -> Unit,
+    onNavigateToStateHealthDetail: () -> Unit,
+    onNavigateToStateMentalDetail: () -> Unit,
+    onNavigateToGlucoseDetail: () -> Unit,
+) {
+    Box(modifier = modifier.fillMaxSize()) {
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .background(Color.White)
-                .statusBarsPadding()
-
-
         ) {
-
             NameBar(
+                modifier = Modifier.statusBarsPadding(),
                 navController = navController,
-                onDropdownClick = { dropdownOpened.value = true }
+                onDropdownClick = onDropdownClick
             )
-
-            Spacer(modifier = Modifier.height(19.dp))
 
             Column(
                 modifier = Modifier
                     .verticalScroll(rememberScrollState())
                     .fillMaxSize()
-
-
             ) {
 
 
@@ -209,18 +222,15 @@ fun HomeScreen(
                         )
                         Spacer(Modifier.height(12.dp))
                         HomeMedicineContainer(
+                            medicines = homeUiState.medicines,
                             onClick = { onNavigateToMedicineDetail() }
                         )
                         Spacer(Modifier.height(12.dp))
+                        val sleepData = homeUiState.sleep
                         HomeSleepContainer(
-                            sleeps = SleepUiState(
-                                date = "2025-07-07",
-                                totalSleepHours = 8,
-                                totalSleepMinutes = 12,
-                                bedTime = "오후 10:12",
-                                wakeUpTime = "오전 06:00",
-                                isRecorded = true
-                            ),
+                            totalSleepHours = sleepData.meanHours,
+                            totalSleepMinutes = sleepData.meanMinutes,
+                            isRecorded = sleepData.meanHours > 0 || sleepData.meanMinutes > 0,
                             onClick = { onNavigateToSleepDetail() }
                         )
                         Spacer(Modifier.height(12.dp))
@@ -235,7 +245,7 @@ fun HomeScreen(
                         )
                         Spacer(Modifier.height(12.dp))
                         HomeGlucoseLevelContainer(
-                            glucoseLevel = 120,
+                            glucoseLevelAverageToday = homeUiState.glucoseLevelAverageToday,
                             onClick = { onNavigateToGlucoseDetail() }
                         )
                         Spacer(Modifier.height(12.dp))
@@ -243,23 +253,17 @@ fun HomeScreen(
                 }
                 Spacer(Modifier.height(120.dp))
             }
-
         }
-        if (dropdownOpened.value) {
+        if (dropdownOpened) {
             NameDropdown(
-                items = listOf("김옥자", "박막례"),
-                selectedName = "김옥자",
-                onDismiss = { dropdownOpened.value = false},
-                onItemSelected = {
-                //TODO: 선택된 이름 처리
-                }
+                items = listOf("김헬레나", "박막례"),
+                selectedName = "김헬레나",
+                onDismiss = onDropdownDismiss,
+                onItemSelected = { /*TODO*/ }
             )
-
         }
-
     }
 }
-
 
 val SpeechTail = GenericShape { size, _ ->
     // 90도 회전된 삼각형
@@ -272,13 +276,19 @@ val SpeechTail = GenericShape { size, _ ->
 @Preview(showBackground = true, heightDp = 1500)
 @Composable
 fun PreviewHomeScreen() {
-    HomeScreen(
-        navController = rememberNavController(),
-        onNavigateToMealDetail = {},
-        onNavigateToMedicineDetail = {},
-        onNavigateToSleepDetail = {},
-        onNavigateToStateHealthDetail = {},
-        onNavigateToStateMentalDetail = {},
-        onNavigateToGlucoseDetail = {},
-    )
+    MediCareCallTheme {
+        HomeScreenLayout(
+            navController = rememberNavController(),
+            homeUiState = HomeUiState.EMPTY, // ◀ 가짜 데이터 전달
+            dropdownOpened = false,
+            onDropdownClick = {},
+            onDropdownDismiss = {},
+            onNavigateToMealDetail = {},
+            onNavigateToMedicineDetail = {},
+            onNavigateToSleepDetail = {},
+            onNavigateToStateHealthDetail = {},
+            onNavigateToStateMentalDetail = {},
+            onNavigateToGlucoseDetail = {},
+        )
+    }
 }

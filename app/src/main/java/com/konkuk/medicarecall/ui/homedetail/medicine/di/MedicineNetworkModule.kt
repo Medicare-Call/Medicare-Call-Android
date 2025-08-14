@@ -1,6 +1,8 @@
 package com.konkuk.medicarecall.ui.homedetail.medicine.di
 
 import com.konkuk.medicarecall.ui.homedetail.medicine.data.MedicineApi
+import com.konkuk.medicarecall.ui.homedetail.medicine.data.MedicineRepository
+import com.konkuk.medicarecall.ui.homedetail.medicine.data.MedicineRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -18,4 +20,9 @@ object MedicineNetworkModule {
         return retrofit.create(MedicineApi::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideMedicineRepository(medicineApi: MedicineApi): MedicineRepository {
+        return MedicineRepositoryImpl(medicineApi)
+    }
 }

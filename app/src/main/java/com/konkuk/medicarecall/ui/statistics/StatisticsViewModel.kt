@@ -26,30 +26,29 @@ data class StatisticsUiState(
 
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
-    private val repository: StatisticsRepository
+    private val repository: StatisticsRepository,
 ) : ViewModel() {
 
     private val _uiState = mutableStateOf(StatisticsUiState())
     val uiState: State<StatisticsUiState> = _uiState
 
-    private val guardianId = 1
+
     fun getWeeklyStatistics(elderId: Int, startDate: LocalDate) {
+        // 이미 로딩 중이면 중복 요청 방지
         if (_uiState.value.isLoading) return
 
         viewModelScope.launch {
             _uiState.value = StatisticsUiState(isLoading = true)
 
-            // API 호출 전에 요청 정보를 로그로 출력
             val formattedDate = startDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
-            Log.d("API_DEBUG", "--- Requesting Weekly Statistics ---")
-            Log.d("API_DEBUG", "elderId: $elderId")
-            Log.d("API_DEBUG", "startDate: $formattedDate")
-            // ---------------------------------------------
+
+            Log.d("API_REQUEST", "Requesting weekly stats for elderId: $elderId, startDate: $formattedDate")
 
             try {
+                // API를 호출
                 val responseDto = repository.getStatistics(
-                    elderId = 1,
-                    startDate = "2025-07-15"
+                    elderId = elderId,
+                    startDate = formattedDate
                 )
                 val summaryUiState = responseDto.toWeeklySummaryUiState()
                 _uiState.value = StatisticsUiState(isLoading = false, summary = summaryUiState)
@@ -57,8 +56,9 @@ class StatisticsViewModel @Inject constructor(
                 Log.i("API_SUCCESS", "Successfully fetched weekly statistics for elderId: $elderId")
 
             } catch (e: Exception) {
-                //오류 발생시 로그출력
-                Log.e("API_ERROR", "API call failed for elderId: $elderId", e)
+
+                Log.e("API_ERROR", "API call failed for elderId: $elderId, startDate: $formattedDate", e)
+
                 _uiState.value = StatisticsUiState(isLoading = false, error = "데이터 로딩 실패: ${e.message}")
             }
         }

@@ -5,34 +5,32 @@ import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.collectAsState
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
-import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
-import androidx.navigation.compose.rememberNavController
-import androidx.navigation.navArgument
-
 import androidx.navigation.navigation
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
-import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
+import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen.GlucoseDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.MealDetail
+import com.konkuk.medicarecall.ui.homedetail.medicine.screen.MedicineDetail
 import com.konkuk.medicarecall.ui.homedetail.sleep.screen.SleepDetail
 import com.konkuk.medicarecall.ui.homedetail.statehealth.screen.StateHealthDetail
 import com.konkuk.medicarecall.ui.homedetail.statemental.screen.StateMentalDetail
-import com.konkuk.medicarecall.ui.homedetail.medicine.screen.MedicineDetail
 import com.konkuk.medicarecall.ui.login_care_call.screen.SetCallScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginPhoneScreen
-import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorInfoScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginStartScreen
 import com.konkuk.medicarecall.ui.login_info.screen.LoginVerificationScreen
+import com.konkuk.medicarecall.ui.login_info.uistate.LoginState
 import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.login_payment.screen.FinishSplashScreen
 import com.konkuk.medicarecall.ui.login_payment.screen.NaverPayScreen
 import com.konkuk.medicarecall.ui.login_payment.screen.PaymentScreen
 import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorInfoScreen
 import com.konkuk.medicarecall.ui.login_senior.screen.LoginSeniorMedInfoScreen
 import com.konkuk.medicarecall.ui.settings.screen.AnnouncementScreen
 import com.konkuk.medicarecall.ui.settings.screen.HealthDetailScreen
@@ -59,6 +57,8 @@ fun NavGraph(
     val loginState = loginViewModel.loginState.collectAsState()
     val startDestination = if (loginState.value == LoginState.LoggedIn) "main" else "login"
     // navController = navController, startDestination = Route.Home.route, // 시작 화면
+    val calendarViewModel: CalendarViewModel = hiltViewModel()
+
     NavHost(
         navController = navController,
         startDestination = startDestination, // 시작 화면
@@ -85,44 +85,44 @@ fun NavGraph(
 
             // 홈 상세 화면_식사 화면
             composable(route = Route.MealDetail.route) {
-                MealDetail( navController = navController)
+                MealDetail( navController = navController, calendarViewModel = calendarViewModel)
             }
 
 
             // 홈 상세 화면_복용 화면
             composable(route = Route.MedicineDetail.route) {
-                MedicineDetail(navController = navController)
+                MedicineDetail(navController = navController, calendarViewModel = calendarViewModel)
             }
 
             //홈 상세 화면_수면 화면
             composable(route = Route.SleepDetail.route) {
-                SleepDetail(navController = navController)
+                SleepDetail(navController = navController, calendarViewModel = calendarViewModel)
             }
 
 
             //홈 상세 화면_건강 징후 화면
             composable(route = Route.StateHealthDetail.route) {
-                StateHealthDetail(navController = navController)
+                StateHealthDetail(navController = navController, calendarViewModel = calendarViewModel)
             }
 
 
             //홈 상세 화면_심리 상태 화면
             composable(route = Route.StateMentalDetail.route) {
-                StateMentalDetail(navController = navController)
+                StateMentalDetail(navController = navController, calendarViewModel = calendarViewModel)
             }
 
 
             //홈 상세 화면_혈당 화면
 
             composable(route = Route.GlucoseDetail.route) {
-                GlucoseDetail(navController = navController)
+                GlucoseDetail(navController = navController, calendarViewModel = calendarViewModel)
             }
 
 
             // 통계
             composable(route = Route.Statistics.route) {
                 StatisticsScreen(
-                    navController = navController
+                    navController = navController, calendarViewModel = calendarViewModel
                 )
             }
 

@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,65 +22,83 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.calendar.CalendarUiState
+import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.calendar.DateSelector
-import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.calendar.WeeklyCalendar
+import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.statemental.MentalViewModel
 import com.konkuk.medicarecall.ui.homedetail.statemental.component.StateMentalDetailCard
+import com.konkuk.medicarecall.ui.homedetail.statemental.model.MentalUiState
+import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun StateMentalDetail(
-    navController: NavHostController
+    navController: NavHostController,
+    calendarViewModel: CalendarViewModel,
+    mentalViewModel: MentalViewModel = hiltViewModel()
 ) {
-    val viewModel = hiltViewModel<MentalViewModel>()
-    val selectedDate by viewModel.selectedDate.collectAsState()
-    val mental by viewModel.mental.collectAsState()
+    val selectedDate by calendarViewModel.selectedDate.collectAsState()
+    val mental by mentalViewModel.mental.collectAsState()
 
+    LaunchedEffect(selectedDate) {
+        mentalViewModel.loadMentalDataForDate(selectedDate)
+    }
+
+    StateMentalDetailLayout(
+        navController = navController,
+        selectedDate = selectedDate,
+        mental = mental,
+        weekDates = calendarViewModel.getCurrentWeekDates(),
+        onDateSelected = { calendarViewModel.selectDate(it) }
+    )
+}
+
+
+@Composable
+fun StateMentalDetailLayout(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    selectedDate: LocalDate,
+    mental: MentalUiState,
+    weekDates: List<LocalDate>,
+    onDateSelected: (LocalDate) -> Unit
+) {
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         color = Color.White
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
         ) {
-
-
             TopAppBar(
                 title = "심리상태 요약",
                 navController = navController
             )
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(20.dp)
             ) {
-
                 DateSelector(
                     selectedDate = selectedDate,
                     onMonthClick = { /* 모달 열기 */ },
-                    onDateSelected = { viewModel.selectDate(it) }
+                    onDateSelected = onDateSelected
                 )
-
-                Spacer(Modifier.height(12.dp))
-
+                Spacer(Modifier.height(10.dp))
                 WeeklyCalendar(
                     calendarUiState = CalendarUiState(
                         currentYear = selectedDate.year,
                         currentMonth = selectedDate.monthValue,
-                        weekDates = viewModel.getCurrentWeekDates(),  // selectedDate 기준
+                        weekDates = weekDates,
                         selectedDate = selectedDate
                     ),
-                    onDateSelected = { viewModel.selectDate(it) }
+                    onDateSelected = onDateSelected
                 )
-
                 Spacer(modifier = Modifier.height(24.dp))
-
                 StateMentalDetailCard(
                     mental = mental
                 )
@@ -92,9 +111,11 @@ fun StateMentalDetail(
 @Preview(showBackground = true)
 @Composable
 fun PreviewStateMentalDetail() {
-
-    StateMentalDetail(
-        navController = rememberNavController()
+    StateMentalDetailLayout(
+        navController = rememberNavController(),
+        selectedDate = LocalDate.now(),
+        mental = MentalUiState.EMPTY,
+        weekDates = (0..6).map { LocalDate.now().plusDays(it.toLong()) },
+        onDateSelected = {}
     )
-
 }

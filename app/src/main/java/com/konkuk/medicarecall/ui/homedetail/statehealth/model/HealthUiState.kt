@@ -5,4 +5,12 @@ data class HealthUiState(
     val symptomAnalysis: String,  // 증상 분석 결과 문장 (예: "파킨슨 병이 의심돼요. 병원 방문 권장")
     //val highlightKeywords: List<String>, //병명 (예: "파킨슨 병") /TODO: 병명 볼드처리
     val isRecorded: Boolean       // 데이터 기록 여부 (예: true = 기록됨, false = 기록 안 됨)
-)
+) {
+    companion object {
+        val EMPTY = HealthUiState(
+            symptoms = emptyList(),
+            symptomAnalysis = "",
+            isRecorded = false
+        )
+    }
+}

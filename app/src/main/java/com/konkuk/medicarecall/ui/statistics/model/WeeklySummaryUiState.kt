@@ -26,7 +26,24 @@ data class WeeklySummaryUiState(
     val weeklyMental: WeeklyMentalUiState,           // 심리 상태 통계
     val weeklyGlucose: WeeklyGlucoseUiState          // 혈당 공복/식후 통계
 )
+{
 
+    companion object {
+        val EMPTY = WeeklySummaryUiState(
+            weeklyMealRate = 0,
+            weeklyMedicineRate = 0,
+            weeklyHealthIssueCount = 0,
+            weeklyUnansweredCount = 0,
+            weeklyMeals = emptyList(),
+            weeklyMedicines = emptyList(),
+            weeklyHealthNote = "",
+            weeklySleepHours = 0,
+            weeklySleepMinutes = 0,
+            weeklyMental = WeeklyMentalUiState(0, 0, 0),
+            weeklyGlucose = WeeklyGlucoseUiState(0, 0, 0, 0, 0, 0)
+        )
+    }
+}
 /**
  * ✅ 아침/점심/저녁 식사 통계용
  * ex) 아침 7/7, 점심 5/7, 저녁 1/7

@@ -8,8 +8,6 @@ import javax.inject.Inject
 class HomeRepository @Inject constructor(
     private val homeApi: HomeApi
 ) {
-
-
     private fun mapNextTimeToKor(nextTime: String?): String {
         return when (nextTime) {
             "MORNING" -> "아침"
@@ -35,7 +33,7 @@ class HomeRepository @Inject constructor(
                         nextDoseTime = mapNextTimeToKor(it.nextTime)
                     )
                 },
-                sleepHours = res.sleep.meanHours + res.sleep.meanMinutes / 60.0,
+                sleep = res.sleep,
                 healthStatus = res.healthStatus,
                 mentalStatus = res.mentalStatus,
                 glucoseLevelAverageToday = res.bloodSugar.meanValue

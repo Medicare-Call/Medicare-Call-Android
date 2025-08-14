@@ -7,6 +7,7 @@ import com.konkuk.medicarecall.data.api.ElderRegisterService
 import com.konkuk.medicarecall.data.api.MemberRegisterService
 import com.konkuk.medicarecall.data.api.NoticeService
 import com.konkuk.medicarecall.data.api.SetCallService
+import com.konkuk.medicarecall.data.api.SubscribeService
 import com.konkuk.medicarecall.data.api.TokenRefreshService
 import com.konkuk.medicarecall.data.api.VerificationService
 import com.konkuk.medicarecall.data.network.AuthAuthenticator
@@ -16,6 +17,7 @@ import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
 import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import com.konkuk.medicarecall.data.repository.SetCallRepository
+import com.konkuk.medicarecall.data.repository.SubscribeRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
 import dagger.Module
 import dagger.Provides
@@ -144,5 +146,17 @@ object AppModule {
     @Singleton
     fun provideSettingRepository(service: SetCallService): SetCallRepository {
        return SetCallRepository(service)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSubscribeService(retrofit: Retrofit): SubscribeService {
+        return retrofit.create(SubscribeService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSubscribeRepository(service: SubscribeService): SubscribeRepository {
+        return SubscribeRepository(service)
     }
 }

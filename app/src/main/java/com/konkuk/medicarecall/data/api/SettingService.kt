@@ -6,7 +6,6 @@ import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
-import com.konkuk.medicarecall.data.dto.response.NoticesResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
 import retrofit2.http.DELETE
@@ -38,8 +37,4 @@ interface SettingService {
     // 노인 건강 정보 불러오기
     @GET("elders/health")
     suspend fun getEldersHealthInfo(): Response<EldersHealthResponseDto>
-
-    // 어르신 구독 정보 불러오기
-    @GET("elders/subscriptions")
-    suspend fun getElderSubscriptions(): Response<EldersSubscriptionResponseDto>
 }

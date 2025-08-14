@@ -25,11 +25,14 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionBody
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.component.SubscribeCard
+import com.konkuk.medicarecall.ui.settings.viewmodel.NoticeViewModel
+import com.konkuk.medicarecall.ui.settings.viewmodel.SubscribeViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 import kotlinx.serialization.json.Json
@@ -40,27 +43,12 @@ import java.nio.charset.StandardCharsets
 fun SettingSubscribeScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit,
-    navController: NavHostController
+    navController: NavHostController,
+    viewModel: SubscribeViewModel = hiltViewModel()
 ) {
 
-    val eldersInfo = listOf(
-        EldersSubscriptionBody(
-            name = "김옥자",
-            plan = "PREMIUM",
-            price = 28000,
-            startDate = "2023-01-01",
-            elderId = 1,
-            nextBillingDate = "2023-02-01"
-        ),
-        EldersSubscriptionBody(
-            name = "박막례",
-            plan = "PREMIUM",
-            price = 28000,
-            startDate = "2023-01-01",
-            elderId = 2,
-            nextBillingDate = "2023-02-01"
-        )
-    )
+    val eldersInfo = viewModel.subscriptions
+    val error = viewModel.errorMessage
 
     Column(
         modifier = modifier

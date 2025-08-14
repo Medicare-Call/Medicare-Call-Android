@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
+import android.net.http.SslCertificate.restoreState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -145,9 +146,13 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
             onDismiss = { showLogoutDialog = false },
             onLogout = {
                 showLogoutDialog = false
-                // 로컬에 저장된 토큰 값 지우기
-                navController.navigate(Route.LoginStart.route)
+                // 로컬에 저장된 토큰 값 지우기 (추가 필요)
                 // 로그아웃 동작 추가
+                navController.navigate("login") {
+                    popUpTo("main") { inclusive = true }
+                    launchSingleTop = true
+                    restoreState = true
+                }
     }
         )
     }

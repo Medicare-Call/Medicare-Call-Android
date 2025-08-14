@@ -2,9 +2,9 @@ package com.konkuk.medicarecall.ui.login.login_care_call.viewmodel
 
 import android.util.Log
 import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konkuk.medicarecall.data.dto.request.SetCallTimeRequestDto
 import com.konkuk.medicarecall.data.repository.ElderIdRepository
 import com.konkuk.medicarecall.data.repository.SetCallRepository
 import com.konkuk.medicarecall.ui.model.CallTimes
@@ -20,6 +20,8 @@ class CallTimeViewModel @Inject constructor (
     private val elderIdRepo : ElderIdRepository
 ) : ViewModel() {
     val timeMap = mutableStateMapOf<String, CallTimes>()
+    val isLoading = mutableStateOf(false)
+    val lastError = mutableStateOf<Throwable?>(null)
 
     fun setTimes(name: String, times: CallTimes) {
         timeMap[name] = times
@@ -34,36 +36,54 @@ class CallTimeViewModel @Inject constructor (
     fun isAllComplete(names: List<String>): Boolean =
         names.isNotEmpty() && names.all { isCompleteFor(it) }
 
+    /** ElderIdRepository의 리스트를 "이름 -> ID" 맵으로 변환 */
+    private fun buildNameToId(): Map<String, Int> {
+        // List<Map<String, Int>> 를 평탄화해서 하나의 LinkedHashMap으로
+        // (동명이인 이슈가 없다면 마지막 put이 덮어쓰기해도 상관없음)
+        val pairs = elderIdRepo.getElderIds().flatMap { it.entries }
+        return LinkedHashMap<String, Int>(pairs.size).apply {
+            for (e in pairs) put(e.key, e.value)
+        }
+    }
 
-    // SetCallScreen에서 한 번에 저장: seniorNames의 순서 == elderIdRepo 순서
-    fun submitAllUsingRepoOrder(
-        seniorNamesInOrder: List<String>,
+
+    /** SetCallScreen에서 '확인' 눌렀을 때: 이름 기준으로 안전 저장 (순서 의존 X) */
+    fun submitAllByName(
+        seniorNames: List<String>,
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     ) {
         viewModelScope.launch {
-            Log.d("CallTimeViewModel", "submitAllUsingRepoOrder: $seniorNamesInOrder")
+            isLoading.value = true
+            lastError.value = null
             try {
-                val ids = elderIdRepo.getElderIds()
-                require(ids.size >= seniorNamesInOrder.size) {
-                    "elderId 개수(${ids.size})가 어르신 수(${seniorNamesInOrder.size})보다 적습니다."
-                }
-
-                val jobs = seniorNamesInOrder.mapIndexed { index, name ->
-                    val times = timeMap[name]
-                        ?: error("'$name'의 시간이 비어있습니다.")
-                    val elderId = ids[index]
-                    async { setCallRepo.saveForElder(elderId,times).getOrThrow() }
+                val nameToId = buildNameToId()
+                require(seniorNames.isNotEmpty()) { "어르신 목록이 비어 있습니다." }
+                require(elderIdRepo.getElderIds().isNotEmpty()) { "Elder ID 목록이 비어 있습니다." }
+                Log.d("CallTimeViewModel", "${elderIdRepo.getElderIds()}")
+                Log.d("CallTimeViewModel", "submitAllByName called with names: $seniorNames")
+                val jobs = seniorNames.map { name ->
+                    val times = timeMap[name] ?: error("'$name'의 시간이 비어있습니다.")
+                    val elderId = nameToId[name]
+                        ?: error("'$name'에 해당하는 elderId를 찾을 수 없습니다.")
+                    async {
+                        setCallRepo.saveForElder(elderId, times).getOrThrow()
+                        Log.d("CallTimeViewModel", "Saved call times for $name(id=$elderId)")
+                    }
                 }
                 jobs.awaitAll()
                 onSuccess()
             } catch (t: Throwable) {
+                Log.e("CallTimeViewModel", "submitAllByName failed", t)
+                lastError.value = t
                 onError(t)
+            } finally {
+                isLoading.value = false
             }
         }
     }
 
-    // 선택된 한 명만 저장하고 싶을 때 (index로 elderId 매칭)
+    /** 특정 인덱스 선택 저장이 필요하면: 인덱스 -> 이름 -> ID 로 안전 매핑 */
     fun submitOneByIndex(
         seniorNamesInOrder: List<String>,
         selectedIndex: Int,
@@ -71,20 +91,49 @@ class CallTimeViewModel @Inject constructor (
         onError: (Throwable) -> Unit
     ) {
         viewModelScope.launch {
+            isLoading.value = true
+            lastError.value = null
             try {
-                val ids = elderIdRepo.getElderIds()
                 require(selectedIndex in seniorNamesInOrder.indices) { "잘못된 인덱스" }
-                require(selectedIndex in ids.indices) { "elderId가 등록되지 않았습니다." }
 
                 val name = seniorNamesInOrder[selectedIndex]
                 val times = timeMap[name] ?: error("'$name'의 시간이 비어있습니다.")
-                val elderId = ids[selectedIndex]
+                val elderId = buildNameToId()[name]
+                    ?: error("'$name'에 해당하는 elderId를 찾을 수 없습니다.")
 
                 setCallRepo.saveForElder(elderId, times).getOrThrow()
+                Log.d("CallTimeViewModel", "Saved call times for $name(id=$elderId)")
                 onSuccess()
             } catch (t: Throwable) {
+                Log.e("CallTimeViewModel", "submitOneByIndex failed", t)
+                lastError.value = t
                 onError(t)
+            } finally {
+                isLoading.value = false
             }
         }
+
+        fun submitAllWithPairs(
+            pairs: List<Pair<String, Int>>, // (displayName, elderId)
+            onSuccess: () -> Unit,
+            onError: (Throwable) -> Unit
+        ) {
+            viewModelScope.launch {
+                isLoading.value = true; lastError.value = null
+                try {
+                    val jobs = pairs.map { (name, id) ->
+                        val times = timeMap[name] ?: error("'$name'의 시간이 비어있습니다.")
+                        async { setCallRepo.saveForElder(id, times).getOrThrow() }
+                    }
+                    jobs.awaitAll()
+                    onSuccess()
+                } catch (t: Throwable) {
+                    Log.e("CallTimeViewModel", "submitAllWithPairs failed", t)
+                    lastError.value = t
+                    onError(t)
+                } finally { isLoading.value = false }
+            }
+        }
+
     }
 }

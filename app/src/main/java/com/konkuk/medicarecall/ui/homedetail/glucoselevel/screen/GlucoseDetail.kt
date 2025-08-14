@@ -7,12 +7,14 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.statusBars
+import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -21,6 +23,7 @@ import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -28,6 +31,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseViewModel
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.component.GlucoseGraph
@@ -47,12 +51,13 @@ import java.util.Locale
 fun GlucoseDetail(
     modifier: Modifier = Modifier,
     navController: NavHostController,
-    viewModel: GlucoseViewModel = hiltViewModel()
+    viewModel: GlucoseViewModel = hiltViewModel(),
+    calendarViewModel: CalendarViewModel
 ) {
     val uiState by viewModel.uiState
     val selectedIndex = remember { mutableIntStateOf(-1) }
 
-    // 선택된 점(selectedIndex)을 자동으로 업데이트해주는 역할
+    // 선택된 점(selectedIndex)을 자동 업데이트
     LaunchedEffect(uiState.graphDataPoints) {
         if (uiState.graphDataPoints.isNotEmpty()) {
             selectedIndex.intValue = uiState.graphDataPoints.lastIndex
@@ -101,9 +106,15 @@ fun GlucoseDetailLayout(
     Column(
         modifier = modifier
             .fillMaxSize()
-            .statusBarsPadding()
             .background(MediCareCallTheme.colors.white)
     ) {
+        Spacer(
+            Modifier
+                .windowInsetsTopHeight(WindowInsets.statusBars)
+                .fillMaxWidth()
+                .background(Color.White)
+        )
+
         TopAppBar(
             title = "혈당",
             navController = navController

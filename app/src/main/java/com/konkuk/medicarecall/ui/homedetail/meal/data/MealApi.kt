@@ -3,12 +3,13 @@ package com.konkuk.medicarecall.ui.homedetail.meal.data
 
 import com.konkuk.medicarecall.ui.homedetail.meal.model.MealResponseDto
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface MealApi {
-    @GET("/api/elders/{elderId}/meals?date=2025-07-16")
+    @GET("/api/elders/{elderId}/meals")
     suspend fun getDailyMeal(
-        @Query("guardianId") guardianId: Int,
+        @Path("elderId") elderId: Int,
         @Query("date") date: String
     ): MealResponseDto
 }

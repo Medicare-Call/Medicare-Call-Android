@@ -2,12 +2,13 @@ package com.konkuk.medicarecall.ui.homedetail.sleep.data
 
 import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepResponseDto
 import retrofit2.http.GET
+import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SleepApi {
-    @GET("/elders/{elderId}/sleep?date=2025-07-16")
+    @GET("/elders/{elderId}/sleep")
     suspend fun getDailySleep(
-        @Query("guardianId") guardianId: Int,
+        @Path("elderId") elderId: Int,
         @Query("date") date: String
     ): SleepResponseDto
 }

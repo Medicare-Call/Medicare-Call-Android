@@ -16,40 +16,14 @@ class SleepViewModel @Inject constructor(
     private val sleepRepository: SleepRepository
 ) : ViewModel() {
 
-    private val _selectedDate = MutableStateFlow(LocalDate.now())
-    val selectedDate: StateFlow<LocalDate> = _selectedDate
 
-    private val _sleepState = MutableStateFlow(
-        SleepUiState(
-            date = LocalDate.now().toString(),
-            totalSleepHours = 0,
-            totalSleepMinutes = 0,
-            bedTime = "--",
-            wakeUpTime = "--",
-            isRecorded = false
-        )
-    )
+    private val _sleepState = MutableStateFlow(SleepUiState.EMPTY)
     val sleep: StateFlow<SleepUiState> = _sleepState
 
-    init {
-        fetchSleepData(_selectedDate.value)
-    }
 
-    fun selectDate(date: LocalDate) {
-        _selectedDate.value = date
-        fetchSleepData(date)
-    }
-
-    private fun fetchSleepData(date: LocalDate) {
+    fun loadSleepDataForDate(date: LocalDate) {
         viewModelScope.launch {
-            _sleepState.value = sleepRepository.getSleepUiState(guardianId = 1, date = date)
+            _sleepState.value = sleepRepository.getSleepUiState(elderId = 1, date = date)
         }
-    }
-
-    fun getCurrentWeekDates(): List<LocalDate> {
-        val selected = _selectedDate.value
-        val dayOfWeek = selected.dayOfWeek.value % 7 // 일요일=0
-        val sunday = selected.minusDays(dayOfWeek.toLong())
-        return (0..6).map { sunday.plusDays(it.toLong()) }
     }
 }

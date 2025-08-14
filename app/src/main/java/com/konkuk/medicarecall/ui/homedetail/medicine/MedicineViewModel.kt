@@ -7,6 +7,7 @@ import com.konkuk.medicarecall.ui.homedetail.medicine.model.MedicineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
 import java.time.LocalDate
 import javax.inject.Inject
@@ -15,41 +16,32 @@ import javax.inject.Inject
 class MedicineViewModel @Inject constructor(
     private val medicineRepository: MedicineRepository
 ) : ViewModel() {
+    private val elderId = 1 // 테스트용
+    data class ScreenState(
+        val loading: Boolean = false,
+        val items: List<MedicineUiState> = emptyList(),
+        val emptyDate: LocalDate? = null
+    )
 
-    private val _selectedDate = MutableStateFlow(LocalDate.now())
-    val selectedDate: StateFlow<LocalDate> = _selectedDate
+    private val _state = MutableStateFlow(ScreenState())
+    val state: StateFlow<ScreenState> = _state
 
-    private val _medicines = MutableStateFlow<List<MedicineUiState>>(emptyList())
-    val medicines: StateFlow<List<MedicineUiState>> = _medicines
-
-    private val guardianId = 1 // TODO: 로그인 연동 시 대체
-
-    init {
-        fetchMedicines(_selectedDate.value)
-    }
-
-    fun selectDate(date: LocalDate) {
-        _selectedDate.value = date
-        fetchMedicines(date)
-    }
-
-    private fun fetchMedicines(date: LocalDate) {
+    fun loadMedicinesForDate(date: LocalDate) {
         viewModelScope.launch {
+            _state.update { it.copy(loading = true, emptyDate = null) }
             try {
-                val result = medicineRepository.getMedicineUiStateList(guardianId, date)
-                _medicines.value = result
-            } catch (e: Exception) {
-                // TODO: 네트워크 에러 처리 (미기록 상태 등)
-                _medicines.value = emptyList()
+                val list = medicineRepository.getMedicineUiStateList(elderId, date)
+                _state.update {
+                    if (list.isEmpty()) {
+                        it.copy(loading = false, items = emptyList(), emptyDate = date)
+                    } else {
+                        it.copy(loading = false, items = list, emptyDate = null)
+                    }
+                }
+            } catch (_: Exception) {
+                _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
             }
         }
     }
 
-    // 주간 달력 표시용: 선택한 날짜 기준으로 주간 날짜 계산
-    fun getCurrentWeekDates(): List<LocalDate> {
-        val selected = _selectedDate.value
-        val dayOfWeek = selected.dayOfWeek.value % 7 // 일요일 = 0
-        val sunday = selected.minusDays(dayOfWeek.toLong())
-        return (0..6).map { sunday.plusDays(it.toLong()) }
-    }
 }

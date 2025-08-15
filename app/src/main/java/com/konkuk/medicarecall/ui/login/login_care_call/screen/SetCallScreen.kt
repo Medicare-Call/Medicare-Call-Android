@@ -296,6 +296,7 @@ fun SetCallScreen(
                         onSuccess = {
                             navController.navigate(Route.Payment.route)
                             Log.d("SetCallScreen", "콜 시간 설정 완료")
+                            Log.d("SetCallScreen", "시간 : ${callTimeViewModel.timeMap}")
                         },
                         onError = { t ->
                             Log.e("SetCallScreen", "콜 시간 설정 실패: $t")

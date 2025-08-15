@@ -8,25 +8,26 @@ import com.konkuk.medicarecall.data.api.EldersInfoService
 import com.konkuk.medicarecall.data.api.MemberRegisterService
 import com.konkuk.medicarecall.data.api.NoticeService
 import com.konkuk.medicarecall.data.api.SetCallService
+import com.konkuk.medicarecall.data.api.SettingService
 import com.konkuk.medicarecall.data.api.SubscribeService
 import com.konkuk.medicarecall.data.api.TokenRefreshService
 import com.konkuk.medicarecall.data.api.VerificationService
 import com.konkuk.medicarecall.data.network.AuthAuthenticator
 import com.konkuk.medicarecall.data.network.AuthInterceptor
 import com.konkuk.medicarecall.data.repository.DataStoreRepository
-import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
+import com.konkuk.medicarecall.data.repository.EldersHealthInfoRepository
 import com.konkuk.medicarecall.data.repository.EldersInfoRepository
 import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import com.konkuk.medicarecall.data.repository.SetCallRepository
 import com.konkuk.medicarecall.data.repository.SubscribeRepository
+import com.konkuk.medicarecall.data.repository.UserRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.android.qualifiers.ApplicationContext
 import dagger.hilt.components.SingletonComponent
-import kotlinx.coroutines.runBlocking
 import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
@@ -158,7 +159,7 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideSettingRepository(service: SetCallService): SetCallRepository {
+    fun provideSetCallRepository(service: SetCallService): SetCallRepository {
        return SetCallRepository(service)
     }
 
@@ -172,5 +173,26 @@ object AppModule {
     @Singleton
     fun provideSubscribeRepository(service: SubscribeService): SubscribeRepository {
         return SubscribeRepository(service)
+    }
+
+    @Provides
+    @Singleton
+    fun provideSettingService(retrofit: Retrofit): SettingService {
+        return retrofit.create(SettingService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideEldersHealthInfoRepository(elderInfoService : EldersInfoService, elderRegisterService: ElderRegisterService) : EldersHealthInfoRepository {
+        return EldersHealthInfoRepository(elderInfoService, elderRegisterService)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUserRepository(
+        settingService: SettingService,
+        dataStoreRepository: DataStoreRepository
+    ): UserRepository {
+        return UserRepository(settingService, dataStoreRepository)
     }
 }

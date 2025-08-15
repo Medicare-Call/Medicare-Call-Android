@@ -1,17 +1,13 @@
 package com.konkuk.medicarecall.data.api
 
 import com.konkuk.medicarecall.data.dto.request.UserUpdateRequestDto
-import com.konkuk.medicarecall.data.dto.response.DelElderInfoResponseDto
-import com.konkuk.medicarecall.data.dto.response.ElderInfo
-import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
-import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
 import retrofit2.Response
 import retrofit2.http.Body
-import retrofit2.http.DELETE
 import retrofit2.http.GET
+import retrofit2.http.Header
 import retrofit2.http.PATCH
-import retrofit2.http.Path
+import retrofit2.http.POST
 
 interface SettingService {
     // 설정 불러오기
@@ -24,17 +20,8 @@ interface SettingService {
         @Body userUpdateRequestDto: UserUpdateRequestDto
     ) : Response<MyInfoResponseDto> // 추후 수정 필요
 
-    // 노인 개인 정보 불러오기
-    @GET("elders/settings")
-    suspend fun getEldersPersonalInfo(): Response<List<ElderInfo>>
-
-    // 노인 개인정보 삭제
-    @DELETE("elders/{elderId}/settings")
-    suspend fun deleteElderSettings(
-        @Path("elderId") elderId: Int,
-    ): Response<DelElderInfoResponseDto>
-
-    // 노인 건강 정보 불러오기
-    @GET("elders/health")
-    suspend fun getEldersHealthInfo(): Response<EldersHealthResponseDto>
+    @POST("auth/logout")
+    suspend fun logout(
+        @Header("Authorization") authorization: String // "Bearer <refresh>"
+    ): Response<Unit>
 }

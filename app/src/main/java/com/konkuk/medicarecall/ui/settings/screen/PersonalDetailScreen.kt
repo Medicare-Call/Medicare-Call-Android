@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
-import android.R.attr.phoneNumber
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -13,10 +12,7 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Button
-import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -27,36 +23,50 @@ import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.navigation.Route
+import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.model.RelationshipType
 import com.konkuk.medicarecall.ui.model.SeniorLivingType
 import com.konkuk.medicarecall.ui.settings.component.DeleteConfirmDialog
-import com.konkuk.medicarecall.ui.settings.component.SettingTextField
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
+import com.konkuk.medicarecall.ui.settings.viewmodel.DetailElderInfoViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
 import com.konkuk.medicarecall.ui.util.PhoneNumberVisualTransformation
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 
 @Composable
 fun PersonalDetailScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
-    navController: NavHostController
+    eldersInfoResponseDto : EldersInfoResponseDto,
+    detailViewModel : DetailElderInfoViewModel = hiltViewModel()
 ) {
-    var isMale by remember { mutableStateOf<Boolean?>(false) }
+    val gender = when (eldersInfoResponseDto.gender) {
+        GenderType.MALE -> true
+        else -> false
+    }
+    val parseDate = LocalDate.parse(eldersInfoResponseDto.birthDate)                // yyyy-MM-dd 형식의 문자열을 LocalDate로 변환
+    val date = parseDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
     val scrollState = rememberScrollState()
-    var name by remember { mutableStateOf("김옥자") }
-    var birth by remember { mutableStateOf("19390928") }
-    var phoneNum by remember { mutableStateOf("01012345678") }
+
+    var isMale by remember { mutableStateOf<Boolean?>(gender) }
+    var name by remember { mutableStateOf(eldersInfoResponseDto.name) }
+    var birth by remember { mutableStateOf(date) }
+    var phoneNum by remember { mutableStateOf(eldersInfoResponseDto.phone) }
+    var relationship by remember { mutableStateOf(eldersInfoResponseDto.relationship) }
+    var residenceType by remember { mutableStateOf(eldersInfoResponseDto.residenceType) }
+
+
 
     var showDeleteDialog by remember { mutableStateOf(false) }
 
@@ -128,7 +138,6 @@ fun PersonalDetailScreen(
                         onGenderChange =
                             { newValue ->
                                 isMale = newValue
-                                // TODO: 필요하다면 여기서 ViewModel 호출 등 추가 로직 실행
                             }
                     )
                 }
@@ -148,7 +157,12 @@ fun PersonalDetailScreen(
                         placeHolder = "관계 선택하기",
                         category = "어르신과의 관계",
                         scrollState,
-                        value = RelationshipType.entries.component1().displayName,
+                        value = relationship.displayName,
+                        onValueChange = { newValue ->
+                            relationship = RelationshipType.entries.firstOrNull {
+                                it.displayName == newValue
+                            } ?: RelationshipType.ACQUAINTANCE
+                        }
                     )
                 }
                 Column {
@@ -158,7 +172,12 @@ fun PersonalDetailScreen(
                         placeHolder = "거주방식을 선택해주세요",
                         category = "어르신 거주 방식",
                         scrollState,
-                        value = SeniorLivingType.entries.component1().displayName,
+                        value = residenceType.displayName,
+                        onValueChange = { newValue ->
+                            residenceType = SeniorLivingType.entries.firstOrNull {
+                                it.displayName == newValue
+                            } ?: SeniorLivingType.WITH_FAMILY
+                        }
                     )
                 }
 
@@ -182,7 +201,20 @@ fun PersonalDetailScreen(
                         CTAButtonType.DISABLED
                     },
                     text = "확인",
-                    onClick = { onBack() },
+                    onClick = {
+                        detailViewModel.updateElderInfo(
+                            elderInfo = EldersInfoResponseDto(
+                                elderId = eldersInfoResponseDto.elderId,
+                                name = name,
+                                birthDate = toDashedDate(birth),
+                                gender = if (isMale == true) GenderType.MALE else GenderType.FEMALE,
+                                phone = phoneNum,
+                                relationship = relationship,
+                                residenceType = residenceType
+                            )
+                        )
+                        onBack()
+                              },
                     modifier = modifier.height(50.dp),
                 )
 
@@ -193,10 +225,16 @@ fun PersonalDetailScreen(
                 onDismiss = { showDeleteDialog = false },
                 onDelete = {
                     showDeleteDialog = false
-                    // TODO : 삭제 동작 추가
+                    detailViewModel.deleteElderInfo(eldersInfoResponseDto.elderId)
                     onBack() // 삭제 후 설정 화면으로 이동
                 }
             )
         }
     }
+}
+
+fun toDashedDate(yyyymmdd: String): String {
+    val d = yyyymmdd.filter { it.isDigit() }
+    require(d.length == 8) { "yyyyMMdd 형식(8자리)이어야 합니다." }
+    return "${d.substring(0,4)}-${d.substring(4,6)}-${d.substring(6,8)}"
 }

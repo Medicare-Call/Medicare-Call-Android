@@ -49,7 +49,8 @@ fun <T> DefaultDropdown(
     scrollState: ScrollState,
     onOptionSelect: (String) -> Unit = {},
     value: String = "",
-    modifier: Modifier = Modifier
+    onValueChange: (String) -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
 
 

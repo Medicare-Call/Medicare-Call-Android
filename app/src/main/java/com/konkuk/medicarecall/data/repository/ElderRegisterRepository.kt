@@ -13,6 +13,7 @@ import com.konkuk.medicarecall.ui.model.SeniorData
 import com.konkuk.medicarecall.ui.model.SeniorHealthData
 import com.konkuk.medicarecall.ui.model.SeniorLivingType
 import com.konkuk.medicarecall.ui.util.formatAsDate
+import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -36,7 +37,7 @@ class ElderRegisterRepository @Inject constructor(
             return response.body() ?: throw IllegalStateException("Response body is null")
         } else {
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
-            throw Exception("Request failed with code ${response.code()}: $errorBody")
+            throw HttpException(response)
         }
     }
 
@@ -51,7 +52,7 @@ class ElderRegisterRepository @Inject constructor(
         ))
         if (!response.isSuccessful) {
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
-            throw Exception("Request failed with code ${response.code()}: $errorBody")
+            throw HttpException(response)
         }
     }
 

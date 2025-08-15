@@ -3,6 +3,7 @@ package com.konkuk.medicarecall.data.repository
 import android.util.Log
 import com.konkuk.medicarecall.data.api.SubscribeService
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class SubscribeRepository @Inject constructor(
@@ -21,7 +22,7 @@ class SubscribeRepository @Inject constructor(
             } else {
                 val error = response.errorBody()?.string()
                 Log.e("SubscribeRepository", "응답 실패: $error")
-                throw Exception("Error fetching subscriptions: ${response.errorBody()?.string()}")
+                throw HttpException(response)
             }
         }.onFailure {
             Log.e("SubscribeRepository", "구독 정보 불러오기 실패", it)

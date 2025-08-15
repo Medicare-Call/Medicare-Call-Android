@@ -33,7 +33,7 @@ import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
-import com.konkuk.medicarecall.ui.login.login_info.component.TopBar
+import com.konkuk.medicarecall.ui.login.login_info.component.LoginBackButton
 import com.konkuk.medicarecall.ui.login.login_payment.component.PayResultItem
 import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
@@ -57,7 +57,7 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
             modifier = modifier
                 .padding(horizontal = 20.dp)
         ) {
-            TopBar(onBack)
+            LoginBackButton(onBack)
             Spacer(modifier = modifier.height(20.dp))
             Text(
                 text = "결제하기",

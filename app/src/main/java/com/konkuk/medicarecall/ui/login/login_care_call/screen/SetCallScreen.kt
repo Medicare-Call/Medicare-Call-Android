@@ -41,7 +41,7 @@ import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login.login_care_call.component.BenefitItem
 import com.konkuk.medicarecall.ui.login.login_care_call.component.TimePickerBottomSheet
 import com.konkuk.medicarecall.ui.login.login_care_call.component.TimeSettingItem
-import com.konkuk.medicarecall.ui.login.login_info.component.TopBar
+import com.konkuk.medicarecall.ui.login.login_info.component.LoginBackButton
 import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
 import com.konkuk.medicarecall.ui.login.login_care_call.viewmodel.CallTimeViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
@@ -87,7 +87,7 @@ fun SetCallScreen(
             .padding(top = 16.dp, bottom = 20.dp)
             .statusBarsPadding()
     ) {
-        TopBar(onClick = onBack)
+        LoginBackButton(onClick = onBack)
         Spacer(modifier = modifier.height(20.dp))
         Column(
             modifier = modifier.verticalScroll(scrollState)

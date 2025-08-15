@@ -1,72 +1,75 @@
 package com.konkuk.medicarecall.ui.statistics.component
 
-
-import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
-import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Row
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.width
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun WeekendBar(
     modifier: Modifier = Modifier,
-    title: String,
-
-    ) {
+    currentWeek: Pair<LocalDate, LocalDate>,
+    isLatestWeek: Boolean,
+    onPreviousWeek: () -> Unit,
+    onNextWeek: () -> Unit
+) {
     Row(
         modifier = modifier
-            .fillMaxWidth()
-            .background(Color.White),
-        verticalAlignment = Alignment.CenterVertically,
+            .fillMaxWidth(),
+        //verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
-
-
-        ) {
-        // 뒤로 가기 + 이번주/저번주 + 앞으로 가기 TODO: 스와이프 적용 및 right arrow 색상처리
+    ) {
+        // 왼쪽 화살표 (이전 주로 이동)
         Icon(
-            modifier = Modifier
-                .size(24.dp),
+            modifier = Modifier.clickable { onPreviousWeek() },
             painter = painterResource(id = R.drawable.ic_arrow_big_back),
-            contentDescription = "big arrow back",
+            contentDescription = "previous week",
             tint = MediCareCallTheme.colors.gray3
         )
 
-
-        Box(
+        // 날짜 텍스트 ('이번주' 또는 날짜 범위 표시)
+        Text(
             modifier = Modifier.weight(1f),
-            contentAlignment = Alignment.Center
-        ) {
-            Text(
-                text = title,
-                style = MediCareCallTheme.typography.SB_20,
-                color = Color(0xFF444444)
-            )
-        }
-
-        Icon(
-            modifier = Modifier
-                .size(24.dp),
-            painter = painterResource(id = R.drawable.ic_arrow_big_forward),
-            contentDescription = "big arrow forward",
-            tint = MediCareCallTheme.colors.gray1
+            text = if (isLatestWeek) {
+                "이번주"
+            } else {
+                val formatter = DateTimeFormatter.ofPattern("M월 d일", Locale.KOREAN)
+                "${currentWeek.first.format(formatter)} - ${currentWeek.second.format(formatter)}"
+            },
+            style = MediCareCallTheme.typography.M_20,
+            color = Color(0xFF444444),
+            textAlign = TextAlign.Center
         )
 
-
+        // 오른쪽 화살표 ('이번주'가 아닐 때만 표시)
+        if (!isLatestWeek) {
+            Icon(
+                modifier = Modifier.clickable { onNextWeek() },
+                painter = painterResource(id = R.drawable.ic_arrow_big_forward),
+                contentDescription = "next week",
+                tint = MediCareCallTheme.colors.gray3
+            )
+        } else {
+            // 공간을 맞추기 위한 빈 Spacer
+            Spacer(modifier = Modifier.width(24.dp))
+        }
     }
-
 }
 
 
@@ -74,7 +77,9 @@ fun WeekendBar(
 @Composable
 fun PreviewWeekendBar() {
     WeekendBar(
-        title = "이번주"
+        currentWeek = Pair(LocalDate.now(), LocalDate.now()),
+        isLatestWeek = true,
+        onPreviousWeek = {},
+        onNextWeek = {}
     )
-
 }

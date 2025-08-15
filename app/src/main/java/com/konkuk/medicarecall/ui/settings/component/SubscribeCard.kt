@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.settings.component
 
-import android.R.attr.contentDescription
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -18,18 +17,14 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.data.dto.response.ElderInfo
-import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionBody
-import com.konkuk.medicarecall.navigation.Route
+import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun SubscribeCard(elderInfo: EldersSubscriptionBody, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun SubscribeCard(elderInfo: EldersSubscriptionResponseDto, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(modifier = modifier
         .fillMaxWidth()
         .figmaShadow(group = MediCareCallTheme.shadow.shadow03)

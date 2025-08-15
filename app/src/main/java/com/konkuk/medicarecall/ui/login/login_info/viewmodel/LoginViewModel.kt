@@ -9,12 +9,16 @@ import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.data.repository.DataStoreRepository
 import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
+import com.konkuk.medicarecall.domain.usecase.CheckLoginStatusUseCase
 import com.konkuk.medicarecall.ui.login.login_info.uistate.LoginEvent
 import com.konkuk.medicarecall.ui.model.GenderType
+import com.konkuk.medicarecall.ui.model.NavigationDestination
 import com.konkuk.medicarecall.ui.util.formatAsDate
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableSharedFlow
+import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.asSharedFlow
+import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
@@ -22,8 +26,12 @@ import javax.inject.Inject
 class LoginViewModel @Inject constructor(
     private val verificationRepository: VerificationRepository,
     private val memberRegisterRepository: MemberRegisterRepository,
-    private val dataStoreRepository: DataStoreRepository
+    private val dataStoreRepository: DataStoreRepository,
+    private val checkLoginStatusUseCase: CheckLoginStatusUseCase
 ) : ViewModel() {
+    private val _navigationDestination = MutableStateFlow<NavigationDestination?>(null)
+    val navigationDestination = _navigationDestination.asStateFlow()
+
     private val _events = MutableSharedFlow<LoginEvent>()
     val events = _events.asSharedFlow()
 
@@ -156,6 +164,18 @@ class LoginViewModel @Inject constructor(
 
 
     }
+
+    fun checkStatus() {
+        viewModelScope.launch {
+            val destination = checkLoginStatusUseCase()
+            _navigationDestination.value = destination
+        }
+    }
+
+    fun onNavigationHandled() {
+        _navigationDestination.value = null
+    }
+
 
 }
 

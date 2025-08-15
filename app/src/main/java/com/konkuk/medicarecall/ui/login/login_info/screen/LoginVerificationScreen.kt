@@ -15,6 +15,8 @@ import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
+import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Modifier
@@ -22,6 +24,8 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.NavController
 import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
@@ -30,8 +34,11 @@ import com.konkuk.medicarecall.ui.login.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login.login_info.uistate.LoginEvent
 import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.model.NavigationDestination
+import com.konkuk.medicarecall.ui.splash.viewmodel.SplashViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import kotlinx.coroutines.launch
+import kotlin.math.log
 import kotlin.text.isDigit
 
 @Composable
@@ -45,6 +52,8 @@ fun LoginVerificationScreen(
     val coroutineScope = rememberCoroutineScope()
 
     val focusRequester = remember { FocusRequester() }
+    val navigationDestination by loginViewModel.navigationDestination.collectAsState()
+
 
 
     LaunchedEffect(Unit) {
@@ -57,15 +66,15 @@ fun LoginVerificationScreen(
                 }
 
                 is LoginEvent.VerificationSuccessExisting -> {
-                    navController.navigate(Route.LoginSeniorInfoScreen.route)
+                    // 인증 성공, 기존 회원일 시 등록된 어르신, 시간, 결제 정보 확인
+                    loginViewModel.checkStatus()
                 }
-
                 is LoginEvent.VerificationFailure -> {
                     // 인증 실패 시 스낵바 표시
                     coroutineScope.launch {
                         snackBarState.showSnackbar(
                             message = "인증번호가 올바르지 않습니다",
-                            duration = SnackbarDuration.Long
+                            duration = SnackbarDuration.Short
                         )
                     }
                 }
@@ -73,6 +82,20 @@ fun LoginVerificationScreen(
                 else -> { /* 다른 이벤트 무시 */
                 }
             }
+        }
+    }
+
+    LaunchedEffect(navigationDestination) {
+        navigationDestination?.let { destination ->
+            val route = when (destination) {
+                is NavigationDestination.GoToLogin -> Route.LoginStart.route
+                is NavigationDestination.GoToRegisterElder -> Route.LoginSeniorInfoScreen.route
+                is NavigationDestination.GoToTimeSetting -> Route.SetCall.route
+                is NavigationDestination.GoToPayment -> Route.Payment.route
+                is NavigationDestination.GoToHome -> Route.Home.route
+            }
+            navController.navigate(route)
+            loginViewModel.onNavigationHandled()
         }
     }
 

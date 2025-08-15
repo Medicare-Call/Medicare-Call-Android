@@ -27,7 +27,7 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionBody
+import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.component.SubscribeCard
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -44,7 +44,7 @@ fun SettingSubscribeScreen(
 ) {
 
     val eldersInfo = listOf(
-        EldersSubscriptionBody(
+        EldersSubscriptionResponseDto(
             name = "김옥자",
             plan = "PREMIUM",
             price = 28000,
@@ -52,7 +52,7 @@ fun SettingSubscribeScreen(
             elderId = 1,
             nextBillingDate = "2023-02-01"
         ),
-        EldersSubscriptionBody(
+        EldersSubscriptionResponseDto(
             name = "박막례",
             plan = "PREMIUM",
             price = 28000,

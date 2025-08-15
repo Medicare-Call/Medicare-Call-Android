@@ -14,6 +14,8 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.navArgument
 import androidx.navigation.navigation
+import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
+import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
@@ -276,12 +278,19 @@ fun NavGraph(
                 )
             }
 
-            composable(route = Route.PersonalDetail.route) {
+            composable(route = "personal_detail/{elderInfo}",
+                arguments = listOf(navArgument("elderInfo") {
+                    type = NavType.StringType
+                })
+                ) { backStackEntry ->
+                val encodedElderInfo = backStackEntry.arguments?.getString("elderInfo") ?: ""
+                val decodedElderInfo = URLDecoder.decode(encodedElderInfo, StandardCharsets.UTF_8.toString())
+                val eldersInfoResponseDto = Json.decodeFromString<EldersInfoResponseDto>(decodedElderInfo)
                 PersonalDetailScreen(
                     onBack = {
                         navController.popBackStack()
                     },
-                    navController = navController
+                    eldersInfoResponseDto = eldersInfoResponseDto
                 )
             }
 
@@ -294,12 +303,20 @@ fun NavGraph(
                 )
             }
 
-            composable(route = Route.HealthDetail.route) {
+            composable(route = "health_detail/{healthInfo}",
+                arguments = listOf(navArgument("healthInfo") {
+                    type = NavType.StringType
+                })
+                ) { backStackEntry ->
+                val encodedHealthInfo = backStackEntry.arguments?.getString("healthInfo") ?: ""
+                val decodedHealthInfo = URLDecoder.decode(encodedHealthInfo, StandardCharsets.UTF_8.toString())
+                val healthInfoResponseDto = Json.decodeFromString<EldersHealthResponseDto>(decodedHealthInfo)
                 HealthDetailScreen(
                     onBack = {
                         navController.popBackStack()
                     },
-                    navController = navController
+                    healthInfoResponseDto = healthInfoResponseDto,
+
                 )
             }
 

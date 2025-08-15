@@ -1,7 +1,5 @@
 package com.konkuk.medicarecall.ui.component
 
-import android.R.attr.category
-import android.util.Log
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
@@ -41,23 +39,20 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.ui.model.SeniorLivingType
-import com.konkuk.medicarecall.ui.model.SpecialNoteType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
-import kotlinx.coroutines.Delay
 import kotlinx.coroutines.delay
 
 @Composable
 fun <T> SpecialNoteItem(
+    modifier: Modifier = Modifier,
     enumList: List<T>, // Enum.entries.map { it. displayName }.toList() 전달
-noteList: List<String>,
+    noteList: List<String>,
     onAddNote: (String) -> Unit,
     onRemoveNote: (String) -> Unit,
     placeHolder: String,
     category: String? = null,
     scrollState: ScrollState,
-    modifier: Modifier = Modifier
 ) {
 
 
@@ -87,15 +82,15 @@ noteList: List<String>,
                 .fillMaxWidth()
                 .horizontalScroll(rememberScrollState())
         ) {
-           noteList.forEach { note ->
-               ChipItem(
-                   text = note,
-                   onRemove = {
-                       onRemoveNote(note)
-                   }
-               )
-               Spacer(Modifier.width(10.dp))
-           }
+            noteList.forEach { note ->
+                ChipItem(
+                    text = note,
+                    onRemove = {
+                        onRemoveNote(note)
+                    }
+                )
+                Spacer(Modifier.width(10.dp))
+            }
         }
     }
 
@@ -204,26 +199,26 @@ noteList: List<String>,
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun SpecialNotePreview() {
-    val scrollState = rememberScrollState()
-    var noteList by remember { mutableStateOf(listOf<String>()) }
-
-    Box(
-        modifier = Modifier
-            .fillMaxSize()
-            .verticalScroll(scrollState)
-            .padding(16.dp)
-    ) {
-        SpecialNoteItem(
-            enumList = SpecialNoteType.entries.map { it.displayName },
-            noteList = noteList,
-            onAddNote = { noteList = noteList + it },
-            onRemoveNote = { noteList = noteList - it },
-            placeHolder = "특이사항 선택하기",
-            category = "특이사항",
-            scrollState = scrollState
-        )
-    }
-}
+//@Preview(showBackground = true)
+//@Composable
+//private fun SpecialNotePreview() {
+//    val scrollState = rememberScrollState()
+//    var noteList by remember { mutableStateOf(listOf<String>()) }
+//
+//    Box(
+//        modifier = Modifier
+//            .fillMaxSize()
+//            .verticalScroll(scrollState)
+//            .padding(16.dp)
+//    ) {
+//        SpecialNoteItem(
+//            enumList = SpecialNoteType.entries.map { it.displayName },
+//            noteList = noteList,
+//            onAddNote = { noteList = noteList + it },
+//            onRemoveNote = { noteList = noteList - it },
+//            placeHolder = "특이사항 선택하기",
+//            category = "특이사항",
+//            scrollState = scrollState
+//        )
+//    }
+//}

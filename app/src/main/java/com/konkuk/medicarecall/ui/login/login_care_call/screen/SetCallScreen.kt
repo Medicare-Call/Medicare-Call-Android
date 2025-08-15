@@ -75,6 +75,7 @@ fun SetCallScreen(
     val selectedName = seniorNames.getOrNull(selectedIndex).orEmpty() // 선택된 어르신 이름
     val saved = callTimeViewModel.timeMap[selectedName] ?: CallTimes()
 
+
     val allComplete = callTimeViewModel.isAllComplete(seniorNames)
 //    val allComplete = seniorNames.isNotEmpty() && timeMap.values.all { it.first != null && it.second != null && it.third != null }
 
@@ -290,20 +291,21 @@ fun SetCallScreen(
                 text = "확인",
                 onClick = {
                     if (!allComplete) return@CTAButton
-                    callTimeViewModel.submitAllUsingRepoOrder(
-                        seniorNamesInOrder = seniorNames,
-                        onSuccess = { navController.navigate(Route.Payment.route)
-                            Log.d("SetCallScreen", "콜 시간 설정이 완료되었습니다.")
-                                    },
-                        onError = {
-                        Log.e("SetCallScreen", "Error submitting call times: $it")
+                    callTimeViewModel.submitAllByName(
+                        seniorNames = seniorNames,
+                        onSuccess = {
+                            navController.navigate(Route.Payment.route)
+                            Log.d("SetCallScreen", "콜 시간 설정 완료")
+                            Log.d("SetCallScreen", "시간 : ${callTimeViewModel.timeMap}")
+                        },
+                        onError = { t ->
+                            Log.e("SetCallScreen", "콜 시간 설정 실패: $t")
                             Toast.makeText(
                                 navController.context,
                                 "콜 시간 설정에 실패했습니다. 다시 시도해주세요.",
                                 Toast.LENGTH_SHORT
                             ).show()
                         }
-
                     )
                 }) // 입력여부에 따라 Type 바뀌도록 수정 필요
             if (showBottomSheet) {

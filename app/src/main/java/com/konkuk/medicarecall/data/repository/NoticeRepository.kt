@@ -4,7 +4,6 @@ import android.util.Log
 import com.konkuk.medicarecall.data.api.NoticeService
 import com.konkuk.medicarecall.data.api.SettingService
 import com.konkuk.medicarecall.data.dto.response.NoticeBody
-import com.konkuk.medicarecall.data.dto.response.NoticesResponseDto
 import javax.inject.Inject
 
 class NoticeRepository @Inject constructor(

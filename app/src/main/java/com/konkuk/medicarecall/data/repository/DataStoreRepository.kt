@@ -45,4 +45,11 @@ class DataStoreRepository(private val context: Context) {
         return preferences[REFRESH_TOKEN_KEY]
     }
 
+    suspend fun clearTokens() {
+        context.tokenDataStore.edit { prefs ->
+            prefs.remove(ACCESS_TOKEN_KEY)
+            prefs.remove(REFRESH_TOKEN_KEY)
+        }
+    }
+
 }

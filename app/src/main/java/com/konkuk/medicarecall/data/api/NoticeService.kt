@@ -1,7 +1,6 @@
 package com.konkuk.medicarecall.data.api
 
 import com.konkuk.medicarecall.data.dto.response.NoticeBody
-import com.konkuk.medicarecall.data.dto.response.NoticesResponseDto
 import retrofit2.Response
 import retrofit2.http.GET
 

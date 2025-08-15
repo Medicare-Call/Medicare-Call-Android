@@ -29,21 +29,38 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.media3.common.util.Log
+import com.konkuk.medicarecall.data.dto.request.MedicationSchedule
 import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun MedInfoItem(modifier: Modifier = Modifier) {
+fun MedInfoItem(
+    medications : MutableList<MedicationSchedule>,
+    onAddMedication: (MedicationSchedule) -> Unit,
+    onRemoveMedication: (MedicationSchedule) -> Unit,
+    modifier: Modifier = Modifier) {
     val context = LocalContext.current
     var inputText by remember { mutableStateOf("") }
     // 복약 주기 선택 상태
     val selectedPeriods = remember { mutableStateOf(setOf<MedicationTimeType>()) }
     // 주기별 복약 리스트
+//    val medsByPeriod = remember {
+//        mutableStateMapOf<MedicationTimeType, SnapshotStateList<String>>().apply {
+//            MedicationTimeType.entries.forEach { period ->
+//                // 각 주기별로 'mutableStateListOf()'를 할당
+//                this[period] = mutableStateListOf()
+//            }
+//        }
+//    }
     val medsByPeriod = remember {
         mutableStateMapOf<MedicationTimeType, SnapshotStateList<String>>().apply {
             MedicationTimeType.entries.forEach { period ->
                 // 각 주기별로 'mutableStateListOf()'를 할당
-                this[period] = mutableStateListOf()
+                this[period] = mutableStateListOf<String>().apply {
+                    // 초기값으로 medications에서 해당 주기에 해당하는 약을 추가
+                    medications.filter { it.scheduleTimes.contains(period) }.forEach { add(it.medicationName) }
+                }
             }
         }
     }
@@ -77,6 +94,13 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
                             text = name,
                             onRemove = {
                                 medsByPeriod[period]?.remove(name)
+                                onRemoveMedication(
+                                    MedicationSchedule(
+                                        medicationName = name,
+                                        scheduleTimes = listOf(period)
+                                    )
+                                )
+                                medications.removeAll { it.medicationName == name && it.scheduleTimes.contains(period) }
                             },
                         )
                         Spacer(Modifier.width(10.dp))
@@ -163,6 +187,18 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
                         inputText = "" // 입력 필드 초기화
                         selectedPeriods.value = emptySet()
                     } else {
+                        onAddMedication(
+                            MedicationSchedule(
+                                medicationName = inputText.trim(),
+                                scheduleTimes = selectedPeriods.value.toList()
+                            )
+                        )
+                        medications.add(
+                            MedicationSchedule(
+                                medicationName = inputText.trim(),
+                                scheduleTimes = selectedPeriods.value.toList()
+                            )
+                        )
                         selectedPeriods.value.forEach { p ->
                             medsByPeriod[p]?.add(inputText.trim())
                         }
@@ -173,8 +209,8 @@ fun MedInfoItem(modifier: Modifier = Modifier) {
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun MedicationScreenPreview() {
-    MedInfoItem()
-}
+//@Preview(showBackground = true)
+//@Composable
+//fun MedicationScreenPreview() {
+//    MedInfoItem()
+//}

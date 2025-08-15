@@ -16,9 +16,9 @@ class EldersInfoRepository @Inject constructor(
     suspend fun getElders(): Result<List<EldersInfoResponseDto>> = runCatching {
         val response = eldersInfoService.getElders()
         if (response.isSuccessful) {
-            response.body() ?: throw IllegalStateException("Response body is null")
+            response.body() ?: throw IllegalStateException("Response body is null(eldersPersonalInfo)")
         } else {
-            val errorBody = response.errorBody()?.string() ?: "Unknown error"
+            val errorBody = response.errorBody()?.string() ?: "Unknown error(eldersPersonalInfo)"
             throw Exception("Request failed with code ${response.code()}: $errorBody")
         }
     }
@@ -48,6 +48,16 @@ class EldersInfoRepository @Inject constructor(
                 residenceType = SeniorLivingType.entries.find { it.displayName == request.livingType }!!,
             )
         )
+        if (response.isSuccessful) {
+            response.body() ?: throw IllegalStateException("Response body is null")
+        } else {
+            val errorBody = response.errorBody()?.string() ?: "Unknown error"
+            throw Exception("Request failed with code ${response.code()}: $errorBody")
+        }
+    }
+
+    suspend fun deleteElder(id: Int): Result<Unit> = runCatching {
+        val response = eldersInfoService.deleteElderSettings(id)
         if (response.isSuccessful) {
             response.body() ?: throw IllegalStateException("Response body is null")
         } else {

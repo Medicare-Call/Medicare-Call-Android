@@ -66,4 +66,15 @@ class EldersInfoRepository @Inject constructor(
         }
     }
 
+    suspend fun getCareCallTimes(id:Int): Result<Unit> = runCatching {
+        val response = eldersInfoService.getCallTimes(id)
+        if (response.isSuccessful) {
+            response.body() ?: throw IllegalStateException("Response body is null")
+        } else {
+            val errorBody = response.errorBody()?.string() ?: "Unknown error"
+            throw Exception("Request failed with code ${response.code()}: $errorBody")
+        }
+
+    }
+
 }

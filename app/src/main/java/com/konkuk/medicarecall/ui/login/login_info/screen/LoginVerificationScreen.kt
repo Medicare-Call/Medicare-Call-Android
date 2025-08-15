@@ -66,19 +66,9 @@ fun LoginVerificationScreen(
                 }
 
                 is LoginEvent.VerificationSuccessExisting -> {
+                    // 인증 성공, 기존 회원일 시 등록된 어르신, 시간, 결제 정보 확인
                     loginViewModel.checkStatus()
-                    val route = when (navigationDestination) {
-                        is NavigationDestination.GoToLogin -> Route.LoginStart.route
-                        is NavigationDestination.GoToRegisterElder -> Route.LoginSeniorInfoScreen.route
-                        is NavigationDestination.GoToTimeSetting -> Route.SetCall.route
-                        is NavigationDestination.GoToPayment -> Route.Payment.route
-                        is NavigationDestination.GoToHome -> Route.Home.route
-
-                        else -> Route.LoginStart.route
-                    }
-                    navController.navigate(route)
                 }
-
                 is LoginEvent.VerificationFailure -> {
                     // 인증 실패 시 스낵바 표시
                     coroutineScope.launch {
@@ -92,6 +82,20 @@ fun LoginVerificationScreen(
                 else -> { /* 다른 이벤트 무시 */
                 }
             }
+        }
+    }
+
+    LaunchedEffect(navigationDestination) {
+        navigationDestination?.let { destination ->
+            val route = when (destination) {
+                is NavigationDestination.GoToLogin -> Route.LoginStart.route
+                is NavigationDestination.GoToRegisterElder -> Route.LoginSeniorInfoScreen.route
+                is NavigationDestination.GoToTimeSetting -> Route.SetCall.route
+                is NavigationDestination.GoToPayment -> Route.Payment.route
+                is NavigationDestination.GoToHome -> Route.Home.route
+            }
+            navController.navigate(route)
+            loginViewModel.onNavigationHandled()
         }
     }
 

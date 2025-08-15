@@ -172,5 +172,10 @@ class LoginViewModel @Inject constructor(
         }
     }
 
+    fun onNavigationHandled() {
+        _navigationDestination.value = null
+    }
+
+
 }
 

@@ -4,6 +4,10 @@ import com.konkuk.medicarecall.data.api.EldersInfoService
 import com.konkuk.medicarecall.data.dto.request.ElderRegisterRequestDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
+import com.konkuk.medicarecall.ui.model.GenderType
+import com.konkuk.medicarecall.ui.model.RelationshipType
+import com.konkuk.medicarecall.ui.model.SeniorData
+import com.konkuk.medicarecall.ui.model.SeniorLivingType
 import javax.inject.Inject
 
 class EldersInfoRepository @Inject constructor(
@@ -19,7 +23,7 @@ class EldersInfoRepository @Inject constructor(
         }
     }
 
-    suspend fun getSubscriptions(): Result<EldersSubscriptionResponseDto> = runCatching {
+    suspend fun getSubscriptions(): Result<List<EldersSubscriptionResponseDto>> = runCatching {
         val response = eldersInfoService.getSubscriptions()
         if (response.isSuccessful) {
             response.body() ?: throw IllegalStateException("Response body is null")
@@ -29,8 +33,21 @@ class EldersInfoRepository @Inject constructor(
         }
     }
 
-    suspend fun updateElder(id: Int, request: ElderRegisterRequestDto): Result<Unit> = runCatching {
-        val response = eldersInfoService.updateElder(id, request)
+    suspend fun updateElder(
+        id: Int,
+        request: SeniorData
+    ): Result<Unit> = runCatching {
+        val response = eldersInfoService.updateElder(
+            id,
+            ElderRegisterRequestDto(
+                request.name,
+                birthDate = request.birthDate,
+                gender = if (request.gender) GenderType.MALE else GenderType.FEMALE,
+                phone = request.phoneNumber,
+                relationship = RelationshipType.entries.find { it.displayName == request.relationship }!!,
+                residenceType = SeniorLivingType.entries.find { it.displayName == request.livingType }!!,
+            )
+        )
         if (response.isSuccessful) {
             response.body() ?: throw IllegalStateException("Response body is null")
         } else {
@@ -48,4 +65,5 @@ class EldersInfoRepository @Inject constructor(
             throw Exception("Request failed with code ${response.code()}: $errorBody")
         }
     }
+
 }

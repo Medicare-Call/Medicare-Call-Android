@@ -17,6 +17,7 @@ import androidx.navigation.navigation
 import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionBody
+import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen.GlucoseDetail
@@ -261,7 +262,7 @@ fun NavGraph(
             ) { backStackEntry ->
                 val encodedJson = backStackEntry.arguments?.getString("elderJson") ?: ""
                 val decodedJson = URLDecoder.decode(encodedJson, StandardCharsets.UTF_8.toString())
-                val elderInfo = Json.decodeFromString<EldersSubscriptionBody>(decodedJson)
+                val elderInfo = Json.decodeFromString<EldersSubscriptionResponseDto>(decodedJson)
 
                 SubscribeDetailScreen(
                     elderInfo = elderInfo,

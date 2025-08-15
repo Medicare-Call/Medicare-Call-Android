@@ -13,6 +13,7 @@ import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.data.repository.ElderIdRepository
 import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
+import com.konkuk.medicarecall.data.repository.EldersInfoRepository
 import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.model.SeniorData
 import com.konkuk.medicarecall.ui.model.SeniorHealthData
@@ -23,7 +24,8 @@ import javax.inject.Inject
 @HiltViewModel
 class LoginSeniorViewModel @Inject constructor(
     private val elderRegisterRepository: ElderRegisterRepository,
-    private val elderIdRepository: ElderIdRepository
+    private val elderIdRepository: ElderIdRepository,
+    private val eldersInfoRepository: EldersInfoRepository
 ) : ViewModel() {
     // 어르신 정보 화면
 
@@ -179,7 +181,7 @@ class LoginSeniorViewModel @Inject constructor(
         viewModelScope.launch {
             elderRegisterRepository.registerElderAndHealth(
                 elders = elders,
-                elderInfo = seniorDataList,
+                elderInfoList = seniorDataList,
                 elderHealthInfo = seniorHealthDataList
             )
                 .onSuccess {
@@ -191,5 +193,38 @@ class LoginSeniorViewModel @Inject constructor(
         }
     }
 
+    fun updateAllElders() { // getElderIds.isNotEmpty == true
+        viewModelScope.launch {
+            val elderIds = elderIdRepository.getElderIds()
+            elderIds.forEachIndexed { index, it ->
+                eldersInfoRepository.updateElder(
+                    it.values.first(), seniorDataList[index]
+                ).onSuccess {
+                    Log.d("httplog", "어르신 재등록(수정) 성공")
+                }.onFailure { exception ->
+                    Log.e("httplog", "어르신 정보 등록 실패: ${exception.message}")
+                }
+            }
 
+        }
+
+    }
+
+    fun updateAllEldersHealthInfo() {
+        viewModelScope.launch {
+            val elderIds = elderIdRepository.getElderIds()
+                elderIds.forEachIndexed { index, it ->
+                    runCatching {
+                        elderRegisterRepository.postElderHealthInfo(
+                            it.values.first(),
+                            seniorHealthDataList[index]
+                        )
+                    }.onSuccess {
+                        Log.d("httplog", "어르신 건강정보 재등록(수정) 성공")
+                    }
+                }
+        }
+    }
 }
+
+

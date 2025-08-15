@@ -1,7 +1,5 @@
 package com.konkuk.medicarecall.ui.login.login_senior.screen
 
-import android.system.Os.remove
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -21,8 +19,6 @@ import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.unit.dp
@@ -32,7 +28,6 @@ import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.ChipItem
 import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.DiseaseNamesItem
-import com.konkuk.medicarecall.ui.component.MedInfoItem
 import com.konkuk.medicarecall.ui.component.MedicationItem
 import com.konkuk.medicarecall.ui.login.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
@@ -162,8 +157,10 @@ fun LoginSeniorMedInfoScreen(
                 if (loginSeniorViewModel.getElderIds().isEmpty()) {
                     loginSeniorViewModel.createSeniorHealthDataList()
                     loginSeniorViewModel.postElderAndHealth()
-                } else { // TODO: 어르신 정보 수정 API 사용
-
+                } else {
+                    loginSeniorViewModel.createSeniorHealthDataList()
+                    loginSeniorViewModel.updateAllElders()
+                    loginSeniorViewModel.updateAllEldersHealthInfo()
                 }
                 navController.navigate(Route.SetCall.route)
             },

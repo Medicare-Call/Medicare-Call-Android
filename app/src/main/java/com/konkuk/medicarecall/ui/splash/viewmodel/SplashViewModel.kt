@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.splash.viewmodel
 
+import android.text.TextUtils.isEmpty
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -30,6 +31,7 @@ class SplashViewModel @Inject constructor(
                 .onSuccess {
                     if (it.isEmpty()) {
                         _navigationDestination.value = NavigationDestination.GoToRegisterElder
+                        Log.d("httplog", "어르신 없음, 어르신 등록 화면으로")
                     } else {
                         it.forEach { elderInfo ->
                             elderIdRepository.addElderId(elderInfo.name, elderInfo.elderId)
@@ -55,10 +57,14 @@ class SplashViewModel @Inject constructor(
         viewModelScope.launch {
             eldersInfoRepository.getSubscriptions()
                 .onSuccess {
-                    if (it.subscriptions.isEmpty()) {
+                    if (it.isEmpty()) {
                         _navigationDestination.value = NavigationDestination.GoToPayment
+                        Log.d("httplog", "구독 정보 없음, 결제 화면으로")
+                        
                     } else {
                         _navigationDestination.value = NavigationDestination.GoToHome
+                        Log.d("httplog", "모든 정보 있음, 홈 화면으로")
+                        
                     }
                 }
                 .onFailure { exception ->

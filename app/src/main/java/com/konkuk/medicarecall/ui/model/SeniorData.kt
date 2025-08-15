@@ -7,5 +7,5 @@ data class SeniorData(
     val phoneNumber: String = "",
     val relationship: String = "",
     val livingType: String = "",
-//    val id: Int,
+    val id: Int? = null,
 )

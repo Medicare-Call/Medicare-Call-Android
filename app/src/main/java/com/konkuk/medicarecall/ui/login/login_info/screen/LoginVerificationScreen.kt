@@ -22,6 +22,7 @@ import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
@@ -30,6 +31,7 @@ import com.konkuk.medicarecall.ui.login.login_info.component.TopBar
 import com.konkuk.medicarecall.ui.login.login_info.uistate.LoginEvent
 import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.splash.viewmodel.SplashViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import kotlinx.coroutines.launch
 import kotlin.text.isDigit
@@ -65,7 +67,7 @@ fun LoginVerificationScreen(
                     coroutineScope.launch {
                         snackBarState.showSnackbar(
                             message = "인증번호가 올바르지 않습니다",
-                            duration = SnackbarDuration.Long
+                            duration = SnackbarDuration.Short
                         )
                     }
                 }

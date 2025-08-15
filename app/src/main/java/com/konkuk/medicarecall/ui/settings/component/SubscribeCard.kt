@@ -19,12 +19,12 @@ import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionBody
+import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun SubscribeCard(elderInfo: EldersSubscriptionBody, onClick: () -> Unit, modifier: Modifier = Modifier) {
+fun SubscribeCard(elderInfo: EldersSubscriptionResponseDto, onClick: () -> Unit, modifier: Modifier = Modifier) {
     Row(modifier = modifier
         .fillMaxWidth()
         .figmaShadow(group = MediCareCallTheme.shadow.shadow03)

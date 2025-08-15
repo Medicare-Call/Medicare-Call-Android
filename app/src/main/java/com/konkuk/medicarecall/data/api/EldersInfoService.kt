@@ -14,7 +14,7 @@ interface EldersInfoService {
     suspend fun getElders(): Response<List<EldersInfoResponseDto>>
 
     @GET("elders/subscriptions")
-    suspend fun getSubscriptions(): Response<EldersSubscriptionResponseDto>
+    suspend fun getSubscriptions(): Response<List<EldersSubscriptionResponseDto>>
 
     @POST("elders/{elderId}")
     suspend fun updateElder(

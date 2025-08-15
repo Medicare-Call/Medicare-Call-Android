@@ -166,9 +166,10 @@ fun LoginSeniorMedInfoScreen(
                 null,
                 scrollState,
                 {
-                    loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior].add(
-                        it
-                    )
+                    if (it !in loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior])
+                        loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior].add(
+                            it
+                        )
                 }
             )
             CTAButton(

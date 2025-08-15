@@ -66,7 +66,7 @@ fun LoginSeniorMedInfoScreen(
     ) { paddingValues ->
         Column(
             Modifier
-                .padding(paddingValues)
+                .padding(top = paddingValues.calculateTopPadding())
                 .padding(horizontal = 20.dp)
                 .padding(top = 16.dp)
                 .verticalScroll(scrollState)

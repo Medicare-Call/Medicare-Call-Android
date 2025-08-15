@@ -66,7 +66,7 @@ fun LoginPhoneScreen(
     ) { paddingValues ->
         Column(
             modifier
-                .padding(paddingValues)
+                .padding(top = paddingValues.calculateTopPadding())
                 .padding(top = 16.dp)
                 .padding(horizontal = 20.dp)
                 .verticalScroll(scrollState)

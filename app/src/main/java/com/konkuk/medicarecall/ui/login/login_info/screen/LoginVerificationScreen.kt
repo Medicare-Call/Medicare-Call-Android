@@ -112,7 +112,7 @@ fun LoginVerificationScreen(
     ) { paddingValues ->
         Column(
             Modifier
-                .padding(paddingValues)
+                .padding(top = paddingValues.calculateTopPadding())
                 .padding(top = 16.dp)
                 .padding(horizontal = 20.dp)
 

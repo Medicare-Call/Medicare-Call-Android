@@ -21,6 +21,7 @@ import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import com.konkuk.medicarecall.data.repository.SetCallRepository
 import com.konkuk.medicarecall.data.repository.SubscribeRepository
+import com.konkuk.medicarecall.data.repository.UpdateElderInfoRepository
 import com.konkuk.medicarecall.data.repository.UserRepository
 import com.konkuk.medicarecall.data.repository.VerificationRepository
 import dagger.Module
@@ -194,5 +195,13 @@ object AppModule {
         dataStoreRepository: DataStoreRepository
     ): UserRepository {
         return UserRepository(settingService, dataStoreRepository)
+    }
+
+    @Provides
+    @Singleton
+    fun provideUpdateElderRepository(
+        eldersInfoService: EldersInfoService
+    ) : UpdateElderInfoRepository {
+        return UpdateElderInfoRepository(eldersInfoService)
     }
 }

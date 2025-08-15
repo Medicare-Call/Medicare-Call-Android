@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionBody
+import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.data.repository.SubscribeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -16,7 +16,7 @@ import javax.inject.Inject
 class SubscribeViewModel @Inject constructor(
     private val repository: SubscribeRepository
 ) : ViewModel() {
-    var subscriptions by mutableStateOf<List<EldersSubscriptionBody>>(emptyList())
+    var subscriptions by mutableStateOf<List<EldersSubscriptionResponseDto>>(emptyList())
         private set
     var errorMessage by mutableStateOf<String?>(null)
         private set

@@ -2,14 +2,13 @@ package com.konkuk.medicarecall.data.repository
 
 import android.util.Log
 import com.konkuk.medicarecall.data.api.SubscribeService
-import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionBody
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import javax.inject.Inject
 
 class SubscribeRepository @Inject constructor(
     private val subscribeService: SubscribeService
 ){
-    suspend fun getSubscriptions(): Result<List<EldersSubscriptionBody>> {
+    suspend fun getSubscriptions(): Result<List<EldersSubscriptionResponseDto>> {
         Log.d("SubscribeRepository", "구독 정보 불러오기 시작(getSubscriptions() 호출됨)")
         return runCatching {
             val response = subscribeService.getElderSubscriptions()

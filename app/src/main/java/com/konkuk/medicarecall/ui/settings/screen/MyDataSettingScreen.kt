@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
-import android.net.http.SslCertificate.restoreState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -28,20 +27,20 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.settings.component.LogoutConfirmDialog
 import com.konkuk.medicarecall.ui.settings.component.SettingInfoItem
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
+import com.konkuk.medicarecall.ui.settings.viewmodel.MyDataViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modifier: Modifier = Modifier) {
+fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modifier: Modifier = Modifier, myDataViewModel: MyDataViewModel = hiltViewModel()) {
     var showLogoutDialog by remember { mutableStateOf(false) }
     Column(
         modifier = modifier
@@ -145,14 +144,22 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
         LogoutConfirmDialog(
             onDismiss = { showLogoutDialog = false },
             onLogout = {
-                showLogoutDialog = false
-                // 로컬에 저장된 토큰 값 지우기 (추가 필요)
-                // 로그아웃 동작 추가
-                navController.navigate("login") {
-                    popUpTo("main") { inclusive = true }
-                    launchSingleTop = true
-                    restoreState = true
-                }
+                myDataViewModel.logout(
+                    onSuccess = {
+                        // 로그아웃 성공 후 동작
+                        navController.navigate("login") {
+                            popUpTo("main") { inclusive = true }
+                            launchSingleTop = true
+                            restoreState = true
+                        }
+                        showLogoutDialog = false
+                    },
+                    onError = { error ->
+                        // 로그아웃 실패 처리 (예: 에러 메시지 표시)
+                        println("로그아웃 실패: ${error.message}")
+                    }
+                )
+
     }
         )
     }

@@ -30,21 +30,4 @@ interface SettingService {
     suspend fun logout(
         @Header("Authorization") authorization: String // "Bearer <refresh>"
     ): Response<Unit>
-    // 노인 개인 정보 불러오기
-    @GET("elders/settings")
-    suspend fun getEldersPersonalInfo(): Response<List<EldersInfoResponseDto>>
-
-    // 노인 개인정보 삭제
-    @DELETE("elders/{elderId}/settings")
-    suspend fun deleteElderSettings(
-        @Path("elderId") elderId: Int,
-    ): Response<DelElderInfoResponseDto>
-
-    // 노인 건강 정보 불러오기
-    @GET("elders/health")
-    suspend fun getEldersHealthInfo(): Response<EldersHealthResponseDto>
-
-    // 어르신 구독 정보 불러오기
-    @GET("elders/subscriptions")
-    suspend fun getElderSubscriptions(): Response<EldersSubscriptionResponseDto>
 }

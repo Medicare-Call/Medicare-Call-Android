@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.login.login_senior.screen
+package com.konkuk.medicarecall.ui.login.login_elder.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -37,17 +37,17 @@ import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultSnackBar
 import com.konkuk.medicarecall.ui.login.login_info.component.LoginBackButton
-import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
-import com.konkuk.medicarecall.ui.login.login_senior.component.SeniorInputForm
+import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
+import com.konkuk.medicarecall.ui.login.login_elder.component.ElderInputForm
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.isValidDate
 import kotlinx.coroutines.launch
 
 @Composable
-fun LoginSeniorInfoScreen(
+fun LoginElderScreen(
     navController: NavController,
-    loginSeniorViewModel: LoginSeniorViewModel,
+    loginElderViewModel: LoginElderViewModel,
     modifier: Modifier = Modifier
 ) {
 
@@ -82,11 +82,11 @@ fun LoginSeniorInfoScreen(
                 color = MediCareCallTheme.colors.black
             )
             Spacer(Modifier.height(30.dp))
-            repeat(loginSeniorViewModel.elders) { index ->
-                SeniorInputForm(
-                    loginSeniorViewModel,
+            repeat(loginElderViewModel.elders) { index ->
+                ElderInputForm(
+                    loginElderViewModel,
                     scrollState,
-                    index == loginSeniorViewModel.expandedFormIndex,
+                    index == loginElderViewModel.expandedFormIndex,
                     index
                 )
             }
@@ -102,7 +102,7 @@ fun LoginSeniorInfoScreen(
                     .fillMaxWidth()
                     .clip(RoundedCornerShape(14.dp))
                     .background(
-                        if (loginSeniorViewModel.isInputComplete()) {
+                        if (loginElderViewModel.isInputComplete()) {
                             if (isPressed)
                                 MediCareCallTheme.colors.g200
                             else
@@ -111,43 +111,43 @@ fun LoginSeniorInfoScreen(
                     )
                     .border(
                         1.2.dp,
-                        color = if (loginSeniorViewModel.isInputComplete())
+                        color = if (loginElderViewModel.isInputComplete())
                             MediCareCallTheme.colors.main
                         else
                             MediCareCallTheme.colors.gray3,
                         shape = RoundedCornerShape(14.dp)
                     )
                     .clickable(
-                        enabled = loginSeniorViewModel.isInputComplete(),
+                        enabled = loginElderViewModel.isInputComplete(),
                         indication = null,
                         interactionSource = interactionSource
                     ) {
-                        if (loginSeniorViewModel.elders < 5) {
-                            loginSeniorViewModel.elders++
-                            loginSeniorViewModel.expandedFormIndex =
-                                loginSeniorViewModel.elders - 1
-                            loginSeniorViewModel.onNameChanged(
-                                loginSeniorViewModel.expandedFormIndex,
+                        if (loginElderViewModel.elders < 5) {
+                            loginElderViewModel.elders++
+                            loginElderViewModel.expandedFormIndex =
+                                loginElderViewModel.elders - 1
+                            loginElderViewModel.onNameChanged(
+                                loginElderViewModel.expandedFormIndex,
                                 ""
                             )
-                            loginSeniorViewModel.onDOBChanged(
-                                loginSeniorViewModel.expandedFormIndex,
+                            loginElderViewModel.onDOBChanged(
+                                loginElderViewModel.expandedFormIndex,
                                 ""
                             )
-                            loginSeniorViewModel.onRelationshipChanged(
-                                loginSeniorViewModel.expandedFormIndex,
+                            loginElderViewModel.onRelationshipChanged(
+                                loginElderViewModel.expandedFormIndex,
                                 ""
                             )
-                            loginSeniorViewModel.onGenderChanged(
-                                loginSeniorViewModel.expandedFormIndex,
+                            loginElderViewModel.onGenderChanged(
+                                loginElderViewModel.expandedFormIndex,
                                 null
                             )
-                            loginSeniorViewModel.onLivingTypeChanged(
-                                loginSeniorViewModel.expandedFormIndex,
+                            loginElderViewModel.onLivingTypeChanged(
+                                loginElderViewModel.expandedFormIndex,
                                 ""
                             )
-                            loginSeniorViewModel.onPhoneNumberChanged(
-                                loginSeniorViewModel.expandedFormIndex,
+                            loginElderViewModel.onPhoneNumberChanged(
+                                loginElderViewModel.expandedFormIndex,
                                 ""
                             )
 
@@ -163,14 +163,14 @@ fun LoginSeniorInfoScreen(
                 ) {
                     Icon(
                         painterResource(R.drawable.ic_plus), contentDescription = "플러스 아이콘",
-                        tint = if (loginSeniorViewModel.isInputComplete())
+                        tint = if (loginElderViewModel.isInputComplete())
                             MediCareCallTheme.colors.main
                         else MediCareCallTheme.colors.gray3
                     )
                     Spacer(Modifier.width(8.dp))
                     Text(
                         "어르신 더 추가하기",
-                        color = if (loginSeniorViewModel.isInputComplete())
+                        color = if (loginElderViewModel.isInputComplete())
                             MediCareCallTheme.colors.main
                         else MediCareCallTheme.colors.gray3,
                         style = MediCareCallTheme.typography.B_17
@@ -180,12 +180,12 @@ fun LoginSeniorInfoScreen(
 
             Spacer(Modifier.height(30.dp))
             CTAButton(
-                if (loginSeniorViewModel.isInputComplete())
+                if (loginElderViewModel.isInputComplete())
                     CTAButtonType.GREEN
                 else CTAButtonType.DISABLED,
                 "다음",
                 {
-                    if (!loginSeniorViewModel.nameList.filter { it.isNotEmpty() }
+                    if (!loginElderViewModel.nameList.filter { it.isNotEmpty() }
                             .all {
                                 it.matches(Regex("^[가-힣a-zA-Z]*$"))
                             }
@@ -196,7 +196,7 @@ fun LoginSeniorInfoScreen(
                                 duration = SnackbarDuration.Short
                             )
                         }
-                    else if (!loginSeniorViewModel.dateOfBirthList.filter { it.isNotEmpty() }
+                    else if (!loginElderViewModel.dateOfBirthList.filter { it.isNotEmpty() }
                             .all {
                                 it.isValidDate()
                             })
@@ -206,7 +206,7 @@ fun LoginSeniorInfoScreen(
                                 duration = SnackbarDuration.Short
                             )
                         }
-                    else if (!loginSeniorViewModel.phoneNumberList.filter { it.isNotEmpty() }
+                    else if (!loginElderViewModel.phoneNumberList.filter { it.isNotEmpty() }
                             .all { it.startsWith("010") })
                         coroutineScope.launch {
                             snackBarState.showSnackbar(
@@ -215,8 +215,8 @@ fun LoginSeniorInfoScreen(
                             )
                         }
                     else {
-                        loginSeniorViewModel.createSeniorDataList()
-                        navController.navigate(Route.LoginSeniorMedInfoScreen.route)
+                        loginElderViewModel.createElderDataList()
+                        navController.navigate(Route.LoginElderMedInfoScreen.route)
                     }
                 },
                 modifier.padding(bottom = 20.dp)

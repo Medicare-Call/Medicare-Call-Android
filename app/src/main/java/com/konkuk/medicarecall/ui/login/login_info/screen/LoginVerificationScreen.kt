@@ -87,7 +87,7 @@ fun LoginVerificationScreen(
         navigationDestination?.let { destination ->
             val route = when (destination) {
                 is NavigationDestination.GoToLogin -> Route.LoginStart.route
-                is NavigationDestination.GoToRegisterElder -> Route.LoginSeniorInfoScreen.route
+                is NavigationDestination.GoToRegisterElder -> Route.LoginElderInfoScreen.route
                 is NavigationDestination.GoToTimeSetting -> Route.SetCall.route
                 is NavigationDestination.GoToPayment -> Route.Payment.route
                 is NavigationDestination.GoToHome -> Route.Home.route

@@ -31,14 +31,13 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.navigation.BottomNavItem
 import com.konkuk.medicarecall.navigation.NavGraph
 import com.konkuk.medicarecall.navigation.navigateTopLevel
 import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
-import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -92,7 +91,7 @@ class MainActivity : ComponentActivity() {
                 var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
 
                 val loginViewModel: LoginViewModel = hiltViewModel()
-                val loginSeniorViewModel: LoginSeniorViewModel = hiltViewModel()
+                val loginElderViewModel: LoginElderViewModel = hiltViewModel()
                 val bottomBarRoutes = listOf(
                     "home", "statistics", "settings",
                 )
@@ -155,7 +154,7 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         navController = navController,
                         loginViewModel = loginViewModel,
-                        loginSeniorViewModel = loginSeniorViewModel,
+                        loginElderViewModel = loginElderViewModel,
                         modifier = Modifier
                             .padding(bottom = innerPadding.calculateBottomPadding())
                     )

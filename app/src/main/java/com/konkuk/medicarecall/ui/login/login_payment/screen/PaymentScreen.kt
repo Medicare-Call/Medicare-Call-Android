@@ -35,17 +35,17 @@ import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login.login_info.component.LoginBackButton
 import com.konkuk.medicarecall.ui.login.login_payment.component.PayResultItem
-import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifier: Modifier = Modifier, loginSeniorViewModel : LoginSeniorViewModel) {
+fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifier: Modifier = Modifier, loginElderViewModel : LoginElderViewModel) {
     val scrollState = rememberScrollState()
     var isClicked by remember { mutableStateOf(false) }
-    val seniors = loginSeniorViewModel.seniorDataList.map { it.name }
+    val elders = loginElderViewModel.elderDataList.map { it.name }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -82,7 +82,7 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                     )
                     Spacer(modifier = modifier.width(8.dp))
                     Text(
-                        text = "${seniors.size}명",
+                        text = "${elders.size}명",
                         style = MediCareCallTheme.typography.R_14,
                         color = MediCareCallTheme.colors.gray5
                     )
@@ -102,8 +102,8 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                         .padding(16.dp),
                     verticalArrangement = Arrangement.spacedBy(16.dp)
                 ) {
-                    seniors.forEach { senior ->
-                        PayResultItem(senior, "29,000")
+                    elders.forEach { elder ->
+                        PayResultItem(elder, "29,000")
                     }
                 }
                 Spacer(modifier = modifier.height(50.dp))
@@ -116,7 +116,7 @@ fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifie
                         color = MediCareCallTheme.colors.black
                     )
                     Spacer(modifier = modifier.weight(1f))
-                    val totalAmount = seniors.size * 29000 // Assuming 29,000 is the monthly fee per senior
+                    val totalAmount = elders.size * 29000 // Assuming 29,000 is the monthly fee per elder
                     val formatted = NumberFormat.getNumberInstance(Locale.KOREA).format(totalAmount)
                     val displayText = "₩$formatted/월"
                     Text(

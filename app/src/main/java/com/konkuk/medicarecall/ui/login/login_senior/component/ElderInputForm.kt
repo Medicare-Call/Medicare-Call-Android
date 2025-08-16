@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.login.login_senior.component
+package com.konkuk.medicarecall.ui.login.login_elder.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -26,17 +26,17 @@ import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
-import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
 import com.konkuk.medicarecall.ui.model.RelationshipType
-import com.konkuk.medicarecall.ui.model.SeniorLivingType
+import com.konkuk.medicarecall.ui.model.ElderResidenceType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
 import com.konkuk.medicarecall.ui.util.PhoneNumberVisualTransformation
 
 @Composable
-fun SeniorInputForm(
-    loginSeniorViewModel: LoginSeniorViewModel,
+fun ElderInputForm(
+    loginElderViewModel: LoginElderViewModel,
     scrollState: ScrollState,
     isExpanded: Boolean,
     index: Int,
@@ -51,17 +51,17 @@ fun SeniorInputForm(
             verticalArrangement = Arrangement.Center
         ) {
             DefaultTextField(
-                value = loginSeniorViewModel.nameList[index],
-                onValueChange = { loginSeniorViewModel.onNameChanged(index, it) },
+                value = loginElderViewModel.nameList[index],
+                onValueChange = { loginElderViewModel.onNameChanged(index, it) },
                 category = "이름",
                 placeHolder = "이름"
             )
             Spacer(Modifier.height(20.dp))
             DefaultTextField(
-                loginSeniorViewModel.dateOfBirthList[index],
+                loginElderViewModel.dateOfBirthList[index],
                 { input ->
                     val filtered = input.filter { it.isDigit() }.take(8)
-                    loginSeniorViewModel.onDOBChanged(index, filtered)
+                    loginElderViewModel.onDOBChanged(index, filtered)
                 },
                 category = "생년월일",
                 placeHolder = "YYYY / MM / DD",
@@ -76,18 +76,18 @@ fun SeniorInputForm(
                     style = MediCareCallTheme.typography.M_17
                 )
 
-                GenderToggleButton(loginSeniorViewModel.isMaleBoolList[index]) {
-                    loginSeniorViewModel.onGenderChanged(
+                GenderToggleButton(loginElderViewModel.isMaleBoolList[index]) {
+                    loginElderViewModel.onGenderChanged(
                         index, it
                     )
                 }
             }
             Spacer(Modifier.height(20.dp))
             DefaultTextField(
-                loginSeniorViewModel.phoneNumberList[index],
+                loginElderViewModel.phoneNumberList[index],
                 { input ->
                     val filtered = input.filter { it.isDigit() }.take(11)
-                    loginSeniorViewModel.onPhoneNumberChanged(index, filtered)
+                    loginElderViewModel.onPhoneNumberChanged(index, filtered)
                 },
                 category = "휴대폰 번호",
                 placeHolder = "010-1234-5678",
@@ -103,21 +103,21 @@ fun SeniorInputForm(
                 placeHolder = "관계 선택하기",
                 category = "어르신과의 관계",
                 scrollState,
-                { loginSeniorViewModel.onRelationshipChanged(index, it) },
-                loginSeniorViewModel.relationshipList[index]
+                { loginElderViewModel.onRelationshipChanged(index, it) },
+                loginElderViewModel.relationshipList[index]
             )
 
 
             Spacer(Modifier.height(20.dp))
 
             DefaultDropdown(
-                enumList = SeniorLivingType.entries.map { it.displayName }
+                enumList = ElderResidenceType.entries.map { it.displayName }
                     .toList(),
                 placeHolder = "거주방식을 선택해주세요",
                 category = "어르신 거주 방식",
                 scrollState,
-                { loginSeniorViewModel.onLivingTypeChanged(index, it) },
-                loginSeniorViewModel.livingTypeList[index]
+                { loginElderViewModel.onLivingTypeChanged(index, it) },
+                loginElderViewModel.livingTypeList[index]
             )
 
             Spacer(Modifier.height(20.dp))
@@ -132,7 +132,7 @@ fun SeniorInputForm(
                     RoundedCornerShape(14.dp)
                 )
                 .background(MediCareCallTheme.colors.white)
-                .clickable { loginSeniorViewModel.expandedFormIndex = index }
+                .clickable { loginElderViewModel.expandedFormIndex = index }
         ) {
             Column(
                 Modifier.padding(16.dp),
@@ -143,7 +143,7 @@ fun SeniorInputForm(
                     horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Text(
-                        "${loginSeniorViewModel.nameList[index]} 님",
+                        "${loginElderViewModel.nameList[index]} 님",
                         color = MediCareCallTheme.colors.gray8,
                         style = MediCareCallTheme.typography.SB_18
                     )
@@ -155,14 +155,14 @@ fun SeniorInputForm(
                             indication = null,
                             interactionSource = null,
                             onClick = {
-                                loginSeniorViewModel.elders--
-                                loginSeniorViewModel.expandedFormIndex = 0
+                                loginElderViewModel.elders--
+                                loginElderViewModel.expandedFormIndex = 0
                             }
                         )
                     )
                 }
                 Text(
-                    loginSeniorViewModel.phoneNumberList[index].replaceFirst(
+                    loginElderViewModel.phoneNumberList[index].replaceFirst(
                         Regex("(\\d{3})(\\d{4})(\\d{4})"),
                         "$1-$2-$3"
                     ),

@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.login.login_senior.screen
+package com.konkuk.medicarecall.ui.login.login_elder.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
@@ -35,15 +34,15 @@ import com.konkuk.medicarecall.ui.component.DefaultSnackBar
 import com.konkuk.medicarecall.ui.component.DiseaseNamesItem
 import com.konkuk.medicarecall.ui.component.MedicationItem
 import com.konkuk.medicarecall.ui.login.login_info.component.LoginBackButton
-import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.HealthIssueType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun LoginSeniorMedInfoScreen(
+fun LoginElderMedInfoScreen(
     navController: NavController,
-    loginSeniorViewModel: LoginSeniorViewModel,
+    loginElderViewModel: LoginElderViewModel,
     modifier: Modifier = Modifier
 ) {
     val scrollState = rememberScrollState()
@@ -82,19 +81,19 @@ fun LoginSeniorMedInfoScreen(
 
             // 상단 어르신 선택 Row
             Row {
-                loginSeniorViewModel.seniorDataList.forEachIndexed { index, senior ->
+                loginElderViewModel.elderDataList.forEachIndexed { index, elder ->
 
                     Box(
                         Modifier
                             .clip(shape = CircleShape)
                             .background(
-                                if (index == loginSeniorViewModel.selectedSenior)
+                                if (index == loginElderViewModel.selectedElder)
                                     MediCareCallTheme.colors.main
                                 else MediCareCallTheme.colors.white
                             )
                             .border(
                                 width = 1.2.dp,
-                                color = if (index == loginSeniorViewModel.selectedSenior)
+                                color = if (index == loginElderViewModel.selectedElder)
                                     MediCareCallTheme.colors.main
                                 else MediCareCallTheme.colors.gray2,
                                 shape = CircleShape
@@ -103,18 +102,18 @@ fun LoginSeniorMedInfoScreen(
                                 interactionSource = null,
                                 indication = null,
                                 onClick = {
-                                    loginSeniorViewModel.onSelectedSeniorChanged(index)
+                                    loginElderViewModel.onSelectedElderChanged(index)
 
                                 }
                             )
 
                     ) {
                         Text(
-                            text = senior.name,
-                            style = if (index == loginSeniorViewModel.selectedSenior)
+                            text = elder.name,
+                            style = if (index == loginElderViewModel.selectedElder)
                                 MediCareCallTheme.typography.SB_14
                             else MediCareCallTheme.typography.R_14,
-                            color = if (index == loginSeniorViewModel.selectedSenior)
+                            color = if (index == loginElderViewModel.selectedElder)
                                 MediCareCallTheme.colors.white
                             else MediCareCallTheme.colors.gray5,
                             modifier = Modifier.padding(vertical = 8.dp, horizontal = 24.dp)
@@ -125,14 +124,14 @@ fun LoginSeniorMedInfoScreen(
             }
             Spacer(Modifier.height(20.dp))
             DiseaseNamesItem(
-                loginSeniorViewModel.diseaseInputText[loginSeniorViewModel.selectedSenior],
-                loginSeniorViewModel.diseaseList[loginSeniorViewModel.selectedSenior]
+                loginElderViewModel.diseaseInputText[loginElderViewModel.selectedElder],
+                loginElderViewModel.diseaseList[loginElderViewModel.selectedElder]
             )
             Spacer(Modifier.height(20.dp))
 
             MedicationItem(
-                loginSeniorViewModel.medMap[loginSeniorViewModel.selectedSenior],
-                loginSeniorViewModel.medInputText[loginSeniorViewModel.selectedSenior],
+                loginElderViewModel.medMap[loginElderViewModel.selectedElder],
+                loginElderViewModel.medInputText[loginElderViewModel.selectedElder],
             )
 
             Spacer(Modifier.height(20.dp))
@@ -143,14 +142,14 @@ fun LoginSeniorMedInfoScreen(
             )
             Spacer(Modifier.height(10.dp))
 
-            if (loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior].isNotEmpty()) {
+            if (loginElderViewModel.healthIssueList[loginElderViewModel.selectedElder].isNotEmpty()) {
                 Row(
                     Modifier.horizontalScroll(rememberScrollState()),
                     horizontalArrangement = Arrangement.spacedBy(8.dp)
                 ) {
-                    loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior].forEach { healthIssue ->
+                    loginElderViewModel.healthIssueList[loginElderViewModel.selectedElder].forEach { healthIssue ->
                         ChipItem(healthIssue) {
-                            loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior].remove(
+                            loginElderViewModel.healthIssueList[loginElderViewModel.selectedElder].remove(
                                 healthIssue
                             )
                         }
@@ -166,8 +165,8 @@ fun LoginSeniorMedInfoScreen(
                 null,
                 scrollState,
                 {
-                    if (it !in loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior])
-                        loginSeniorViewModel.healthIssueList[loginSeniorViewModel.selectedSenior].add(
+                    if (it !in loginElderViewModel.healthIssueList[loginElderViewModel.selectedElder])
+                        loginElderViewModel.healthIssueList[loginElderViewModel.selectedElder].add(
                             it
                         )
                 }
@@ -176,13 +175,13 @@ fun LoginSeniorMedInfoScreen(
                 CTAButtonType.GREEN,
                 "다음",
                 {
-                    if (loginSeniorViewModel.getElderIds().isEmpty()) {
-                        loginSeniorViewModel.createSeniorHealthDataList()
-                        loginSeniorViewModel.postElderAndHealth()
+                    if (loginElderViewModel.getElderIds().isEmpty()) {
+                        loginElderViewModel.createElderHealthDataList()
+                        loginElderViewModel.postElderAndHealth()
                     } else {
-                        loginSeniorViewModel.createSeniorHealthDataList()
-                        loginSeniorViewModel.updateAllElders()
-                        loginSeniorViewModel.updateAllEldersHealthInfo()
+                        loginElderViewModel.createElderHealthDataList()
+                        loginElderViewModel.updateAllElders()
+                        loginElderViewModel.updateAllEldersHealthInfo()
                     }
                     navController.navigate(Route.SetCall.route)
                 },

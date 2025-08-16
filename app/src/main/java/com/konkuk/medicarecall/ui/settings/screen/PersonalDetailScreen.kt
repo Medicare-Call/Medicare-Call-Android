@@ -34,7 +34,7 @@ import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.model.RelationshipType
-import com.konkuk.medicarecall.ui.model.SeniorLivingType
+import com.konkuk.medicarecall.ui.model.ElderResidenceType
 import com.konkuk.medicarecall.ui.settings.component.DeleteConfirmDialog
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.viewmodel.DetailElderInfoViewModel
@@ -167,16 +167,16 @@ fun PersonalDetailScreen(
                 }
                 Column {
                     DefaultDropdown(
-                        enumList = SeniorLivingType.entries.map { it.displayName }
+                        enumList = ElderResidenceType.entries.map { it.displayName }
                             .toList(),
                         placeHolder = "거주방식을 선택해주세요",
                         category = "어르신 거주 방식",
                         scrollState,
                         value = residenceType.displayName,
                         onValueChange = { newValue ->
-                            residenceType = SeniorLivingType.entries.firstOrNull {
+                            residenceType = ElderResidenceType.entries.firstOrNull {
                                 it.displayName == newValue
-                            } ?: SeniorLivingType.WITH_FAMILY
+                            } ?: ElderResidenceType.WITH_FAMILY
                         }
                     )
                 }

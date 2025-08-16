@@ -1,6 +1,6 @@
 package com.konkuk.medicarecall.ui.model
 
-data class SeniorData(
+data class ElderData(
     val name: String = "",
     val birthDate: String = "",
     val gender: Boolean,

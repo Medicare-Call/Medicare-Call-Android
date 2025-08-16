@@ -7,8 +7,8 @@ import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.model.RelationshipType
-import com.konkuk.medicarecall.ui.model.SeniorData
-import com.konkuk.medicarecall.ui.model.SeniorLivingType
+import com.konkuk.medicarecall.ui.model.ElderData
+import com.konkuk.medicarecall.ui.model.ElderResidenceType
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -38,7 +38,7 @@ class EldersInfoRepository @Inject constructor(
 
     suspend fun updateElder(
         id: Int,
-        request: SeniorData
+        request: ElderData
     ): Result<Unit> = runCatching {
         val response = eldersInfoService.updateElder(
             id,
@@ -48,7 +48,7 @@ class EldersInfoRepository @Inject constructor(
                 gender = if (request.gender) GenderType.MALE else GenderType.FEMALE,
                 phone = request.phoneNumber,
                 relationship = RelationshipType.entries.find { it.displayName == request.relationship }!!,
-                residenceType = SeniorLivingType.entries.find { it.displayName == request.livingType }!!,
+                residenceType = ElderResidenceType.entries.find { it.displayName == request.livingType }!!,
             )
         )
         if (response.isSuccessful) {

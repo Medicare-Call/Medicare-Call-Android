@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.login.login_senior
+package com.konkuk.medicarecall.ui.login.login_elder
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -15,14 +15,14 @@ import com.konkuk.medicarecall.data.repository.ElderIdRepository
 import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
 import com.konkuk.medicarecall.data.repository.EldersInfoRepository
 import com.konkuk.medicarecall.ui.model.MedicationTimeType
-import com.konkuk.medicarecall.ui.model.SeniorData
-import com.konkuk.medicarecall.ui.model.SeniorHealthData
+import com.konkuk.medicarecall.ui.model.ElderData
+import com.konkuk.medicarecall.ui.model.ElderHealthData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
 @HiltViewModel
-class LoginSeniorViewModel @Inject constructor(
+class LoginElderViewModel @Inject constructor(
     private val elderRegisterRepository: ElderRegisterRepository,
     private val elderIdRepository: ElderIdRepository,
     private val eldersInfoRepository: EldersInfoRepository
@@ -99,11 +99,11 @@ class LoginSeniorViewModel @Inject constructor(
     }
 
     // 건강정보 화면
-    var selectedSenior by mutableIntStateOf(0)
+    var selectedElder by mutableIntStateOf(0)
         private set
 
-    fun onSelectedSeniorChanged(new: Int) {
-        selectedSenior = new
+    fun onSelectedElderChanged(new: Int) {
+        selectedElder = new
     }
 
     var diseaseInputText = mutableStateListOf<MutableState<String>>()
@@ -118,13 +118,13 @@ class LoginSeniorViewModel @Inject constructor(
 
     // 기타 데이터
 
-    val seniorDataList = mutableStateListOf<SeniorData>()
-    fun createSeniorDataList() {
-        seniorDataList.clear()
-        seniorDataList.apply {
+    val elderDataList = mutableStateListOf<ElderData>()
+    fun createElderDataList() {
+        elderDataList.clear()
+        elderDataList.apply {
             repeat(elders) { index ->
                 add(
-                    SeniorData(
+                    ElderData(
                         nameList[index],
                         dateOfBirthList[index],
                         isMaleBoolList[index] ?: true,
@@ -154,14 +154,14 @@ class LoginSeniorViewModel @Inject constructor(
         }
     }
 
-    val seniorHealthDataList = mutableStateListOf<SeniorHealthData>()
+    val elderHealthDataList = mutableStateListOf<ElderHealthData>()
 
-    fun createSeniorHealthDataList() {
-        seniorHealthDataList.clear()
-        seniorHealthDataList.apply {
+    fun createElderHealthDataList() {
+        elderHealthDataList.clear()
+        elderHealthDataList.apply {
             repeat(elders) { index ->
                 add(
-                    SeniorHealthData(
+                    ElderHealthData(
                         diseaseNames = diseaseList[index],
                         medicationMap = medMap[index],
                         notes = healthIssueList[index],
@@ -181,8 +181,8 @@ class LoginSeniorViewModel @Inject constructor(
         viewModelScope.launch {
             elderRegisterRepository.registerElderAndHealth(
                 elders = elders,
-                elderInfoList = seniorDataList,
-                elderHealthInfo = seniorHealthDataList
+                elderInfoList = elderDataList,
+                elderHealthInfo = elderHealthDataList
             )
                 .onSuccess {
                     Log.d("httplog", "어르신 및 건강정보 전부 등록 성공!")
@@ -198,7 +198,7 @@ class LoginSeniorViewModel @Inject constructor(
             val elderIds = elderIdRepository.getElderIds()
             elderIds.forEachIndexed { index, it ->
                 eldersInfoRepository.updateElder(
-                    it.values.first(), seniorDataList[index]
+                    it.values.first(), elderDataList[index]
                 ).onSuccess {
                     Log.d("httplog", "어르신 재등록(수정) 성공")
                 }.onFailure { exception ->
@@ -217,7 +217,7 @@ class LoginSeniorViewModel @Inject constructor(
                     runCatching {
                         elderRegisterRepository.postElderHealthInfo(
                             it.values.first(),
-                            seniorHealthDataList[index]
+                            elderHealthDataList[index]
                         )
                     }.onSuccess {
                         Log.d("httplog", "어르신 건강정보 재등록(수정) 성공")

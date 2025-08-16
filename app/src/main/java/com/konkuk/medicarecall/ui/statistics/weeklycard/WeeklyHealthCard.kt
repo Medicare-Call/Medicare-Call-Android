@@ -24,6 +24,10 @@ fun WeeklyHealthCard(
     modifier: Modifier = Modifier,
     healthNote: String
 ) {
+
+    val isUnrecorded = healthNote.isEmpty()
+    val displayText = if (isUnrecorded) "아직 충분한 기록이 쌓이지 않았어요." else healthNote
+
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -42,25 +46,33 @@ fun WeeklyHealthCard(
         ) {
             Text(
                 text = "건강징후",
-                style = MediCareCallTheme.typography.SB_18,
-                color = MediCareCallTheme.colors.gray8,
+                style = MediCareCallTheme.typography.R_15,
+                color = MediCareCallTheme.colors.gray5,
             )
             Spacer(modifier = Modifier.height(8.dp))
 
             Text(
-                text = healthNote,
+                text = displayText,
                 style = MediCareCallTheme.typography.R_16,
-                color = MediCareCallTheme.colors.gray8,
+
+                color = if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.gray8,
             )
         }
     }
 }
 
-@Preview
+@Preview(name = "건강징후 카드 - 기록 있음")
 @Composable
-fun PreviewWeeklyHealthCard() {
-
+fun PreviewWeeklyHealthCard_Recorded() {
     WeeklyHealthCard(
         healthNote = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요. 전반적으로 양호하나 피곤과 호흡곤란을 호소하셨으므로 휴식과 보호자 확인이 필요해요."
+    )
+}
+
+@Preview(name = "건강징후 카드 - 미기록")
+@Composable
+fun PreviewWeeklyHealthCard_Unrecorded() {
+    WeeklyHealthCard(
+        healthNote = ""
     )
 }

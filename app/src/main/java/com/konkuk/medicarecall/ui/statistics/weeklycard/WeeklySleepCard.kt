@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.offset
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -23,8 +24,6 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.ui.statistics.model.WeeklyGlucoseUiState
-import com.konkuk.medicarecall.ui.statistics.model.WeeklyMentalUiState
 import com.konkuk.medicarecall.ui.statistics.model.WeeklySummaryUiState
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -35,6 +34,11 @@ fun WeeklySleepCard(
     modifier: Modifier = Modifier,
     summary: WeeklySummaryUiState
 ) {
+    val isUnrecorded = summary.weeklySleepHours < 0
+    val hoursText = if (isUnrecorded) "-" else summary.weeklySleepHours.toString()
+    val minutesText = if (isUnrecorded) "-" else summary.weeklySleepMinutes.toString()
+    val textColor = if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.gray8
+
 
     Card(
         modifier = modifier
@@ -44,15 +48,12 @@ fun WeeklySleepCard(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
                 cornerRadius = 14.dp
             ),
-
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(14.dp)
-
     ) {
         Column(
             modifier = Modifier
                 .padding(20.dp)
-
         ) {
 
             //1) Title: 평균 수면
@@ -68,79 +69,66 @@ fun WeeklySleepCard(
             Icon(
                 painter = painterResource(id = R.drawable.ic_moon),
                 contentDescription = "moon",
-                modifier = Modifier
-                    .size(40.dp),
+                modifier = Modifier.size(40.dp),
                 tint = Color.Unspecified
             )
             Spacer(modifier = Modifier.height(4.dp))
+
             // 3) 시간
 
             Row(
-                modifier = Modifier
-                    .padding(horizontal = 10.dp),
-                verticalAlignment = Alignment.Bottom
+                modifier = Modifier.padding(horizontal = 10.dp),
+                verticalAlignment = Alignment.CenterVertically,
             ) {
                 Text(
-                    text = "${summary.weeklySleepHours}",
+                    text = hoursText,
                     style = MediCareCallTheme.typography.SB_22,
-                    color = MediCareCallTheme.colors.gray8,
+                    color = textColor,
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(
-                    "시간",
+                Text(modifier = Modifier.offset(y = (2).dp),
+                    text="시간",
                     style = MediCareCallTheme.typography.R_16,
                     color = MediCareCallTheme.colors.gray8,
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-
                 Text(
-                    text = "${summary.weeklySleepMinutes}",
+                    text = minutesText,
                     style = MediCareCallTheme.typography.SB_22,
-                    color = MediCareCallTheme.colors.gray8,
+                    color = textColor,
                 )
-
                 Spacer(modifier = Modifier.width(4.dp))
-
-                Text(
-                    "분",
+                Text(modifier = Modifier.offset(y = (2).dp),
+                    text="분",
                     style = MediCareCallTheme.typography.R_16,
                     color = MediCareCallTheme.colors.gray8,
                 )
-
-
             }
-
-
         }
     }
 }
 
-@Preview
+@Preview(name = "수면 카드 - 기록 있음")
 @Composable
-fun PreviewWeeklySleepCard() {
-    val dummySummary = WeeklySummaryUiState(
-        weeklySleepHours = 7,
-        weeklySleepMinutes = 12,
-
-        weeklyMealRate = 0,
-        weeklyMedicineRate = 0,
-        weeklyHealthIssueCount = 0,
-        weeklyUnansweredCount = 0,
-        weeklyMeals = emptyList(),
-        weeklyMedicines = emptyList(),
-        weeklyHealthNote = "",
-        weeklyMental = WeeklyMentalUiState(good = 0, normal = 0, bad = 0),
-        weeklyGlucose = WeeklyGlucoseUiState(
-            beforeMealNormal = 0,
-            beforeMealHigh = 0,
-            beforeMealLow = 0,
-            afterMealNormal = 0,
-            afterMealHigh = 0,
-            afterMealLow = 0
+fun PreviewWeeklySleepCard_Recorded() {
+    WeeklySleepCard(
+        modifier = Modifier.width(155.dp),
+        summary = WeeklySummaryUiState(
+            weeklySleepHours = 7,
+            weeklySleepMinutes = 12,
+            weeklyMealRate = 0,
+            weeklyMedicineRate = 0,
+            weeklyHealthIssueCount = 0,
+            weeklyUnansweredCount = 0
         )
     )
+}
+
+@Preview(name = "수면 카드 - 미기록")
+@Composable
+fun PreviewWeeklySleepCard_Unrecorded() {
     WeeklySleepCard(
-        modifier = Modifier.size(150.dp, 140.dp),
-        summary = dummySummary
+        modifier = Modifier.width(155.dp),
+        summary = WeeklySummaryUiState.EMPTY
     )
 }

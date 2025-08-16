@@ -9,38 +9,44 @@ package com.konkuk.medicarecall.ui.statistics.model
  * - 심리 상태 통계
  * - 혈당 공복/식후 통계
  */
+
 data class WeeklySummaryUiState(
-    val weeklyMealRate: Int,          // 식사율 (예: 65)
-    val weeklyMedicineRate: Int,      // 복약율 (예: 57)
-    val weeklyHealthIssueCount: Int,  // 건강징후 발생 건수 (예: 3)
-    val weeklyUnansweredCount: Int,   // 미응답 건수 (예: 8)
 
-    val weeklyMeals: List<WeeklyMealUiState>,         // 아침/점심/저녁 식사 통계 리스트
-    val weeklyMedicines: List<WeeklyMedicineUiState>, // 복약 통계 리스트
+    val weeklyMealRate: Int,
+    val weeklyMedicineRate: Int,
+    val weeklyHealthIssueCount: Int,
+    val weeklyUnansweredCount: Int,
 
-    val weeklyHealthNote: String,     // 건강 징후 분석 결과 텍스트
-
-    val weeklySleepHours: Int,        // 평균 수면 시간 (시간 단위, 예: 7)
-    val weeklySleepMinutes: Int,      // 평균 수면 시간 (분 단위, 예: 12)
-
-    val weeklyMental: WeeklyMentalUiState,           // 심리 상태 통계
-    val weeklyGlucose: WeeklyGlucoseUiState          // 혈당 공복/식후 통계
-)
-{
-
+    val weeklyMeals: List<WeeklyMealUiState> = emptyList(),
+    val weeklyMedicines: List<WeeklyMedicineUiState> = emptyList(),
+    val weeklyHealthNote: String = "",
+    val weeklySleepHours: Int = 0,
+    val weeklySleepMinutes: Int = 0,
+    val weeklyMental: WeeklyMentalUiState = WeeklyMentalUiState.EMPTY,
+    val weeklyGlucose: WeeklyGlucoseUiState = WeeklyGlucoseUiState.EMPTY
+) {
     companion object {
+
         val EMPTY = WeeklySummaryUiState(
-            weeklyMealRate = 0,
-            weeklyMedicineRate = 0,
-            weeklyHealthIssueCount = 0,
-            weeklyUnansweredCount = 0,
-            weeklyMeals = emptyList(),
-            weeklyMedicines = emptyList(),
+            weeklyMealRate = -1,
+            weeklyMedicineRate = -1,
+            weeklyHealthIssueCount = -1,
+            weeklyUnansweredCount = -1,
+            weeklyMeals = listOf(
+                WeeklyMealUiState("아침", -1, 7),
+                WeeklyMealUiState("점심", -1, 7),
+                WeeklyMealUiState("저녁", -1, 7)
+            ),
+            weeklyMedicines = listOf(
+                WeeklyMedicineUiState("혈압약", -1, 14),
+                WeeklyMedicineUiState("영양제", -1, 7),
+                WeeklyMedicineUiState("당뇨약", -1, 21)
+            ),
             weeklyHealthNote = "",
-            weeklySleepHours = 0,
-            weeklySleepMinutes = 0,
-            weeklyMental = WeeklyMentalUiState(0, 0, 0),
-            weeklyGlucose = WeeklyGlucoseUiState(0, 0, 0, 0, 0, 0)
+            weeklySleepHours = -1,
+            weeklySleepMinutes = -1,
+            weeklyMental = WeeklyMentalUiState.EMPTY,
+            weeklyGlucose = WeeklyGlucoseUiState.EMPTY
         )
     }
 }
@@ -72,7 +78,16 @@ data class WeeklyMentalUiState(
     val good: Int,    // 좋음 횟수
     val normal: Int,  // 보통 횟수
     val bad: Int      // 나쁨 횟수
-)
+){
+
+    companion object {
+        val EMPTY = WeeklyMentalUiState(
+            good = -1,
+            normal = -1,
+            bad = -1
+        )
+    }
+}
 
 /**
  * ✅ 혈당 공복/식후 통계용
@@ -87,4 +102,15 @@ data class WeeklyGlucoseUiState(
     val afterMealNormal: Int,  // 식후 정상 횟수
     val afterMealHigh: Int,    // 식후 높음 횟수
     val afterMealLow: Int      // 식후 낮음 횟수
-)
+){
+    companion object {
+        val EMPTY = WeeklyGlucoseUiState(
+            beforeMealNormal = 0,
+            beforeMealHigh = 0,
+            beforeMealLow = 0,
+            afterMealNormal = 0,
+            afterMealHigh = 0,
+            afterMealLow = 0
+        )
+    }
+}

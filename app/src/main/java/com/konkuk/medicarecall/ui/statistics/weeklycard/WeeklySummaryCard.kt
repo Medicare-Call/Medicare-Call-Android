@@ -17,8 +17,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import com.konkuk.medicarecall.ui.statistics.model.WeeklyGlucoseUiState
-import com.konkuk.medicarecall.ui.statistics.model.WeeklyMentalUiState
 import com.konkuk.medicarecall.ui.statistics.model.WeeklySummaryUiState
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -52,15 +50,31 @@ fun WeeklySummaryCard(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                WeeklySummaryItem(title = "식사율", value = summary.weeklyMealRate, unit = "%")
-                WeeklySummaryItem(title = "복약률", value = summary.weeklyMedicineRate, unit = "%")
-                WeeklySummaryItem(title = "건강징후", value = summary.weeklyHealthIssueCount, unit = "건")
-                WeeklySummaryItem(title = "미응답", value = summary.weeklyUnansweredCount, unit = "건")
+
+                WeeklySummaryItem(
+                    title = "식사율",
+                    value = summary.weeklyMealRate,
+                    unit = "%"
+                )
+                WeeklySummaryItem(
+                    title = "복약률",
+                    value = summary.weeklyMedicineRate,
+                    unit = "%"
+                )
+                WeeklySummaryItem(
+                    title = "건강징후",
+                    value = summary.weeklyHealthIssueCount,
+                    unit = "건"
+                )
+                WeeklySummaryItem(
+                    title = "미응답",
+                    value = summary.weeklyUnansweredCount,
+                    unit = "건"
+                )
             }
         }
     }
 }
-
 
 @Composable
 private fun WeeklySummaryItem(
@@ -69,43 +83,56 @@ private fun WeeklySummaryItem(
     value: Int,
     unit: String
 ) {
+
+    val isUnrecorded = value < 0
+    val valueText = if (isUnrecorded) "-" else value.toString()
+
     Column(
         modifier = modifier,
-
+        horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(
+        Text(modifier = Modifier.align(Alignment.Start),
             text = title,
             style = MediCareCallTheme.typography.R_14,
             color = MediCareCallTheme.colors.gray6,
+
         )
+        Spacer(modifier = Modifier.height(4.dp))
 
         Row(
             verticalAlignment = Alignment.Bottom
         ) {
             Text(
-                text = value.toString(),
+                text = valueText,
                 style = MediCareCallTheme.typography.SB_22,
-                color = MediCareCallTheme.colors.black,
+                color = if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.black, // ◀ 색상 변경
             )
             Text(
                 text = unit,
                 modifier = Modifier.padding(start = 2.dp, bottom = 2.dp),
                 style = MediCareCallTheme.typography.R_16,
-                color = MediCareCallTheme.colors.black,
+                color = if (isUnrecorded) MediCareCallTheme.colors.black else MediCareCallTheme.colors.black, // ◀ 색상 변경
             )
         }
     }
 }
 
-@Preview
+@Preview(name = "요약 카드 - 기록 있음")
 @Composable
-fun PreviewWeeklySummaryCard() {
-    val dummySummary = WeeklySummaryUiState(
-        weeklyMealRate = 65, weeklyMedicineRate = 57, weeklyHealthIssueCount = 3, weeklyUnansweredCount = 8,
-        weeklyMeals = emptyList(), weeklyMedicines = emptyList(), weeklyHealthNote = "",
-        weeklySleepHours = 0, weeklySleepMinutes = 0,
-        weeklyMental = WeeklyMentalUiState(0, 0, 0),
-        weeklyGlucose = WeeklyGlucoseUiState(0, 0, 0, 0, 0, 0)
+fun PreviewWeeklySummaryCard_Recorded() {
+
+    WeeklySummaryCard(
+        summary = WeeklySummaryUiState(
+            weeklyMealRate = 65,
+            weeklyMedicineRate = 57,
+            weeklyHealthIssueCount = 3,
+            weeklyUnansweredCount = 8
+        )
     )
-    WeeklySummaryCard(summary = dummySummary)
+}
+
+@Preview(name = "요약 카드 - 미기록")
+@Composable
+fun PreviewWeeklySummaryCard_Unrecorded() {
+    WeeklySummaryCard(summary = WeeklySummaryUiState.EMPTY)
 }

@@ -26,13 +26,13 @@ fun WeekendBar(
     modifier: Modifier = Modifier,
     currentWeek: Pair<LocalDate, LocalDate>,
     isLatestWeek: Boolean,
+    isEarliestWeek: Boolean,
     onPreviousWeek: () -> Unit,
     onNextWeek: () -> Unit
 ) {
     Row(
         modifier = modifier
             .fillMaxWidth(),
-        //verticalAlignment = Alignment.CenterVertically,
         horizontalArrangement = Arrangement.SpaceBetween,
     ) {
         // 왼쪽 화살표 (이전 주로 이동)
@@ -66,7 +66,7 @@ fun WeekendBar(
                 tint = MediCareCallTheme.colors.gray3
             )
         } else {
-            // 공간을 맞추기 위한 빈 Spacer
+
             Spacer(modifier = Modifier.width(24.dp))
         }
     }
@@ -79,6 +79,7 @@ fun PreviewWeekendBar() {
     WeekendBar(
         currentWeek = Pair(LocalDate.now(), LocalDate.now()),
         isLatestWeek = true,
+        isEarliestWeek= true,
         onPreviousWeek = {},
         onNextWeek = {}
     )

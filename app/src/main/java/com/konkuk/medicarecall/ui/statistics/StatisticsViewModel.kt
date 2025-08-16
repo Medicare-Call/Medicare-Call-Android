@@ -16,9 +16,7 @@ import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import java.time.DayOfWeek
 import java.time.LocalDate
-import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 data class StatisticsUiState(
@@ -30,14 +28,11 @@ data class StatisticsUiState(
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
     private val repository: StatisticsRepository,
-    // private val userRepository: UserRepository // 실제 가입일 조회를 위한 예시
 ) : ViewModel() {
 
-    // --- 통계 데이터 상태 ---
     private val _uiState = MutableStateFlow(StatisticsUiState())
     val uiState: StateFlow<StatisticsUiState> = _uiState.asStateFlow()
 
-    // --- 주(Week) 상태 ---
     private val _currentWeek = MutableStateFlow(getWeekRange(LocalDate.now()))
     val currentWeek: StateFlow<Pair<LocalDate, LocalDate>> = _currentWeek
 
@@ -47,67 +42,69 @@ class StatisticsViewModel @Inject constructor(
     private val _isEarliestWeek = MutableStateFlow(true)
     val isEarliestWeek: StateFlow<Boolean> = _isEarliestWeek
 
-    // 사용자의 가입 날짜 또는 데이터가 쌓이기 시작한 가장 첫 날짜
+    // 사용자의 데이터 시작일
     private var earliestDate: LocalDate = LocalDate.now()
 
-
     init {
-        // 가입 날짜를 기준으로 WeekendBar 상태를 초기화
         viewModelScope.launch {
-            // earliestDate = userRepository.getRegistrationDate() // (실제 코드 예시)
-
-            // 임시로 오늘 날짜를 가입 날짜(가장 첫 데이터)로 설정
+            // TODO: 실제 earliestDate 로드
             earliestDate = LocalDate.now()
-            updateWeekState(LocalDate.now())
+            jumpToWeekOf(LocalDate.now())
         }
     }
 
-    // --- 주(Week) 이동 함수 ---
+    /* ---------------- Week 이동 ---------------- */
+
     fun showPreviousWeek() {
-        if (isEarliestWeek.value) return // 가장 첫 주이면 막기
-        val newWeekStartDate = _currentWeek.value.first.minusWeeks(1)
-        updateWeekState(newWeekStartDate)
+        if (_isEarliestWeek.value) return
+        val newStart = _currentWeek.value.first.minusWeeks(1)
+        updateWeekState(newStart)
     }
 
     fun showNextWeek() {
-        if (isLatestWeek.value) return // 가장 최근 주이면 막기
-        val newWeekStartDate = _currentWeek.value.first.plusWeeks(1)
-        updateWeekState(newWeekStartDate)
+        if (_isLatestWeek.value) return
+        val newStart = _currentWeek.value.first.plusWeeks(1)
+        updateWeekState(newStart)
     }
 
-    // --- 주(Week) 상태 업데이트 함수 ---
-    private fun updateWeekState(date: LocalDate) {
-        _currentWeek.value = getWeekRange(date)
-        _isLatestWeek.value = getWeekRange(LocalDate.now()) == _currentWeek.value
-        _isEarliestWeek.value = getWeekRange(earliestDate) == _currentWeek.value
+    /** 오늘이 속한 주로 이동 */
+    fun jumpToTodayWeek() = jumpToWeekOf(LocalDate.now())
+
+    /** 주어진 날짜가 속한 주로 이동 */
+    fun jumpToWeekOf(date: LocalDate) = updateWeekState(weekStartOf(date))
+
+    private fun updateWeekState(weekStart: LocalDate) {
+        _currentWeek.value = Pair(weekStart, weekStart.plusDays(6))
+        _isLatestWeek.value = weekStart == weekStartOf(LocalDate.now())
+        _isEarliestWeek.value = weekStart == weekStartOf(earliestDate)
     }
 
-    // --- 주(Week) 범위 계산 함수 ---
+    /* ---------------- Week 계산 ---------------- */
+
     private fun getWeekRange(date: LocalDate): Pair<LocalDate, LocalDate> {
-        val start = date.with(DayOfWeek.SUNDAY)
+        val start = weekStartOf(date)
         return Pair(start, start.plusDays(6))
     }
 
+    private fun weekStartOf(date: LocalDate): LocalDate =
+        date.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.SUNDAY))
 
-    // --- 통계 데이터 요청 함수 ---
+    /* ---------------- 데이터 로딩 ---------------- */
+
     fun getWeeklyStatistics(elderId: Int, startDate: LocalDate) {
         if (_uiState.value.isLoading) return
 
         viewModelScope.launch {
             _uiState.value = StatisticsUiState(isLoading = true)
-            val formattedDate = startDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
-            Log.d("API_REQUEST", "Requesting weekly stats for elderId: $elderId, startDate: $formattedDate")
 
+            val formatted = startDate.format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE)
             try {
-                val responseDto = repository.getStatistics(
-                    elderId = elderId,
-                    startDate = formattedDate
+                val dto = repository.getStatistics(elderId, formatted)
+                _uiState.value = StatisticsUiState(
+                    isLoading = false,
+                    summary = dto.toWeeklySummaryUiState(),
+                    error = null
                 )
-                val summaryUiState = responseDto.toWeeklySummaryUiState()
-                _uiState.value = StatisticsUiState(isLoading = false, summary = summaryUiState)
-
-                Log.i("API_SUCCESS", "Successfully fetched weekly statistics for elderId: $elderId")
-
             } catch (e: Exception) {
                 if (e is HttpException && e.code() == 404) {
                     Log.i("API_INFO", "No data found (404), showing empty state.")
@@ -117,48 +114,50 @@ class StatisticsViewModel @Inject constructor(
                     _uiState.value = StatisticsUiState(isLoading = false, error = "데이터 로딩 실패: ${e.message}")
                 }
             }
+
         }
     }
-}
 
-private fun StatisticsResponseDto.toWeeklySummaryUiState(): WeeklySummaryUiState {
-    return WeeklySummaryUiState(
-        weeklyMealRate = this.summaryStats.mealRate,
-        weeklyMedicineRate = this.summaryStats.medicationRate,
-        weeklyHealthIssueCount = this.summaryStats.healthSignals,
-        weeklyUnansweredCount = this.summaryStats.missedCalls,
 
-        weeklyMeals = listOf(
-            WeeklyMealUiState("아침", this.mealStats.breakfast, 7),
-            WeeklyMealUiState("점심", this.mealStats.lunch, 7),
-            WeeklyMealUiState("저녁", this.mealStats.dinner, 7)
-        ),
+    private fun StatisticsResponseDto.toWeeklySummaryUiState(): WeeklySummaryUiState {
+        return WeeklySummaryUiState(
+            weeklyMealRate = this.summaryStats.mealRate,
+            weeklyMedicineRate = this.summaryStats.medicationRate,
+            weeklyHealthIssueCount = this.summaryStats.healthSignals,
+            weeklyUnansweredCount = this.summaryStats.missedCalls,
 
-        weeklyMedicines = this.medicationStats.map { (name, stats) ->
-            WeeklyMedicineUiState(
-                medicineName = name,
-                takenCount = stats.takenCount,
-                totalCount = stats.totalCount
+            weeklyMeals = listOf(
+                WeeklyMealUiState("아침", this.mealStats.breakfast, 7),
+                WeeklyMealUiState("점심", this.mealStats.lunch, 7),
+                WeeklyMealUiState("저녁", this.mealStats.dinner, 7)
+            ),
+
+            weeklyMedicines = this.medicationStats.map { (name, stats) ->
+                WeeklyMedicineUiState(
+                    medicineName = name,
+                    takenCount = stats.takenCount,
+                    totalCount = stats.totalCount
+                )
+            },
+
+            weeklyHealthNote = this.healthSummary,
+            weeklySleepHours = this.averageSleep.hours,
+            weeklySleepMinutes = this.averageSleep.minutes,
+
+            weeklyMental = WeeklyMentalUiState(
+                good = this.psychSummary.good,
+                normal = this.psychSummary.normal,
+                bad = this.psychSummary.bad
+            ),
+
+            weeklyGlucose = WeeklyGlucoseUiState(
+                beforeMealNormal = this.bloodSugar.beforeMeal.normal,
+                beforeMealHigh = this.bloodSugar.beforeMeal.high,
+                beforeMealLow = this.bloodSugar.beforeMeal.low,
+                afterMealNormal = this.bloodSugar.afterMeal.normal,
+                afterMealHigh = this.bloodSugar.afterMeal.high,
+                afterMealLow = this.bloodSugar.afterMeal.low
             )
-        },
-
-        weeklyHealthNote = this.healthSummary,
-        weeklySleepHours = this.averageSleep.hours,
-        weeklySleepMinutes = this.averageSleep.minutes,
-
-        weeklyMental = WeeklyMentalUiState(
-            good = this.psychSummary.good,
-            normal = this.psychSummary.normal,
-            bad = this.psychSummary.bad
-        ),
-
-        weeklyGlucose = WeeklyGlucoseUiState(
-            beforeMealNormal = this.bloodSugar.beforeMeal.normal,
-            beforeMealHigh = this.bloodSugar.beforeMeal.high,
-            beforeMealLow = this.bloodSugar.beforeMeal.low,
-            afterMealNormal = this.bloodSugar.afterMeal.normal,
-            afterMealHigh = this.bloodSugar.afterMeal.high,
-            afterMealLow = this.bloodSugar.afterMeal.low
         )
-    )
+    }
 }

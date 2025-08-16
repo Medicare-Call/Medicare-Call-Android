@@ -34,6 +34,7 @@ import com.konkuk.medicarecall.data.dto.request.MedicationSchedule
 import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
+// 중복, Legacy
 @Composable
 fun MedInfoItem(
     medications : MutableList<MedicationSchedule>,

@@ -21,3 +21,22 @@ fun String.formatAsDate(): String {
         ""
     }
 }
+fun String.isValidDate(): Boolean {
+    if (this.length != 8) return false
+
+    return try {
+        // "yyyyMMdd" 형식으로 날짜를 파싱
+        val formatter = DateTimeFormatter.ofPattern("yyyyMMdd")
+        val date = LocalDate.parse(this, formatter)
+
+        // 기준 날짜 생성
+        val minDate = LocalDate.of(1900, 1, 1)
+
+        // 파싱된 날짜가 기준 날짜보다 이전이 아닌지 확인 (같거나 이후이면 true)
+        !date.isBefore(minDate)
+
+    } catch (e: DateTimeParseException) {
+        // 날짜 형식이 올바르지 않거나 존재할 수 없는 날짜(예: 20250230)이면 false 반환
+        false
+    }
+}

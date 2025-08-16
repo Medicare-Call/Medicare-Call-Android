@@ -49,7 +49,7 @@ class CallTimeViewModel @Inject constructor (
 
     /** SetCallScreen에서 '확인' 눌렀을 때: 이름 기준으로 안전 저장 (순서 의존 X) */
     fun submitAllByName(
-        seniorNames: List<String>,
+        elderNames: List<String>,
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
     ) {
@@ -58,11 +58,11 @@ class CallTimeViewModel @Inject constructor (
             lastError.value = null
             try {
                 val nameToId = buildNameToId()
-                require(seniorNames.isNotEmpty()) { "어르신 목록이 비어 있습니다." }
+                require(elderNames.isNotEmpty()) { "어르신 목록이 비어 있습니다." }
                 require(elderIdRepo.getElderIds().isNotEmpty()) { "Elder ID 목록이 비어 있습니다." }
                 Log.d("CallTimeViewModel", "${elderIdRepo.getElderIds()}")
-                Log.d("CallTimeViewModel", "submitAllByName called with names: $seniorNames")
-                val jobs = seniorNames.map { name ->
+                Log.d("CallTimeViewModel", "submitAllByName called with names: $elderNames")
+                val jobs = elderNames.map { name ->
                     val times = timeMap[name] ?: error("'$name'의 시간이 비어있습니다.")
                     val elderId = nameToId[name]
                         ?: error("'$name'에 해당하는 elderId를 찾을 수 없습니다.")
@@ -85,7 +85,7 @@ class CallTimeViewModel @Inject constructor (
 
     /** 특정 인덱스 선택 저장이 필요하면: 인덱스 -> 이름 -> ID 로 안전 매핑 */
     fun submitOneByIndex(
-        seniorNamesInOrder: List<String>,
+        elderNamesInOrder: List<String>,
         selectedIndex: Int,
         onSuccess: () -> Unit,
         onError: (Throwable) -> Unit
@@ -94,9 +94,9 @@ class CallTimeViewModel @Inject constructor (
             isLoading.value = true
             lastError.value = null
             try {
-                require(selectedIndex in seniorNamesInOrder.indices) { "잘못된 인덱스" }
+                require(selectedIndex in elderNamesInOrder.indices) { "잘못된 인덱스" }
 
-                val name = seniorNamesInOrder[selectedIndex]
+                val name = elderNamesInOrder[selectedIndex]
                 val times = timeMap[name] ?: error("'$name'의 시간이 비어있습니다.")
                 val elderId = buildNameToId()[name]
                     ?: error("'$name'에 해당하는 elderId를 찾을 수 없습니다.")

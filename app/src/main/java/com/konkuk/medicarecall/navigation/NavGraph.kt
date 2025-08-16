@@ -34,9 +34,9 @@ import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.login.login_payment.screen.FinishSplashScreen
 import com.konkuk.medicarecall.ui.login.login_payment.screen.NaverPayScreen
 import com.konkuk.medicarecall.ui.login.login_payment.screen.PaymentScreen
-import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
-import com.konkuk.medicarecall.ui.login.login_senior.screen.LoginSeniorInfoScreen
-import com.konkuk.medicarecall.ui.login.login_senior.screen.LoginSeniorMedInfoScreen
+import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
+import com.konkuk.medicarecall.ui.login.login_elder.screen.LoginElderScreen
+import com.konkuk.medicarecall.ui.login.login_elder.screen.LoginElderMedInfoScreen
 import com.konkuk.medicarecall.ui.settings.screen.AnnouncementScreen
 import com.konkuk.medicarecall.ui.settings.screen.HealthDetailScreen
 import com.konkuk.medicarecall.ui.settings.screen.HealthInfoScreen
@@ -97,7 +97,7 @@ private fun TopLevelBackHandler(navController: NavHostController) {
 fun NavGraph(
     navController: NavHostController,
     loginViewModel: LoginViewModel,
-    loginSeniorViewModel: LoginSeniorViewModel,
+    loginElderViewModel: LoginElderViewModel,
     modifier: Modifier = Modifier
 ) {
 //    val startDestination = if (loginViewModel.isLoggedIn) "main" else "login"
@@ -355,11 +355,11 @@ fun NavGraph(
             composable(route = Route.LoginMyInfo.route) {
                 LoginMyInfoScreen(navController, loginViewModel)
             }
-            composable(route = Route.LoginSeniorInfoScreen.route) {
-                LoginSeniorInfoScreen(navController, loginSeniorViewModel)
+            composable(route = Route.LoginElderInfoScreen.route) {
+                LoginElderScreen(navController, loginElderViewModel)
             }
-            composable(route = Route.LoginSeniorMedInfoScreen.route) {
-                LoginSeniorMedInfoScreen(navController, loginSeniorViewModel)
+            composable(route = Route.LoginElderMedInfoScreen.route) {
+                LoginElderMedInfoScreen(navController, loginElderViewModel)
             }
 
             composable(route = Route.SetCall.route) {
@@ -368,7 +368,7 @@ fun NavGraph(
                         navController.popBackStack()
                     },
                     navController = navController,
-                    loginSeniorViewModel = loginSeniorViewModel
+                    loginElderViewModel = loginElderViewModel
                 )
             }
 
@@ -378,7 +378,7 @@ fun NavGraph(
                         navController.popBackStack()
                     },
                     navController = navController,
-                    loginSeniorViewModel = loginSeniorViewModel
+                    loginElderViewModel = loginElderViewModel
                 )
             }
 

@@ -141,7 +141,7 @@ fun MedicationItem(
                 if (inputText.value.isNotBlank()) { // 입력값이 있을 때만 동작
                     selectedList.forEach { time ->
                         val currentList = medicationSchedule.getValue(time)
-                        if(inputText.value !in currentList) {
+                        if (inputText.value !in currentList) {
                             val newList = currentList + inputText.value
                             medicationSchedule[time] = newList.toMutableList()
                         }

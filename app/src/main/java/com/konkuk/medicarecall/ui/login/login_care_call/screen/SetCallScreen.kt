@@ -41,8 +41,8 @@ import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login.login_care_call.component.BenefitItem
 import com.konkuk.medicarecall.ui.login.login_care_call.component.TimePickerBottomSheet
 import com.konkuk.medicarecall.ui.login.login_care_call.component.TimeSettingItem
-import com.konkuk.medicarecall.ui.login.login_info.component.TopBar
-import com.konkuk.medicarecall.ui.login.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.ui.login.login_info.component.LoginBackButton
+import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
 import com.konkuk.medicarecall.ui.login.login_care_call.viewmodel.CallTimeViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.CallTimes
@@ -63,21 +63,21 @@ fun SetCallScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
     navController: NavHostController,
-    loginSeniorViewModel: LoginSeniorViewModel,
+    loginElderViewModel: LoginElderViewModel,
     callTimeViewModel: CallTimeViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState() // 스크롤 상태
     var showBottomSheet by remember { mutableStateOf(false) } // 하단 시트 제어
-    val seniorNames = loginSeniorViewModel.seniorDataList.map { it.name } // 어르신 이름 리스트
-    val seniors = loginSeniorViewModel.seniorDataList // 어르신 데이터 리스트
+    val elderNames = loginElderViewModel.elderDataList.map { it.name } // 어르신 이름 리스트
+    val elders = loginElderViewModel.elderDataList // 어르신 데이터 리스트
 
     var selectedIndex by remember { mutableIntStateOf(0) } // 선택된 어르신 인덱스
-    val selectedName = seniorNames.getOrNull(selectedIndex).orEmpty() // 선택된 어르신 이름
+    val selectedName = elderNames.getOrNull(selectedIndex).orEmpty() // 선택된 어르신 이름
     val saved = callTimeViewModel.timeMap[selectedName] ?: CallTimes()
 
 
-    val allComplete = callTimeViewModel.isAllComplete(seniorNames)
-//    val allComplete = seniorNames.isNotEmpty() && timeMap.values.all { it.first != null && it.second != null && it.third != null }
+    val allComplete = callTimeViewModel.isAllComplete(elderNames)
+//    val allComplete = elderNames.isNotEmpty() && timeMap.values.all { it.first != null && it.second != null && it.third != null }
 
     Column(
         modifier = modifier
@@ -87,7 +87,7 @@ fun SetCallScreen(
             .padding(top = 16.dp, bottom = 20.dp)
             .statusBarsPadding()
     ) {
-        TopBar(onClick = onBack)
+        LoginBackButton(onClick = onBack)
         Spacer(modifier = modifier.height(20.dp))
         Column(
             modifier = modifier.verticalScroll(scrollState)
@@ -175,7 +175,7 @@ fun SetCallScreen(
                     .fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
-                itemsIndexed(seniorNames) { idx, name ->
+                itemsIndexed(elderNames) { idx, name ->
                     Text(
                         text = name,
                         modifier = Modifier
@@ -292,7 +292,7 @@ fun SetCallScreen(
                 onClick = {
                     if (!allComplete) return@CTAButton
                     callTimeViewModel.submitAllByName(
-                        seniorNames = seniorNames,
+                        elderNames = elderNames,
                         onSuccess = {
                             navController.navigate(Route.Payment.route)
                             Log.d("SetCallScreen", "콜 시간 설정 완료")

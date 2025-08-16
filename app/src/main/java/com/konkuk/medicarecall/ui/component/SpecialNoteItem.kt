@@ -43,6 +43,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 import kotlinx.coroutines.delay
 
+// 미사용, Legacy
 @Composable
 fun <T> SpecialNoteItem(
     modifier: Modifier = Modifier,

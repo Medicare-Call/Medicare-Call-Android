@@ -2,6 +2,7 @@ package com.konkuk.medicarecall.data.repository
 
 import com.konkuk.medicarecall.data.api.EldersInfoService
 import com.konkuk.medicarecall.data.dto.request.ElderRegisterRequestDto
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class UpdateElderInfoRepository @Inject constructor(
@@ -13,7 +14,7 @@ class UpdateElderInfoRepository @Inject constructor(
             response.body() ?: throw IllegalStateException("Response body is null")
         } else {
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
-            throw Exception("Request failed with code ${response.code()}: $errorBody")
+            throw HttpException(response)
         }
     }
 
@@ -23,7 +24,7 @@ class UpdateElderInfoRepository @Inject constructor(
             response.body() ?: throw IllegalStateException("Response body is null")
         } else {
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
-            throw Exception("Request failed with code ${response.code()}: $errorBody")
+            throw HttpException(response)
         }
     }
 }

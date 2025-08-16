@@ -16,11 +16,20 @@ import androidx.wear.compose.material3.Text
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun DiseaseNamesItem(inputText: MutableState<String>, diseaseList: MutableList<String>, modifier: Modifier = Modifier) {
-    Column(modifier = modifier.fillMaxWidth(),
+fun DiseaseNamesItem(
+    inputText: MutableState<String>,
+    diseaseList: MutableList<String>,
+    modifier: Modifier = Modifier
+) {
+    Column(
+        modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
     ) {
-        Text(text = "질환 정보", style = MediCareCallTheme.typography.M_17, color = MediCareCallTheme.colors.gray7)
+        Text(
+            text = "질환 정보",
+            style = MediCareCallTheme.typography.M_17,
+            color = MediCareCallTheme.colors.gray7
+        )
         if (diseaseList.isNotEmpty()) {
             Row(
                 modifier = Modifier
@@ -38,14 +47,20 @@ fun DiseaseNamesItem(inputText: MutableState<String>, diseaseList: MutableList<S
                 }
             }
         }
-        AddTextField(inputText = inputText.value, placeHolder = "질환명", onTextChange = {inputText.value = it}, clickPlus = {if (inputText.value.trim().isNotBlank()) {
-            if (diseaseList.contains(inputText.value)) {
-                inputText.value = ""
-            } else {
+        AddTextField(
+            inputText = inputText.value,
+            placeHolder = "질환명",
+            onTextChange = { inputText.value = it },
+            clickPlus = {
+                if (inputText.value.trim().isNotBlank()) {
+                    if (diseaseList.contains(inputText.value)) {
+                        inputText.value = ""
+                    } else {
 
-                diseaseList.add(inputText.value)
-                inputText.value = ""
-            }
-        } })
+                        diseaseList.add(inputText.value)
+                        inputText.value = ""
+                    }
+                }
+            })
     }
 }

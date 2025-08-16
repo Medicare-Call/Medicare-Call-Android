@@ -24,6 +24,8 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.Text
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
+
+// 중복, Legacy
 @Composable
 fun IllnessInfoItem(diseaseList: MutableList<String>,modifier: Modifier = Modifier,
                     onAddDisease: (String) -> Unit = {}, onRemoveDisease: (String) -> Unit = {}) {

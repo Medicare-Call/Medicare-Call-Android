@@ -9,10 +9,11 @@ import com.konkuk.medicarecall.data.mapper.ElderHealthMapper
 import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.model.HealthIssueType
 import com.konkuk.medicarecall.ui.model.RelationshipType
-import com.konkuk.medicarecall.ui.model.SeniorData
-import com.konkuk.medicarecall.ui.model.SeniorHealthData
-import com.konkuk.medicarecall.ui.model.SeniorLivingType
+import com.konkuk.medicarecall.ui.model.ElderData
+import com.konkuk.medicarecall.ui.model.ElderHealthData
+import com.konkuk.medicarecall.ui.model.ElderResidenceType
 import com.konkuk.medicarecall.ui.util.formatAsDate
+import retrofit2.HttpException
 import javax.inject.Inject
 import javax.inject.Singleton
 
@@ -21,7 +22,7 @@ class ElderRegisterRepository @Inject constructor(
     private val elderRegisterService: ElderRegisterService,
     private val elderIdRepository: ElderIdRepository
 ) {
-    private suspend fun postElder(elderData: SeniorData): ElderRegisterResponseDto {
+    private suspend fun postElder(elderData: ElderData): ElderRegisterResponseDto {
         val response = elderRegisterService.postElder(
             ElderRegisterRequestDto(
                 name = elderData.name,
@@ -29,18 +30,18 @@ class ElderRegisterRepository @Inject constructor(
                 gender = if (elderData.gender) GenderType.MALE else GenderType.FEMALE,
                 phone = elderData.phoneNumber,
                 relationship = RelationshipType.entries.find { it.displayName == elderData.relationship }!!,
-                residenceType = SeniorLivingType.entries.find { it.displayName == elderData.livingType }!!,
+                residenceType = ElderResidenceType.entries.find { it.displayName == elderData.livingType }!!,
             )
         )
         if (response.isSuccessful) {
             return response.body() ?: throw IllegalStateException("Response body is null")
         } else {
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
-            throw Exception("Request failed with code ${response.code()}: $errorBody")
+            throw HttpException(response)
         }
     }
 
-    suspend fun postElderHealthInfo(id: Int, elderHealthData: SeniorHealthData) {
+    suspend fun postElderHealthInfo(id: Int, elderHealthData: ElderHealthData) {
         val response = elderRegisterService.postElderHealthInfo(
             id, ElderHealthRegisterRequestDto(
             diseaseNames = elderHealthData.diseaseNames,
@@ -51,14 +52,14 @@ class ElderRegisterRepository @Inject constructor(
         ))
         if (!response.isSuccessful) {
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
-            throw Exception("Request failed with code ${response.code()}: $errorBody")
+            throw HttpException(response)
         }
     }
 
     suspend fun registerElderAndHealth(
         elders: Int,
-        elderInfoList: List<SeniorData>,
-        elderHealthInfo: List<SeniorHealthData>
+        elderInfoList: List<ElderData>,
+        elderHealthInfo: List<ElderHealthData>
     ): Result<Unit> {
         return runCatching {
             repeat(elders) { index ->

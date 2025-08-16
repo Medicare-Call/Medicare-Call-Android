@@ -19,6 +19,7 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.calendar.CalendarUiState
@@ -34,17 +35,28 @@ import com.konkuk.medicarecall.ui.homedetail.medicine.model.MedicineUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import java.time.LocalDate
 
-
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MedicineDetail(
     navController: NavHostController,
-    calendarViewModel: CalendarViewModel,
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
     medicineViewModel: MedicineViewModel = hiltViewModel()
 ) {
-    val selectedDate by calendarViewModel.selectedDate.collectAsState()
-    val state by medicineViewModel.state.collectAsState()
+    // ✅ 상세 재진입 시 오늘로 초기화
+    val lifecycleOwner = LocalLifecycleOwner.current
 
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
+            if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                calendarViewModel.resetToToday()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(obs)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
+    }
+
+    val selectedDate by calendarViewModel.selectedDate.collectAsState()
+    val uiState by medicineViewModel.state.collectAsState()
     LaunchedEffect(selectedDate) {
         medicineViewModel.loadMedicinesForDate(selectedDate)
     }
@@ -52,9 +64,10 @@ fun MedicineDetail(
     MedicineDetailLayout(
         navController = navController,
         selectedDate = selectedDate,
-        medicines = state.items,
+        medicines = uiState.items,
         weekDates = calendarViewModel.getCurrentWeekDates(),
-        onDateSelected = { calendarViewModel.selectDate(it) }
+        onDateSelected = { calendarViewModel.selectDate(it) },
+                onMonthClick = { /* 모달 열기 */ }
     )
 }
 
@@ -67,7 +80,8 @@ fun MedicineDetailLayout(
     selectedDate: LocalDate,
     medicines: List<MedicineUiState>,
     weekDates: List<LocalDate>,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    onMonthClick: () -> Unit,
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -90,7 +104,7 @@ fun MedicineDetailLayout(
             ) {
                 DateSelector(
                     selectedDate = selectedDate,
-                    onMonthClick = { /* 모달 열기 */ },
+                    onMonthClick = onMonthClick,
                     onDateSelected = onDateSelected
                 )
                 Spacer(Modifier.height(10.dp))
@@ -147,7 +161,8 @@ fun PreviewMedicineDetail() {
             selectedDate = LocalDate.now(),
             medicines = dummyMedicines,
             weekDates = (0..6).map { LocalDate.now().plusDays(it.toLong()) },
-            onDateSelected = {}
+            onDateSelected = {},
+            onMonthClick = {}
         )
     }
 }

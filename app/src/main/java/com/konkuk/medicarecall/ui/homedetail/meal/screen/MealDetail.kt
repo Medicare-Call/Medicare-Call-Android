@@ -36,15 +36,27 @@ import java.time.LocalDate
 @Composable
 fun MealDetail(
     navController: NavHostController,
-    calendarViewModel: CalendarViewModel,
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
     mealViewModel: MealViewModel = hiltViewModel()
 ) {
+    // 재진입 때마다 오늘로 초기화
+    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
+            if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                calendarViewModel.resetToToday()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(obs)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
+    }
+
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
-    val meals by mealViewModel.meals.collectAsState()
 
     LaunchedEffect(selectedDate) {
         mealViewModel.loadMealsForDate(selectedDate)
     }
+    val meals by mealViewModel.meals.collectAsState()
 
     MealDetailLayout(
         navController = navController,

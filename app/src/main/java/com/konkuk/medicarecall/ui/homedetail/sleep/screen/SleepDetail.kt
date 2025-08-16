@@ -37,9 +37,21 @@ import java.time.LocalDate
 @Composable
 fun SleepDetail(
     navController: NavHostController,
-    calendarViewModel: CalendarViewModel,
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
     sleepViewModel: SleepViewModel = hiltViewModel()
 ) {
+    // ✅ 상세 재진입 시 오늘로 초기화
+    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
+            if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                calendarViewModel.resetToToday()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(obs)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
+    }
+
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val sleep by sleepViewModel.sleep.collectAsState()
 
@@ -53,7 +65,8 @@ fun SleepDetail(
         selectedDate = selectedDate,
         sleep = sleep,
         weekDates = calendarViewModel.getCurrentWeekDates(),
-        onDateSelected = { calendarViewModel.selectDate(it) }
+        onDateSelected = { calendarViewModel.selectDate(it) },
+        onMonthClick = { /* 모달 열기 */ }
     )
 }
 
@@ -64,7 +77,8 @@ fun SleepDetailLayout(
     selectedDate: LocalDate,
     sleep: SleepUiState,
     weekDates: List<LocalDate>,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    onMonthClick: () -> Unit
 ) {
     Column(
         modifier = modifier
@@ -84,7 +98,7 @@ fun SleepDetailLayout(
         ) {
             DateSelector(
                 selectedDate = selectedDate,
-                onMonthClick = { /* 모달 열기 */ },
+                onMonthClick = onMonthClick,
                 onDateSelected = onDateSelected
             )
             Spacer(Modifier.height(12.dp))
@@ -115,7 +129,8 @@ fun PreviewSleepDetail() {
             selectedDate = LocalDate.now(),
             sleep = SleepUiState.EMPTY,
             weekDates = (0..6).map { LocalDate.now().plusDays(it.toLong()) },
-            onDateSelected = {}
+            onDateSelected = {},
+            onMonthClick = {}
         )
     }
 }

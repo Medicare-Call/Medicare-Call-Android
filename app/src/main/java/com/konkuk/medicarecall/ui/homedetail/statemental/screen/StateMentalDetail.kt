@@ -35,9 +35,21 @@ import java.time.LocalDate
 @Composable
 fun StateMentalDetail(
     navController: NavHostController,
-    calendarViewModel: CalendarViewModel,
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
     mentalViewModel: MentalViewModel = hiltViewModel()
 ) {
+    // ✅ 상세 재진입 시 오늘로 초기화
+    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
+            if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                calendarViewModel.resetToToday()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(obs)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
+    }
+
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val mental by mentalViewModel.mental.collectAsState()
 
@@ -50,7 +62,8 @@ fun StateMentalDetail(
         selectedDate = selectedDate,
         mental = mental,
         weekDates = calendarViewModel.getCurrentWeekDates(),
-        onDateSelected = { calendarViewModel.selectDate(it) }
+        onDateSelected = { calendarViewModel.selectDate(it) },
+        onMonthClick = { /* 모달 열기 */ }
     )
 }
 
@@ -62,7 +75,8 @@ fun StateMentalDetailLayout(
     selectedDate: LocalDate,
     mental: MentalUiState,
     weekDates: List<LocalDate>,
-    onDateSelected: (LocalDate) -> Unit
+    onDateSelected: (LocalDate) -> Unit,
+    onMonthClick: () -> Unit
 ) {
     Surface(
         modifier = modifier.fillMaxSize(),
@@ -85,7 +99,7 @@ fun StateMentalDetailLayout(
             ) {
                 DateSelector(
                     selectedDate = selectedDate,
-                    onMonthClick = { /* 모달 열기 */ },
+                    onMonthClick = onMonthClick,
                     onDateSelected = onDateSelected
                 )
                 Spacer(Modifier.height(10.dp))
@@ -116,6 +130,7 @@ fun PreviewStateMentalDetail() {
         selectedDate = LocalDate.now(),
         mental = MentalUiState.EMPTY,
         weekDates = (0..6).map { LocalDate.now().plusDays(it.toLong()) },
-        onDateSelected = {}
+        onDateSelected = {},
+        onMonthClick = {}
     )
 }

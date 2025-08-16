@@ -85,30 +85,30 @@ fun NavGraph(
 
             // 홈 상세 화면_식사 화면
             composable(route = Route.MealDetail.route) {
-                MealDetail( navController = navController, calendarViewModel = calendarViewModel)
+                MealDetail( navController = navController)
             }
 
 
             // 홈 상세 화면_복용 화면
             composable(route = Route.MedicineDetail.route) {
-                MedicineDetail(navController = navController, calendarViewModel = calendarViewModel)
+                MedicineDetail(navController = navController)
             }
 
             //홈 상세 화면_수면 화면
             composable(route = Route.SleepDetail.route) {
-                SleepDetail(navController = navController, calendarViewModel = calendarViewModel)
+                SleepDetail(navController = navController)
             }
 
 
             //홈 상세 화면_건강 징후 화면
             composable(route = Route.StateHealthDetail.route) {
-                StateHealthDetail(navController = navController, calendarViewModel = calendarViewModel)
+                StateHealthDetail(navController = navController)
             }
 
 
             //홈 상세 화면_심리 상태 화면
             composable(route = Route.StateMentalDetail.route) {
-                StateMentalDetail(navController = navController, calendarViewModel = calendarViewModel)
+                StateMentalDetail(navController = navController)
             }
 
 
@@ -122,7 +122,7 @@ fun NavGraph(
             // 통계
             composable(route = Route.Statistics.route) {
                 StatisticsScreen(
-                    navController = navController, calendarViewModel = calendarViewModel
+                    navController = navController
                 )
             }
 

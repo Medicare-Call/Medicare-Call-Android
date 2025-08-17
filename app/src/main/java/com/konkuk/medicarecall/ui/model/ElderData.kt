@@ -7,5 +7,5 @@ data class ElderData(
     val phoneNumber: String = "",
     val relationship: String = "",
     val livingType: String = "",
-    val id: Int? = null,
+    var id: Int? = null,
 )

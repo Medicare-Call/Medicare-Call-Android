@@ -11,13 +11,13 @@ sealed class Route(val route: String) {
     object SetCall : Route("set_call")
     object Payment : Route("payment")
     object NaverPay : Route("naver_pay")
+    object NaverPayWithCode : Route("naver_pay/{orderCode}") {
+        fun create(orderCode: String) = "naver_pay/$orderCode"
+    }
     object FinishSplash : Route("finish_splash")
     object Home : Route("home")
     object Statistics : Route("statistics")
     object Settings : Route("settings")
-    companion object {
-        fun naverPayRoute(payUrl: String) = "naver_pay/$payUrl"
-    }
 
     object Alarm : Route("alarm")
 

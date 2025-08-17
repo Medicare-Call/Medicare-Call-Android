@@ -26,7 +26,7 @@ interface EldersInfoService {
     ): Response<EldersInfoResponseDto>
 
     // 노인 개인정보 삭제
-    @DELETE("elders/{elderId}/settings")
+    @DELETE("elders/{elderId}")
     suspend fun deleteElderSettings(
         @Path("elderId") elderId: Int,
     ): Response<Unit>
@@ -34,14 +34,6 @@ interface EldersInfoService {
     // 노인 건강정보 조회
     @GET("elders/health-info")
     suspend fun getElderHealthInfo(): Response<List<EldersHealthResponseDto>>
-
-
-    // 노인 건강정보 수정
-    @POST("elders/{elderId}/health-info")
-    suspend fun updateElderHealth(
-        @Path("elderId") elderId: Int,
-        @Body request: ElderRegisterRequestDto
-    ): Response<Unit>
 
 
     @GET("elders/{elderId}/care-call-setting")

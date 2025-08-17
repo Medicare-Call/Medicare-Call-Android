@@ -85,15 +85,19 @@ fun HomeStateMentalContainer(
                     modifier = Modifier,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
+                    val textColor = if (mentalStatus.isBlank()) {
+                        MediCareCallTheme.colors.gray4
+                    } else {
+                        MediCareCallTheme.colors.gray8
+                    }
+
                     Text(
                         text = mentalStatus.ifBlank { "미기록" },
                         style = MediCareCallTheme.typography.SB_22,
-                        color = MediCareCallTheme.colors.gray8,
+                        color = textColor
                     )
-
-
-
-                }
+             }
             }
 
 

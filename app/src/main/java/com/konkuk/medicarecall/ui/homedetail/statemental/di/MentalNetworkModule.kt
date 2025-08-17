@@ -1,12 +1,13 @@
 package com.konkuk.medicarecall.ui.homedetail.statemental.di
 
 import com.konkuk.medicarecall.ui.homedetail.statemental.data.MentalApi
+import com.konkuk.medicarecall.ui.homedetail.statemental.data.MentalRepository
+import com.konkuk.medicarecall.ui.homedetail.statemental.data.MentalRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
 import dagger.hilt.components.SingletonComponent
 import retrofit2.Retrofit
-import retrofit2.converter.gson.GsonConverterFactory
 import javax.inject.Singleton
 
 @Module
@@ -15,11 +16,13 @@ object MentalNetworkModule {
 
     @Provides
     @Singleton
-    fun provideMentalApi(): MentalApi {
-        return Retrofit.Builder()
-            .baseUrl("https://medicare-call.shop/api/")
-            .addConverterFactory(GsonConverterFactory.create())
-            .build()
-            .create(MentalApi::class.java)
+    fun provideMentalApi(retrofit: Retrofit): MentalApi {
+        return retrofit.create(MentalApi::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideMentalRepository(mentalApi: MentalApi): MentalRepository {
+        return MentalRepositoryImpl(mentalApi)
     }
 }

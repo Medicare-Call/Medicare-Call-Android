@@ -5,9 +5,9 @@ import retrofit2.http.GET
 import retrofit2.http.Query
 
 interface HomeApi {
-    @GET("/api/view/home")
+    @GET("/api/elders/{elderId}/home")
     suspend fun getHomeSummary(
-        @Query("elderId") elderId: Int,
-        @Query("date") date: String
+        @Query("elderId") elderId: Int
+        //@Query("date") date: String
     ): HomeResponseDto
 }

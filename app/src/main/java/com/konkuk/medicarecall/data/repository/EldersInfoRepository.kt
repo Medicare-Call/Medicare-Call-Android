@@ -9,6 +9,7 @@ import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.model.RelationshipType
 import com.konkuk.medicarecall.ui.model.ElderData
 import com.konkuk.medicarecall.ui.model.ElderResidenceType
+import com.konkuk.medicarecall.ui.util.formatAsDate
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -44,7 +45,7 @@ class EldersInfoRepository @Inject constructor(
             id,
             ElderRegisterRequestDto(
                 request.name,
-                birthDate = request.birthDate,
+                birthDate = request.birthDate.formatAsDate(),
                 gender = if (request.gender) GenderType.MALE else GenderType.FEMALE,
                 phone = request.phoneNumber,
                 relationship = RelationshipType.entries.find { it.displayName == request.relationship }!!,
@@ -55,7 +56,7 @@ class EldersInfoRepository @Inject constructor(
             response.body() ?: throw IllegalStateException("Response body is null")
         } else {
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
-            throw HttpException(response)
+            throw Exception(errorBody)
         }
     }
 

@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.homedetail.statehealth
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.ui.homedetail.statehealth.data.HealthRepository
@@ -8,50 +9,62 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
-
 
 @HiltViewModel
 class HealthViewModel @Inject constructor(
     private val healthRepository: HealthRepository
 ) : ViewModel() {
 
-    private val _selectedDate = MutableStateFlow(LocalDate.now())
-    val selectedDate: StateFlow<LocalDate> = _selectedDate
+    private companion object {
+        const val TAG = "HEALTH_API"
+        const val ELDER_ID = 1 // 테스트용
+    }
 
-    private val _health = MutableStateFlow(
-        HealthUiState(
-            symptoms = listOf("건강징후 기록 전이에요."),
-            symptomAnalysis = "증상분석 전이에요.",
-            isRecorded = false
-        )
-    )
+    private val _health = MutableStateFlow(HealthUiState.EMPTY)
     val health: StateFlow<HealthUiState> = _health
 
-    init {
-        fetchHealthData(_selectedDate.value)
-    }
-
-    fun selectDate(date: LocalDate) {
-        _selectedDate.value = date
-        fetchHealthData(date)
-    }
-
-    private fun fetchHealthData(date: LocalDate) {
+    fun loadHealthDataForDate(date: LocalDate) {
         viewModelScope.launch {
-            _health.value = healthRepository.getHealthUiState(
-                guardianId = 1,
-                date = date
-            )
+            val formatted = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            Log.d(TAG, "Request elderId=$ELDER_ID, date=$formatted")
+
+            try {
+                val ui = healthRepository.getHealthUiState(elderId = ELDER_ID, date = date)
+                _health.value = ui
+                Log.i(TAG, "Success elderId=$ELDER_ID, date=$formatted")
+            } catch (e: Exception) {
+                when (e) {
+                    is HttpException -> {
+                        when (e.code()) {
+                            404 -> {
+                                // 미기록
+                                Log.i(TAG, "No data (404) elderId=$ELDER_ID, date=$formatted")
+                                _health.value = HealthUiState.EMPTY
+                            }
+                            400 -> {
+                                Log.w(TAG, "Bad request (400) elderId=$ELDER_ID, date=$formatted, msg=${e.message()}")
+                                _health.value = HealthUiState.EMPTY
+                            }
+                            401, 403 -> {
+                                Log.w(TAG, "Unauthorized (${e.code()}) elderId=$ELDER_ID")
+                                _health.value = HealthUiState.EMPTY
+                            }
+                            else -> {
+                                Log.e(TAG, "API error code=${e.code()} elderId=$ELDER_ID, date=$formatted", e)
+                                _health.value = HealthUiState.EMPTY
+                            }
+                        }
+                    }
+                    else -> {
+                        Log.e(TAG, "Unexpected error elderId=$ELDER_ID, date=$formatted", e)
+                        _health.value = HealthUiState.EMPTY
+                    }
+                }
+            }
         }
     }
-
-    fun getCurrentWeekDates(): List<LocalDate> {
-        val selected = _selectedDate.value
-        val dayOfWeek = selected.dayOfWeek.value % 7 // 일요일 = 0
-        val sunday = selected.minusDays(dayOfWeek.toLong())
-        return (0..6).map { sunday.plusDays(it.toLong()) }
-    }
 }
-

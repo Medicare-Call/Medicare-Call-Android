@@ -6,6 +6,7 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.platform.LocalContext
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
@@ -18,6 +19,7 @@ import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
+import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen.GlucoseDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.MealDetail
@@ -102,6 +104,8 @@ fun NavGraph(
 ) {
 //    val startDestination = if (loginViewModel.isLoggedIn) "main" else "login"
     // navController = navController, startDestination = Route.Home.route, // 시작 화면
+    val calendarViewModel: CalendarViewModel = hiltViewModel()
+
     NavHost(
         navController = navController,
         startDestination = Route.AppSplash.route, // 시작 화면
@@ -164,7 +168,7 @@ fun NavGraph(
             //홈 상세 화면_혈당 화면
 
             composable(route = Route.GlucoseDetail.route) {
-                GlucoseDetail(navController = navController)
+                GlucoseDetail(navController = navController, calendarViewModel = calendarViewModel)
             }
 
 

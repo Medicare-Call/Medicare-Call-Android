@@ -58,6 +58,6 @@ fun GlucoseStatusChip(
 
 @Preview
 @Composable
-private fun PreviewGlucoseStatusChip_Normal() {
+private fun PreviewGlucoseStatusChip() {
     GlucoseStatusChip(value = 100)
 }

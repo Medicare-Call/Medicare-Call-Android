@@ -65,114 +65,81 @@ fun WeeklyMentalCard(
 
 
             // 2) 좋음+보통+나쁨
-
             Column(
-                verticalArrangement = Arrangement.spacedBy(0.dp)
+                verticalArrangement = Arrangement.spacedBy(4.dp)
             ) {
-
-
-                // 2) 좋음
-                Row(verticalAlignment = Alignment.CenterVertically) {
-                    Text(
-                        text = "좋음",
-                        style = MediCareCallTheme.typography.R_15,
-                        color = MediCareCallTheme.colors.gray4
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    Row(
-                        modifier = Modifier
-                            .padding(vertical = 1.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-                        Icon(
-                            modifier = Modifier.size(13.3.dp),
-                            painter = painterResource(id = R.drawable.ic_emoji_good),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            "${mental.good}번",
-                            style = MediCareCallTheme.typography.R_14,
-                            color = MediCareCallTheme.colors.gray6
-                        )
-                    }
-                }
-
-                // 3) 보통
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 1.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "보통",
-                        style = MediCareCallTheme.typography.R_15,
-                        color = MediCareCallTheme.colors.gray4
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            modifier = Modifier.size(13.3.dp),
-                            painter = painterResource(id = R.drawable.ic_emoji_normal),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            "${mental.normal}번",
-                            style = MediCareCallTheme.typography.R_14,
-                            color = MediCareCallTheme.colors.gray6
-                        )
-                    }
-                }
-                // 4) 나쁨
-                Row(
-                    modifier = Modifier
-                        .padding(vertical = 1.dp),
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    Text(
-                        text = "나쁨",
-                        style = MediCareCallTheme.typography.R_15,
-                        color = MediCareCallTheme.colors.gray4
-                    )
-                    Spacer(modifier = Modifier.width(10.dp))
-
-                    Row(verticalAlignment = Alignment.CenterVertically) {
-                        Icon(
-                            modifier = Modifier.size(13.3.dp),
-                            painter = painterResource(id = R.drawable.ic_emoji_bad),
-                            contentDescription = null,
-                            tint = Color.Unspecified
-                        )
-                        Spacer(modifier = Modifier.width(4.dp))
-                        Text(
-                            "${mental.bad}번",
-                            style = MediCareCallTheme.typography.R_14,
-                            color = MediCareCallTheme.colors.gray6
-                        )
-                    }
-                }
+                MentalStatusRow(
+                    label = "좋음",
+                    iconResId = R.drawable.ic_emoji_good,
+                    count = mental.good
+                )
+                MentalStatusRow(
+                    label = "보통",
+                    iconResId = R.drawable.ic_emoji_normal,
+                    count = mental.normal
+                )
+                MentalStatusRow(
+                    label = "나쁨",
+                    iconResId = R.drawable.ic_emoji_bad,
+                    count = mental.bad
+                )
             }
         }
     }
 }
 
 
-@Preview
 @Composable
-fun PreviewWeeklyMentalCard() {
+private fun MentalStatusRow(
+    label: String,
+    iconResId: Int,
+    count: Int
+) {
+    val isUnrecorded = count < 0
+    val countText = if (isUnrecorded) "-" else count.toString()
+    val textColor = if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.gray6
+
+    Row(verticalAlignment = Alignment.CenterVertically) {
+        Text(
+            text = label,
+            style = MediCareCallTheme.typography.R_15,
+            color = MediCareCallTheme.colors.gray4
+        )
+        Spacer(modifier = Modifier.width(10.dp))
+        Icon(
+            modifier = Modifier.size(14.dp),
+            painter = painterResource(id = iconResId),
+            contentDescription = label,
+            tint = Color.Unspecified
+        )
+        Spacer(modifier = Modifier.width(4.dp))
+        Text(
+            text = "$countText"+"번",
+            style = MediCareCallTheme.typography.R_14,
+            color = textColor
+        )
+
+    }
+}
+
+@Preview(name = "심리상태 카드 - 기록 있음")
+@Composable
+fun PreviewWeeklyMentalCard_Recorded() {
     WeeklyMentalCard(
-        modifier = Modifier
-            .size(150.dp, 140.dp),
+        modifier = Modifier.size(155.dp),
         mental = WeeklyMentalUiState(
             good = 4,
             normal = 2,
             bad = 1
         )
     )
+}
 
+@Preview(name = "심리상태 카드 - 미기록")
+@Composable
+fun PreviewWeeklyMentalCard_Unrecorded() {
+    WeeklyMentalCard(
+        modifier = Modifier.size(155.dp),
+        mental = WeeklyMentalUiState.EMPTY
+    )
 }

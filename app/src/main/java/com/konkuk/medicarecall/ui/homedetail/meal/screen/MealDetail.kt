@@ -11,6 +11,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,64 +22,99 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.calendar.CalendarUiState
+import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.calendar.DateSelector
-import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.calendar.WeeklyCalendar
+import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.meal.MealViewModel
 import com.konkuk.medicarecall.ui.homedetail.meal.component.MealDetailCard
+import com.konkuk.medicarecall.ui.homedetail.meal.model.MealUiState
+import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MealDetail(
-    modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
+    mealViewModel: MealViewModel = hiltViewModel()
 ) {
-    val viewModel = hiltViewModel<MealViewModel>()
-    val selectedDate by viewModel.selectedDate.collectAsState()
-    val meals by viewModel.meals.collectAsState()
+    // 재진입 때마다 오늘로 초기화
+    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
+            if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                calendarViewModel.resetToToday()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(obs)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
+    }
 
+    val selectedDate by calendarViewModel.selectedDate.collectAsState()
+
+    LaunchedEffect(selectedDate) {
+        mealViewModel.loadMealsForDate(selectedDate)
+    }
+    val meals by mealViewModel.meals.collectAsState()
+
+    MealDetailLayout(
+        navController = navController,
+        selectedDate = selectedDate,
+        meals = meals,
+        weekDates = calendarViewModel.getCurrentWeekDates(),
+        onDateSelected = { calendarViewModel.selectDate(it) },
+        onMonthClick = { /* 모달 열기 */ }
+    )
+}
+
+
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun MealDetailLayout(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    selectedDate: LocalDate,
+    meals: List<MealUiState>,
+    weekDates: List<LocalDate>,
+    onDateSelected: (LocalDate) -> Unit,
+    onMonthClick: () -> Unit
+) {
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         color = Color.White
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
         ) {
-
             TopAppBar(
                 title = "식사",
                 navController = navController
             )
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(20.dp)
             ) {
-
                 DateSelector(
                     selectedDate = selectedDate,
-                    onMonthClick = { /* 모달 열기 */ },
-                    onDateSelected = { viewModel.selectDate(it) }
+                    onMonthClick = onMonthClick,
+                    onDateSelected = onDateSelected
                 )
 
-
                 Spacer(Modifier.height(12.dp))
-
-
 
                 WeeklyCalendar(
                     calendarUiState = CalendarUiState(
                         currentYear = selectedDate.year,
                         currentMonth = selectedDate.monthValue,
-                        weekDates = viewModel.getCurrentWeekDates(),  // selectedDate 기준
+                        weekDates = weekDates,
                         selectedDate = selectedDate
                     ),
-                    onDateSelected = { viewModel.selectDate(it) }
+                    onDateSelected = onDateSelected
                 )
 
                 Spacer(modifier = Modifier.height(24.dp))
@@ -90,21 +126,87 @@ fun MealDetail(
                         isRecorded = meal.isRecorded,   // 식사 기록 여부
                         isEaten = meal.isEaten          // 식사 유무
                     )
-
                     Spacer(modifier = Modifier.height(8.dp))
-
-
                 }
-
-
             }
         }
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-fun PreviewMealDetail() {
-    MealDetail(navController = rememberNavController())
 
+@Preview(name = "식사 - 기록 있음", showBackground = true)
+@Composable
+fun PreviewMealDetail_Recorded() {
+    val dummyMeals = listOf(
+        MealUiState(
+            mealTime = "아침",
+            description = "간단히 밥과 반찬을 드셨어요.",
+            isRecorded = true,
+            isEaten = true
+        ),
+        MealUiState(
+            mealTime = "점심",
+            description = "식사하지 않으셨어요.",
+            isRecorded = true,
+            isEaten = false
+        ),
+        MealUiState(
+            mealTime = "저녁",
+            description = "죽을 드셨어요.",
+            isRecorded = true,
+            isEaten = true
+        )
+    )
+    val selectedDate = LocalDate.of(2025, 5, 7)
+    val weekDates = (0..6).map { selectedDate.plusDays(it.toLong() - selectedDate.dayOfWeek.value % 7) }
+
+    MediCareCallTheme {
+        MealDetailLayout(
+            navController = rememberNavController(),
+            selectedDate = selectedDate,
+            meals = dummyMeals,
+            weekDates = weekDates,
+            onDateSelected = {},
+            onMonthClick = {}
+        )
+    }
+}
+
+@Preview(name = "식사 - 미기록 화면", showBackground = true)
+@Composable
+fun PreviewMealDetail_Unrecorded() {
+    val dummyMeals = listOf(
+        MealUiState(
+            mealTime = "아침",
+            description = "식사 기록 전이에요.",
+            isRecorded = false,
+            isEaten = null
+        ),
+        MealUiState(
+            mealTime = "점심",
+            description = "식사 기록 전이에요.",
+            isRecorded = false,
+            isEaten = null
+        ),
+        MealUiState(
+            mealTime = "저녁",
+            description = "식사 기록 전이에요.",
+            isRecorded = false,
+            isEaten = null
+        )
+    )
+    val selectedDate = LocalDate.of(2025, 5, 7)
+    val weekDates = (0..6).map { selectedDate.plusDays(it.toLong() - selectedDate.dayOfWeek.value % 7) }
+
+
+    MediCareCallTheme {
+        MealDetailLayout(
+            navController = rememberNavController(),
+            selectedDate = selectedDate,
+            meals = dummyMeals,
+            weekDates = weekDates,
+            onDateSelected = {},
+            onMonthClick = {}
+        )
+    }
 }

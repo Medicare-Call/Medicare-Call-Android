@@ -11,6 +11,7 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.google.common.collect.Multimaps.index
 import com.konkuk.medicarecall.data.repository.ElderIdRepository
 import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
 import com.konkuk.medicarecall.data.repository.EldersInfoRepository
@@ -19,6 +20,7 @@ import com.konkuk.medicarecall.ui.model.ElderData
 import com.konkuk.medicarecall.ui.model.ElderHealthData
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel
@@ -120,20 +122,32 @@ class LoginElderViewModel @Inject constructor(
 
     val elderDataList = mutableStateListOf<ElderData>()
     fun createElderDataList() {
-        elderDataList.clear()
         elderDataList.apply {
-            repeat(elders) { index ->
-                add(
-                    ElderData(
-                        nameList[index],
-                        dateOfBirthList[index],
-                        isMaleBoolList[index] ?: true,
-                        phoneNumberList[index],
-                        relationshipList[index],
-                        livingTypeList[index]
-                    )
+            for (index in 0 until elders) {
+                val currentId = getOrNull(index)?.id // 기존 id 유지
+
+                val elder = ElderData(
+                    nameList[index],
+                    dateOfBirthList[index],
+                    isMaleBoolList[index] ?: true,
+                    phoneNumberList[index],
+                    relationshipList[index],
+                    livingTypeList[index],
+                    currentId
                 )
+
+                if (index < size) {
+                    set(index, elder) // 기존 항목 덮어쓰기 (id 유지)
+                } else {
+                    add(elder)        // 새 어르신 추가
+                }
             }
+
+            // 2. 입력 개수보다 리스트가 더 길면 → 뒤에 남은 항목 삭제
+            while (size > elders) {
+                removeAt(lastIndex)
+            }
+
         }
         initHealthData()
     }
@@ -157,24 +171,27 @@ class LoginElderViewModel @Inject constructor(
     val elderHealthDataList = mutableStateListOf<ElderHealthData>()
 
     fun createElderHealthDataList() {
-        elderHealthDataList.clear()
+
         elderHealthDataList.apply {
             repeat(elders) { index ->
-                add(
-                    ElderHealthData(
-                        diseaseNames = diseaseList[index],
-                        medicationMap = medMap[index],
-                        notes = healthIssueList[index],
-                    )
+                val currentId = getOrNull(index)?.id // 기존 id 보존
+
+                val healthData = ElderHealthData(
+                    diseaseNames = diseaseList[index],
+                    medicationMap = medMap[index],
+                    notes = healthIssueList[index],
+                    id = currentId
                 )
+
+                if (index < size) {
+                    set(index, healthData) // 항상 덮어쓰기
+                } else {
+                    add(healthData)
+                }
             }
         }
     }
 
-    // ------------------repo에서 elderId 가져오기------------------
-    fun getElderIds(): List<Map<String, Int>> {
-        return elderIdRepository.getElderIds()
-    }
 
     // ------------------API 요청------------------
     fun postElderAndHealth() {
@@ -190,21 +207,27 @@ class LoginElderViewModel @Inject constructor(
                 .onFailure { exception ->
                     Log.e("httplog", "어르신 정보 or 건강정보 등록 실패: ${exception.message}")
                 }
+
         }
     }
 
     fun updateAllElders() { // getElderIds.isNotEmpty == true
         viewModelScope.launch {
             val elderIds = elderIdRepository.getElderIds()
-            elderIds.forEachIndexed { index, it ->
+            elderIds.filterIndexed { index, it ->
+                it.values.first() == elderDataList[index].id
+            }.forEachIndexed { index, it ->
                 eldersInfoRepository.updateElder(
                     it.values.first(), elderDataList[index]
                 ).onSuccess {
                     Log.d("httplog", "어르신 재등록(수정) 성공")
                 }.onFailure { exception ->
                     Log.e("httplog", "어르신 정보 등록 실패: ${exception.message}")
+
+
                 }
             }
+
 
         }
 
@@ -213,16 +236,18 @@ class LoginElderViewModel @Inject constructor(
     fun updateAllEldersHealthInfo() {
         viewModelScope.launch {
             val elderIds = elderIdRepository.getElderIds()
-                elderIds.forEachIndexed { index, it ->
-                    runCatching {
-                        elderRegisterRepository.postElderHealthInfo(
-                            it.values.first(),
-                            elderHealthDataList[index]
-                        )
-                    }.onSuccess {
-                        Log.d("httplog", "어르신 건강정보 재등록(수정) 성공")
-                    }
+            elderIds.filterIndexed { index, it ->
+                it.values.first() == elderHealthDataList[index].id
+            }.forEachIndexed { index, it ->
+                runCatching {
+                    elderRegisterRepository.postElderHealthInfo(
+                        it.values.first(),
+                        elderHealthDataList[index]
+                    )
+                }.onSuccess {
+                    Log.d("httplog", "어르신 건강정보 재등록(수정) 성공")
                 }
+            }
         }
     }
 }

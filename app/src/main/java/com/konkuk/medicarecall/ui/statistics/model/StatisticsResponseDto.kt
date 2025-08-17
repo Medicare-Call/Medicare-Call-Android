@@ -1,81 +1,90 @@
 package com.konkuk.medicarecall.ui.statistics.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class StatisticsResponseDto(
-    @SerializedName("elderName")
+    @SerialName("elderName")
     val elderName: String,
-    @SerializedName("summaryStats")
+    @SerialName("summaryStats")
     val summaryStats: SummaryStatsDto,
-    @SerializedName("mealStats")
+    @SerialName("mealStats")
     val mealStats: MealStatsDto,
-    @SerializedName("medicationStats")
+    @SerialName("medicationStats")
     val medicationStats: Map<String, MedicationStatDto>,
-    @SerializedName("healthSummary")
+    @SerialName("healthSummary")
     val healthSummary: String,
-    @SerializedName("averageSleep")
+    @SerialName("averageSleep")
     val averageSleep: AverageSleepDto,
-    @SerializedName("psychSummary")
+    @SerialName("psychSummary")
     val psychSummary: PsychSummaryDto,
-    @SerializedName("bloodSugar")
+    @SerialName("bloodSugar")
     val bloodSugar: BloodSugarDto
 )
 
+@Serializable // ✅ 추가
 data class SummaryStatsDto(
-    @SerializedName("mealRate")
+    @SerialName("mealRate")
     val mealRate: Int,
-    @SerializedName("medicationRate")
+    @SerialName("medicationRate")
     val medicationRate: Int,
-    @SerializedName("healthSignals")
+    @SerialName("healthSignals")
     val healthSignals: Int,
-    @SerializedName("missedCalls")
+    @SerialName("missedCalls")
     val missedCalls: Int
 )
 
+@Serializable
 data class MealStatsDto(
-    @SerializedName("breakfast")
+    @SerialName("breakfast")
     val breakfast: Int,
-    @SerializedName("lunch")
+    @SerialName("lunch")
     val lunch: Int,
-    @SerializedName("dinner")
+    @SerialName("dinner")
     val dinner: Int
 )
 
+@Serializable
 data class MedicationStatDto(
-    @SerializedName("totalCount")
+    @SerialName("totalCount")
     val totalCount: Int,
-    @SerializedName("takenCount")
+    @SerialName("takenCount")
     val takenCount: Int
 )
 
+@Serializable
 data class AverageSleepDto(
-    @SerializedName("hours")
+    @SerialName("hours")
     val hours: Int,
-    @SerializedName("minutes")
+    @SerialName("minutes")
     val minutes: Int
 )
 
+@Serializable
 data class PsychSummaryDto(
-    @SerializedName("good")
+    @SerialName("good")
     val good: Int,
-    @SerializedName("normal")
+    @SerialName("normal")
     val normal: Int,
-    @SerializedName("bad")
+    @SerialName("bad")
     val bad: Int
 )
 
+@Serializable
 data class BloodSugarDto(
-    @SerializedName("beforeMeal")
+    @SerialName("beforeMeal")
     val beforeMeal: BloodSugarDetailDto,
-    @SerializedName("afterMeal")
+    @SerialName("afterMeal")
     val afterMeal: BloodSugarDetailDto
 )
 
+@Serializable
 data class BloodSugarDetailDto(
-    @SerializedName("normal")
+    @SerialName("normal")
     val normal: Int,
-    @SerializedName("high")
+    @SerialName("high")
     val high: Int,
-    @SerializedName("low")
+    @SerialName("low")
     val low: Int
 )

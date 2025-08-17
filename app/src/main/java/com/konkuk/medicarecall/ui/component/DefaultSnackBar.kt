@@ -15,15 +15,13 @@ import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun DefaultSnackBar(hostState: SnackbarHostState) {
+fun DefaultSnackBar(hostState: SnackbarHostState, modifier: Modifier = Modifier) {
     SnackbarHost(
         hostState,
+        modifier = modifier,
         snackbar = {
             Box(
                 Modifier
-                    .padding(horizontal = 20.dp)
-                    .padding(
-                        bottom = 14.dp)
                     .clip(RoundedCornerShape(10.dp))
                     .background(MediCareCallTheme.colors.black)
                     .fillMaxWidth()

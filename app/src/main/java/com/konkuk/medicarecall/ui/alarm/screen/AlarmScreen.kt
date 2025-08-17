@@ -5,6 +5,7 @@ import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.size
+import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
@@ -25,6 +26,7 @@ fun AlarmScreen(onBack : () -> Unit, navController: NavHostController, modifier:
         modifier = modifier
             .fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
+            .statusBarsPadding()
     ) {
         SettingsTopAppBar(
             title = "알림",

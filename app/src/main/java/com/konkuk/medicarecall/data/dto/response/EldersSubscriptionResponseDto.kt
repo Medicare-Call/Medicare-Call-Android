@@ -4,11 +4,6 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class EldersSubscriptionResponseDto(
-    val subscriptions: List<EldersSubscriptionBody>
-)
-
-@Serializable
-data class EldersSubscriptionBody(
     val elderId : Int,
     val name : String,
     val plan : String,

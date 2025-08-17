@@ -30,20 +30,18 @@ fun SettingsTopAppBar(modifier: Modifier = Modifier,
                       rightIcon: @Composable () -> Unit = {},
                       rightIconClick: () -> Unit = {}
 ) {
-
-
     Column(modifier = Modifier.fillMaxWidth()) {
     Surface(
         modifier = modifier
             .fillMaxWidth()
-            .height(48.dp)
+            .height(56.dp)
         ,
-        color = Color.White,
     ) {
 
         Box(
             modifier = modifier
                 .fillMaxWidth()
+                .background(MediCareCallTheme.colors.bg)
                 .padding(start = 10.dp, end = 12.dp)
         ) {
             IconButton(

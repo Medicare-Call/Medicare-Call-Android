@@ -49,7 +49,8 @@ fun <T> DefaultDropdown(
     scrollState: ScrollState,
     onOptionSelect: (String) -> Unit = {},
     value: String = "",
-    modifier: Modifier = Modifier
+    onValueChange: (String) -> Unit = {},
+    modifier: Modifier = Modifier,
 ) {
 
 
@@ -133,7 +134,7 @@ fun <T> DefaultDropdown(
                         shape = RoundedCornerShape(14.dp),
                         color = MediCareCallTheme.colors.gray1
                     )
-                    .heightIn(max = 215.dp)
+                    .heightIn(max = 280.dp)
                     .verticalScroll(dropdownScrollState)
             ) {
                 Column(
@@ -152,7 +153,7 @@ fun <T> DefaultDropdown(
                                     val y = size.height - strokeWidth / 2f
 
                                     drawLine(
-                                        color = Color(0xFFECECEC), // NavigationBar의 상단 테두리
+                                        color = Color(0xFFECECEC),
                                         start = Offset(0f, y),
                                         end = Offset(size.width, y),
                                         strokeWidth = strokeWidth,
@@ -168,7 +169,7 @@ fun <T> DefaultDropdown(
                                 item.toString(),
                                 color = MediCareCallTheme.colors.gray8,
                                 style = MediCareCallTheme.typography.M_16,
-                                modifier = Modifier.padding(vertical = 12.dp, horizontal = 16.dp)
+                                modifier = Modifier.padding(16.dp)
                             )
                         }
                     }

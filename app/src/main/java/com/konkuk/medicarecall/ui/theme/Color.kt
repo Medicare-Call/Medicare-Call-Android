@@ -11,20 +11,20 @@ val dim = Color(0xFF000000)
 // Main
 val G50 = Color(0xFFE6FAEF)
 val G100 = Color(0xFFDAFFED)
-val G200 = Color(0xFFB2FFD8)
+val G200 = Color(0xFFAFFDD6)
 val G300 = Color(0xFF00CC63)
 val main = Color(0xFF00B859)
 val G500 = Color(0xFF00A34F)
 val G600 = Color(0xFF00994A)
 val G700 = Color(0xFF007A3B)
-val G800 = Color(0xFF007A3B)
+val G800 = Color(0xFF005C2C)
 val G900 = Color(0xFF004723)
 
 // System
 val Negative = Color(0xFFFF4949)
 val Warning = Color(0xFFFFCB3D)
 val Warning2 = Color(0xFFFFA13D)
-val Positive = Color(0xFF0AD364)
+val Positive = Color(0xFF10D268)
 val Active = Color(0xFF2D8FFF)
 
 // Gray

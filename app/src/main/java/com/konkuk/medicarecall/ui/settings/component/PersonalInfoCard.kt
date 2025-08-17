@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.settings.component
 
-import android.R.attr.name
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -22,15 +21,15 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.text.TextRange
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun PersonalInfoCard(name : String,modifier: Modifier = Modifier, onClick : () -> Unit = {}) {
+fun PersonalInfoCard(name : String, modifier: Modifier = Modifier, onClick : () -> Unit = {}) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -71,7 +70,7 @@ fun PersonalInfoCard(name : String,modifier: Modifier = Modifier, onClick : () -
 @Composable
 fun personalInfoCardPrev() {
     Column(Modifier.fillMaxSize()) {
-        PersonalInfoCard("김옥자")
+//        PersonalInfoCard("김옥자")
     }
 
 }

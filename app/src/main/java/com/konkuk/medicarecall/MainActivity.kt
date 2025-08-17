@@ -31,13 +31,15 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
 import androidx.lifecycle.viewmodel.compose.viewModel
+import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.navigation.BottomNavItem
 import com.konkuk.medicarecall.navigation.NavGraph
-import com.konkuk.medicarecall.ui.LoginViewModelFactory
-import com.konkuk.medicarecall.ui.login_info.viewmodel.LoginViewModel
-import com.konkuk.medicarecall.ui.login_senior.LoginSeniorViewModel
+import com.konkuk.medicarecall.navigation.navigateTopLevel
+import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
+import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -50,6 +52,7 @@ class MainActivity : ComponentActivity() {
         WindowCompat.setDecorFitsSystemWindows(window, false)
 
         enableEdgeToEdge()
+        installSplashScreen()
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.R) {
             window.insetsController?.setSystemBarsAppearance(
                 WindowInsetsController.APPEARANCE_LIGHT_STATUS_BARS,
@@ -91,13 +94,11 @@ class MainActivity : ComponentActivity() {
 
                 var selectedIndex by rememberSaveable { mutableIntStateOf(0) }
 
-                val loginViewModel: LoginViewModel = viewModel(factory = LoginViewModelFactory())
-                val loginSeniorViewModel: LoginSeniorViewModel = viewModel()
+                val loginViewModel: LoginViewModel = hiltViewModel()
+                val loginElderViewModel: LoginElderViewModel = hiltViewModel()
                 val bottomBarRoutes = listOf(
                     "home", "statistics", "settings",
                 )
-
-
 
                 Scaffold(
                     modifier = Modifier.background(MediCareCallTheme.colors.bg),
@@ -130,10 +131,7 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onClick = {
                                             selectedIndex = index
-                                            navController.navigate(item.route) {
-                                                launchSingleTop = true
-
-                                            }
+                                            navController.navigateTopLevel(item.route) // 네비게이션 아이템 클릭 시 해당 라우트로 이동
                                         },
                                         icon = {
                                             Icon(
@@ -147,9 +145,9 @@ class MainActivity : ComponentActivity() {
                                         },
                                         colors = NavigationBarItemDefaults.colors(
                                             indicatorColor = Color.Transparent,
-                                            selectedIconColor = MediCareCallTheme.colors.main, // 선택된 아이콘 색상
+                                            selectedIconColor = MediCareCallTheme.colors.main, // 선택된 아이콘 색
                                             unselectedIconColor = Color.Black, // 선택되지 않은 아이콘 색상
-                                            selectedTextColor = MediCareCallTheme.colors.main, // 선택된 텍스트 색상
+                                            selectedTextColor = MediCareCallTheme.colors.main, // 선택된 텍스트 색
                                             unselectedTextColor = Color.Black // 선택되지 않은 텍스트 색상
                                         )
                                     )
@@ -160,7 +158,7 @@ class MainActivity : ComponentActivity() {
                     NavGraph(
                         navController = navController,
                         loginViewModel = loginViewModel,
-                        loginSeniorViewModel = loginSeniorViewModel,
+                        loginElderViewModel = loginElderViewModel,
                         modifier = Modifier
                             .padding(bottom = innerPadding.calculateBottomPadding())
                     )

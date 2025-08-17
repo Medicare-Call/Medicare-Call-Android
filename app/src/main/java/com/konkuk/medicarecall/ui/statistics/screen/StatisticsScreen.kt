@@ -226,6 +226,7 @@ fun PreviewStatisticsScreen_Recorded() {
             onPreviousWeek = {},
             onNextWeek = {}
         )
+
     }
 }
 
@@ -247,4 +248,5 @@ fun PreviewStatisticsScreen_Unrecorded() {
             onNextWeek = {}
         )
     }
+
 }

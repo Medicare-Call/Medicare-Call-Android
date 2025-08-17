@@ -2,21 +2,16 @@ package com.konkuk.medicarecall.data.dto.response
 
 import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.model.RelationshipType
-import com.konkuk.medicarecall.ui.model.SeniorLivingType
+import com.konkuk.medicarecall.ui.model.ElderResidenceType
 import kotlinx.serialization.Serializable
 
 @Serializable
 data class EldersInfoResponseDto(
-    val elders: List<ElderInfo>
-)
-
-@Serializable
-data class ElderInfo(
     val elderId : Int,
     val name : String,
     val birthDate : String,
     val gender : GenderType,
     val phone : String,
-    val relationShip : RelationshipType,
-    val residenceType : SeniorLivingType
+    val relationship : RelationshipType,
+    val residenceType : ElderResidenceType
 )

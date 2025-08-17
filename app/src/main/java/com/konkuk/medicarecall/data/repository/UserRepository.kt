@@ -1,31 +1,46 @@
 package com.konkuk.medicarecall.data.repository
 
-import androidx.lifecycle.ViewModel
-import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.data.api.SettingService
 import com.konkuk.medicarecall.data.dto.request.UserUpdateRequestDto
-import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
-import kotlinx.coroutines.launch
 import retrofit2.HttpException
-import kotlin.onSuccess
+import javax.inject.Inject
 
-class UserRepository(private val api: SettingService) {
-    suspend fun updateMe(dto: UserUpdateRequestDto): Result<MyInfoResponseDto> =
-        runCatching {
-            val resp = api.updateMyInfo(dto)
-            if (resp.isSuccessful) resp.body()!!
-            else throw HttpException(resp)
+class UserRepository @Inject constructor(
+    private val settingService: SettingService,
+    private val tokenStore : DataStoreRepository
+) {
+    suspend fun getMyInfo() = runCatching {
+        val response = settingService.getMyInfo()
+        if (response.isSuccessful) {
+            response.body() ?: throw IllegalStateException("Response body is null")
+        } else {
+            val errorBody = response.errorBody()?.string() ?: "Unknown error"
+            throw HttpException(response)
         }
-}
+    }
 
-class UserViewModel(private val repo: UserRepository): ViewModel() {
-    fun updateMyInfo(dto: UserUpdateRequestDto) = viewModelScope.launch {
-        repo.updateMe(dto)
-            .onSuccess { updatedUser ->
-                // 화면용 상태 업데이트
+    suspend fun updateMyInfo(userUpdateRequestDto: UserUpdateRequestDto) = runCatching {
+        val response = settingService.updateMyInfo(userUpdateRequestDto)
+        if (response.isSuccessful) {
+            response.body() ?: throw IllegalStateException("Response body is null")
+        } else {
+            val errorBody = response.errorBody()?.string() ?: "Unknown error"
+            throw HttpException(response)
+        }
+    }
+
+    suspend fun logout(): Result<Unit> {
+        val result = runCatching {
+            val refresh = tokenStore.getRefreshToken() ?: error("Refresh token is null")
+            val response = settingService.logout("Bearer $refresh")
+            if (!response.isSuccessful) {
+                val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                throw HttpException(response)
             }
-            .onFailure { e ->
-                // 에러 처리
-            }
+            Unit
+        }
+        // 성공/실패와 무관하게 로컬 토큰 제거(보안/UX 측면에서 권장)
+        tokenStore.clearTokens()
+        return result
     }
 }

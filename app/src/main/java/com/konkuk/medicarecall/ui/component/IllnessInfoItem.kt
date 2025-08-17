@@ -12,6 +12,7 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.MutableState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -23,26 +24,29 @@ import androidx.compose.ui.unit.dp
 import androidx.wear.compose.material3.Text
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
+
+// 중복, Legacy
 @Composable
-fun IllnessInfoItem(modifier: Modifier = Modifier) {
+fun IllnessInfoItem(diseaseList: MutableList<String>,modifier: Modifier = Modifier,
+                    onAddDisease: (String) -> Unit = {}, onRemoveDisease: (String) -> Unit = {}) {
     val context = LocalContext.current
-    val illnessList = remember { mutableStateOf(listOf<String>()) }
     var inputText by remember { mutableStateOf("") }
     Column(modifier = modifier.fillMaxWidth(),
         verticalArrangement = Arrangement.spacedBy(10.dp)
         ) {
         Text(text = "질환 정보", style = MediCareCallTheme.typography.M_17, color = MediCareCallTheme.colors.gray7)
-        if (illnessList.value.isNotEmpty()) {
+        if (diseaseList.isNotEmpty()) {
             Row(
                 modifier = Modifier
                     .fillMaxWidth()
                     .horizontalScroll(rememberScrollState())
             ) {
-                illnessList.value.forEach { illness ->
+                diseaseList.forEachIndexed { index, disease ->
                     ChipItem(
-                        text = illness,
+                        text = disease,
                         onRemove = {
-                            illnessList.value = illnessList.value.filterNot { it == illness }
+                            onRemoveDisease(disease)
+                            diseaseList.removeAt(index)
                         }
                     )
                     Spacer(Modifier.width(10.dp))
@@ -50,23 +54,17 @@ fun IllnessInfoItem(modifier: Modifier = Modifier) {
             }
         }
         AddTextField(inputText = inputText, placeHolder = "질환명", onTextChange = {inputText = it}, clickPlus = {if (inputText.trim().isNotBlank()) {
-            if (illnessList.value.contains(inputText)) {
+            if (diseaseList.contains(inputText)) {
                 Toast
                     .makeText(context, "이미 등록된 질환입니다", Toast.LENGTH_SHORT)
                     .show()
                 inputText = ""
             } else {
-
-                illnessList.value = illnessList.value + inputText
+                diseaseList.add(inputText)
+                onAddDisease(inputText)
                 inputText = ""
             }
         } })
     }
 }
 
-@Preview(showBackground = true)
-@Composable
-private fun IllnessInfoPreview() {
-        IllnessInfoItem()
-
-}

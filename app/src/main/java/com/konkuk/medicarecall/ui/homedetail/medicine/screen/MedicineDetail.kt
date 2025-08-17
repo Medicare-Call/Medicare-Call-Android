@@ -1,7 +1,5 @@
 package com.konkuk.medicarecall.ui.homedetail.medicine.screen
 
-
-import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -9,11 +7,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.pager.rememberPagerState
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Surface
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.ui.Modifier
@@ -21,91 +19,114 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.calendar.CalendarUiState
+import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.calendar.DateSelector
-import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.calendar.WeeklyCalendar
-import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatus
-import com.konkuk.medicarecall.ui.homedetail.medicine.model.MedicineUiState
+import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.medicine.MedicineViewModel
 import com.konkuk.medicarecall.ui.homedetail.medicine.component.MedicineDetailCard
+import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatus
 import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatusItem
+import com.konkuk.medicarecall.ui.homedetail.medicine.model.MedicineUiState
+import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import java.time.LocalDate
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun MedicineDetail(
-    modifier: Modifier = Modifier,
-    navController: NavHostController
+    navController: NavHostController,
+    calendarViewModel: CalendarViewModel = hiltViewModel(),
+    medicineViewModel: MedicineViewModel = hiltViewModel()
 ) {
-    val viewModel = hiltViewModel<MedicineViewModel>()
-    val selectedDate by viewModel.selectedDate.collectAsState()
-    val medicines by viewModel.medicines.collectAsState()
+    // ✅ 상세 재진입 시 오늘로 초기화
+    val lifecycleOwner = LocalLifecycleOwner.current
+
+    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
+        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
+            if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
+                calendarViewModel.resetToToday()
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(obs)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
+    }
+
+    val selectedDate by calendarViewModel.selectedDate.collectAsState()
+    val uiState by medicineViewModel.state.collectAsState()
+    LaunchedEffect(selectedDate) {
+        medicineViewModel.loadMedicinesForDate(selectedDate)
+    }
+
+    MedicineDetailLayout(
+        navController = navController,
+        selectedDate = selectedDate,
+        medicines = uiState.items,
+        weekDates = calendarViewModel.getCurrentWeekDates(),
+        onDateSelected = { calendarViewModel.selectDate(it) },
+                onMonthClick = { /* 모달 열기 */ }
+    )
+}
 
 
-
+@OptIn(ExperimentalFoundationApi::class)
+@Composable
+fun MedicineDetailLayout(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    selectedDate: LocalDate,
+    medicines: List<MedicineUiState>,
+    weekDates: List<LocalDate>,
+    onDateSelected: (LocalDate) -> Unit,
+    onMonthClick: () -> Unit,
+) {
     Surface(
-        modifier = Modifier.fillMaxSize(),
+        modifier = modifier.fillMaxSize(),
         color = Color.White
     ) {
-
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .statusBarsPadding()
         ) {
-
             TopAppBar(
                 title = "복약",
                 navController = navController
             )
-
             Column(
                 modifier = Modifier
                     .fillMaxSize()
                     .verticalScroll(rememberScrollState())
                     .padding(20.dp)
             ) {
-
                 DateSelector(
                     selectedDate = selectedDate,
-                    onMonthClick = { /* 모달 열기 */ },
-                    onDateSelected = { viewModel.selectDate(it) }
+                    onMonthClick = onMonthClick,
+                    onDateSelected = onDateSelected
                 )
-
-                Spacer(Modifier.height(12.dp))
-
-
-
-                    WeeklyCalendar(
-                        calendarUiState = CalendarUiState(
-                            currentYear = selectedDate.year,
-                            currentMonth = selectedDate.monthValue,
-                            weekDates = viewModel.getCurrentWeekDates(),  // selectedDate 기준
-                            selectedDate = selectedDate
-                        ),
-                        onDateSelected = { viewModel.selectDate(it) }
-                    )
-
+                Spacer(Modifier.height(10.dp))
+                WeeklyCalendar(
+                    calendarUiState = CalendarUiState(
+                        currentYear = selectedDate.year,
+                        currentMonth = selectedDate.monthValue,
+                        weekDates = weekDates,
+                        selectedDate = selectedDate
+                    ),
+                    onDateSelected = onDateSelected
+                )
                 Spacer(modifier = Modifier.height(24.dp))
-
                 medicines.forEach { medicine ->
                     MedicineDetailCard(
-                        medicineName = medicine.medicineName,                  // 약 이름
-                        todayTakenCount = medicine.todayTakenCount,                                   //오늘 복약 완료 횟수
-                        todayRequiredCount = medicine.todayRequiredCount,     //목표 복약 횟수
+                        medicineName = medicine.medicineName,
+                        todayTakenCount = medicine.todayTakenCount,
+                        todayRequiredCount = medicine.todayRequiredCount,
                         doseStatusList = medicine.doseStatusList
-
                     )
-
                     Spacer(modifier = Modifier.height(12.dp))
-
-
                 }
-
-
             }
         }
     }
@@ -114,13 +135,34 @@ fun MedicineDetail(
 @Preview(showBackground = true)
 @Composable
 fun PreviewMedicineDetail() {
-    MedicineDetailCard(
-        medicineName = "혈압약",
-        todayTakenCount = 1,
-        todayRequiredCount = 2,
-        doseStatusList = listOf(
-            DoseStatusItem(time = "아침", status = DoseStatus.TAKEN),
-            DoseStatusItem(time = "점심", status = DoseStatus.NOT_RECORDED)
+    val dummyMedicines = listOf(
+        MedicineUiState(
+            medicineName = "당뇨약",
+            todayTakenCount = 1,
+            todayRequiredCount = 3,
+            doseStatusList = listOf(
+                DoseStatusItem(time = "MORNING", doseStatus = DoseStatus.TAKEN),
+                DoseStatusItem(time = "LUNCH",   doseStatus = DoseStatus.SKIPPED)
+            )
+        ),
+        MedicineUiState(
+            medicineName = "혈압약",
+            todayTakenCount = 1,
+            todayRequiredCount = 2,
+            doseStatusList = listOf(
+                DoseStatusItem(time = "아침", doseStatus = DoseStatus.TAKEN)
+            )
         )
     )
+
+    MediCareCallTheme {
+        MedicineDetailLayout(
+            navController = rememberNavController(),
+            selectedDate = LocalDate.now(),
+            medicines = dummyMedicines,
+            weekDates = (0..6).map { LocalDate.now().plusDays(it.toLong()) },
+            onDateSelected = {},
+            onMonthClick = {}
+        )
+    }
 }

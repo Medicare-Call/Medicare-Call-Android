@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.home.component
 
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
@@ -28,15 +29,15 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 @Composable
 fun HomeGlucoseLevelContainer(
     modifier: Modifier = Modifier,
-    glucoseLevel: Int,
+    glucoseLevelAverageToday: Int,
     onClick: () -> Unit
 ) {
 
 
     Card(
-        onClick = onClick,
         modifier = Modifier
             .fillMaxWidth()
+            .clickable { onClick() }
             .figmaShadow(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
                 cornerRadius = 14.dp
@@ -80,14 +81,18 @@ fun HomeGlucoseLevelContainer(
 
                 ) {
 
+                val isRecorded = glucoseLevelAverageToday > 0
+                val glucoseText = if (isRecorded) "$glucoseLevelAverageToday" else "--"
+                val textColor = if (isRecorded) MediCareCallTheme.colors.gray8 else MediCareCallTheme.colors.gray4
+
                 Row(
                     modifier = Modifier,
                     verticalAlignment = Alignment.Bottom
                 ) {
                     Text(
-                        text = "$glucoseLevel",
+                        text = glucoseText,
                         style = MediCareCallTheme.typography.SB_22,
-                        color = MediCareCallTheme.colors.gray8,
+                        color = textColor,
                     )
 
                     Spacer(modifier = Modifier.width(4.dp))
@@ -95,7 +100,7 @@ fun HomeGlucoseLevelContainer(
                     Text(
                         text = "mg/dL",
                         style = MediCareCallTheme.typography.R_16,
-                        color = MediCareCallTheme.colors.gray8,
+                        color = MediCareCallTheme.colors.gray8
                     )
 
 
@@ -109,13 +114,21 @@ fun HomeGlucoseLevelContainer(
     }
 }
 
-@Preview
+
+@Preview(showBackground = true, name = "혈당 기록 있음")
 @Composable
-fun PreviewHomeGlucoseLevelContainer() {
-
-
+private fun PreviewHomeGlucoseLevelContainerRecorded() {
     HomeGlucoseLevelContainer(
-        glucoseLevel = 120,
+        glucoseLevelAverageToday = 120,
+        onClick = {}
+    )
+}
+
+@Preview(showBackground = true, name = "혈당 기록 없음")
+@Composable
+private fun PreviewHomeGlucoseLevelContainerNoRecord() {
+    HomeGlucoseLevelContainer(
+        glucoseLevelAverageToday = 0,
         onClick = {}
     )
 }

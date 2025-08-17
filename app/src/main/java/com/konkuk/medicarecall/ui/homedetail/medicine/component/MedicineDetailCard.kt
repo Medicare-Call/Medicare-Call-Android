@@ -14,6 +14,7 @@ import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -37,6 +38,22 @@ fun MedicineDetailCard(
     doseStatusList: List<DoseStatusItem>,   // 복용 상태 리스트 (초록/빨강/회색)
     modifier: Modifier = Modifier
 ) {
+    val renderList = remember(doseStatusList, todayRequiredCount) {
+        val normalized = doseStatusList.map { item ->
+            when (item.doseStatus) {
+                DoseStatus.TAKEN        -> item.copy(doseStatus = DoseStatus.TAKEN)
+                DoseStatus.SKIPPED      -> item.copy(doseStatus = DoseStatus.SKIPPED)
+                DoseStatus.NOT_RECORDED -> item.copy(doseStatus = DoseStatus.NOT_RECORDED)
+            }
+        }
+        if (normalized.size < todayRequiredCount) {
+            normalized + List(todayRequiredCount - normalized.size) {
+                DoseStatusItem(time = "", doseStatus = DoseStatus.NOT_RECORDED)
+            }
+        } else {
+            normalized.take(todayRequiredCount)
+        }
+    }
 
     Card(
         modifier = Modifier
@@ -77,15 +94,14 @@ fun MedicineDetailCard(
 
             //복약 아이콘 리스트
             Row {
-                doseStatusList.forEach { doseStatusItem ->
-                    val tintColor = when (doseStatusItem.status) {
-                        DoseStatus.TAKEN -> MediCareCallTheme.colors.positive  // 초록
-                        DoseStatus.SKIPPED -> MediCareCallTheme.colors.negative // 빨강
-                        DoseStatus.NOT_RECORDED -> MediCareCallTheme.colors.gray2 // 회색
+                renderList.forEach { item ->
+                    val tintColor = when (item.doseStatus) {
+                        DoseStatus.TAKEN        -> MediCareCallTheme.colors.positive
+                        DoseStatus.SKIPPED      -> MediCareCallTheme.colors.negative
+                        DoseStatus.NOT_RECORDED -> MediCareCallTheme.colors.gray2
                     }
-
                     Image(
-                        painter = painterResource(id = R.drawable.ic_pills_basic),
+                        painter = painterResource(R.drawable.ic_pills_basic),
                         contentDescription = "복약 상태 아이콘",
                         modifier = Modifier
                             .size(32.dp)
@@ -94,7 +110,6 @@ fun MedicineDetailCard(
                     )
                 }
             }
-
         }
     }
 }
@@ -107,10 +122,8 @@ fun PreviewMedicineDetailCard() {
         todayTakenCount = 2,
         todayRequiredCount = 3,
         doseStatusList = listOf(
-            DoseStatusItem(time = "MORNING", status = DoseStatus.TAKEN),
-            DoseStatusItem(time = "LUNCH", status = DoseStatus.TAKEN),
-            DoseStatusItem(time = "DINNER", status = DoseStatus.NOT_RECORDED)
-
+            DoseStatusItem(time = "MORNING", doseStatus = DoseStatus.TAKEN),
+            DoseStatusItem(time = "LUNCH",   doseStatus = DoseStatus.TAKEN)
         )
     )
 }

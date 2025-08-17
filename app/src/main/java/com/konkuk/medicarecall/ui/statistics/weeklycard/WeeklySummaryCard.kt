@@ -7,8 +7,6 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -19,17 +17,16 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.konkuk.medicarecall.ui.statistics.model.WeeklySummaryUiState
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
 fun WeeklySummaryCard(
-    modifier: Modifier = Modifier
-
-    //TODO:패딩값 조정
+    modifier: Modifier = Modifier,
+    summary: WeeklySummaryUiState
 ) {
-
     Card(
         modifier = modifier
             .fillMaxWidth()
@@ -37,194 +34,105 @@ fun WeeklySummaryCard(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
                 cornerRadius = 14.dp
             ),
-
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(14.dp)
-
     ) {
         Column(
-            modifier = Modifier
-                .padding(20.dp)
+            modifier = Modifier.padding(20.dp)
         ) {
-            //1) Title: 주간 요약 통계
-            Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-
-            ) {
-
-                Text(
-                    "주간 요약통계",
-                    style = MediCareCallTheme.typography.R_15,
-                    color = MediCareCallTheme.colors.gray5,
-                )
-
-            }
-
-
-
-
+            Text(
+                "주간 요약통계",
+                style = MediCareCallTheme.typography.R_15,
+                color = MediCareCallTheme.colors.gray5,
+            )
             Spacer(modifier = Modifier.height(8.dp))
-
-
-            //2) 식사율+복약률+건강징후+미응답
-
             Row(
-                modifier = Modifier
-                    .fillMaxWidth(),
+                modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
-
             ) {
 
-                // 식사율
-                Column(
-                    modifier = Modifier
-                        .width(50.dp),
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-                    Text(
-                        text = "식사율",
-                        style = MediCareCallTheme.typography.R_14,
-                        color = MediCareCallTheme.colors.gray6,
-                    )
-
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically
-
-                    ) {
-
-                        Text(
-                            text = "65",
-                            style = MediCareCallTheme.typography.SB_22,
-                            color = MediCareCallTheme.colors.black,
-                        )
-                        Text(
-                            text = "%",
-                            style = MediCareCallTheme.typography.R_16,
-                            color = MediCareCallTheme.colors.black,
-                        )
-
-
-                    }
-                }
-
-
-                // 복약률
-                Column(
-                    modifier = Modifier
-                        .width(50.dp),
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-
-
-                    Text(
-                        text = "복약률",
-                        style = MediCareCallTheme.typography.R_14,
-                        color = MediCareCallTheme.colors.gray6,
-                    )
-
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Text(
-                            text = "57",
-                            style = MediCareCallTheme.typography.SB_22,
-                            color = MediCareCallTheme.colors.black,
-                        )
-                        Text(
-                            text = "%",
-                            style = MediCareCallTheme.typography.R_16,
-                            color = MediCareCallTheme.colors.black,
-                        )
-
-
-                    }
-                }
-
-
-                // 건강징후
-                Column(
-                    modifier = Modifier
-                        .width(50.dp),
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-
-
-                    Text(
-                        text = "건강징후",
-                        style = MediCareCallTheme.typography.R_14,
-                        color = MediCareCallTheme.colors.gray6,
-                    )
-
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Text(
-                            text = "3",
-                            style = MediCareCallTheme.typography.SB_22,
-                            color = MediCareCallTheme.colors.black,
-                        )
-                        Text(
-                            text = "건",
-                            style = MediCareCallTheme.typography.R_16,
-                            color = MediCareCallTheme.colors.black,
-                        )
-
-
-                    }
-                }
-
-
-                // 미응답
-                Column(
-                    modifier = Modifier
-                        .width(50.dp),
-                    verticalArrangement = Arrangement.SpaceBetween
-                ) {
-
-
-                    Text(
-                        text = "미응답",
-                        style = MediCareCallTheme.typography.R_14,
-                        color = MediCareCallTheme.colors.gray6,
-                    )
-
-                    Row(
-                        modifier = Modifier,
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
-
-                        Text(
-                            text = "8",
-                            style = MediCareCallTheme.typography.SB_22,
-                            color = MediCareCallTheme.colors.black,
-                        )
-                        Text(
-                            text = "건",
-                            style = MediCareCallTheme.typography.R_16,
-                            color = MediCareCallTheme.colors.black,
-                        )
-
-
-                    }
-                }
-
+                WeeklySummaryItem(
+                    title = "식사율",
+                    value = summary.weeklyMealRate,
+                    unit = "%"
+                )
+                WeeklySummaryItem(
+                    title = "복약률",
+                    value = summary.weeklyMedicineRate,
+                    unit = "%"
+                )
+                WeeklySummaryItem(
+                    title = "건강징후",
+                    value = summary.weeklyHealthIssueCount,
+                    unit = "건"
+                )
+                WeeklySummaryItem(
+                    title = "미응답",
+                    value = summary.weeklyUnansweredCount,
+                    unit = "건"
+                )
             }
-
         }
-
     }
-
 }
 
-@Preview
 @Composable
-fun PreviewWeeklySummaryCard() {
-    WeeklySummaryCard()
+private fun WeeklySummaryItem(
+    modifier: Modifier = Modifier,
+    title: String,
+    value: Int,
+    unit: String
+) {
 
+    val isUnrecorded = value < 0
+    val valueText = if (isUnrecorded) "-" else value.toString()
+
+    Column(
+        modifier = modifier,
+        horizontalAlignment = Alignment.CenterHorizontally
+    ) {
+        Text(modifier = Modifier.align(Alignment.Start),
+            text = title,
+            style = MediCareCallTheme.typography.R_14,
+            color = MediCareCallTheme.colors.gray6,
+
+        )
+        Spacer(modifier = Modifier.height(4.dp))
+
+        Row(
+            verticalAlignment = Alignment.Bottom
+        ) {
+            Text(
+                text = valueText,
+                style = MediCareCallTheme.typography.SB_22,
+                color = if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.black, // ◀ 색상 변경
+            )
+            Text(
+                text = unit,
+                modifier = Modifier.padding(start = 2.dp, bottom = 2.dp),
+                style = MediCareCallTheme.typography.R_16,
+                color = if (isUnrecorded) MediCareCallTheme.colors.black else MediCareCallTheme.colors.black, // ◀ 색상 변경
+            )
+        }
+    }
+}
+
+@Preview(name = "요약 카드 - 기록 있음")
+@Composable
+fun PreviewWeeklySummaryCard_Recorded() {
+
+    WeeklySummaryCard(
+        summary = WeeklySummaryUiState(
+            weeklyMealRate = 65,
+            weeklyMedicineRate = 57,
+            weeklyHealthIssueCount = 3,
+            weeklyUnansweredCount = 8
+        )
+    )
+}
+
+@Preview(name = "요약 카드 - 미기록")
+@Composable
+fun PreviewWeeklySummaryCard_Unrecorded() {
+    WeeklySummaryCard(summary = WeeklySummaryUiState.EMPTY)
 }

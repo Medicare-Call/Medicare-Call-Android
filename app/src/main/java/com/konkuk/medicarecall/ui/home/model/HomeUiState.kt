@@ -9,14 +9,21 @@ data class HomeUiState(
     val lunchEaten: Boolean? = null,
     val dinnerEaten: Boolean? = null,
     val medicines: List<MedicineUiState> = emptyList(),
-    val sleepHours: Double = 0.0,
+    val sleep: HomeResponseDto.SleepDto = HomeResponseDto.SleepDto(0, 0),
     val healthStatus: String = "",
     val mentalStatus: String = "",
     val glucoseLevelAverageToday: Int = 0
 ) {
     companion object {
         val EMPTY = HomeUiState()
-
+        private fun mapNextTimeToKor(nextTime: String?): String {
+            return when (nextTime) {
+                "MORNING" -> "아침"
+                "LUNCH" -> "점심"
+                "DINNER" -> "저녁"
+                else -> "-"
+            }
+        }
         fun from(dto: HomeResponseDto): HomeUiState {
             return HomeUiState(
                 elderName = dto.elderName,
@@ -31,10 +38,10 @@ data class HomeUiState(
                         medicineName = it.type,
                         todayTakenCount = it.taken,
                         todayRequiredCount = it.goal,
-                        nextDoseTime = it.nextTime
+                        nextDoseTime = mapNextTimeToKor(it.nextTime)
                     )
                 },
-                sleepHours = dto.sleep.meanHours + dto.sleep.meanMinutes / 60.0,
+                sleep = dto.sleep,
                 healthStatus = dto.healthStatus,
                 mentalStatus = dto.mentalStatus,
                 glucoseLevelAverageToday = dto.bloodSugar.meanValue
@@ -49,4 +56,3 @@ data class MedicineUiState(
     val todayRequiredCount: Int,
     val nextDoseTime: String?
 )
-

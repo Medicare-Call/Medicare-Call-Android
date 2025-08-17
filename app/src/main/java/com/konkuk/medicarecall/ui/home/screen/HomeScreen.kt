@@ -6,6 +6,7 @@ import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -22,13 +23,17 @@ import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
+import androidx.compose.material3.FabPosition
+import androidx.compose.material3.Scaffold
+import androidx.compose.material3.SnackbarHost
+import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,9 +47,10 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.component.NameBar
-import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.home.NameDropdown
+import com.konkuk.medicarecall.ui.home.component.CareCallFloatingButton
+import com.konkuk.medicarecall.ui.home.component.CareCallSnackBar
 import com.konkuk.medicarecall.ui.home.component.HomeGlucoseLevelContainer
 import com.konkuk.medicarecall.ui.home.component.HomeMealContainer
 import com.konkuk.medicarecall.ui.home.component.HomeMedicineContainer
@@ -52,16 +58,15 @@ import com.konkuk.medicarecall.ui.home.component.HomeSleepContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateHealthContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateMentalContainer
 import com.konkuk.medicarecall.ui.home.model.HomeUiState
-import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
-
-import kotlin.collections.listOf
+import kotlinx.coroutines.launch
 
 @Composable
 fun HomeScreen(
     navController: NavHostController,
     modifier: Modifier = Modifier,
+    homeViewModel: HomeViewModel = hiltViewModel(),
     onNavigateToMealDetail: () -> Unit,
     onNavigateToMedicineDetail: () -> Unit,
     onNavigateToSleepDetail: () -> Unit,
@@ -69,199 +74,238 @@ fun HomeScreen(
     onNavigateToStateMentalDetail: () -> Unit,
     onNavigateToGlucoseDetail: () -> Unit,
 ) {
-    val calendarViewModel: CalendarViewModel = hiltViewModel()
-    val homeViewModel: HomeViewModel = hiltViewModel()
-
-    val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val homeUiState by homeViewModel.homeUiState.collectAsState(initial = HomeUiState.EMPTY)
-    LaunchedEffect(selectedDate) {
-        homeViewModel.selectDate(selectedDate)
-    }
 
 
     val dropdownOpened = remember { mutableStateOf(false) }
 
 
+    val snackbarHostState = remember { SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
 
-    Box(modifier = Modifier.fillMaxSize()) {
-        Column(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(Color.White)
-                .statusBarsPadding()
+    HomeScreenLayout(
+        modifier = modifier,
+        navController = navController,
+        homeUiState = homeUiState,
+        dropdownOpened = dropdownOpened.value,
+        onDropdownClick = { dropdownOpened.value = !dropdownOpened.value },
+        onDropdownDismiss = { dropdownOpened.value = false },
+        onNavigateToMealDetail = onNavigateToMealDetail,
+        onNavigateToMedicineDetail = onNavigateToMedicineDetail,
+        onNavigateToSleepDetail = onNavigateToSleepDetail,
+        onNavigateToStateHealthDetail = onNavigateToStateHealthDetail,
+        onNavigateToStateMentalDetail = onNavigateToStateMentalDetail,
+        onNavigateToGlucoseDetail = onNavigateToGlucoseDetail,
+                snackbarHostState = snackbarHostState,
+        onFabClick = {
+            scope.launch {
+                snackbarHostState.showSnackbar("케어콜이 곧 연결됩니다. 잠시만 기다려 주세요.")
+            }
+        }
+    )
+}
 
 
-        ) {
+@Composable
+fun HomeScreenLayout(
+    modifier: Modifier = Modifier,
+    navController: NavHostController,
+    homeUiState: HomeUiState,
+    dropdownOpened: Boolean,
+    onDropdownClick: () -> Unit,
+    onDropdownDismiss: () -> Unit,
+    onNavigateToMealDetail: () -> Unit,
+    onNavigateToMedicineDetail: () -> Unit,
+    onNavigateToSleepDetail: () -> Unit,
+    onNavigateToStateHealthDetail: () -> Unit,
+    onNavigateToStateMentalDetail: () -> Unit,
+    onNavigateToGlucoseDetail: () -> Unit,
+    snackbarHostState: SnackbarHostState,
+    onFabClick: () -> Unit
+) {
+    Scaffold(
 
-            NameBar(
-                navController = navController,
-                onDropdownClick = { dropdownOpened.value = true }
+        contentWindowInsets = WindowInsets(0),
+        floatingActionButton = {
+            CareCallFloatingButton(
+                modifier = modifier,
+                onClick = onFabClick
             )
-
-            Spacer(modifier = Modifier.height(19.dp))
-
+        },
+        floatingActionButtonPosition = FabPosition.Center,
+    ) { innerPadding ->
+        Box(modifier = modifier.fillMaxSize()) {
             Column(
                 modifier = Modifier
-                    .verticalScroll(rememberScrollState())
                     .fillMaxSize()
-
-
+                    .background(Color.White).padding(innerPadding)
             ) {
+                NameBar(
+                    modifier = Modifier.statusBarsPadding(),
+                    navController = navController,
+                    onDropdownClick = onDropdownClick
+                )
 
-
-                //1. 초록 카드
-                Box(
+                Column(
                     modifier = Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .heightIn(min = 220.dp)
-                        .background(main)
-
-
+                        .verticalScroll(rememberScrollState())
+                        .fillMaxSize()
                 ) {
-                    Row(
-                        modifier = Modifier.padding(horizontal = 20.dp, vertical = 40.dp),
-                        verticalAlignment = Alignment.CenterVertically
-                    ) {
 
 
-                        val balloonText = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요."
-                        //val balloonText = homeUiState?.balloonMessage ?: "기본 메시지"
-                        val trimmedText = balloonText.take(40) // 글자 수 제한
-
-
-                        //말풍선
-                        Card(
-                            modifier = Modifier
-                                //텍스트에 따라 말풍선 늘리기
-                                .wrapContentHeight()
-                                .width(196.dp)
-                                .zIndex(2f), //겹치는 도형 위로 올림
-                            colors = CardDefaults.cardColors(containerColor = Color.White),
-                            shape = RoundedCornerShape(10.dp)
-                        ) {
-
-                            Text(
-                                text = trimmedText,
-                                style = MediCareCallTheme.typography.R_16,
-                                color = MediCareCallTheme.colors.gray8,
-                                modifier = Modifier
-                                    .padding(8.dp)
-                                    .background(Color.White)
-                            )
-                        }
-                        // 꼬리
-                        Box(
-                            modifier = Modifier
-                                .size(width = 14.dp, height = 13.dp)
-                                .offset(x = -2.dp, y = 20.dp)
-                                .clip(SpeechTail)
-                                .background(Color.White)
-                                .zIndex(2f)
-
-
-                        )
-                    }
-                    //캐릭터 그림자
-                    Image(
-                        painter = painterResource(id = R.drawable.char_medi_shadow),
-                        contentDescription = "캐릭터 그림자",
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .offset(x = (-52.13).dp, y = -56.19.dp)
-                            .zIndex(-1f)
-                    )
-                    //캐릭터
-                    Image(
-                        painter = painterResource(id = R.drawable.char_medi),
-                        contentDescription = "캐릭터 이미지",
-                        modifier = Modifier
-                            .align(Alignment.BottomEnd)
-                            .offset(x = (-7.75).dp, y = -55.12.dp)
-                            .zIndex(3f)
-                    )
-                }
-
-
-                //2. 흰색 카드
-                Box(
-                    Modifier
-                        .fillMaxWidth()
-                        .wrapContentHeight()
-                        .offset(y = -40.dp)
-                        .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
-                        .background(Color.White)
-
-
-                ) {
-                    // 카드 내용
-                    Column(
+                    //1. 초록 카드
+                    Box(
                         modifier = Modifier
                             .fillMaxWidth()
                             .wrapContentHeight()
-                            .padding(20.dp)
+                            .heightIn(min = 220.dp)
+                            .background(main)
+
+
                     ) {
-                        Spacer(Modifier.height(12.dp))
-                        HomeMealContainer(
-                            breakfastEaten = homeUiState.breakfastEaten,
-                            lunchEaten = homeUiState.lunchEaten,
-                            dinnerEaten = homeUiState.dinnerEaten,
-                            onClick = { onNavigateToMealDetail() }
+                        Row(
+                            modifier = Modifier.padding(horizontal = 20.dp, vertical = 40.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+
+
+                            //val balloonText = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요."
+                            val balloonText = homeUiState.balloonMessage
+                            val trimmedText = balloonText.take(45) // 글자 수 제한
+
+
+                            //말풍선
+                            Card(
+                                modifier = Modifier
+                                    //텍스트에 따라 말풍선 늘리기
+                                    .width(196.dp)
+                                    .heightIn(min = 94.dp)
+                                    .zIndex(2f), //겹치는 도형 위로 올림
+                                colors = CardDefaults.cardColors(containerColor = Color.White),
+                                shape = RoundedCornerShape(10.dp)
+                            ) {
+
+                                Text(
+                                    text = trimmedText,
+                                    style = MediCareCallTheme.typography.R_16,
+                                    color = MediCareCallTheme.colors.gray8,
+                                    modifier = Modifier
+                                        .padding(8.dp)
+                                        .background(Color.White)
+                                )
+                            }
+                            // 꼬리
+                            Box(
+                                modifier = Modifier
+                                    .size(width = 14.dp, height = 13.dp)
+                                    .offset(x = -2.dp, y = 20.dp)
+                                    .clip(SpeechTail)
+                                    .background(Color.White)
+                                    .zIndex(2f)
+
+
+                            )
+                        }
+                        //캐릭터 그림자
+                        Image(
+                            painter = painterResource(id = R.drawable.char_medi_shadow),
+                            contentDescription = "캐릭터 그림자",
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .offset(x = (-52.13).dp, y = -56.19.dp)
+                                .zIndex(-1f)
                         )
-                        Spacer(Modifier.height(12.dp))
-                        HomeMedicineContainer(
-                            onClick = { onNavigateToMedicineDetail() }
+                        //캐릭터
+                        Image(
+                            painter = painterResource(id = R.drawable.char_medi),
+                            contentDescription = "캐릭터 이미지",
+                            modifier = Modifier
+                                .align(Alignment.BottomEnd)
+                                .offset(x = (-7.75).dp, y = -55.12.dp)
+                                .zIndex(3f)
                         )
-                        Spacer(Modifier.height(12.dp))
-                        HomeSleepContainer(
-                            sleeps = SleepUiState(
-                                date = "2025-07-07",
-                                totalSleepHours = 8,
-                                totalSleepMinutes = 12,
-                                bedTime = "오후 10:12",
-                                wakeUpTime = "오전 06:00",
-                                isRecorded = true
-                            ),
-                            onClick = { onNavigateToSleepDetail() }
-                        )
-                        Spacer(Modifier.height(12.dp))
-                        HomeStateHealthContainer(
-                            healthStatus = homeUiState.healthStatus,
-                            onClick = { onNavigateToStateHealthDetail() }
-                        )
-                        Spacer(Modifier.height(12.dp))
-                        HomeStateMentalContainer(
-                            mentalStatus = homeUiState.mentalStatus,
-                            onClick = { onNavigateToStateMentalDetail() }
-                        )
-                        Spacer(Modifier.height(12.dp))
-                        HomeGlucoseLevelContainer(
-                            glucoseLevel = 120,
-                            onClick = { onNavigateToGlucoseDetail() }
-                        )
-                        Spacer(Modifier.height(12.dp))
+                    }
+
+
+                    //2. 흰색 카드
+                    Box(
+                        Modifier
+                            .fillMaxWidth()
+                            .wrapContentHeight()
+                            .offset(y = -40.dp)
+                            .clip(RoundedCornerShape(topStart = 20.dp, topEnd = 20.dp))
+                            .background(Color.White)
+
+
+                    ) {
+                        // 카드 내용
+                        Column(
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .wrapContentHeight()
+                                .padding(20.dp)
+                        ) {
+                            Spacer(Modifier.height(12.dp))
+                            HomeMealContainer(
+                                breakfastEaten = homeUiState.breakfastEaten,
+                                lunchEaten = homeUiState.lunchEaten,
+                                dinnerEaten = homeUiState.dinnerEaten,
+                                onClick = { onNavigateToMealDetail() }
+                            )
+                            Spacer(Modifier.height(12.dp))
+                            HomeMedicineContainer(
+                                medicines = homeUiState.medicines,
+                                onClick = { onNavigateToMedicineDetail() }
+                            )
+                            Spacer(Modifier.height(12.dp))
+                            val sleepData = homeUiState.sleep
+                            HomeSleepContainer(
+                                totalSleepHours = sleepData.meanHours,
+                                totalSleepMinutes = sleepData.meanMinutes,
+                                isRecorded = sleepData.meanHours > 0 || sleepData.meanMinutes > 0,
+                                onClick = { onNavigateToSleepDetail() }
+                            )
+                            Spacer(Modifier.height(12.dp))
+                            HomeStateHealthContainer(
+                                healthStatus = homeUiState.healthStatus,
+                                onClick = { onNavigateToStateHealthDetail() }
+                            )
+                            Spacer(Modifier.height(12.dp))
+                            HomeStateMentalContainer(
+                                mentalStatus = homeUiState.mentalStatus,
+                                onClick = { onNavigateToStateMentalDetail() }
+                            )
+                            Spacer(Modifier.height(12.dp))
+                            HomeGlucoseLevelContainer(
+                                glucoseLevelAverageToday = homeUiState.glucoseLevelAverageToday,
+                                onClick = { onNavigateToGlucoseDetail() }
+                            )
+                            Spacer(Modifier.height(12.dp))
+                        }
                     }
                 }
-                Spacer(Modifier.height(120.dp))
+
             }
-
+            if (dropdownOpened) {
+                NameDropdown(
+                    items = listOf("김헬레나", "박막례"),
+                    selectedName = "김헬레나",
+                    onDismiss = onDropdownDismiss,
+                    onItemSelected = { /*TODO*/ }
+                )
+            }
+            SnackbarHost(
+                hostState = snackbarHostState,
+                modifier = Modifier
+                    .align(Alignment.BottomCenter)
+                    .offset(y = -(60.dp))
+            ) { data ->
+                CareCallSnackBar(snackBarData = data)
+            }
         }
-        if (dropdownOpened.value) {
-            NameDropdown(
-                items = listOf("김옥자", "박막례"),
-                selectedName = "김옥자",
-                onDismiss = { dropdownOpened.value = false},
-                onItemSelected = {
-                //TODO: 선택된 이름 처리
-                }
-            )
-
-        }
-
     }
 }
-
 
 val SpeechTail = GenericShape { size, _ ->
     // 90도 회전된 삼각형
@@ -274,13 +318,21 @@ val SpeechTail = GenericShape { size, _ ->
 @Preview(showBackground = true, heightDp = 1500)
 @Composable
 fun PreviewHomeScreen() {
-    HomeScreen(
-        navController = rememberNavController(),
-        onNavigateToMealDetail = {},
-        onNavigateToMedicineDetail = {},
-        onNavigateToSleepDetail = {},
-        onNavigateToStateHealthDetail = {},
-        onNavigateToStateMentalDetail = {},
-        onNavigateToGlucoseDetail = {},
-    )
+    MediCareCallTheme {
+        HomeScreenLayout(
+            navController = rememberNavController(),
+            homeUiState = HomeUiState.EMPTY,
+            dropdownOpened = false,
+            onDropdownClick = {},
+            onDropdownDismiss = {},
+            onNavigateToMealDetail = {},
+            onNavigateToMedicineDetail = {},
+            onNavigateToSleepDetail = {},
+            onNavigateToStateHealthDetail = {},
+            onNavigateToStateMentalDetail = {},
+            onNavigateToGlucoseDetail = {},
+            snackbarHostState = SnackbarHostState(),
+            onFabClick = {}
+        )
+    }
 }

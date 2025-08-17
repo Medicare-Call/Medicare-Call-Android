@@ -152,6 +152,11 @@ fun LoginElderScreen(
                             )
 
 
+                        } else {
+                            coroutineScope.launch {
+                                snackBarState.showSnackbar("어르신은 최대 5명까지 등록이 가능해요")
+
+                            }
                         }
                     }
             ) {

@@ -27,6 +27,8 @@ class EldersHealthViewModel @Inject constructor(
         loadEldersHealthInfo()
     }
 
+    fun refresh() = loadEldersHealthInfo()
+
     private fun loadEldersHealthInfo() {
         Log.d("EldersHealthViewModel", "loadEldersHealthInfo() 진입")
         viewModelScope.launch {

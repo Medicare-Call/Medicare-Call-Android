@@ -46,10 +46,9 @@ fun SubscribeCard(elderInfo: EldersSubscriptionResponseDto, onClick: () -> Unit,
             }
             Spacer(modifier = modifier.height(8.dp))
             val planInfo = when (elderInfo.plan) {
-                "BASIC" -> "베이직 플랜"
-                "PREMIUM" -> "프리미엄 플랜"
-                else -> "알 수 없는 플랜"
-            }
+                "메디케어콜 스탠다드 플랜" -> "프리미엄 플랜"
+                else -> "베이직 플랜"
+            } // 추후 수정 필요
             Text(text = "$planInfo 구독 중",style = MediCareCallTheme.typography.SB_18, color = MediCareCallTheme.colors.main,modifier = modifier.fillMaxWidth())
         }
         Spacer(modifier = modifier.weight(1f))

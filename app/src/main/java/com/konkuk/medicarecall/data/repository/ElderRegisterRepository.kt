@@ -44,12 +44,12 @@ class ElderRegisterRepository @Inject constructor(
     suspend fun postElderHealthInfo(id: Int, elderHealthData: ElderHealthData) {
         val response = elderRegisterService.postElderHealthInfo(
             id, ElderHealthRegisterRequestDto(
-            diseaseNames = elderHealthData.diseaseNames,
-            medicationSchedules = ElderHealthMapper.toRequestSchedules(elderHealthData.medicationMap),
-            notes = elderHealthData.notes.map { notes ->
-                HealthIssueType.entries.find { it.displayName == notes }!!
-            }
-        ))
+                diseaseNames = elderHealthData.diseaseNames,
+                medicationSchedules = ElderHealthMapper.toRequestSchedules(elderHealthData.medicationMap),
+                notes = elderHealthData.notes.map { notes ->
+                    HealthIssueType.entries.find { it.displayName == notes }!!
+                }
+            ))
         if (!response.isSuccessful) {
             val errorBody = response.errorBody()?.string() ?: "Unknown error"
             throw HttpException(response)
@@ -63,18 +63,24 @@ class ElderRegisterRepository @Inject constructor(
     ): Result<Unit> {
         return runCatching {
             repeat(elders) { index ->
-                val elderResponse = postElder(
-                    elderInfoList[index]
-                )
-                // postElder가 성공적으로 끝나야만 이 라인으로 넘어올 수 있음
-                val id = elderResponse.id
-                val name = elderResponse.name
-                elderIdRepository.addElderId(name, id)
-                Log.d("httplog", "어르신 등록 성공, id: $id")
-                postElderHealthInfo(
-                    id,
-                    elderHealthInfo[index]
-                )
+                // 이미 등록돼 있지 않은 어르신일 경우 실행
+                if (elderInfoList[index].id == null) {
+                    val elderResponse = postElder(
+                        elderInfoList[index]
+                    )
+                    // postElder가 성공적으로 끝나야만 이 라인으로 넘어올 수 있음
+                    val id = elderResponse.id
+                    val name = elderResponse.name
+                    elderIdRepository.addElderId(name, id)
+                    elderInfoList[index].id = id
+                    Log.d("httplog", "어르신 등록 성공, id: $id")
+                    postElderHealthInfo(
+                        id,
+                        elderHealthInfo[index]
+                    )
+                    Log.d("httplog", "어르신 건강정보 등록 성공")
+                    elderHealthInfo[index].id = id
+                }
             }
         }
     }

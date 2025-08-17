@@ -13,7 +13,6 @@ class UpdateElderInfoRepository @Inject constructor(
         if (response.isSuccessful) {
             response.body() ?: throw IllegalStateException("Response body is null")
         } else {
-            val errorBody = response.errorBody()?.string() ?: "Unknown error"
             throw HttpException(response)
         }
     }
@@ -23,7 +22,8 @@ class UpdateElderInfoRepository @Inject constructor(
         if (response.isSuccessful) {
             response.body() ?: throw IllegalStateException("Response body is null")
         } else {
-            val errorBody = response.errorBody()?.string() ?: "Unknown error"
+            val body = response.errorBody()?.string().orEmpty()
+            android.util.Log.e("DeleteElder", "HTTP ${response.code()} body=$body")
             throw HttpException(response)
         }
     }

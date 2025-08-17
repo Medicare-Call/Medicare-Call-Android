@@ -17,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.mutableStateMapOf
@@ -42,6 +43,7 @@ fun MedInfoItem(
     onRemoveMedication: (MedicationSchedule) -> Unit,
     modifier: Modifier = Modifier) {
     val context = LocalContext.current
+
     var inputText by remember { mutableStateOf("") }
     // 복약 주기 선택 상태
     val selectedPeriods = remember { mutableStateOf(setOf<MedicationTimeType>()) }
@@ -55,16 +57,15 @@ fun MedInfoItem(
 //        }
 //    }
     val medsByPeriod = remember {
-        mutableStateMapOf<MedicationTimeType, SnapshotStateList<String>>().apply {
-            MedicationTimeType.entries.forEach { period ->
-                // 각 주기별로 'mutableStateListOf()'를 할당
-                this[period] = mutableStateListOf<String>().apply {
-                    // 초기값으로 medications에서 해당 주기에 해당하는 약을 추가
-                    medications.filter { it.scheduleTimes.contains(period) }.forEach { add(it.medicationName) }
-                }
+        derivedStateOf {
+            MedicationTimeType.entries.associateWith { period ->
+                medications
+                    .filter { period in it.scheduleTimes }
+                    .map { it.medicationName }
+                    .distinct()
             }
         }
-    }
+    }.value
 
     // 모든 주기의 리스트 중 하나라도 비어 있지 않은지 체크
     val hasAnyMeds = medsByPeriod.values.any { it.isNotEmpty() }
@@ -94,14 +95,7 @@ fun MedInfoItem(
                         ChipItem(
                             text = name,
                             onRemove = {
-                                medsByPeriod[period]?.remove(name)
-                                onRemoveMedication(
-                                    MedicationSchedule(
-                                        medicationName = name,
-                                        scheduleTimes = listOf(period)
-                                    )
-                                )
-                                medications.removeAll { it.medicationName == name && it.scheduleTimes.contains(period) }
+                                medications.removeOnePeriod(name, period)
                             },
                         )
                         Spacer(Modifier.width(10.dp))
@@ -178,40 +172,42 @@ fun MedInfoItem(
             placeHolder = "예시) 당뇨약",
             onTextChange = { inputText = it },
             clickPlus = {
-                if (inputText.trim().isNotBlank() && selectedPeriods.value.isNotEmpty()) {
-                    val isDuplicate = selectedPeriods.value.any { period ->
-                        medsByPeriod[period]?.contains(inputText.trim()) == true
-                    }
-                    if (isDuplicate) {
-                        // 중복된 복약 정보가 있을 경우 처리 (예: Toast 메시지 표시)
-                        Toast.makeText(context, "이미 등록된 약입니다", Toast.LENGTH_SHORT).show()
-                        inputText = "" // 입력 필드 초기화
-                        selectedPeriods.value = emptySet()
-                    } else {
-                        onAddMedication(
-                            MedicationSchedule(
-                                medicationName = inputText.trim(),
-                                scheduleTimes = selectedPeriods.value.toList()
-                            )
-                        )
-                        medications.add(
-                            MedicationSchedule(
-                                medicationName = inputText.trim(),
-                                scheduleTimes = selectedPeriods.value.toList()
-                            )
-                        )
-                        selectedPeriods.value.forEach { p ->
-                            medsByPeriod[p]?.add(inputText.trim())
-                        }
-                        inputText = "" // 입력 필드 초기화
-                    }
+                val name = inputText.trim()
+                val times = selectedPeriods.value
+                if (name.isNotBlank() && times.isNotEmpty()) {
+                    medications.addOrMerge(name, times)
+                    inputText = ""
+                    selectedPeriods.value = emptySet()
+                } else if (name.isNotBlank()) {
+                    Toast.makeText(context, "복약 주기를 선택하세요", Toast.LENGTH_SHORT).show()
                 }
             })
     }
 }
 
-//@Preview(showBackground = true)
-//@Composable
-//fun MedicationScreenPreview() {
-//    MedInfoItem()
-//}
+private fun MutableList<MedicationSchedule>.addOrMerge(
+    name: String,
+    times: Set<MedicationTimeType>
+) {
+    val idx = indexOfFirst { it.medicationName == name }
+    if (idx >= 0) {
+        val current = this[idx]
+        val merged = (current.scheduleTimes + times).distinct()
+        this[idx] = current.copy(scheduleTimes = merged)
+    } else {
+        add(MedicationSchedule(medicationName = name, scheduleTimes = times.toList()))
+    }
+}
+
+private fun MutableList<MedicationSchedule>.removeOnePeriod(
+    name: String,
+    period: MedicationTimeType
+) {
+    val idx = indexOfFirst { it.medicationName == name }
+    if (idx >= 0) {
+        val current = this[idx]
+        val remain = current.scheduleTimes.filterNot { it == period }
+        if (remain.isEmpty()) removeAt(idx)
+        else this[idx] = current.copy(scheduleTimes = remain)
+    }
+}

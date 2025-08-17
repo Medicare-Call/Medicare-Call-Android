@@ -400,6 +400,16 @@ fun NavGraph(
                     navController = navController,
                 )
             }
+
+            composable(
+                route = Route.NaverPayWithCode.route,
+                arguments = listOf(navArgument("orderCode") { type = NavType.StringType })
+            ) { backStackEntry ->
+                NaverPayScreen(
+                    onBack = { navController.popBackStack() },
+                    navController = navController
+                )
+            }
         }
 
 

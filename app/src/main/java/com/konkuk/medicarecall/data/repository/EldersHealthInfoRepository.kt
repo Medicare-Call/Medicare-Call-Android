@@ -5,7 +5,9 @@ import android.util.Log.e
 import com.konkuk.medicarecall.data.api.ElderRegisterService
 import com.konkuk.medicarecall.data.api.EldersInfoService
 import com.konkuk.medicarecall.data.dto.request.ElderHealthRegisterRequestDto
+import com.konkuk.medicarecall.data.dto.request.MedicationSchedule
 import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
+import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -28,10 +30,11 @@ class EldersHealthInfoRepository @Inject constructor(
         elderInfo : EldersHealthResponseDto
     ) : Result<Unit> =
         runCatching {
+            val medicationSchedule = elderInfo.medications.toMedicationSchedules()
             val elder = ElderHealthRegisterRequestDto(
                 diseaseNames = elderInfo.diseases,
-                medicationSchedules = elderInfo.medications,
-                notes = elderInfo.specialNotes
+                medicationSchedules = medicationSchedule,
+                notes = elderInfo.notes
             )
             val response = elderRegisterService.postElderHealthInfo(
                 elderInfo.elderId,
@@ -45,6 +48,21 @@ class EldersHealthInfoRepository @Inject constructor(
                 throw HttpException(response)
             }
         }
+
+    fun Map<MedicationTimeType, List<String>>.toMedicationSchedules(): List<MedicationSchedule> {
+        val timesByMed = linkedMapOf<String, MutableSet<MedicationTimeType>>()
+        for ((time, meds) in this) {
+            for (med in meds) {
+                timesByMed.getOrPut(med.trim()) { linkedSetOf() }.add(time)
+            }
+        }
+        return timesByMed.map { (medName, times) ->
+            MedicationSchedule(
+                medicationName = medName,
+                scheduleTimes = times.sortedBy { it.ordinal }
+            )
+        }
+    }
 
 }
 

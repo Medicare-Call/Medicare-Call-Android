@@ -175,14 +175,10 @@ fun LoginElderMedInfoScreen(
                 CTAButtonType.GREEN,
                 "다음",
                 {
-                    if (loginElderViewModel.getElderIds().isEmpty()) {
-                        loginElderViewModel.createElderHealthDataList()
-                        loginElderViewModel.postElderAndHealth()
-                    } else {
                         loginElderViewModel.createElderHealthDataList()
                         loginElderViewModel.updateAllElders()
                         loginElderViewModel.updateAllEldersHealthInfo()
-                    }
+                        loginElderViewModel.postElderAndHealth()
                     navController.navigate(Route.SetCall.route)
                 },
                 Modifier.padding(top = 30.dp, bottom = 20.dp)

@@ -6,6 +6,7 @@ import com.konkuk.medicarecall.BuildConfig
 import com.konkuk.medicarecall.data.api.ElderRegisterService
 import com.konkuk.medicarecall.data.api.EldersInfoService
 import com.konkuk.medicarecall.data.api.MemberRegisterService
+import com.konkuk.medicarecall.data.api.NaverPayService
 import com.konkuk.medicarecall.data.api.NoticeService
 import com.konkuk.medicarecall.data.api.SetCallService
 import com.konkuk.medicarecall.data.api.SettingService
@@ -18,6 +19,7 @@ import com.konkuk.medicarecall.data.repository.DataStoreRepository
 import com.konkuk.medicarecall.data.repository.EldersHealthInfoRepository
 import com.konkuk.medicarecall.data.repository.EldersInfoRepository
 import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
+import com.konkuk.medicarecall.data.repository.NaverPayRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import com.konkuk.medicarecall.data.repository.SetCallRepository
 import com.konkuk.medicarecall.data.repository.SubscribeRepository
@@ -33,6 +35,7 @@ import kotlinx.serialization.json.Json
 import okhttp3.Interceptor
 import okhttp3.MediaType.Companion.toMediaType
 import okhttp3.OkHttpClient
+import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
 import javax.inject.Singleton
@@ -57,11 +60,16 @@ object AppModule {
         return AuthAuthenticator(dataStoreRepository, tokenRefreshService)
     }
 
+    val logging = HttpLoggingInterceptor().apply {
+        level = HttpLoggingInterceptor.Level.BODY  // BODY로 해야 요청/응답 JSON까지 다 찍힘
+    }
+
     @Provides
     @Singleton
     fun provideOkHttpClient(authInterceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder()
             .addInterceptor(authInterceptor)
+            .addInterceptor(logging)
             .build()
     }
 
@@ -204,4 +212,19 @@ object AppModule {
     ) : UpdateElderInfoRepository {
         return UpdateElderInfoRepository(eldersInfoService)
     }
+
+    @Provides
+    @Singleton
+    fun provideNaverPayService(retrofit: Retrofit)
+    : NaverPayService {
+        return retrofit.create(NaverPayService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNaverPayRepository(
+        naverPayService: NaverPayService) : NaverPayRepository {
+        return NaverPayRepository(naverPayService)
+    }
+
 }

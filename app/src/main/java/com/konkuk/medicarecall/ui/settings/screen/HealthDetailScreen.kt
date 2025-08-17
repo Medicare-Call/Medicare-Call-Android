@@ -1,6 +1,6 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
-import android.util.Log.d
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -16,18 +16,14 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.saveable.rememberSaveable
-import androidx.compose.runtime.setValue
+import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.data.dto.request.MedicationSchedule
 import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
@@ -35,9 +31,9 @@ import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.IllnessInfoItem
 import com.konkuk.medicarecall.ui.component.MedInfoItem
 import com.konkuk.medicarecall.ui.component.SpecialNoteItem
-import com.konkuk.medicarecall.ui.homedetail.statehealth.model.HealthResponseDto
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.HealthIssueType
+import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.viewmodel.DetailHealthViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -47,21 +43,16 @@ fun HealthDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={},
                        healthInfoResponseDto : EldersHealthResponseDto,
                        detailViewModel : DetailHealthViewModel = hiltViewModel()
 ) {
-    val noteList = remember { mutableStateListOf<String>() }
+
     val scrollState = rememberScrollState()
-    val diseaseList = remember { mutableStateListOf<String>() }
-    val medications = remember { mutableStateListOf<MedicationSchedule>() }
-
-
-    // dto가 바뀔 때마다 리스트 동기화
-    LaunchedEffect(healthInfoResponseDto.elderId, healthInfoResponseDto.diseases, healthInfoResponseDto.medications, healthInfoResponseDto.specialNotes) {
-        diseaseList.clear()
-        diseaseList.addAll(healthInfoResponseDto.diseases)
-        medications.clear()
-        medications.addAll(healthInfoResponseDto.medications)
-        noteList.clear()
-        noteList.addAll(healthInfoResponseDto.specialNotes.map { it.displayName })
-
+    val diseaseList = remember(healthInfoResponseDto) {
+        healthInfoResponseDto.diseases.toMutableStateList()
+    }
+    val medications = remember(healthInfoResponseDto) {
+        healthInfoResponseDto.medications.toMedicationSchedules().toMutableStateList()
+    }
+    val noteList = remember(healthInfoResponseDto) {
+        healthInfoResponseDto.notes.map { it.displayName }.toMutableStateList()
     }
 
     Column(modifier = modifier
@@ -84,7 +75,7 @@ fun HealthDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={},
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
             .padding(top = 20.dp)
-            .verticalScroll(rememberScrollState())
+            .verticalScroll(scrollState)
             ,
         ) {
             // 질환 정보
@@ -136,8 +127,8 @@ fun HealthDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={},
                             elderId = healthInfoResponseDto.elderId,
                             name = healthInfoResponseDto.name,
                             diseases = diseaseList,
-                            medications = medications,
-                            specialNotes = noteEnums
+                            medications = medications.toTimeMap(),
+                            notes = noteEnums
                         )
                     )
                     onBack()
@@ -146,4 +137,34 @@ fun HealthDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={},
             )
         }
     }
+}
+
+// Map<시간대, 약리스트> -> List<MedicationSchedule> (UI용)
+fun Map<MedicationTimeType, List<String>>.toMedicationSchedules(): List<MedicationSchedule> {
+    val timesByMed = linkedMapOf<String, MutableSet<MedicationTimeType>>()
+    for ((time, meds) in this) {
+        for (med in meds) {
+            val key = med.trim()
+            if (key.isNotEmpty()) timesByMed.getOrPut(key) { linkedSetOf() }.add(time)
+        }
+    }
+    return timesByMed.map { (name, times) ->
+        MedicationSchedule(
+            medicationName = name,
+            scheduleTimes = times.sortedBy { it.ordinal }
+        )
+    }
+}
+
+// List<MedicationSchedule> -> Map<시간대, 약리스트> (서버에 Map 형태로 보내야 할 때 쓰기)
+fun List<MedicationSchedule>.toTimeMap(): Map<MedicationTimeType, List<String>> {
+    val map = linkedMapOf<MedicationTimeType, MutableList<String>>()
+    for (sch in this) {
+        val name = sch.medicationName.trim()
+        if (name.isEmpty()) continue
+        for (t in sch.scheduleTimes) {
+            map.getOrPut(t) { mutableListOf() }.add(name)
+        }
+    }
+    return map.mapValues { it.value.toList() }
 }

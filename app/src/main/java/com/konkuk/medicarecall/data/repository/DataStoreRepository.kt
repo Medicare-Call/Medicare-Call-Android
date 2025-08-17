@@ -6,16 +6,18 @@ import androidx.datastore.preferences.core.Preferences
 import androidx.datastore.preferences.core.edit
 import androidx.datastore.preferences.core.stringPreferencesKey
 import androidx.datastore.preferences.preferencesDataStore
+import dagger.hilt.android.qualifiers.ApplicationContext
 import kotlinx.coroutines.flow.Flow
 import kotlinx.coroutines.flow.first
 import kotlinx.coroutines.flow.map
+import javax.inject.Inject
 
 val Context.tokenDataStore: DataStore<Preferences> by preferencesDataStore(name = "tokens")
 
 // Token 값을 불러오려면 HiltViewModel 에서
 // DataStoreRepository를 받아
 // getToken() 함수를 호출하면 됩니다.
-class DataStoreRepository(private val context: Context) {
+class DataStoreRepository @Inject constructor(@ApplicationContext private val context: Context) {
 
 
     companion object {

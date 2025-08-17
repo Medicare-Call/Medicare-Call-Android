@@ -71,16 +71,16 @@ fun TimeWheelPicker(
                             amPm = newVal
                             onTimeChange(amPm, hour, minute)
 
-                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
+                            //setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                         }
                         setPickerTextColor(mainColor)
-                        for (i in 0 until childCount) {
-                            val child = getChildAt(i)
-                            if (child is EditText) {
-                                child.textSize = 20f
-                                child.typeface = Typeface.DEFAULT_BOLD
-                            }
-                        }
+//                        for (i in 0 until childCount) {
+//                            val child = getChildAt(i)
+//                            if (child is EditText) {
+//                                child.textSize = 20f
+//                                child.typeface = Typeface.DEFAULT_BOLD
+//                            }
+//                        }
                         @SuppressLint("DiscouragedPrivateApi", "SoonBlockedPrivateApi", "UseKtx")
                         fun hideDividers() {
                             try {
@@ -128,14 +128,14 @@ fun TimeWheelPicker(
                         } catch (ignored: Exception) { }
                     }
                     hideDividers()
-                    for (i in 0 until picker.childCount) {
-                        val child = picker.getChildAt(i)
-                        if (child is EditText) {
-                            child.textSize = 20f
-                            child.typeface = Typeface.DEFAULT_BOLD
-                        }
-                    }
-                    picker.setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
+//                    for (i in 0 until picker.childCount) {
+//                        val child = picker.getChildAt(i)
+//                        if (child is EditText) {
+//                            child.textSize = 20f
+//                            child.typeface = Typeface.DEFAULT_BOLD
+//                        }
+//                    }
+//                    picker.setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                 }
             )
             Spacer(Modifier.width(32.dp))
@@ -149,16 +149,16 @@ fun TimeWheelPicker(
                         setOnValueChangedListener { _, _, newVal ->
                             hour = newVal
                             onTimeChange(amPm, hour, minute)
-                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
+//                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                         }
                         setPickerTextColor(mainColor) // 텍스트 색상 변경
-                        for (i in 0 until childCount) {
-                            val child = getChildAt(i)
-                            if (child is EditText) {
-                                child.textSize = 20f
-                                child.typeface = Typeface.DEFAULT_BOLD
-                            }
-                        }
+//                        for (i in 0 until childCount) {
+//                            val child = getChildAt(i)
+//                            if (child is EditText) {
+//                                child.textSize = 20f
+//                                child.typeface = Typeface.DEFAULT_BOLD
+//                            }
+//                        }
                         @SuppressLint("DiscouragedPrivateApi", "SoonBlockedPrivateApi")
                         fun hideDividers() {
                             try {
@@ -205,14 +205,14 @@ fun TimeWheelPicker(
                         } catch (ignored: Exception) { }
                     }
                     hideDividers()
-                    for (i in 0 until picker.childCount) {
-                        val child = picker.getChildAt(i)
-                        if (child is EditText) {
-                            child.textSize = 20f
-                            child.typeface = Typeface.DEFAULT_BOLD
-                        }
-                    }
-                    picker.setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
+//                    for (i in 0 until picker.childCount) {
+//                        val child = picker.getChildAt(i)
+//                        if (child is EditText) {
+//                            child.textSize = 20f
+//                            child.typeface = Typeface.DEFAULT_BOLD
+//                        }
+//                    }
+//                    picker.setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                 }
             )
             Spacer(modifier = Modifier.width(18.dp))
@@ -227,19 +227,19 @@ fun TimeWheelPicker(
                         maxValue = minuteOptions.lastIndex
                         displayedValues = minuteOptions
                         wrapSelectorWheel = false
-                        setOnValueChangedListener { _, _, newValue ->
-                            minute = newValue * 10 // Convert index to actual minute value
-                            onTimeChange(amPm, hour, minute)
-                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
-                        }
+//                        setOnValueChangedListener { _, _, newValue ->
+//                            minute = newValue * 10 // Convert index to actual minute value
+//                            onTimeChange(amPm, hour, minute)
+////                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
+//                        }
                         setPickerTextColor(mainColor)
-                        for (i in 0 until childCount) {
-                            val child = getChildAt(i)
-                            if (child is EditText) {
-                                child.textSize = 20f
-                                child.typeface = Typeface.DEFAULT_BOLD
-                            }
-                        }
+//                        for (i in 0 until childCount) {
+//                            val child = getChildAt(i)
+//                            if (child is EditText) {
+//                                child.textSize = 20f
+//                                child.typeface = Typeface.DEFAULT_BOLD
+//                            }
+//                        }
                         @SuppressLint("DiscouragedPrivateApi", "SoonBlockedPrivateApi")
                         fun hideDividers() {
                             try {
@@ -286,14 +286,14 @@ fun TimeWheelPicker(
                         } catch (ignored: Exception) { }
                     }
                     hideDividers()
-                    for (i in 0 until picker.childCount) {
-                        val child = picker.getChildAt(i)
-                        if (child is EditText) {
-                            child.textSize = 20f
-                            child.typeface = Typeface.DEFAULT_BOLD
-                        }
-                    }
-                    picker.setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
+//                    for (i in 0 until picker.childCount) {
+//                        val child = picker.getChildAt(i)
+//                        if (child is EditText) {
+//                            child.textSize = 20f
+//                            child.typeface = Typeface.DEFAULT_BOLD
+//                        }
+//                    }
+//                    picker.setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                 }
             )
         }
@@ -318,6 +318,7 @@ fun NumberPicker.setPickerTextColor(color: Int) {
     if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
         // API 29 이상에서는 공식 setTextColor() 사용
         this.setTextColor(color)
+
     } else {
         // API 28 이하에서는 private field 접근
         try {

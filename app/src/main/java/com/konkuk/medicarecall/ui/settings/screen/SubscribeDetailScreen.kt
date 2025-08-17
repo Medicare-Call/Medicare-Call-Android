@@ -91,10 +91,9 @@ fun SubscribeDetailScreen(
                         color = MediCareCallTheme.colors.gray4
                     )
                     val planInfo = when (elderInfo.plan) {
-                        "BASIC" -> "베이직 플랜"
-                        "PREMIUM" -> "프리미엄 플랜"
-                        else -> "알 수 없는 플랜"
-                    }
+                        "메디케어콜 스탠다드 플랜" -> "프리미엄 플랜"
+                        else -> "베이직 플랜"
+                    } // 추후 수정 필요 (서버랑 값 비교할 것)
                     Text(
                         text = planInfo,
                         style = MediCareCallTheme.typography.SB_18,

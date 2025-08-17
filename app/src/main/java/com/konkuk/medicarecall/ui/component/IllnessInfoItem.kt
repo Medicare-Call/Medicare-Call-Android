@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.component
 
+import android.util.Log
 import android.widget.Toast
 import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
@@ -29,6 +30,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun IllnessInfoItem(diseaseList: MutableList<String>,modifier: Modifier = Modifier,
                     onAddDisease: (String) -> Unit = {}, onRemoveDisease: (String) -> Unit = {}) {
+    Log.d("IllnessInfoItem", "diseaseList: $diseaseList")
     val context = LocalContext.current
     var inputText by remember { mutableStateOf("") }
     Column(modifier = modifier.fillMaxWidth(),
@@ -46,7 +48,7 @@ fun IllnessInfoItem(diseaseList: MutableList<String>,modifier: Modifier = Modifi
                         text = disease,
                         onRemove = {
                             onRemoveDisease(disease)
-                            diseaseList.removeAt(index)
+
                         }
                     )
                     Spacer(Modifier.width(10.dp))
@@ -60,7 +62,6 @@ fun IllnessInfoItem(diseaseList: MutableList<String>,modifier: Modifier = Modifi
                     .show()
                 inputText = ""
             } else {
-                diseaseList.add(inputText)
                 onAddDisease(inputText)
                 inputText = ""
             }

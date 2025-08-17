@@ -27,6 +27,8 @@ class EldersInfoViewModel @Inject constructor(
         loadEldersInfo()
     }
 
+    fun refresh() = loadEldersInfo()
+
     private fun loadEldersInfo() {
         Log.d("EldersInfoViewModel", "loadEldersInfo() 진입")
         viewModelScope.launch {

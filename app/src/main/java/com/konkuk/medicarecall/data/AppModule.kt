@@ -6,6 +6,7 @@ import com.konkuk.medicarecall.BuildConfig
 import com.konkuk.medicarecall.data.api.ElderRegisterService
 import com.konkuk.medicarecall.data.api.EldersInfoService
 import com.konkuk.medicarecall.data.api.MemberRegisterService
+import com.konkuk.medicarecall.data.api.NaverPayService
 import com.konkuk.medicarecall.data.api.NoticeService
 import com.konkuk.medicarecall.data.api.SetCallService
 import com.konkuk.medicarecall.data.api.SettingService
@@ -18,6 +19,7 @@ import com.konkuk.medicarecall.data.repository.DataStoreRepository
 import com.konkuk.medicarecall.data.repository.EldersHealthInfoRepository
 import com.konkuk.medicarecall.data.repository.EldersInfoRepository
 import com.konkuk.medicarecall.data.repository.MemberRegisterRepository
+import com.konkuk.medicarecall.data.repository.NaverPayRepository
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import com.konkuk.medicarecall.data.repository.SetCallRepository
 import com.konkuk.medicarecall.data.repository.SubscribeRepository
@@ -204,4 +206,19 @@ object AppModule {
     ) : UpdateElderInfoRepository {
         return UpdateElderInfoRepository(eldersInfoService)
     }
+
+    @Provides
+    @Singleton
+    fun provideNaverPayService(retrofit: Retrofit)
+    : NaverPayService {
+        return retrofit.create(NaverPayService::class.java)
+    }
+
+    @Provides
+    @Singleton
+    fun provideNaverPayRepository(
+        naverPayService: NaverPayService) : NaverPayRepository {
+        return NaverPayRepository(naverPayService)
+    }
+
 }

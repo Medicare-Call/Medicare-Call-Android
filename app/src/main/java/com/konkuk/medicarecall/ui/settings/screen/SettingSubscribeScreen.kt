@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -46,7 +47,7 @@ fun SettingSubscribeScreen(
 ) {
 
     val eldersInfo = viewModel.subscriptions
-    val error = viewModel.errorMessage
+    Log.d("SettingSubscribeScreen", "Elders Info: $eldersInfo")
 
     Column(
         modifier = modifier

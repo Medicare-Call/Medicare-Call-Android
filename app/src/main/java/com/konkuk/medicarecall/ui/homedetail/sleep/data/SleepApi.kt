@@ -6,7 +6,7 @@ import retrofit2.http.Path
 import retrofit2.http.Query
 
 interface SleepApi {
-    @GET("/elders/{elderId}/sleep")
+    @GET("elders/{elderId}/sleep")
     suspend fun getDailySleep(
         @Path("elderId") elderId: Int,
         @Query("date") date: String

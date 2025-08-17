@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface StatisticsApi {
 
 
-    @GET("/elders/{elderId}/weekly-stats")
+    @GET("elders/{elderId}/weekly-stats")
     suspend fun getStatistics(
         @Path("elderId") elderId: Int,
         @Query("startDate") startDate: String,

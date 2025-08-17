@@ -32,8 +32,8 @@ fun String.isValidDate(): Boolean {
         // 기준 날짜 생성
         val minDate = LocalDate.of(1900, 1, 1)
 
-        // 파싱된 날짜가 기준 날짜보다 이전이 아닌지 확인 (같거나 이후이면 true)
-        !date.isBefore(minDate)
+        // 파싱된 날짜가 기준 날짜보다 이전이 아닌지 확인 + 현재 날짜보다 이후 날짜가 아닌지 확인
+        !date.isBefore(minDate) && !date.isAfter(LocalDate.now())
 
     } catch (e: DateTimeParseException) {
         // 날짜 형식이 올바르지 않거나 존재할 수 없는 날짜(예: 20250230)이면 false 반환

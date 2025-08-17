@@ -85,13 +85,18 @@ fun HomeStateHealthContainer(
                     modifier = Modifier,
                     verticalAlignment = Alignment.CenterVertically
                 ) {
+
+                    val textColor = if (healthStatus.isBlank()) {
+                        MediCareCallTheme.colors.gray4
+                    } else {
+                        MediCareCallTheme.colors.gray8
+                    }
+
                     Text(
                         text = healthStatus.ifBlank { "미기록" },
                         style = MediCareCallTheme.typography.SB_22,
-                        color = MediCareCallTheme.colors.gray8
+                        color = textColor
                     )
-
-
                 }
             }
 

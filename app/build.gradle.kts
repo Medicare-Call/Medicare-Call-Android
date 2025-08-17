@@ -1,4 +1,4 @@
-import org.gradle.api.internal.DocumentationRegistry.BASE_URL
+
 import org.gradle.kotlin.dsl.implementation
 import java.util.Properties
 import kotlin.apply

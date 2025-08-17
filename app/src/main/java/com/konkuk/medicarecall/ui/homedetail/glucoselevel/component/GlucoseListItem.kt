@@ -14,19 +14,23 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import java.time.LocalDate
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 
 @Composable
 fun GlucoseListItem(
     modifier: Modifier = Modifier,
-    date: String,
+    date: LocalDate,
     timingLabel: String,
     value: Int
 ) {
-
+    val formatter = DateTimeFormatter.ofPattern("M월 d일 (E)", Locale.KOREAN)
+    val formattedDate = date.format(formatter)
     Column(modifier = modifier.padding(horizontal = 20.dp)) {
         // 날짜 텍스트
         Text(
-            text = date,
+            text = formattedDate,
             style = MediCareCallTheme.typography.R_14,
             color = MediCareCallTheme.colors.gray4
         )
@@ -75,7 +79,7 @@ fun GlucoseListItem(
 private fun PreviewGlucoseListItem() {
     MediCareCallTheme {
         GlucoseListItem(
-            date = "5월 21일 (수)",
+            date = LocalDate.now(),
             timingLabel = "아침 | 공복",
             value = 180
         )

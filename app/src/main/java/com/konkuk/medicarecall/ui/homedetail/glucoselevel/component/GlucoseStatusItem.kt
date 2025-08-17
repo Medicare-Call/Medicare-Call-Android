@@ -38,7 +38,7 @@ fun GlucoseStatusItem(
                     .size(8.dp),
                 painter = painterResource(id = R.drawable.ic_glucose_low),
                 contentDescription = "low level",
-                tint = Color.Unspecified
+                tint = MediCareCallTheme.colors.active
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
@@ -56,7 +56,7 @@ fun GlucoseStatusItem(
                     .size(8.dp),
                 painter = painterResource(id = R.drawable.ic_glucose_normal),
                 contentDescription = "normal level",
-                tint = Color.Unspecified
+                tint = MediCareCallTheme.colors.positive
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(
@@ -74,7 +74,7 @@ fun GlucoseStatusItem(
                     .size(8.dp),
                 painter = painterResource(id = R.drawable.ic_glucose_high),
                 contentDescription = "high level",
-                tint = Color.Unspecified
+                tint = MediCareCallTheme.colors.negative
             )
             Spacer(modifier = Modifier.width(4.dp))
             Text(

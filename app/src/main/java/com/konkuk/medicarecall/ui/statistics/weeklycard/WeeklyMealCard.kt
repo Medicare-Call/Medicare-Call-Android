@@ -23,8 +23,8 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.ui.statistics.model.WeeklyMealUiState
 import com.konkuk.medicarecall.ui.statistics.WeeklySummaryUtil
+import com.konkuk.medicarecall.ui.statistics.model.WeeklyMealUiState
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
@@ -71,8 +71,20 @@ fun WeeklyMealCard(
                 verticalArrangement = Arrangement.spacedBy(0.dp)
             ) {
                 meal.forEach { weeklyMeal ->
-                    val iconColor =
+
+                    val isUnrecorded = weeklyMeal.eatenCount < 0 // -1과 같은 음수 값으로 미기록 판단
+
+                    val iconColor = if (isUnrecorded) {
+                        MediCareCallTheme.colors.gray2
+                    } else {
                         WeeklySummaryUtil.getMealIconColor(weeklyMeal, MediCareCallTheme.colors)
+                    }
+
+                    val countText = if (isUnrecorded) {
+                        "- / ${weeklyMeal.totalCount}"
+                    } else {
+                        "${weeklyMeal.eatenCount}/${weeklyMeal.totalCount}"
+                    }
 
                     Row(
                         modifier = Modifier
@@ -84,22 +96,22 @@ fun WeeklyMealCard(
                             style = MediCareCallTheme.typography.R_15,
                             color = MediCareCallTheme.colors.gray4
                         )
+
                         Spacer(modifier = Modifier.width(10.dp))
 
-
-                            Icon(
-                                modifier = Modifier
-                                    .size(16.dp),
-                                painter = painterResource(id = R.drawable.ic_filledbowl),
-                                contentDescription = null,
-                                tint = iconColor
-                            )
-                            Spacer(modifier = Modifier.width(4.dp))
-                            Text(
-                                "${weeklyMeal.eatenCount}/${weeklyMeal.totalCount}",
-                                style = MediCareCallTheme.typography.R_14,
-                                color = MediCareCallTheme.colors.gray6
-                            )
+                        Icon(
+                            modifier = Modifier
+                                .size(16.dp),
+                            painter = painterResource(id = R.drawable.ic_filledbowl),
+                            contentDescription = null,
+                            tint = iconColor
+                        )
+                        Spacer(modifier = Modifier.width(4.dp))
+                        Text(
+                            text = countText,
+                            style = MediCareCallTheme.typography.R_14,
+                            color = MediCareCallTheme.colors.gray6
+                        )
 
                     }
                 }
@@ -108,16 +120,31 @@ fun WeeklyMealCard(
     }
 }
 
-@Preview
+
+@Preview(name = "식사 카드 - 기록 있음")
 @Composable
-fun PreviewWeeklyMealCard() {
-        WeeklyMealCard(
-            modifier = Modifier
-                .size(150.dp,140.dp),
-            meal = listOf(
-                WeeklyMealUiState("아침", 7, 7),
-                WeeklyMealUiState("점심", 5, 7),
-                WeeklyMealUiState("저녁", 0, 7)
-            )
+fun PreviewWeeklyMealCard_Recorded() {
+    WeeklyMealCard(
+        modifier = Modifier
+            .width(150.dp),
+        meal = listOf(
+            WeeklyMealUiState("아침", 7, 7),
+            WeeklyMealUiState("점심", 5, 7),
+            WeeklyMealUiState("저녁", 0, 7)
         )
+    )
+}
+
+@Preview(name = "식사 카드 - 미기록")
+@Composable
+fun PreviewWeeklyMealCard_Unrecorded() {
+    WeeklyMealCard(
+        modifier = Modifier
+            .width(150.dp),
+        meal = listOf(
+            WeeklyMealUiState("아침", -1, 7),
+            WeeklyMealUiState("점심", -1, 7),
+            WeeklyMealUiState("저녁", -1, 7)
+        )
+    )
 }

@@ -19,18 +19,23 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
+import androidx.compose.ui.text.PlatformTextStyle
+import androidx.compose.ui.text.style.LineHeightStyle
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepUiState
 import com.konkuk.medicarecall.ui.theme.LocalMediCareCallShadowProvider
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
+val noFontPadding = PlatformTextStyle(includeFontPadding = false)
+
 @Composable
 fun HomeSleepContainer(
     modifier: Modifier = Modifier,
-    sleeps: SleepUiState,
+    totalSleepHours: Int,
+    totalSleepMinutes: Int,
+    isRecorded: Boolean,
     onClick: () -> Unit
 ) {
 
@@ -79,38 +84,70 @@ fun HomeSleepContainer(
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
-
                 ) {
 
                 Row(
                     modifier = Modifier,
-                    verticalAlignment = Alignment.Bottom
+                    verticalAlignment = Alignment.CenterVertically
                 ) {
+
+                    val hoursText = if (isRecorded) "$totalSleepHours" else "--"
+                    val minutesText = if (isRecorded) "$totalSleepMinutes" else "--"
+                    val textColor = if (isRecorded) MediCareCallTheme.colors.gray8 else MediCareCallTheme.colors.gray4
+
                     Text(
-                        text = "${sleeps.totalSleepHours}",
-                        style = MediCareCallTheme.typography.SB_22,
-                        color = MediCareCallTheme.colors.gray8,
+                        text = hoursText,
+                        style = MediCareCallTheme.typography.SB_22.copy(
+                            platformStyle = noFontPadding,
+                            lineHeightStyle = LineHeightStyle(
+                                alignment = LineHeightStyle.Alignment.Center,
+                                trim = LineHeightStyle.Trim.Both
+                            )
+                        ),
+                        modifier = Modifier.alignByBaseline(),
+                        color = textColor
                     )
                     Spacer(modifier = Modifier.width(4.dp))
                     Text(
-                        "시간",
-                        style = MediCareCallTheme.typography.R_16,
-                        color = MediCareCallTheme.colors.gray8,
+                        text = "시간",
+                        style = MediCareCallTheme.typography.R_16.copy(
+                            platformStyle = noFontPadding,
+                            lineHeightStyle = LineHeightStyle(
+                                alignment = LineHeightStyle.Alignment.Center,
+                                trim = LineHeightStyle.Trim.Both
+                            )
+                        ),
+                        modifier = Modifier.alignByBaseline(),
+                        color = MediCareCallTheme.colors.gray8
                     )
                     Spacer(modifier = Modifier.width(4.dp))
 
                     Text(
-                        text = "${sleeps.totalSleepMinutes}",
-                        style = MediCareCallTheme.typography.SB_22,
-                        color = MediCareCallTheme.colors.gray8,
+                        text = minutesText,
+                        style = MediCareCallTheme.typography.SB_22.copy(
+                            platformStyle = noFontPadding,
+                            lineHeightStyle = LineHeightStyle(
+                                alignment = LineHeightStyle.Alignment.Center,
+                                trim = LineHeightStyle.Trim.Both
+                            )
+                        ),
+                        modifier = Modifier.alignByBaseline(),
+                        color = textColor
                     )
 
                     Spacer(modifier = Modifier.width(4.dp))
 
                     Text(
-                        "분",
-                        style = MediCareCallTheme.typography.R_16,
-                        color = MediCareCallTheme.colors.gray8,
+                        text = "분",
+                        style = MediCareCallTheme.typography.R_16.copy(
+                            platformStyle = noFontPadding,
+                            lineHeightStyle = LineHeightStyle(
+                                alignment = LineHeightStyle.Alignment.Center,
+                                trim = LineHeightStyle.Trim.Both
+                            )
+                        ),
+                        modifier = Modifier.alignByBaseline(),
+                        color = MediCareCallTheme.colors.gray8
                     )
 
 
@@ -124,20 +161,24 @@ fun HomeSleepContainer(
     }
 }
 
-@Preview
+@Preview(showBackground = true, name = "수면 기록 있음")
 @Composable
-fun PreviewHomeSleepContainer() {
-
-
+private fun PreviewHomeSleepContainerRecorded() {
     HomeSleepContainer(
-        onClick = {},
-        sleeps = SleepUiState(
-            date = "2025-07-07",
-            totalSleepHours = 8,
-            totalSleepMinutes = 12,
-            bedTime = "오후 10:12",
-            wakeUpTime = "오전 06:00",
-            isRecorded = true
-        )
+        totalSleepHours = 8,
+        totalSleepMinutes = 12,
+        isRecorded = true,
+        onClick = {}
+    )
+}
+
+@Preview(showBackground = true, name = "수면 기록 없음")
+@Composable
+private fun PreviewHomeSleepContainerNoRecord() {
+    HomeSleepContainer(
+        totalSleepHours = 0,
+        totalSleepMinutes = 0,
+        isRecorded = false,
+        onClick = {}
     )
 }

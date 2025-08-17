@@ -56,7 +56,7 @@ fun DateSelector(
 
     // 모달 표시 조건
     if (showDatePicker) {
-        DatePickerModal(
+        DatePickerModal( initialDate = selectedDate,
             onDateSelected = {
                 onDateSelected(it)
                 showDatePicker = false

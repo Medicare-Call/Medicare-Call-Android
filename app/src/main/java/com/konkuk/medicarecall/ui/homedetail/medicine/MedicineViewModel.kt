@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.homedetail.medicine
 
+import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.ui.homedetail.medicine.data.MedicineRepository
@@ -7,8 +8,11 @@ import com.konkuk.medicarecall.ui.homedetail.medicine.model.MedicineUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
 import kotlinx.coroutines.flow.StateFlow
+import kotlinx.coroutines.flow.update
 import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -16,40 +20,67 @@ class MedicineViewModel @Inject constructor(
     private val medicineRepository: MedicineRepository
 ) : ViewModel() {
 
-    private val _selectedDate = MutableStateFlow(LocalDate.now())
-    val selectedDate: StateFlow<LocalDate> = _selectedDate
-
-    private val _medicines = MutableStateFlow<List<MedicineUiState>>(emptyList())
-    val medicines: StateFlow<List<MedicineUiState>> = _medicines
-
-    private val guardianId = 1 // TODO: 로그인 연동 시 대체
-
-    init {
-        fetchMedicines(_selectedDate.value)
+    private companion object {
+        const val TAG = "MED_API"
     }
 
-    fun selectDate(date: LocalDate) {
-        _selectedDate.value = date
-        fetchMedicines(date)
-    }
+    private val elderId = 1 // 테스트용
 
-    private fun fetchMedicines(date: LocalDate) {
+    data class ScreenState(
+        val loading: Boolean = false,
+        val items: List<MedicineUiState> = emptyList(),
+        val emptyDate: LocalDate? = null
+    )
+
+    private val _state = MutableStateFlow(ScreenState())
+    val state: StateFlow<ScreenState> = _state
+
+    fun loadMedicinesForDate(date: LocalDate) {
         viewModelScope.launch {
+            val formatted = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            Log.d(TAG, "Request elderId=$elderId, date=$formatted")
+
+            _state.update { it.copy(loading = true, emptyDate = null) }
             try {
-                val result = medicineRepository.getMedicineUiStateList(guardianId, date)
-                _medicines.value = result
+                val list = medicineRepository.getMedicineUiStateList(elderId, date)
+
+                _state.update {
+                    if (list.isEmpty()) {
+                        it.copy(loading = false, items = emptyList(), emptyDate = date)
+                    } else {
+                        it.copy(loading = false, items = list, emptyDate = null)
+                    }
+                }
+                Log.i(TAG, "Success elderId=$elderId, date=$formatted, items=${list.size}")
             } catch (e: Exception) {
-                // TODO: 네트워크 에러 처리 (미기록 상태 등)
-                _medicines.value = emptyList()
+                when (e) {
+                    is HttpException -> {
+                        when (e.code()) {
+                            404 -> {
+                                // 미기록
+                                Log.i(TAG, "No data (404) elderId=$elderId, date=$formatted")
+                                _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
+                            }
+                            400 -> {
+                                Log.w(TAG, "Bad request (400) elderId=$elderId, date=$formatted, msg=${e.message()}")
+                                _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
+                            }
+                            401, 403 -> {
+                                Log.w(TAG, "Unauthorized (${e.code()}) elderId=$elderId")
+                                _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
+                            }
+                            else -> {
+                                Log.e(TAG, "API error code=${e.code()} elderId=$elderId, date=$formatted", e)
+                                _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
+                            }
+                        }
+                    }
+                    else -> {
+                        Log.e(TAG, "Unexpected error elderId=$elderId, date=$formatted", e)
+                        _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
+                    }
+                }
             }
         }
-    }
-
-    // 주간 달력 표시용: 선택한 날짜 기준으로 주간 날짜 계산
-    fun getCurrentWeekDates(): List<LocalDate> {
-        val selected = _selectedDate.value
-        val dayOfWeek = selected.dayOfWeek.value % 7 // 일요일 = 0
-        val sunday = selected.minusDays(dayOfWeek.toLong())
-        return (0..6).map { sunday.plusDays(it.toLong()) }
     }
 }

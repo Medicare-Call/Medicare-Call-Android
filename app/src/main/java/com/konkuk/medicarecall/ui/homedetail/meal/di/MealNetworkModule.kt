@@ -1,7 +1,8 @@
 package com.konkuk.medicarecall.ui.homedetail.meal.di
 
 import com.konkuk.medicarecall.ui.homedetail.meal.data.MealApi
-import com.konkuk.medicarecall.ui.homedetail.medicine.data.MedicineApi
+import com.konkuk.medicarecall.ui.homedetail.meal.data.MealRepository
+import com.konkuk.medicarecall.ui.homedetail.meal.data.MealRepositoryImpl
 import dagger.Module
 import dagger.Provides
 import dagger.hilt.InstallIn
@@ -19,4 +20,9 @@ object MealNetworkModule {
         return retrofit.create(MealApi::class.java)
     }
 
+    @Provides
+    @Singleton
+    fun provideMealRepository(mealApi: MealApi): MealRepository {
+        return MealRepositoryImpl(mealApi)
+    }
 }

@@ -1,15 +1,13 @@
 package com.konkuk.medicarecall.ui.home.data
 
-import com.konkuk.medicarecall.ui.home.model.MedicineUiState
 import com.konkuk.medicarecall.ui.home.model.HomeUiState
+import com.konkuk.medicarecall.ui.home.model.MedicineUiState
 import java.time.LocalDate
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
     private val homeApi: HomeApi
 ) {
-
-
     private fun mapNextTimeToKor(nextTime: String?): String {
         return when (nextTime) {
             "MORNING" -> "아침"
@@ -21,7 +19,7 @@ class HomeRepository @Inject constructor(
 
     suspend fun getHomeUiState(elderId: Int, date: LocalDate): HomeUiState {
         return try {
-            val res = homeApi.getHomeSummary(elderId, date.toString())
+            val res = homeApi.getHomeSummary(elderId, /*date.toString()*/)
             HomeUiState(
                 elderName = res.elderName,
                 balloonMessage = res.aiSummary,
@@ -35,7 +33,7 @@ class HomeRepository @Inject constructor(
                         nextDoseTime = mapNextTimeToKor(it.nextTime)
                     )
                 },
-                sleepHours = res.sleep.meanHours + res.sleep.meanMinutes / 60.0,
+                sleep = res.sleep,
                 healthStatus = res.healthStatus,
                 mentalStatus = res.mentalStatus,
                 glucoseLevelAverageToday = res.bloodSugar.meanValue

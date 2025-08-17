@@ -11,7 +11,7 @@ package com.konkuk.medicarecall.ui.statistics.model
  */
 
 data class WeeklySummaryUiState(
-
+    val elderName: String = "",
     val weeklyMealRate: Int,
     val weeklyMedicineRate: Int,
     val weeklyHealthIssueCount: Int,
@@ -28,6 +28,7 @@ data class WeeklySummaryUiState(
     companion object {
 
         val EMPTY = WeeklySummaryUiState(
+            elderName = "",
             weeklyMealRate = -1,
             weeklyMedicineRate = -1,
             weeklyHealthIssueCount = -1,

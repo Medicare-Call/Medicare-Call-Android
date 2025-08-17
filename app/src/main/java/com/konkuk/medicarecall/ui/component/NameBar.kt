@@ -28,6 +28,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
 fun NameBar(
+    name: String,
     modifier: Modifier = Modifier,
     navController: NavHostController,
     onDropdownClick: () -> Unit
@@ -49,9 +50,8 @@ fun NameBar(
             Row(
                 verticalAlignment = Alignment.CenterVertically
             ) {
-
                 Text(
-                    text = "김옥자",
+                    text = name,
                     style = MediCareCallTheme.typography.SB_24,
                     color = MediCareCallTheme.colors.black
                 )
@@ -79,16 +79,17 @@ fun NameBar(
 }
 
 
-    @Preview
-    @Composable
-    fun PreviewNameBar() {
+@Preview
+@Composable
+fun PreviewNameBar() {
 
-        MediCareCallTheme {
+    MediCareCallTheme {
 
-            NameBar(
-                navController = rememberNavController(),
-                onDropdownClick = {}
-            )
-        }
-
+        NameBar(
+            name = "김옥자",
+            navController = rememberNavController(),
+            onDropdownClick = {}
+        )
     }
+
+}

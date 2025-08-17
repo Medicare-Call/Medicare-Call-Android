@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.home
+package com.konkuk.medicarecall.ui.component
 
 import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
@@ -49,7 +49,7 @@ fun NameDropdown(
         )
     ) {
         val dialogWindow = (LocalView.current.parent as? DialogWindowProvider)?.window
-        //Dialog의 기본 스타일 제거
+
         SideEffect {
             dialogWindow?.apply {
                 setDimAmount(0f)

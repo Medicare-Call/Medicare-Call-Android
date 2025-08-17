@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.component.NameBar
+import com.konkuk.medicarecall.ui.component.NameDropdown
 import com.konkuk.medicarecall.ui.statistics.StatisticsUiState
 import com.konkuk.medicarecall.ui.statistics.StatisticsViewModel
 import com.konkuk.medicarecall.ui.statistics.component.WeekendBar
@@ -51,23 +51,25 @@ fun StatisticsScreen(
     statisticsViewModel: StatisticsViewModel = hiltViewModel()
 ) {
 
+    val uiState by statisticsViewModel.uiState.collectAsState()
+    val elderNameList by statisticsViewModel.elderNameList.collectAsState()
     val currentWeek by statisticsViewModel.currentWeek.collectAsState()
     val isLatestWeek by statisticsViewModel.isLatestWeek.collectAsState()
     val isEarliestWeek by statisticsViewModel.isEarliestWeek.collectAsState()
-    val uiState by statisticsViewModel.uiState.collectAsState()
-    LaunchedEffect(currentWeek) {
-        statisticsViewModel.getWeeklyStatistics(elderId = 1, startDate = currentWeek.first)
-    }
+
 
     StatisticsScreenLayout(
         modifier = modifier,
         uiState = uiState,
+        elderNameList = elderNameList,
         navController = navController,
         currentWeek = currentWeek,
         isLatestWeek = isLatestWeek,
         isEarliestWeek = isEarliestWeek,
         onPreviousWeek = { statisticsViewModel.showPreviousWeek() },
         onNextWeek = { statisticsViewModel.showNextWeek() },
+        onDropdownItemSelected = { name -> statisticsViewModel.selectElder(name) }
+
     )
 }
 
@@ -76,14 +78,23 @@ fun StatisticsScreen(
 fun StatisticsScreenLayout(
     modifier: Modifier = Modifier,
     uiState: StatisticsUiState,
+    elderNameList: List<String>,
     navController: NavHostController,
     currentWeek: Pair<LocalDate, LocalDate>,
     isLatestWeek: Boolean,
     isEarliestWeek: Boolean,
     onPreviousWeek: () -> Unit,
-    onNextWeek: () -> Unit
+    onNextWeek: () -> Unit,
+    onDropdownItemSelected: (String) -> Unit,
 ) {
     val dropdownOpened = remember { mutableStateOf(false) }
+
+
+    val selectedElderName = remember(uiState.summary?.elderName, elderNameList) {
+        (uiState.summary?.elderName ?: "").ifEmpty {
+            elderNameList.firstOrNull() ?: "어르신 통계"
+        }
+    }
 
     Column(
         modifier = modifier
@@ -91,6 +102,7 @@ fun StatisticsScreenLayout(
             .background(MediCareCallTheme.colors.white)
     ) {
         NameBar(
+            name = selectedElderName,
             modifier = Modifier.statusBarsPadding(),
             navController = navController,
             onDropdownClick = { dropdownOpened.value = !dropdownOpened.value }
@@ -114,7 +126,17 @@ fun StatisticsScreenLayout(
         }
     }
 
-    if (dropdownOpened.value) { /* ... */ }
+    if (dropdownOpened.value) {
+        NameDropdown(
+            items = elderNameList,
+            selectedName = selectedElderName,
+            onDismiss = { dropdownOpened.value = false },
+            onItemSelected = { name ->
+                onDropdownItemSelected(name)
+                dropdownOpened.value = false
+            }
+        )
+    }
 }
 
 
@@ -188,7 +210,7 @@ private fun StatisticsContent(
 @Preview(name = "주간 통계 - 기록 있음", showBackground = true, heightDp = 1200)
 @Composable
 fun PreviewStatisticsScreen_Recorded() {
-    // ...
+
     val dummySummary = WeeklySummaryUiState(
         weeklyMealRate = 65,
         weeklyMedicineRate = 57,
@@ -219,12 +241,14 @@ fun PreviewStatisticsScreen_Recorded() {
     MediCareCallTheme {
         StatisticsScreenLayout(
             uiState = dummyUiState,
+            elderNameList = listOf("김옥자", "박막례"),
             navController = rememberNavController(),
             currentWeek = Pair(LocalDate.now(), LocalDate.now().plusDays(6)),
             isLatestWeek = false,
             isEarliestWeek = false,
             onPreviousWeek = {},
-            onNextWeek = {}
+            onNextWeek = {},
+            onDropdownItemSelected = {}
         )
 
     }
@@ -234,18 +258,18 @@ fun PreviewStatisticsScreen_Recorded() {
 @Preview(name = "주간 통계 - 미기록", showBackground = true, heightDp = 1200)
 @Composable
 fun PreviewStatisticsScreen_Unrecorded() {
-    // ...
-
 
     MediCareCallTheme {
         StatisticsScreenLayout(
             uiState = StatisticsUiState(summary = WeeklySummaryUiState.EMPTY),
+            elderNameList = listOf("김옥자", "박막례"),
             navController = rememberNavController(),
             currentWeek = Pair(LocalDate.now(), LocalDate.now().plusDays(6)),
             isLatestWeek = true,
             isEarliestWeek = true,
             onPreviousWeek = {},
-            onNextWeek = {}
+            onNextWeek = {},
+            onDropdownItemSelected = {}
         )
     }
 

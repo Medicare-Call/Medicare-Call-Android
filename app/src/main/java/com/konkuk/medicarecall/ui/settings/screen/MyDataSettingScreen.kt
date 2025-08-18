@@ -142,7 +142,7 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
                     text = "로그아웃",
                     style = MediCareCallTheme.typography.R_16,
                     color = MediCareCallTheme.colors.gray8,
-                    modifier = Modifier.clickable {
+                    modifier = Modifier.fillMaxWidth().clickable {
                         showLogoutDialog = true
                     }
                 )

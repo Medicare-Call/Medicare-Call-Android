@@ -248,7 +248,7 @@ fun NavGraph(
             }
 
             composable(
-                route = "${Route.SubscribeDetail.route}/{noticeJson}",
+                route = "${Route.AnnouncementDetail.route}/{noticeJson}",
                 arguments = listOf(navArgument("noticeJson") { type = NavType.StringType })
             ) { backStackEntry ->
                 val encodedJson = backStackEntry.arguments?.getString("noticeJson") ?: ""

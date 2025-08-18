@@ -33,16 +33,23 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.navigation.Route
+import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.settings.component.LogoutConfirmDialog
 import com.konkuk.medicarecall.ui.settings.component.SettingInfoItem
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.viewmodel.MyDataViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
+import kotlinx.serialization.json.Json
 
 @Composable
 fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modifier: Modifier = Modifier, myDataViewModel: MyDataViewModel = hiltViewModel()) {
+    val myDataInfo = myDataViewModel.myDataInfo
     var showLogoutDialog by remember { mutableStateOf(false) }
+    val gender = when (myDataInfo?.gender) {
+        GenderType.FEMALE -> "여성"
+        else -> "남성"
+    }
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -94,13 +101,22 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
                         text = "편집",
                         style = MediCareCallTheme.typography.R_16,
                         color = MediCareCallTheme.colors.active,
-                        modifier = modifier.clickable(onClick = {navController.navigate(Route.MyDetail.route)})
+                        modifier = modifier.clickable(onClick = {
+                            val json = Json.encodeToString(myDataInfo)
+                            val encodedJson = java.net.URLEncoder.encode(json, Charsets.UTF_8.toString())
+                            // 네비게이션을 통해 MyDetail 화면으로 이동
+                            navController.navigate("${Route.MyDetail.route}/$encodedJson") {
+                                launchSingleTop = true // 중복된 화면 방지
+                                restoreState = true // 이전 상태 복원
+                            }
+                        }
+                    )
                     )
                 }
-                SettingInfoItem("이름", "김미연")
-                SettingInfoItem("생일", "1970년 5월 29일")
-                SettingInfoItem("성별", "여성")
-                SettingInfoItem("휴대폰번호", "010-0000-0000")
+                SettingInfoItem("이름", myDataInfo?.name ?: "이름 없음")
+                SettingInfoItem("생일", formatDateToKorean((myDataInfo?.birthDate ?: "날짜 정보가 없습니다")))
+                SettingInfoItem("성별", gender)
+                SettingInfoItem("휴대폰번호", formatPhoneNumber(myDataInfo?.phone ?: "전화번호 정보가 없습니다"))
             }
 
             Spacer(modifier = modifier.height(12.dp))
@@ -166,4 +182,12 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
         )
     }
 }
+
+fun formatPhoneNumber(number: String): String {
+    return number.replaceFirst(
+        "(\\d{3})(\\d{4})(\\d{4})".toRegex(),
+        "$1-$2-$3"
+    )
+}
+
 

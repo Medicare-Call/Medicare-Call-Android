@@ -18,6 +18,7 @@ import androidx.navigation.navigation
 import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
+import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.NoticesResponseDto
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
 import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
@@ -223,9 +224,14 @@ fun NavGraph(
             }
 
             composable(
-                route = Route.MyDetail.route
-            ) {
+                route = "${Route.MyDetail}/{myDataJson}",
+                arguments = listOf(navArgument("myDataJson") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val encodedJson = backStackEntry.arguments?.getString("myDataJson") ?: ""
+                val decodedJson = URLDecoder.decode(encodedJson, StandardCharsets.UTF_8.toString())
+                val myDataInfo = Json.decodeFromString<MyInfoResponseDto>(decodedJson)
                 MyDetailScreen(
+                    myDataInfo = myDataInfo,
                     onBack = {
                         navController.popBackStack()
                     },
@@ -340,9 +346,6 @@ fun NavGraph(
 
             composable(route = Route.SettingAlarm.route) {
                 SettingAlarmScreen(
-                    onBack = {
-                        navController.popBackStack()
-                    },
                     navController = navController
                 )
             }

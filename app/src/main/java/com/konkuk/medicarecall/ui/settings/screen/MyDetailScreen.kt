@@ -22,22 +22,24 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavHostController
+import androidx.hilt.navigation.compose.hiltViewModel
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.navigation.Route
+import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
 import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
+import com.konkuk.medicarecall.ui.settings.viewmodel.DetailMyDataViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
 
 @Composable
-fun MyDetailScreen(modifier: Modifier = Modifier,onBack: () -> Unit = {},) {
-    var isMale by remember { mutableStateOf<Boolean?>(false) }
-    var name by remember { mutableStateOf("김미연") }
-    var birth by remember { mutableStateOf("19700529") }
+fun MyDetailScreen(myDataInfo : MyInfoResponseDto,modifier: Modifier = Modifier,onBack: () -> Unit = {},detailMyDataViewModel: DetailMyDataViewModel = hiltViewModel()) {
+    var isMale by remember { mutableStateOf<Boolean?>(myDataInfo.gender == GenderType.MALE) }
+    var name by remember { mutableStateOf(myDataInfo.name) }
+    var birth by remember { mutableStateOf(myDataInfo.birthDate.replace("-", "")) }
     val scrollState = rememberScrollState()
     Column(
         modifier = Modifier
@@ -56,7 +58,6 @@ fun MyDetailScreen(modifier: Modifier = Modifier,onBack: () -> Unit = {},) {
                 )
             },
         )
-
         Column(
             modifier = modifier
                 .fillMaxWidth()
@@ -91,7 +92,6 @@ fun MyDetailScreen(modifier: Modifier = Modifier,onBack: () -> Unit = {},) {
                     onGenderChange =
                         { newValue ->
                             isMale = newValue
-                            // TODO: 필요하다면 여기서 ViewModel 호출 등 추가 로직 실행
                         }
                 )
             }
@@ -99,7 +99,16 @@ fun MyDetailScreen(modifier: Modifier = Modifier,onBack: () -> Unit = {},) {
             CTAButton(
                 type = if (name.isNotEmpty() && birth.isNotEmpty()) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                 text = "확인",
-                onClick = { onBack() }
+                onClick = {
+                    val gender = if (isMale == true) GenderType.MALE else GenderType.FEMALE
+                    detailMyDataViewModel.updateUserData(userInfo = MyInfoResponseDto(
+                        name = name,
+                        birthDate = birth.replaceFirst("(\\d{4})(\\d{2})(\\d{2})".toRegex(), "$1-$2-$3"),
+                        gender = gender,
+                        phone = myDataInfo.phone,
+                        pushNotification = myDataInfo.pushNotification
+                    ))
+                }
             )
         }
     }

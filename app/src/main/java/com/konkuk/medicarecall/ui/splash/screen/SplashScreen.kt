@@ -89,7 +89,7 @@ fun SplashScreen(navController: NavController) {
             painterResource(R.drawable.bg_splash_new),
             "Medicare Call 스플래시",
             Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillHeight
+            contentScale = ContentScale.FillBounds
         )
     }
 }

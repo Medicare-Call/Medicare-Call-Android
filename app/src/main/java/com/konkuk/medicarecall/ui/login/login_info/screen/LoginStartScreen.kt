@@ -94,7 +94,7 @@ fun LoginStartScreen(
             modifier
                 .fillMaxSize()
                 .align(Alignment.Center),
-            contentScale = ContentScale.FillHeight
+            contentScale = ContentScale.FillBounds
 
         )
         Column(

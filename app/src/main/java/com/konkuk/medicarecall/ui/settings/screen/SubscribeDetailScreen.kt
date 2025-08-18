@@ -46,7 +46,7 @@ fun SubscribeDetailScreen(
         .statusBarsPadding()) {
         SettingsTopAppBar(
             modifier = modifier,
-            title = "구독 관리",
+            title = "구독관리",
             leftIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),

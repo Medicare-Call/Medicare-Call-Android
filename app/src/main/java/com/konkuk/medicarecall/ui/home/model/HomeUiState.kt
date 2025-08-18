@@ -15,42 +15,40 @@ data class HomeUiState(
     val glucoseLevelAverageToday: Int = 0
 ) {
     companion object {
-        val EMPTY = HomeUiState(
-            elderName = "",
-            balloonMessage = "",
-            isRecorded = false,
-            isEaten = false,
-            medicines = emptyList(),
-            sleep = HomeResponseDto.SleepDto(0, 0),
-            healthStatus = "",
-            mentalStatus = "",
-            glucoseLevelAverageToday = 0
-        )
+        val EMPTY = HomeUiState()
+
         fun from(dto: HomeResponseDto): HomeUiState = HomeUiState(
             elderName = dto.elderName,
             balloonMessage = dto.aiSummary,
+
             isRecorded = dto.mealStatus.breakfast || dto.mealStatus.lunch || dto.mealStatus.dinner,
             isEaten = dto.mealStatus.breakfast || dto.mealStatus.lunch || dto.mealStatus.dinner,
             breakfastEaten = dto.mealStatus.breakfast,
-            lunchEaten = dto.mealStatus.lunch,
-            dinnerEaten = dto.mealStatus.dinner,
-            medicines = dto.medicationStatus.medicationList.map {
-                MedicineUiState(
-                    medicineName = it.type,
-                    todayTakenCount = it.taken,
-                    todayRequiredCount = it.goal,
-                    nextDoseTime = when (it.nextTime) {
-                        "MORNING" -> "아침"
-                        "LUNCH"   -> "점심"
-                        "DINNER"  -> "저녁"
-                        else      -> "-"
-                    }
-                )
-            },
-            sleep = dto.sleep,
-            healthStatus = dto.healthStatus,
-            mentalStatus = dto.mentalStatus,
-            glucoseLevelAverageToday = dto.bloodSugar.meanValue
+            lunchEaten     = dto.mealStatus.lunch,
+            dinnerEaten    = dto.mealStatus.dinner,
+
+            medicines = dto.medicationStatus.medicationList
+                .orEmpty()
+                .map {
+                    MedicineUiState(
+                        medicineName = it.type,
+                        todayTakenCount = it.taken,
+                        todayRequiredCount = it.goal,
+                        nextDoseTime = when (it.nextTime) {
+                            "MORNING" -> "아침"
+                            "LUNCH"   -> "점심"
+                            "DINNER"  -> "저녁"
+                            null, ""  -> "-"
+                            else      -> it.nextTime
+                        }
+                    )
+                },
+
+
+            sleep = dto.sleep ?: HomeResponseDto.SleepDto(0, 0),
+            healthStatus = dto.healthStatus ?: "",
+            mentalStatus = dto.mentalStatus ?: "",
+            glucoseLevelAverageToday = dto.bloodSugar?.meanValue ?: 0
         )
     }
 }

@@ -26,9 +26,7 @@ class MealViewModel @Inject constructor(
     private val _meals = MutableStateFlow<List<MealUiState>>(emptyList())
     val meals: StateFlow<List<MealUiState>> = _meals
 
-    private val elderId = 1 // 테스트용
-
-    fun loadMealsForDate(date: LocalDate) {
+    fun loadMealsForDate(elderId: Int, date: LocalDate) {
         viewModelScope.launch {
             val formatted = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
             Log.d(TAG, "Request elderId=$elderId, date=$formatted")

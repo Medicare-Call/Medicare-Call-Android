@@ -38,20 +38,30 @@ fun MedicineDetailCard(
     doseStatusList: List<DoseStatusItem>,   // 복용 상태 리스트 (초록/빨강/회색)
     modifier: Modifier = Modifier
 ) {
-    val renderList = remember(doseStatusList, todayRequiredCount) {
-        val normalized = doseStatusList.map { item ->
-            when (item.doseStatus) {
-                DoseStatus.TAKEN        -> item.copy(doseStatus = DoseStatus.TAKEN)
-                DoseStatus.SKIPPED      -> item.copy(doseStatus = DoseStatus.SKIPPED)
-                DoseStatus.NOT_RECORDED -> item.copy(doseStatus = DoseStatus.NOT_RECORDED)
-            }
-        }
-        if (normalized.size < todayRequiredCount) {
-            normalized + List(todayRequiredCount - normalized.size) {
-                DoseStatusItem(time = "", doseStatus = DoseStatus.NOT_RECORDED)
-            }
+    // 이상치 방어
+    val safeRequired = remember(todayRequiredCount) { todayRequiredCount.coerceAtLeast(0) }
+
+
+    val renderList = remember(doseStatusList, safeRequired) {
+        if (safeRequired == 0) {
+            emptyList()
         } else {
-            normalized.take(todayRequiredCount)
+            val normalized = doseStatusList.map {
+                when (it.doseStatus) {
+                    DoseStatus.TAKEN        -> it.copy(doseStatus = DoseStatus.TAKEN)
+                    DoseStatus.SKIPPED      -> it.copy(doseStatus = DoseStatus.SKIPPED)
+                    DoseStatus.NOT_RECORDED -> it.copy(doseStatus = DoseStatus.NOT_RECORDED)
+                }
+            }
+            when {
+                normalized.isEmpty() -> List(safeRequired) {
+                    DoseStatusItem(time = "", doseStatus = DoseStatus.NOT_RECORDED)
+                }
+                normalized.size < safeRequired -> normalized + List(safeRequired - normalized.size) {
+                    DoseStatusItem(time = "", doseStatus = DoseStatus.NOT_RECORDED)
+                }
+                else -> normalized.take(safeRequired)
+            }
         }
     }
 

@@ -7,8 +7,6 @@ import javax.inject.Inject
 class GlucoseRepository @Inject constructor(
     private val glucoseApi: GlucoseApi
 ) {
-
-
     suspend fun getGlucoseGraph(
         elderId: Int,
         startDate: String,

@@ -13,13 +13,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -32,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -86,8 +90,8 @@ fun SetCallScreen(
             .fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
             .padding(horizontal = 20.dp)
-            .padding(top = 16.dp, bottom = 20.dp)
-            .statusBarsPadding()
+            .systemBarsPadding()
+            .imePadding()
     ) {
         LoginBackButton(onClick = onBack)
         Spacer(modifier = modifier.height(20.dp))
@@ -181,6 +185,7 @@ fun SetCallScreen(
                     Text(
                         text = name,
                         modifier = Modifier
+                            .clip(CircleShape)
                             .border(
                                 width = if (idx == selectedIndex) 0.dp else (1.2).dp,
                                 color = if (idx == selectedIndex) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray2,

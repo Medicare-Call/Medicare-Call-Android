@@ -11,6 +11,10 @@ class ElderIdRepository @Inject constructor() {
         this.elderIds.add(mapOf(name to id))
     }
 
+    fun clearElderId() {
+        elderIds.clear()
+    }
+
     fun getElderIds(): List<Map<String, Int>> {
         return elderIds
     }

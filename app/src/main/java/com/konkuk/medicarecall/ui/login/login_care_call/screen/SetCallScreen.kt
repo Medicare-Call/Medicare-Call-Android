@@ -94,10 +94,10 @@ fun SetCallScreen(
             .imePadding()
     ) {
         LoginBackButton(onClick = onBack)
-        Spacer(modifier = modifier.height(20.dp))
         Column(
             modifier = modifier.verticalScroll(scrollState)
         ) {
+            Spacer(modifier = modifier.height(20.dp))
             Text(
                 text = "케이콜 설정하기",
                 style = MediCareCallTheme.typography.M_17,
@@ -318,7 +318,8 @@ fun SetCallScreen(
                             ).show()
                         }
                     )
-                }) // 입력여부에 따라 Type 바뀌도록 수정 필요
+                },
+                modifier = Modifier.padding(bottom = 20.dp)) // 입력여부에 따라 Type 바뀌도록 수정 필요
             if (showBottomSheet) {
                 TimePickerBottomSheet(
                     visible = true,

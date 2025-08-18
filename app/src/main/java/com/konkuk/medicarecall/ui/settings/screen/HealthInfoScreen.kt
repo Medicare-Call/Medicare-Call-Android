@@ -103,7 +103,6 @@ fun HealthInfoScreen(onBack : () -> Unit ={}, navController : NavHostController,
             }
 //            PersonalInfoCard("김옥자",  onClick = {navController.navigate(Route.HealthDetail.route)})
 //            PersonalInfoCard("박막례",  onClick = {navController.navigate(Route.HealthDetail.route)})
-            신
             Spacer(modifier = Modifier.height(20.dp))
         }
 

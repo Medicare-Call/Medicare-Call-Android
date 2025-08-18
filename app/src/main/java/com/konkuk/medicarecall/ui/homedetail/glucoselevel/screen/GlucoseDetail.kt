@@ -73,12 +73,9 @@ fun GlucoseDetail(
     // 선택된 어르신이 바뀌면 실제 데이터 로드
     LaunchedEffect(elderId) {
         elderId?.let { id ->
-            // 필요하면 주 시작일로 교체: calendarViewModel에서 가져와 사용
-            val startDate = LocalDate.now()
-            viewModel.loadWeekFromServer(elderId = id, startDate = startDate)
+            viewModel.loadRecentWeek(elderId = id)
         }
     }
-
     // 그래프 데이터가 바뀔 때마다 포커스를 마지막 점으로 이동
     LaunchedEffect(uiState.graphDataPoints) {
         selectedIndex.intValue =

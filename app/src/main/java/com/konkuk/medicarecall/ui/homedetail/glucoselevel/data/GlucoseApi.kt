@@ -14,6 +14,6 @@ interface GlucoseApi {
     suspend fun getGlucoseGraph(
         @Path("elderId") elderId: Int,
         @Query("startDate") startDate: String,
-        @Query("type") type: GlucoseType // FASTING or AFTER_MEAL
+        @Query("type") type: GlucoseType // BEFORE_MEAL or AFTER_MEAL
     ): GlucoseGraphResponseDto
 }

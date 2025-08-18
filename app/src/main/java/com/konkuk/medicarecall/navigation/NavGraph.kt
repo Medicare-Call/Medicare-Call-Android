@@ -66,10 +66,11 @@ import java.nio.charset.StandardCharsets
 fun NavHostController.navigateTopLevel(route: String) {
     navigate(route) {
         // 그래프 시작점까지 popUp + 상태 저장/복원
-        popUpTo(graph.startDestinationId) {
+        popUpTo(Route.Home.route) {
+            inclusive = false
             saveState = true
         }
-        launchSingleTop = true
+//        launchSingleTop = true
         restoreState = true
     }
 }
@@ -127,7 +128,7 @@ fun NavGraph(
 
             // 홈
             composable(route = Route.Home.route) {
-                TopLevelBackHandler(navController)
+                //TopLevelBackHandler(navController)
                 HomeScreen(
                     navController = navController,
                     onNavigateToMealDetail = { navController.navigate(Route.MealDetail.route) },
@@ -177,7 +178,7 @@ fun NavGraph(
 
             // 통계
             composable(route = Route.Statistics.route) {
-                TopLevelBackHandler(navController)
+                //TopLevelBackHandler(navController)
                 StatisticsScreen(
                     navController = navController
                 )
@@ -186,7 +187,7 @@ fun NavGraph(
 
             // 설정
             composable(route = Route.Settings.route) {
-                TopLevelBackHandler(navController)
+                //TopLevelBackHandler(navController)
                 SettingsScreen(
                     onNavigateToMyDataSetting = {
                         navController.navigate(Route.MyDataSetting.route)

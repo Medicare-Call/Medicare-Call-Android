@@ -148,7 +148,7 @@ fun MedicationItem(
             placeHolder = "예시) 당뇨약",
             onTextChange = { inputText.value = it },
             clickPlus = {
-                if (inputText.value.isNotBlank()) { // 입력값이 있을 때만 동작
+                if (inputText.value.isNotBlank() && selectedList.isNotEmpty()) { // 입력값이 있을 때만 동작
                     selectedList.forEach { time ->
                         val currentList = medicationSchedule.getValue(time)
                         if (inputText.value !in currentList) {

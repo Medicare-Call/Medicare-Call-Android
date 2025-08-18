@@ -33,8 +33,8 @@ fun AddTextField(
     Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         OutlinedTextField(
             modifier = modifier
-                .weight(1f)
-                .height(55.dp),
+                .weight(1f),
+//                .height(55.dp),
             value = inputText,
             shape = RoundedCornerShape(14.dp),
             onValueChange = onTextChange,
@@ -51,7 +51,7 @@ fun AddTextField(
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MediCareCallTheme.colors.white,
                 unfocusedContainerColor = MediCareCallTheme.colors.white,
-                focusedIndicatorColor = MediCareCallTheme.colors.gray2,
+                focusedIndicatorColor = MediCareCallTheme.colors.main,
                 unfocusedIndicatorColor = MediCareCallTheme.colors.gray2,
             ),
             singleLine = true,

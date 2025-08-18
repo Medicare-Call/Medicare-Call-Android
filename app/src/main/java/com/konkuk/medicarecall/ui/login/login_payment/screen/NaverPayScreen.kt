@@ -518,6 +518,7 @@ fun NaverPayScreen(
                                                 "Payment failed: ${result.message ?: "unknown"}"
                                             )
                                             // TODO: 실패 UI/토스트 등
+                                            navController.popBackStack()
                                         }
                                     } catch (e: Exception) {
                                         Log.e("NaverPayScreen", "Parse error: ${e.message}")

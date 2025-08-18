@@ -54,6 +54,7 @@ fun WeeklyCalendar(
                             .padding(horizontal = 6.5.dp),
                         text = day,
                         style = MediCareCallTheme.typography.SB_18,
+                        color = MediCareCallTheme.colors.gray9
                     )
                 }
             }

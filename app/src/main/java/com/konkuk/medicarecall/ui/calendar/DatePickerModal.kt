@@ -26,10 +26,19 @@ fun DatePickerModal(
     onDateSelected: (LocalDate) -> Unit,
     onDismiss: () -> Unit
 ) {
-    val customColors = DatePickerDefaults.colors(
+    val dpColors = DatePickerDefaults.colors(
+        containerColor = Color.White,
+        // 👇 상속받지 말고 명시적으로 지정
+        titleContentColor = MediCareCallTheme.colors.black,
+        headlineContentColor = MediCareCallTheme.colors.black,
+        weekdayContentColor = MediCareCallTheme.colors.gray7,
+        subheadContentColor = MediCareCallTheme.colors.gray7,
+        dayContentColor = MediCareCallTheme.colors.black,
+        disabledDayContentColor = MediCareCallTheme.colors.black.copy(alpha = 0.38f),
+
+        // 선택/오늘 강조
         selectedDayContainerColor = MediCareCallTheme.colors.main,
         selectedDayContentColor = Color.White,
-        containerColor = Color.White,
         todayContentColor = MediCareCallTheme.colors.black,
         todayDateBorderColor = MediCareCallTheme.colors.main,
     )
@@ -78,7 +87,7 @@ fun DatePickerModal(
             }
         ) {
             Surface(shape = RoundedCornerShape(16.dp), color = Color.White) {
-                DatePicker(state = datePickerState, colors = customColors)
+                DatePicker(state = datePickerState, colors = dpColors, showModeToggle = false)
             }
         }
     }

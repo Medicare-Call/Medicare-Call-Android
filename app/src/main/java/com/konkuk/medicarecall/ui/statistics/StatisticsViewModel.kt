@@ -41,7 +41,9 @@ class StatisticsViewModel @Inject constructor(
 ) : ViewModel() {
 
 
-
+    fun setSelectedElderId(id: Int) {
+        _selectedElderId.value = id
+    }
     private val _uiState = MutableStateFlow(StatisticsUiState())
     val uiState: StateFlow<StatisticsUiState> = _uiState.asStateFlow()
 

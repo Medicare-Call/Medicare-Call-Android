@@ -14,6 +14,7 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -26,6 +27,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.component.NameBar
 import com.konkuk.medicarecall.ui.component.NameDropdown
+import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.statistics.StatisticsUiState
 import com.konkuk.medicarecall.ui.statistics.StatisticsViewModel
 import com.konkuk.medicarecall.ui.statistics.component.WeekendBar
@@ -50,13 +52,23 @@ fun StatisticsScreen(
     navController: NavHostController,
     statisticsViewModel: StatisticsViewModel = hiltViewModel()
 ) {
-
+    // HomeViewModel 공유 (route = "main")
     val uiState by statisticsViewModel.uiState.collectAsState()
     val elderNameList by statisticsViewModel.elderNameList.collectAsState()
     val currentWeek by statisticsViewModel.currentWeek.collectAsState()
     val isLatestWeek by statisticsViewModel.isLatestWeek.collectAsState()
     val isEarliestWeek by statisticsViewModel.isEarliestWeek.collectAsState()
 
+    // 홈의 네임드롭 선택이 바뀌면 통계에도 반영
+    val mainEntry = remember {
+        runCatching { navController.getBackStackEntry("main") }.getOrNull()
+    }
+    val homeViewModel: HomeViewModel? = mainEntry?.let { hiltViewModel(it) }
+
+    val selectedElderId = homeViewModel?.selectedElderId?.collectAsState()?.value
+    LaunchedEffect(selectedElderId) {
+        selectedElderId?.let { statisticsViewModel.setSelectedElderId(it) }
+    }
 
     StatisticsScreenLayout(
         modifier = modifier,
@@ -110,8 +122,12 @@ fun StatisticsScreenLayout(
 
         Spacer(modifier = Modifier.height(17.dp))
         when {
-            uiState.isLoading -> { /* ... */ }
-            uiState.error != null -> { /* ... */ }
+            uiState.isLoading -> { /* ... */
+            }
+
+            uiState.error != null -> { /* ... */
+            }
+
             uiState.summary != null -> {
 
                 StatisticsContent(

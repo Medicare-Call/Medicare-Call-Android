@@ -103,33 +103,7 @@ fun HealthInfoScreen(onBack : () -> Unit ={}, navController : NavHostController,
             }
 //            PersonalInfoCard("김옥자",  onClick = {navController.navigate(Route.HealthDetail.route)})
 //            PersonalInfoCard("박막례",  onClick = {navController.navigate(Route.HealthDetail.route)})
-            Row(
-                verticalAlignment = Alignment.CenterVertically,
-                modifier = Modifier
-                    .fillMaxWidth()
-                    .height(50.dp)
-                    .figmaShadow(
-                        group = MediCareCallTheme.shadow.shadow03,
-                        cornerRadius = 14.dp
-                    )
-                    .clip(RoundedCornerShape(14.dp))
-                    .background(color = Color.White)
-                    .padding(start = 20.dp)
-                    .clickable {} // 클릭 이벤트 추가
-            ) {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_plus),
-                    contentDescription = "추가 아이콘",
-                    modifier = Modifier.size(20.dp),
-                    tint = MediCareCallTheme.colors.gray4
-                )
-                Spacer(modifier = Modifier.width(8.dp))
-                Text(
-                    text = "어르신 더 추가하기",
-                    style = MediCareCallTheme.typography.SB_14,
-                    color = MediCareCallTheme.colors.gray4,
-                )
-            }
+            신
             Spacer(modifier = Modifier.height(20.dp))
         }
 

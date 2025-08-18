@@ -42,6 +42,8 @@ import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.HealthIssueType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import kotlinx.coroutines.delay
+import kotlinx.coroutines.launch
 
 @Composable
 fun LoginElderMedInfoScreen(
@@ -176,11 +178,14 @@ fun LoginElderMedInfoScreen(
                     CTAButtonType.GREEN,
                     "다음",
                     {
-                        loginElderViewModel.createElderHealthDataList()
-                        loginElderViewModel.updateAllElders()
-                        loginElderViewModel.updateAllEldersHealthInfo()
-                        loginElderViewModel.postElderAndHealth()
-                        navController.navigate(Route.SetCall.route)
+                        coroutineScope.launch {
+                            loginElderViewModel.createElderHealthDataList()
+                            loginElderViewModel.updateAllElders()
+                            loginElderViewModel.updateAllEldersHealthInfo()
+                            loginElderViewModel.postElderAndHealth()
+                            delay(200L)
+                            navController.navigate(Route.SetCall.route)
+                        }
                     },
                     Modifier.padding(top = 30.dp, bottom = 20.dp)
                 )

@@ -70,7 +70,7 @@ fun SetCallScreen(
     val scrollState = rememberScrollState() // 스크롤 상태
     var showBottomSheet by remember { mutableStateOf(false) } // 하단 시트 제어
     val elderNames = eldersInfoViewModel.elderNameIdMapList.map { it.keys.first() } // 어르신 이름 리스트
-    val elderIds = eldersInfoViewModel.elderNameIdMapList.map {it.values.first()} // 어르신 아이디 리스트
+    val elderIds = eldersInfoViewModel.elderNameIdMapList.map { it.values.first() } // 어르신 아이디 리스트
 
     var selectedIndex by remember { mutableIntStateOf(0) } // 선택된 어르신 인덱스
     val selectedId = elderIds.getOrNull(selectedIndex) ?: 0// 선택된 어르신 아이디

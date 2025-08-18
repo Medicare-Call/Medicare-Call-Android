@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.home.data
 
+import com.konkuk.medicarecall.ui.home.model.HomeResponseDto
 import com.konkuk.medicarecall.ui.home.model.HomeUiState
 import com.konkuk.medicarecall.ui.home.model.MedicineUiState
 import java.time.LocalDate
@@ -36,9 +37,11 @@ class HomeRepository @Inject constructor(
             HomeUiState(
                 elderName = res.elderName,
                 balloonMessage = res.aiSummary,
-                isRecorded = res.mealStatus.breakfast || res.mealStatus.lunch || res.mealStatus.dinner,
-                isEaten = res.mealStatus.breakfast || res.mealStatus.lunch || res.mealStatus.dinner,
-                medicines = meds.map {
+                breakfastEaten = res.mealStatus.breakfast,
+                lunchEaten     = res.mealStatus.lunch,
+                dinnerEaten    = res.mealStatus.dinner,
+
+                medicines = res.medicationStatus.medicationList.orEmpty().map {
                     MedicineUiState(
                         medicineName = it.type,
                         todayTakenCount = it.taken,
@@ -46,15 +49,25 @@ class HomeRepository @Inject constructor(
                         nextDoseTime = mapNextTimeToKor(it.nextTime)
                     )
                 },
-                sleep = res.sleep,
-                healthStatus = res.healthStatus,
-                mentalStatus = res.mentalStatus,
-                glucoseLevelAverageToday = res.bloodSugar.meanValue
+
+
+                sleep = res.sleep ?: HomeResponseDto.SleepDto(0, 0),
+                healthStatus = res.healthStatus ?: "",
+                mentalStatus = res.mentalStatus ?: "",
+                glucoseLevelAverageToday = res.bloodSugar?.meanValue ?: 0
             )
         } catch (e: Exception) {
             android.util.Log.e("HomeRepo", "getHomeUiState failed elderId=$elderId", e)
             HomeUiState.EMPTY
         }
     }
+}
 
+
+
+private fun mapNextTimeToKor(nextTime: String?): String = when (nextTime) {
+    "MORNING" -> "아침"
+    "LUNCH"   -> "점심"
+    "DINNER"  -> "저녁"
+    else      -> "-"
 }

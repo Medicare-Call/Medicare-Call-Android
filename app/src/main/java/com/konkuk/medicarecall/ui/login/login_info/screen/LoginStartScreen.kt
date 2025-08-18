@@ -6,9 +6,14 @@ import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.Column
+import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
@@ -71,7 +76,8 @@ fun LoginStartScreen(
         onDispose {
             // 이 화면에서 벗어날 때 실행될 코드
             // 저장해 둔 원래 방향으로 되돌립니다.
-            activity?.requestedOrientation = originalOrientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            activity?.requestedOrientation =
+                originalOrientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
 
@@ -83,14 +89,31 @@ fun LoginStartScreen(
             .navigationBarsPadding()
     ) {
         Image(
-            painter = painterResource(R.drawable.bg_login_start),
+            painter = painterResource(R.drawable.bg_login_start_new),
             "로그인 시작 배경 이미지",
             modifier
                 .fillMaxSize()
                 .align(Alignment.Center),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.FillHeight
 
         )
+        Column(
+            Modifier
+                .align(Alignment.TopStart)
+                .statusBarsPadding()
+                .padding(top = 20.dp, start = 20.dp)
+        ) {
+            Image(
+                painter = painterResource(R.drawable.typo_intro),
+                "AI 기반 케어콜, 부모님 건강관리는 메디케어콜"
+            )
+            Spacer(Modifier.height(30.dp))
+            Image(
+                painter = painterResource(R.drawable.typo_main),
+                "메디케어콜"
+            )
+
+        }
 
         CTAButton(
             type = CTAButtonType.WHITE,

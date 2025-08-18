@@ -86,10 +86,10 @@ fun SplashScreen(navController: NavController) {
             .background(MediCareCallTheme.colors.main),
     ) {
         Image(
-            painterResource(R.drawable.bg_splash),
+            painterResource(R.drawable.bg_splash_new),
             "Medicare Call 스플래시",
             Modifier.fillMaxSize(),
-            contentScale = ContentScale.FillBounds
+            contentScale = ContentScale.FillHeight
         )
     }
 }

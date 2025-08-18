@@ -238,8 +238,9 @@ fun HomeScreenLayout(
                             painter = painterResource(id = R.drawable.char_medi),
                             contentDescription = "캐릭터 이미지",
                             modifier = Modifier
+                                .size((118.5).dp, (100.14).dp)
                                 .align(Alignment.BottomEnd)
-                                .offset(x = (-7.75).dp, y = -55.12.dp)
+                                .offset(x = (-7.75).dp, y = (-55.12).dp)
                                 .zIndex(3f)
                         )
                     }

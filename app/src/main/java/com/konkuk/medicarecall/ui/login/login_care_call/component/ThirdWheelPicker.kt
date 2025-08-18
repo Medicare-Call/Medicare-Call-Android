@@ -28,7 +28,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun ThirdTimeWheelPicker(
     modifier: Modifier = Modifier,
-    initialHour: Int = 1,
+    initialHour: Int = 5,
     initialMinute: Int = 0,
     onTimeChange: (hour: Int, minute: Int) -> Unit = { _, _ -> }
 ) {
@@ -132,7 +132,7 @@ fun ThirdTimeWheelPicker(
             )
             Spacer(Modifier.width(32.dp))
 
-            // 시 (1 ~ 12)
+
             AndroidView(
                 factory = { ctx ->
                     NumberPicker(ctx).apply {

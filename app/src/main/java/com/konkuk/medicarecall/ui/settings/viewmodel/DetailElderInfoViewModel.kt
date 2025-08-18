@@ -43,12 +43,6 @@ class DetailElderInfoViewModel @Inject constructor(
         Log.d("DeleteElderInfoViewModel", "어르신 정보 삭제 요청: ID = $elderId")
         viewModelScope.launch {
             eldersInfoRepository.deleteElder(elderId)
-                .onSuccess {
-                    Log.d("DeleteElderInfoViewModel", "어르신 정보 삭제 완료: ID = $elderId")
-                }
-                .onFailure { exception ->
-                    Log.e("DeleteElderInfoViewModel", "어르신 정보 삭제 실패: $exception")
-                }
         }
     }
 

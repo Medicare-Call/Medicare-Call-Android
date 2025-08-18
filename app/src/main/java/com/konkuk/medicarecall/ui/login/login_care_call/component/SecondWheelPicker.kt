@@ -29,7 +29,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun SecondTimeWheelPicker(
     modifier: Modifier = Modifier,
-    initialHour: Int = 1,
+    initialHour: Int = 12,
     initialMinute: Int = 0,
     onTimeChange: (hour: Int, minute: Int) -> Unit = {_, _ -> }
 ) {

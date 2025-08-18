@@ -135,7 +135,8 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onClick = {
                                             selectedIndex = index
-                                            navController.navigateTopLevel(item.route) // 네비게이션 아이템 클릭 시 해당 라우트로 이동
+                                            if (currentRoute != item.route)
+                                                navController.navigateTopLevel(item.route) // 네비게이션 아이템 클릭 시 해당 라우트로 이동
                                         },
                                         icon = {
                                             Icon(

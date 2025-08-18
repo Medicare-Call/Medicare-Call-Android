@@ -47,6 +47,11 @@ fun SplashScreen(navController: NavController) {
                 launchSingleTop = true
             }
             navController.navigate(route) {
+                if(route == Route.Home.route) {
+                    popUpTo(Route.LoginStart.route) {
+                        inclusive = true
+                    }
+                }
                 launchSingleTop = true
             }
 

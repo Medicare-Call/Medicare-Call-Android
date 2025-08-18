@@ -41,7 +41,12 @@ fun LoginStartScreen(
                 is NavigationDestination.GoToPayment -> Route.Payment.route
                 is NavigationDestination.GoToHome -> Route.Home.route
             }
-            navController.navigate(route)
+            navController.navigate(route) {
+                if (route == Route.Home.route)
+                    popUpTo(Route.LoginStart.route) {
+                        inclusive = true
+                    }
+            }
             loginViewModel.onNavigationHandled()
         }
     }

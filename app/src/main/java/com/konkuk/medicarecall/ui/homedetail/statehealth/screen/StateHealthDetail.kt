@@ -13,6 +13,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,7 +39,14 @@ fun StateHealthDetail(
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     healthViewModel: HealthViewModel = hiltViewModel()
 ) {
-    // ✅ 상세 재진입 시 오늘로 초기화
+    // 어르신 선택 상태(selectedElderId) 관리
+    val mainEntry = remember(navController.currentBackStackEntry) {
+        navController.getBackStackEntry("main")
+    }
+    val homeViewModel: com.konkuk.medicarecall.ui.home.HomeViewModel = hiltViewModel(mainEntry)
+
+
+    // 상세 재진입 시 오늘로 초기화
     val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
     androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
         val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
@@ -53,8 +61,14 @@ fun StateHealthDetail(
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val health by healthViewModel.health.collectAsState()
 
-    LaunchedEffect(selectedDate) {
-        healthViewModel.loadHealthDataForDate(selectedDate)
+    // 네임드롭에서 선택된 어르신
+    val elderId = homeViewModel.selectedElderId.collectAsState().value
+
+    // 날짜/어르신 변경 시마다 로드
+    LaunchedEffect(elderId, selectedDate) {
+        elderId?.let { id ->
+            healthViewModel.loadHealthDataForDate(id, selectedDate)
+        }
     }
 
     StateHealthDetailLayout(

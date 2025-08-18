@@ -18,6 +18,7 @@ import androidx.compose.foundation.layout.windowInsetsTopHeight
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.remember
@@ -32,6 +33,7 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
+import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseViewModel
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.component.GlucoseGraph
@@ -54,22 +56,36 @@ fun GlucoseDetail(
     viewModel: GlucoseViewModel = hiltViewModel(),
     calendarViewModel: CalendarViewModel
 ) {
+
+
+    // 어르신 선택 상태(selectedElderId) 관리
+    val homeEntry = remember(navController.currentBackStackEntry) {
+        navController.getBackStackEntry("main")
+    }
+    val homeViewModel: HomeViewModel = hiltViewModel(homeEntry)
+
     val uiState by viewModel.uiState
     val selectedIndex = remember { mutableIntStateOf(-1) }
 
-    // 선택된 점(selectedIndex)을 자동 업데이트
-    LaunchedEffect(uiState.graphDataPoints) {
-        if (uiState.graphDataPoints.isNotEmpty()) {
-            selectedIndex.intValue = uiState.graphDataPoints.lastIndex
-        } else {
-            selectedIndex.intValue = -1
-            // 아무것도 선택되지 않았다는 의미로 -1을 저장 (오류 방지용)
+    // 선택된 어르신 ID를 구독 (null 가능)
+    val elderId = homeViewModel.selectedElderId.collectAsState().value
+
+    // 선택된 어르신이 바뀌면 실제 데이터 로드
+    LaunchedEffect(elderId) {
+        elderId?.let { id ->
+            // 필요하면 주 시작일로 교체: calendarViewModel에서 가져와 사용
+            val startDate = LocalDate.now()
+            viewModel.loadWeekFromServer(elderId = id, startDate = startDate)
         }
     }
-    // 더미 데이터 요청
-    LaunchedEffect(Unit) {
-        viewModel.loadDummyWeek()
+
+    // 그래프 데이터가 바뀔 때마다 포커스를 마지막 점으로 이동
+    LaunchedEffect(uiState.graphDataPoints) {
+        selectedIndex.intValue =
+            if (uiState.graphDataPoints.isNotEmpty()) uiState.graphDataPoints.lastIndex else -1
     }
+
+
 
     GlucoseDetailLayout(
         modifier = modifier,

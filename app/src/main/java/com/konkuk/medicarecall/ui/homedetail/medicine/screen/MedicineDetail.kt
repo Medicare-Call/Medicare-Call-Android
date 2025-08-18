@@ -14,12 +14,12 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.calendar.CalendarUiState
@@ -42,9 +42,14 @@ fun MedicineDetail(
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     medicineViewModel: MedicineViewModel = hiltViewModel()
 ) {
-    // ✅ 상세 재진입 시 오늘로 초기화
-    val lifecycleOwner = LocalLifecycleOwner.current
+    // 어르신 선택 상태(selectedElderId) 관리
+    val homeEntry = remember(navController.currentBackStackEntry) {
+        navController.getBackStackEntry("main")
+    }
+    val homeViewModel: com.konkuk.medicarecall.ui.home.HomeViewModel = hiltViewModel(homeEntry)
 
+    // 상세 재진입 시 오늘로 초기화
+    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
     androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
         val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
             if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
@@ -57,9 +62,17 @@ fun MedicineDetail(
 
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val uiState by medicineViewModel.state.collectAsState()
-    LaunchedEffect(selectedDate) {
-        medicineViewModel.loadMedicinesForDate(selectedDate)
+
+    // 네임드롭 선택된 어르신
+    val elderId = homeViewModel.selectedElderId.collectAsState().value
+
+    // 날짜 또는 어르신 변경 시 재로딩
+    LaunchedEffect(elderId, selectedDate) {
+        elderId?.let { id ->
+            medicineViewModel.loadMedicinesForDate(id, selectedDate)
+        }
     }
+
 
     MedicineDetailLayout(
         navController = navController,

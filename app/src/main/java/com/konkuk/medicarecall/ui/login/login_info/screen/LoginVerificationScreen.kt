@@ -96,7 +96,11 @@ fun LoginVerificationScreen(
                 is NavigationDestination.GoToPayment -> Route.Payment.route
                 is NavigationDestination.GoToHome -> Route.Home.route
             }
-            navController.navigate(route)
+            navController.navigate(route) {
+                popUpTo(Route.LoginVerification.route) {
+                    inclusive = true
+                }
+            }
             loginViewModel.onNavigationHandled()
         }
     }

@@ -4,12 +4,17 @@ import android.util.Log
 import androidx.compose.runtime.State
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.data.GlucoseRepository
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseType
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseUiState
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GraphDataPoint
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.launch
+import retrofit2.HttpException
 import java.time.LocalDate
+import java.time.format.DateTimeFormatter
 import javax.inject.Inject
 
 @HiltViewModel
@@ -19,34 +24,79 @@ class GlucoseViewModel @Inject constructor(
 
     private companion object {
         const val TAG = "GLUCOSE_API"
-        const val ELDER_ID = 1 // 테스트용
     }
 
+    // UI State
     private val _uiState = mutableStateOf(GlucoseUiState())
     val uiState: State<GlucoseUiState> = _uiState
 
+    // 내부 캐시
     private var beforeMealData: List<GraphDataPoint> = emptyList()
-    private var afterMealData: List<GraphDataPoint> = emptyList()
+    private var afterMealData:  List<GraphDataPoint> = emptyList()
 
-    /** 더미 주간 데이터 로드*/
-    fun loadDummyWeek() {
-        val today = LocalDate.now()
-        Log.d(TAG, "loadDummyWeek() elderId=$ELDER_ID, today=$today")
+    /**
+     * 📌 주간 데이터 로드
+     */
+    fun loadWeekFromServer(
+        elderId: Int,
+        startDate: LocalDate = LocalDate.now()
+    ) {
+        viewModelScope.launch {
 
-        // '공복' 14일치 가상 데이터
-        beforeMealData = (0..13).map { i ->
-            GraphDataPoint(date = today.minusDays(i.toLong()), value = (70..130).random().toFloat())
-        }.reversed()
 
-        // '식후'는 Empty View 테스트
-        afterMealData = emptyList()
-        Log.i(TAG, "Dummy generated: before=${beforeMealData.size}, after=${afterMealData.size}")
 
-        // 초기 화면은 공복 데이터
-        _uiState.value = GlucoseUiState(
-            graphDataPoints = beforeMealData,
-            selectedTiming = GlucoseTiming.BEFORE_MEAL
-        )
+            val start = startDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
+            Log.d(TAG, "Request elderId=$elderId, start=$start")
+
+            // BEFORE_MEAL
+            beforeMealData = loadGraphData(elderId, start, GlucoseType.BEFORE_MEAL)
+
+            // AFTER_MEAL
+            afterMealData  = loadGraphData(elderId, start, GlucoseType.AFTER_MEAL)
+
+            // 현재 선택된 타이밍 기준으로 UI 갱신
+            val currentTiming = _uiState.value.selectedTiming
+            val dataToShow = if (currentTiming == GlucoseTiming.BEFORE_MEAL) beforeMealData else afterMealData
+            _uiState.value = _uiState.value.copy(graphDataPoints = dataToShow)
+
+            Log.i(TAG, "Loaded elderId=$elderId, before=${beforeMealData.size}, after=${afterMealData.size}, show=${dataToShow.size}")
+        }
+    }
+
+    /**
+     * 📌 API 호출 & 데이터 정제
+     */
+    private suspend fun loadGraphData(
+        elderId: Int,
+        start: String,
+        type: GlucoseType
+    ): List<GraphDataPoint> {
+        return try {
+            val dto = glucoseRepository.getGlucoseGraph(elderId, start, type)
+            Log.d(TAG, "$type raw response = $dto")
+
+            dto.data
+                .sortedBy { it.date }       // 날짜순 정렬
+                .distinctBy { it.date }     // 중복 제거
+                .map { day ->
+                    GraphDataPoint(
+                        date = LocalDate.parse(day.date),
+                        value = day.value.toFloat()
+                    )
+                }
+                .also { Log.d(TAG, "$type mapped points = $it") }
+
+        } catch (e: Exception) {
+            when (e) {
+                is HttpException -> when (e.code()) {
+                    404 -> Log.i(TAG, "No $type data (404)")
+                    400 -> Log.w(TAG, "Bad $type request (400): ${e.message()}")
+                    else -> Log.e(TAG, "$type API error code=${e.code()}", e)
+                }
+                else -> Log.e(TAG, "$type unexpected error", e)
+            }
+            emptyList()
+        }
     }
 
     /** 타이밍 전환*/
@@ -58,72 +108,38 @@ class GlucoseViewModel @Inject constructor(
             selectedTiming = newTiming
         )
     }
-
-    // --------------------------------------------------------------------
-    // 🔽🔽 실제 API 붙일 때 사용할 404/400 로그/분기 템플릿 (지금은 주석으로만 제공)
-    // --------------------------------------------------------------------
-    /*
-    fun loadWeekFromServer(startDate: LocalDate) {
+    fun loadRecentWeek(elderId: Int) {
         viewModelScope.launch {
-            val formatted = startDate.format(DateTimeFormatter.ISO_LOCAL_DATE)
-            Log.d(TAG, "Request elderId=$ELDER_ID, start=$formatted")
+            val today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
 
-            try {
-
-                val before = glucoseRepository.getWeeklyGlucose(
-                    elderId = ELDER_ID,
-                    startDate = startDate,
-                    timing = GlucoseTiming.BEFORE_MEAL
+            val before = try {
+                val dto = glucoseRepository.getGlucoseGraph(
+                    elderId = elderId,
+                    startDate = today,
+                    type = GlucoseType.BEFORE_MEAL
                 )
-                val after = glucoseRepository.getWeeklyGlucose(
-                    elderId = ELDER_ID,
-                    startDate = startDate,
-                    timing = GlucoseTiming.AFTER_MEAL
+                dto.data.sortedBy { it.date }
+                    .map { GraphDataPoint(LocalDate.parse(it.date), it.value.toFloat()) }
+            } catch (e: Exception) { emptyList() }
+
+            val after = try {
+                val dto = glucoseRepository.getGlucoseGraph(
+                    elderId = elderId,
+                    startDate = today,
+                    type = GlucoseType.AFTER_MEAL
                 )
+                dto.data.sortedBy { it.date }
+                    .map { GraphDataPoint(LocalDate.parse(it.date), it.value.toFloat()) }
+            } catch (e: Exception) { emptyList() }
 
-                beforeMealData = before
-                afterMealData = after
+            beforeMealData = before
+            afterMealData = after
 
-                // 현재 선택된 타이밍 유지하여 렌더
-                val currentTiming = _uiState.value.selectedTiming
-                val show = if (currentTiming == GlucoseTiming.AFTER_MEAL) afterMealData else beforeMealData
-                _uiState.value = _uiState.value.copy(graphDataPoints = show)
+            val currentTiming = _uiState.value.selectedTiming
+            val dataToShow =
+                if (currentTiming == GlucoseTiming.BEFORE_MEAL) beforeMealData else afterMealData
 
-                Log.i(TAG, "Success elderId=$ELDER_ID, start=$formatted, before=${before.size}, after=${after.size}")
-            } catch (e: Exception) {
-                when (e) {
-                    is HttpException -> when (e.code()) {
-                        404 -> {
-                            // 미기록
-                            Log.i(TAG, "No data (404) elderId=$ELDER_ID, start=$formatted")
-                            beforeMealData = emptyList()
-                            afterMealData = emptyList()
-                            _uiState.value = _uiState.value.copy(graphDataPoints = emptyList())
-                        }
-                        400 -> {
-                            Log.w(TAG, "Bad request (400) elderId=$ELDER_ID, start=$formatted, msg=${e.message()}")
-                            beforeMealData = emptyList(); afterMealData = emptyList()
-                            _uiState.value = _uiState.value.copy(graphDataPoints = emptyList())
-                        }
-                        401, 403 -> {
-                            Log.w(TAG, "Unauthorized (${e.code()}) elderId=$ELDER_ID")
-                            beforeMealData = emptyList(); afterMealData = emptyList()
-                            _uiState.value = _uiState.value.copy(graphDataPoints = emptyList())
-                        }
-                        else -> {
-                            Log.e(TAG, "API error code=${e.code()} elderId=$ELDER_ID, start=$formatted", e)
-                            beforeMealData = emptyList(); afterMealData = emptyList()
-                            _uiState.value = _uiState.value.copy(graphDataPoints = emptyList())
-                        }
-                    }
-                    else -> {
-                        Log.e(TAG, "Unexpected error elderId=$ELDER_ID, start=$formatted", e)
-                        beforeMealData = emptyList(); afterMealData = emptyList()
-                        _uiState.value = _uiState.value.copy(graphDataPoints = emptyList())
-                    }
-                }
-            }
+            _uiState.value = _uiState.value.copy(graphDataPoints = dataToShow)
         }
     }
-    */
 }

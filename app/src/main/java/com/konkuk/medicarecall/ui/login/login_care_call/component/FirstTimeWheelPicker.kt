@@ -23,9 +23,6 @@ import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.drawBehind
-import androidx.compose.ui.geometry.Offset
-import androidx.compose.ui.geometry.Size
 import androidx.compose.ui.graphics.toArgb
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
@@ -46,7 +43,6 @@ fun TimeWheelPicker(
     var minute by remember { mutableStateOf(initialMinute) }
 
     val mainColor = MediCareCallTheme.colors.main.toArgb()
-    val g200 = MediCareCallTheme.colors.g200.copy()
     val minuteOptions = arrayOf("00", "10", "20", "30", "40", "50")
 
     val style = MediCareCallTheme.typography.M_20
@@ -96,7 +92,7 @@ fun TimeWheelPicker(
                                     .getDeclaredField("mSelectionDividerHeight")
                                     .apply { isAccessible = true }
                                 heightField.setInt(this, 0)
-                            } catch (ignored: Exception) { }
+                            } catch (ignored: Exception) {}
                         }
 
                         hideDividers()

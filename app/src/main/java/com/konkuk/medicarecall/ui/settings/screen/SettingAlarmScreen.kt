@@ -11,6 +11,8 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
@@ -20,6 +22,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
@@ -94,7 +97,9 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier,myDataViewModel: DetailMyDa
                     completeChecked = isChecked
                     abnormalChecked = isChecked
                     missedChecked = isChecked
-                })
+                },
+                    modifier = modifier.clip(CircleShape)
+                )
             }
             Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("케어콜 완료 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
@@ -103,7 +108,9 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier,myDataViewModel: DetailMyDa
                     if (!isChecked) {
                         masterChecked = false
                     }
-                })
+                },
+                    modifier = modifier.clip(CircleShape)
+                )
             }
             Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("건강 이상 징후 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
@@ -112,7 +119,8 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier,myDataViewModel: DetailMyDa
                     if (!isChecked) {
                         masterChecked = false
                     }
-                })
+                },
+                    modifier = modifier.clip(CircleShape))
             }
             Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("케어콜 부재중 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
@@ -121,7 +129,8 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier,myDataViewModel: DetailMyDa
                     if (!isChecked) {
                         masterChecked = false
                     }
-                })
+                },
+                    modifier = modifier.clip(CircleShape))
             }
         }
     }

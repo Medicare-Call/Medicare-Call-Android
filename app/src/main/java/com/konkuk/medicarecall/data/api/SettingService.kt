@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.data.api
 
-import com.konkuk.medicarecall.data.dto.request.UserUpdateRequestDto
 import com.konkuk.medicarecall.data.dto.response.DelElderInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
@@ -17,13 +16,13 @@ import retrofit2.http.Path
 
 interface SettingService {
     // 설정 불러오기
-    @GET("me")
+    @GET("member")
     suspend fun getMyInfo(): Response<MyInfoResponseDto>
 
     // 내 정보 수정
-    @PATCH("me")
+    @POST("member")
     suspend fun updateMyInfo(
-        @Body userUpdateRequestDto: UserUpdateRequestDto
+        @Body userUpdateRequestDto: MyInfoResponseDto
     ) : Response<MyInfoResponseDto> // 추후 수정 필요
 
     @POST("auth/logout")

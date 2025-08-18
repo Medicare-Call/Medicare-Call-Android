@@ -1,7 +1,7 @@
 package com.konkuk.medicarecall.data.repository
 
 import com.konkuk.medicarecall.data.api.SettingService
-import com.konkuk.medicarecall.data.dto.request.UserUpdateRequestDto
+import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
 import retrofit2.HttpException
 import javax.inject.Inject
 
@@ -19,12 +19,11 @@ class UserRepository @Inject constructor(
         }
     }
 
-    suspend fun updateMyInfo(userUpdateRequestDto: UserUpdateRequestDto) = runCatching {
+    suspend fun updateMyInfo(userUpdateRequestDto: MyInfoResponseDto) = runCatching {
         val response = settingService.updateMyInfo(userUpdateRequestDto)
         if (response.isSuccessful) {
             response.body() ?: throw IllegalStateException("Response body is null")
         } else {
-            val errorBody = response.errorBody()?.string() ?: "Unknown error"
             throw HttpException(response)
         }
     }

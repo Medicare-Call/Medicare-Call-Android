@@ -78,6 +78,7 @@ class CheckLoginStatusUseCase @Inject constructor(
         }.getOrElse { exception ->
             // runCatching 블록 내에서 Exception이 발생하면 이 부분이 실행됩니다.
             Log.d("httplog", "상태 확인 중 Exception 발생. 로그인 화면으로 이동.", exception)
+            Log.d("httplog", "Exception 메시지: ${exception.message}")
             NavigationDestination.GoToLogin
         }
     }

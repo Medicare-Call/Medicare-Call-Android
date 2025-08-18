@@ -6,7 +6,7 @@ import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konkuk.medicarecall.data.dto.response.NoticeBody
+import com.konkuk.medicarecall.data.dto.response.NoticesResponseDto
 import com.konkuk.medicarecall.data.repository.NoticeRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -17,7 +17,7 @@ class NoticeViewModel @Inject constructor(
     private val repository: NoticeRepository
 ) : ViewModel() {
 
-    var noticeList by mutableStateOf<List<NoticeBody>>(emptyList())
+    var noticeList by mutableStateOf<List<NoticesResponseDto>>(emptyList())
         private set
 
     var errorMessage by mutableStateOf<String?>(null)

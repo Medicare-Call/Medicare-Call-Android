@@ -13,7 +13,7 @@ import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun AnnouncementCard(title : String,date : String,modifier: Modifier = Modifier) {
+fun AnnouncementCard(title : String,date : String,modifier: Modifier = Modifier, onClick: () -> Unit) {
     Column {
         Column(
             modifier = modifier.fillMaxWidth().height(89.dp).padding(20.dp)

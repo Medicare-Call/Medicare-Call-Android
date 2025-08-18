@@ -29,6 +29,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.navigation.Route
@@ -37,15 +38,16 @@ import com.konkuk.medicarecall.ui.login.login_info.component.LoginBackButton
 import com.konkuk.medicarecall.ui.login.login_payment.component.PayResultItem
 import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.settings.viewmodel.EldersInfoViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import java.text.NumberFormat
 import java.util.Locale
 
 @Composable
-fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifier: Modifier = Modifier, loginElderViewModel : LoginElderViewModel) {
+fun PaymentScreen(onBack : () -> Unit, navController: NavHostController, modifier: Modifier = Modifier, elderInfoViewModel : EldersInfoViewModel = hiltViewModel()) {
     val scrollState = rememberScrollState()
     var isClicked by remember { mutableStateOf(false) }
-    val elders = loginElderViewModel.elderDataList.map { it.name }
+    val elders = elderInfoViewModel.eldersInfoList.map { it.name }
     Column(
         modifier = modifier
             .fillMaxSize()

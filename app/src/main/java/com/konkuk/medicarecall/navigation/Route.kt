@@ -22,6 +22,7 @@ sealed class Route(val route: String) {
     object Alarm : Route("alarm")
 
     object Announcement : Route("announcement")
+    object AnnouncementDetail : Route("announcement_detail")
     object HealthInfo : Route("health_info")
     object HealthDetail : Route("health_detail")
     object MyDataSetting : Route("my_data_setting")

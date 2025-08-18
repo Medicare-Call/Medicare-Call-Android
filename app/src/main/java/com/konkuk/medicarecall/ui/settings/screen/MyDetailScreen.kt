@@ -34,7 +34,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
 
 @Composable
-fun MyDetailScreen(onBack: () -> Unit = {},navController: NavHostController,modifier: Modifier = Modifier) {
+fun MyDetailScreen(modifier: Modifier = Modifier,onBack: () -> Unit = {},) {
     var isMale by remember { mutableStateOf<Boolean?>(false) }
     var name by remember { mutableStateOf("김미연") }
     var birth by remember { mutableStateOf("19700529") }

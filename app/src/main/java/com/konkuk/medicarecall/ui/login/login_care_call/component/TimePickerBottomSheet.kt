@@ -20,6 +20,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -30,12 +31,14 @@ import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login_care_call.component.TimeWheelPicker
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun TimePickerBottomSheet(
     visible: Boolean,
+    initialTabIndex: Int = 0,
     initialFirstAmPm: Int = 0,
     initialFirstHour: Int = 1,
     initialFirstMinute: Int = 0,
@@ -70,10 +73,43 @@ fun TimePickerBottomSheet(
     var thirdHour by remember { mutableStateOf(initialThirdHour) }
     var thirdMinute by remember { mutableStateOf(initialThirdMinute) }
 
-    // 탭 구성
-    var tabIndex by remember { mutableStateOf(0) }
+    // --- 스낵바 & 코루틴 ---
+    val snackbarHostState = remember { androidx.compose.material3.SnackbarHostState() }
+    val scope = rememberCoroutineScope()
 
-    val tabs = listOf("1차", "2차","3차")
+    fun toMinutes(amPm: Int, h: Int, m: Int): Int {
+        // amPm: 0=오전, 1=오후 / 시: 1~12
+        val hour24 = (h % 12) + if (amPm == 1) 12 else 0
+        return hour24 * 60 + m
+    }
+
+    fun validate12(): Pair<Boolean, String?> {
+        val t1 = toMinutes(firstAmPm, firstHour, firstMinute)
+        val t2 = toMinutes(secondAmPm, secondHour, secondMinute)
+        return if (t2 <= t1) false to "2차 시간은 1차보다 늦어야 합니다." else true to null
+    }
+
+    fun validate123(): Pair<Boolean, String?> {
+        val t1 = toMinutes(firstAmPm, firstHour, firstMinute)
+        val t2 = toMinutes(secondAmPm, secondHour, secondMinute)
+        val t3 = toMinutes(thirdAmPm, thirdHour, thirdMinute)
+        return when {
+            t2 <= t1 -> false to "2차 케어콜 시간은 1차 케이콜 시간보다 늦어야 해요."
+            t3 <= t2 -> false to "3차 케이콜 시간은 2차 케이콜 시간보다 늦어야 해요."
+//            t3 <= t1 -> false to "3차 시간은 1차보다도 늦어야 해요."
+            else -> true to null
+        }
+    }
+
+    suspend fun showSnack(msg: String) {
+        snackbarHostState.showSnackbar(message = msg, withDismissAction = true)
+    }
+
+
+    // 탭 구성
+    var tabIndex by remember { mutableStateOf(initialTabIndex) }
+
+    val tabs = listOf("1차", "2차", "3차")
     ModalBottomSheet(
         onDismissRequest = onDismiss,
         sheetState = sheetState,
@@ -88,7 +124,7 @@ fun TimePickerBottomSheet(
             modifier = Modifier
                 .fillMaxWidth()
                 .background(MediCareCallTheme.colors.bg)
-                .padding(vertical = 30.dp),
+                .padding(bottom = 30.dp),
             horizontalAlignment = Alignment.CenterHorizontally
         ) {
             Text(
@@ -116,7 +152,29 @@ fun TimePickerBottomSheet(
                 tabs.forEachIndexed { i, title ->
                     Tab(
                         selected = (i == tabIndex),
-                        onClick = { tabIndex = i },
+                        onClick = {
+                            // 앞으로(0->1, 1->2) 이동 시 검증
+                            if (i > tabIndex) {
+                                when (i) {
+                                    1 -> { // 2차 탭으로 이동
+                                        val (ok, msg) = validate12()
+                                        if (!ok) {
+                                            scope.launch { showSnack(msg!!) }
+                                            return@Tab
+                                        }
+                                    }
+
+                                    2 -> { // 3차 탭으로 이동
+                                        val (ok, msg) = validate123()
+                                        if (!ok) {
+                                            scope.launch { showSnack(msg!!) }
+                                            return@Tab
+                                        }
+                                    }
+                                }
+                            }
+                            tabIndex = i
+                        },
                         text = {
                             Text(
                                 text = title,
@@ -170,7 +228,15 @@ fun TimePickerBottomSheet(
             Spacer(modifier = Modifier.height(38.dp))
             if (tabIndex == 0) {
                 CTAButton(
-                    CTAButtonType.GREEN, "다음", { tabIndex = 1 }, modifier = Modifier
+                    CTAButtonType.GREEN, "다음", onClick = {
+                        val (ok, msg) = validate12()
+                        if (!ok) {
+                            scope.launch { showSnack(msg!!) }
+                        } else {
+                            tabIndex = 1
+                        }
+                    },
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(
                             horizontal = 20.dp
@@ -178,22 +244,35 @@ fun TimePickerBottomSheet(
                 )
             } else if (tabIndex == 1) {
                 CTAButton(
-                    CTAButtonType.GREEN, "다음", { tabIndex = 2 }, modifier = Modifier
+                    CTAButtonType.GREEN, "다음", onClick = {
+                        val (ok, msg) = validate123()
+                        if (!ok) {
+                            scope.launch { showSnack(msg!!) }
+                        } else {
+                            tabIndex = 2
+                        }
+                    },
+                    modifier = Modifier
                         .fillMaxWidth()
                         .padding(
                             horizontal = 20.dp
                         )
                 )
-            }
-            else if (tabIndex == 2) {
+            } else if (tabIndex == 2) {
                 CTAButton(
-                    CTAButtonType.GREEN, "확인", {
-                        onConfirm(
-                            firstAmPm, firstHour, firstMinute,
-                            secondAmPm, secondHour, secondMinute,
-                            thirdAmPm, thirdHour, thirdMinute,
-                        )
-                        onDismiss()
+                    CTAButtonType.GREEN, "확인",
+                    onClick = {
+                        val (ok, msg) = validate123()
+                        if (!ok) {
+                            scope.launch { showSnack(msg!!) }
+                        } else {
+                            onConfirm(
+                                firstAmPm, firstHour, firstMinute,
+                                secondAmPm, secondHour, secondMinute,
+                                thirdAmPm, thirdHour, thirdMinute,
+                            )
+                            onDismiss()
+                        }
                     }, modifier = Modifier
                         .fillMaxWidth()
                         .padding(

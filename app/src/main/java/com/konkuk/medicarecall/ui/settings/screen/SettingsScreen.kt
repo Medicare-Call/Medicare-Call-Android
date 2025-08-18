@@ -26,16 +26,17 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.data.api.SettingService
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
+import com.konkuk.medicarecall.ui.settings.viewmodel.MyDataViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
 fun SettingsScreen(
-    navController : NavHostController,
     onNavigateToMyDataSetting : () -> Unit = {},
     onNavigateToAnnouncement : () -> Unit = {},
     onNavigateToCenter : () -> Unit = {},
@@ -43,8 +44,9 @@ fun SettingsScreen(
     onNavigateToPersonalInfo : () -> Unit = {},
     onNavigateToHealthInfo : () -> Unit = {},
     onNavigateToSettingAlarm : () -> Unit = {},
-
+    myDataViewModel : MyDataViewModel = hiltViewModel()
 ) {
+    val myInfo = myDataViewModel.myDataInfo
     Column(
         modifier = Modifier.fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
@@ -56,7 +58,6 @@ fun SettingsScreen(
         modifier = Modifier.fillMaxSize().padding(horizontal = 20.dp).padding(bottom = 20.dp).verticalScroll(rememberScrollState()).systemBarsPadding()
             // .systemBarsPadding() 추가
     ) {
-
         // 프로필
         Row(modifier = Modifier
             .fillMaxWidth()
@@ -71,7 +72,7 @@ fun SettingsScreen(
             )
             Spacer(modifier = Modifier.width(14.dp))
             Text(
-                text = "김미연",
+                text = myInfo?.name ?: "어르신 이름이 등록되지 않았습니다.",
                 style = MediCareCallTheme.typography.SB_18,
                 color = MediCareCallTheme.colors.black
 

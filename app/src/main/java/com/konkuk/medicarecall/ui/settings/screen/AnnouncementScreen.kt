@@ -23,6 +23,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
+import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.settings.component.AnnouncementCard
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.viewmodel.NoticeViewModel
@@ -70,9 +71,10 @@ fun AnnouncementScreen( modifier: Modifier = Modifier, onBack : () -> Unit = {},
                         title = notice.title,
                         date = notice.publishedAt.replace("-", "."),
                         onClick = {
+                            Log.d("AnnouncementScreen", "공지사항 클릭: ${notice.title}")
                             val json = Json.encodeToString(notice)
                             val encodedJson = URLEncoder.encode(json, StandardCharsets.UTF_8.toString())
-                            navController.navigate("announcement_detail/$encodedJson")
+                            navController.navigate("${Route.AnnouncementDetail.route}/$encodedJson")
                         }
                     )
                 }

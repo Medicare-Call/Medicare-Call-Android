@@ -325,23 +325,20 @@ fun SetCallScreen(
                     visible = true,
                     initialTabIndex = selectedTabIndex,
                     // 기존에 선택됐던 값을 다시 초기값으로 넘겨주면 UX가 매끄러워집니다.
-                    initialFirstAmPm = saved.first?.first ?: 0,
                     initialFirstHour = saved.first?.second ?: 9,
                     initialFirstMinute = saved.first?.third ?: 0,
-                    initialSecondAmPm = saved.second?.first ?: 1,
                     initialSecondHour = saved.second?.second ?: 12,
                     initialSecondMinute = saved.second?.third ?: 0,
-                    initialThirdAmPm = saved.third?.first ?: 1,
                     initialThirdHour = saved.third?.second ?: 6,
                     initialThirdMinute = saved.third?.third ?: 0,
                     onDismiss = { showBottomSheet = false },
-                    onConfirm = { fAm, fH, fM, sAm, sH, sM, tAm, tH, tM ->
+                    onConfirm = { fH, fM, sH, sM, tH, tM ->
                         callTimeViewModel.setTimes(
                             selectedId,
                             CallTimes(
-                                first = Triple(fAm, fH, fM),
-                                second = Triple(sAm, sH, sM),
-                                third = Triple(tAm, tH, tM)
+                                first = Triple(0, fH, fM),
+                                second = Triple(1, sH, sM),
+                                third = Triple(1, tH, tM)
                             )
                         )
                         showBottomSheet = false

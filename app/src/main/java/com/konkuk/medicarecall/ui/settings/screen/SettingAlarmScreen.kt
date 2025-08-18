@@ -20,6 +20,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -42,15 +43,11 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun SettingAlarmScreen(modifier: Modifier = Modifier,myDataViewModel: DetailMyDataViewModel = hiltViewModel(),myDataInfo : MyInfoResponseDto, onBack: () -> Unit = {}) {
     // 1) 상태 선언
-    var complete by remember { mutableStateOf((myDataInfo.pushNotification.carecallCompleted == NotificationStateType.ON) ||(myDataInfo.pushNotification.all == NotificationStateType.ON)) }
-    var health by remember { mutableStateOf((myDataInfo.pushNotification.healthAlert == NotificationStateType.ON)||(myDataInfo.pushNotification.all == NotificationStateType.ON)) }
-    var missed by remember { mutableStateOf((myDataInfo.pushNotification.carecallMissed == NotificationStateType.ON)||(myDataInfo.pushNotification.all == NotificationStateType.ON)) }
-    var all by remember { mutableStateOf(myDataInfo.pushNotification.all == NotificationStateType.ON) }
 
-    var masterChecked by remember { mutableStateOf(all) }
-    var completeChecked by remember { mutableStateOf(complete) }
-    var abnormalChecked by remember { mutableStateOf(health) }
-    var missedChecked by remember { mutableStateOf(missed) }
+    var masterChecked by remember { mutableStateOf(myDataInfo.pushNotification.all == "ON") }
+    var completeChecked by remember { mutableStateOf((myDataInfo.pushNotification.carecallCompleted == "ON") ||(myDataInfo.pushNotification.all == "ON")) }
+    var abnormalChecked by remember { mutableStateOf((myDataInfo.pushNotification.healthAlert == "ON")||(myDataInfo.pushNotification.all == "ON")) }
+    var missedChecked by remember { mutableStateOf((myDataInfo.pushNotification.carecallMissed == "ON")||(myDataInfo.pushNotification.all == "ON")) }
 
     Column(modifier = modifier
         .fillMaxSize()
@@ -71,10 +68,10 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier,myDataViewModel: DetailMyDa
                                 gender = myDataInfo.gender,
                                 phone = myDataInfo.phone,
                                 pushNotification = PushNotificationDto(
-                                    all = if (masterChecked) NotificationStateType.ON else NotificationStateType.OFF,
-                                    carecallCompleted = if (completeChecked) NotificationStateType.ON else NotificationStateType.OFF,
-                                    healthAlert = if (abnormalChecked) NotificationStateType.ON else NotificationStateType.OFF,
-                                    carecallMissed = if (missedChecked) NotificationStateType.ON else NotificationStateType.OFF
+                                    all = if (masterChecked) "ON" else "OFF",
+                                    carecallCompleted = if (completeChecked) "ON" else "OFF",
+                                    healthAlert = if (abnormalChecked) "ON" else "OFF",
+                                    carecallMissed = if (missedChecked) "ON" else "OFF"
                                 )
                             )
                         )

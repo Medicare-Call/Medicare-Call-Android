@@ -19,6 +19,7 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -30,6 +31,9 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.navigation.Route
@@ -49,6 +53,16 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
     val gender = when (myDataInfo?.gender) {
         GenderType.FEMALE -> "여성"
         else -> "남성"
+    }
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val obs = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                myDataViewModel.refresh() // 복귀 시 재조회
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(obs)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
     }
     Column(
         modifier = modifier
@@ -105,10 +119,7 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
                             val json = Json.encodeToString(myDataInfo)
                             val encodedJson = java.net.URLEncoder.encode(json, Charsets.UTF_8.toString())
                             // 네비게이션을 통해 MyDetail 화면으로 이동
-                            navController.navigate("${Route.MyDetail.route}/$encodedJson") {
-                                launchSingleTop = true // 중복된 화면 방지
-                                restoreState = true // 이전 상태 복원
-                            }
+                            navController.navigate("${Route.MyDetail.route}/$encodedJson")
                         }
                     )
                     )

@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.data.repository
 
+import android.util.Log
 import com.konkuk.medicarecall.data.api.SettingService
 import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
 import retrofit2.HttpException
@@ -20,6 +21,7 @@ class UserRepository @Inject constructor(
     }
 
     suspend fun updateMyInfo(userUpdateRequestDto: MyInfoResponseDto) = runCatching {
+        Log.d("UserRepository", "updateMyInfo() 진입: $userUpdateRequestDto")
         val response = settingService.updateMyInfo(userUpdateRequestDto)
         if (response.isSuccessful) {
             response.body() ?: throw IllegalStateException("Response body is null")

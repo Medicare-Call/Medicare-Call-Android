@@ -16,9 +16,9 @@ data class MyInfoResponseDto(
 
 @Serializable
 data class PushNotificationDto(
-    val all: NotificationStateType = NotificationStateType.OFF,
-    val carecallCompleted: NotificationStateType = NotificationStateType.OFF,
-    val healthAlert: NotificationStateType = NotificationStateType.OFF,
-    val carecallMissed: NotificationStateType = NotificationStateType.OFF
+    val all: String,
+    val carecallCompleted: String,
+    val healthAlert: String,
+    val carecallMissed: String
 )
 

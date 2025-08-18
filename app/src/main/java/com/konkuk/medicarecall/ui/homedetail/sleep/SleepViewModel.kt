@@ -21,48 +21,48 @@ class SleepViewModel @Inject constructor(
 
     private companion object {
         const val TAG = "SLEEP_API"
-        const val ELDER_ID = 1 // 테스트용 하드코딩. 실제 로그인 연동 시 세션에서 가져오세요.
+
     }
 
     private val _sleepState = MutableStateFlow(SleepUiState.EMPTY)
     val sleep: StateFlow<SleepUiState> = _sleepState
 
-    fun loadSleepDataForDate(date: LocalDate) {
+    fun loadSleepDataForDate(elderId: Int, date: LocalDate) {
         viewModelScope.launch {
             val formatted = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
-            Log.d(TAG, "Request elderId=$ELDER_ID, date=$formatted")
+            Log.d(TAG, "Request elderId=$elderId, date=$formatted")
 
             try {
                 _sleepState.value = sleepRepository.getSleepUiState(
-                    elderId = ELDER_ID,
+                    elderId = elderId,
                     date = date
                 )
-                Log.i(TAG, "Success elderId=$ELDER_ID, date=$formatted")
+                Log.i(TAG, "Success elderId=$elderId, date=$formatted")
             } catch (e: Exception) {
                 when (e) {
                     is HttpException -> {
                         when (e.code()) {
                             404 -> {
-                                // ✅ 미기록: 서버에서 데이터 없음
-                                Log.i(TAG, "No data (404) elderId=$ELDER_ID, date=$formatted")
+                                // 미기록
+                                Log.i(TAG, "No data (404) elderId=$elderId, date=$formatted")
                                 _sleepState.value = SleepUiState.EMPTY
                             }
                             400 -> {
-                                Log.w(TAG, "Bad request (400) elderId=$ELDER_ID, date=$formatted, msg=${e.message()}")
+                                Log.w(TAG, "Bad request (400) elderId=$elderId, date=$formatted, msg=${e.message()}")
                                 _sleepState.value = SleepUiState.EMPTY
                             }
                             401, 403 -> {
-                                Log.w(TAG, "Unauthorized (${e.code()}) elderId=$ELDER_ID")
+                                Log.w(TAG, "Unauthorized (${e.code()}) elderId=$elderId")
                                 _sleepState.value = SleepUiState.EMPTY
                             }
                             else -> {
-                                Log.e(TAG, "API error code=${e.code()} elderId=$ELDER_ID, date=$formatted", e)
+                                Log.e(TAG, "API error code=${e.code()} elderId=$elderId, date=$formatted", e)
                                 _sleepState.value = SleepUiState.EMPTY
                             }
                         }
                     }
                     else -> {
-                        Log.e(TAG, "Unexpected error elderId=$ELDER_ID, date=$formatted", e)
+                        Log.e(TAG, "Unexpected error elderId=$elderId, date=$formatted", e)
                         _sleepState.value = SleepUiState.EMPTY
                     }
                 }

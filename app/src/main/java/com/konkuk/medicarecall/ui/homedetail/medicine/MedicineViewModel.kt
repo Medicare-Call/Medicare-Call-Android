@@ -24,8 +24,6 @@ class MedicineViewModel @Inject constructor(
         const val TAG = "MED_API"
     }
 
-    private val elderId = 1 // 테스트용
-
     data class ScreenState(
         val loading: Boolean = false,
         val items: List<MedicineUiState> = emptyList(),
@@ -35,7 +33,7 @@ class MedicineViewModel @Inject constructor(
     private val _state = MutableStateFlow(ScreenState())
     val state: StateFlow<ScreenState> = _state
 
-    fun loadMedicinesForDate(date: LocalDate) {
+    fun loadMedicinesForDate(elderId: Int, date: LocalDate) {
         viewModelScope.launch {
             val formatted = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
             Log.d(TAG, "Request elderId=$elderId, date=$formatted")
@@ -56,17 +54,14 @@ class MedicineViewModel @Inject constructor(
                 when (e) {
                     is HttpException -> {
                         when (e.code()) {
-                            404 -> {
-                                // 미기록
-                                Log.i(TAG, "No data (404) elderId=$elderId, date=$formatted")
-                                _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
-                            }
-                            400 -> {
-                                Log.w(TAG, "Bad request (400) elderId=$elderId, date=$formatted, msg=${e.message()}")
-                                _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
-                            }
-                            401, 403 -> {
-                                Log.w(TAG, "Unauthorized (${e.code()}) elderId=$elderId")
+                            404, 400, 401, 403 -> {
+                                val tag = when (e.code()) {
+                                    404 -> "No data (404)"
+                                    400 -> "Bad request (400): ${e.message()}"
+                                    401, 403 -> "Unauthorized (${e.code()})"
+                                    else -> ""
+                                }
+                                Log.w(TAG, "$tag elderId=$elderId, date=$formatted")
                                 _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
                             }
                             else -> {

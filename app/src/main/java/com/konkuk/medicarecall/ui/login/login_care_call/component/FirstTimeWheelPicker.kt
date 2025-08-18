@@ -43,7 +43,6 @@ fun TimeWheelPicker(
     var minute by remember { mutableStateOf(initialMinute) }
 
     val mainColor = MediCareCallTheme.colors.main.toArgb()
-    val g200 = MediCareCallTheme.colors.g200.copy()
     val minuteOptions = arrayOf("00", "10", "20", "30", "40", "50")
 
     val style = MediCareCallTheme.typography.M_20

@@ -215,7 +215,6 @@ fun PersonalDetailScreen(
                         )
                         onBack()
                               },
-                    modifier = modifier.height(50.dp),
                 )
 
             }

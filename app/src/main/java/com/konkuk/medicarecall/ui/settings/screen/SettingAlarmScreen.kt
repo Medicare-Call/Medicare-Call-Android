@@ -37,7 +37,7 @@ import com.konkuk.medicarecall.ui.settings.viewmodel.DetailMyDataViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun SettingAlarmScreen(modifier: Modifier = Modifier,myDataViewModel: DetailMyDataViewModel = hiltViewModel(),myDataInfo : MyInfoResponseDto) {
+fun SettingAlarmScreen(modifier: Modifier = Modifier,myDataViewModel: DetailMyDataViewModel = hiltViewModel(),myDataInfo : MyInfoResponseDto, onBack: () -> Unit = {}) {
     // 1) 상태 선언
     var complete by remember { mutableStateOf((myDataInfo.pushNotification.carecallCompleted == NotificationStateType.ON) ||(myDataInfo.pushNotification.all == NotificationStateType.ON)) }
     var health by remember { mutableStateOf((myDataInfo.pushNotification.healthAlert == NotificationStateType.ON)||(myDataInfo.pushNotification.all == NotificationStateType.ON)) }
@@ -75,6 +75,7 @@ fun SettingAlarmScreen(modifier: Modifier = Modifier,myDataViewModel: DetailMyDa
                                 )
                             )
                         )
+                        onBack()
                     },
                     tint = Color.Black
                 )

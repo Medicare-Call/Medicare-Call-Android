@@ -108,6 +108,7 @@ fun MyDetailScreen(myDataInfo : MyInfoResponseDto,modifier: Modifier = Modifier,
                         phone = myDataInfo.phone,
                         pushNotification = myDataInfo.pushNotification
                     ))
+                    onBack()
                 }
             )
         }

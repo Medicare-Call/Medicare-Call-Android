@@ -344,9 +344,18 @@ fun NavGraph(
                 )
             }
 
-            composable(route = Route.SettingAlarm.route) {
+            composable( route = "${Route.MyDetail}/{myDataJson}",
+                arguments = listOf(navArgument("myDataJson") { type = NavType.StringType })) {
+                    backStackEntry ->
+                val encodedJson = backStackEntry.arguments?.getString("myDataJson") ?: ""
+                val decodedJson = URLDecoder.decode(encodedJson, StandardCharsets.UTF_8.toString())
+                val myDataInfo = Json.decodeFromString<MyInfoResponseDto>(decodedJson)
+
                 SettingAlarmScreen(
-                    navController = navController
+                    myDataInfo = myDataInfo,
+                    onBack = {
+                        navController.popBackStack()
+                    }
                 )
             }
 

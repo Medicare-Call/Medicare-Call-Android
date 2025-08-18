@@ -133,7 +133,6 @@ fun HealthDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={},
                     )
                     onBack()
                           },
-                modifier = modifier.height(50.dp),
             )
         }
     }

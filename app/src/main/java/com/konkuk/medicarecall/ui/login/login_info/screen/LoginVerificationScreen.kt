@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
@@ -95,7 +96,11 @@ fun LoginVerificationScreen(
                 is NavigationDestination.GoToPayment -> Route.Payment.route
                 is NavigationDestination.GoToHome -> Route.Home.route
             }
-            navController.navigate(route)
+            navController.navigate(route) {
+                popUpTo(Route.LoginVerification.route) {
+                    inclusive = true
+                }
+            }
             loginViewModel.onNavigationHandled()
         }
     }
@@ -106,7 +111,8 @@ fun LoginVerificationScreen(
             .fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
             .padding(horizontal = 20.dp)
-            .statusBarsPadding(),
+            .statusBarsPadding()
+            .imePadding(),
 
         ) {
 

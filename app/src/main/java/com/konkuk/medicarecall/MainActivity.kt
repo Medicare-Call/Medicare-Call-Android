@@ -11,8 +11,11 @@ import androidx.activity.enableEdgeToEdge
 import androidx.annotation.RequiresApi
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.WindowInsets
+import androidx.compose.foundation.layout.WindowInsetsSides
+import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.safeDrawing
+import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
 import androidx.compose.material3.NavigationBarItem
@@ -102,7 +105,8 @@ class MainActivity : ComponentActivity() {
 
                 Scaffold(
                     modifier = Modifier.background(MediCareCallTheme.colors.bg),
-                    contentWindowInsets = WindowInsets.safeDrawing,
+                    contentWindowInsets = WindowInsets.systemBars
+                        .only(WindowInsetsSides.Horizontal),
                     bottomBar = {
                         if (currentRoute in bottomBarRoutes)
                             NavigationBar(
@@ -131,7 +135,8 @@ class MainActivity : ComponentActivity() {
                                         },
                                         onClick = {
                                             selectedIndex = index
-                                            navController.navigateTopLevel(item.route) // 네비게이션 아이템 클릭 시 해당 라우트로 이동
+                                            if (currentRoute != item.route)
+                                                navController.navigateTopLevel(item.route) // 네비게이션 아이템 클릭 시 해당 라우트로 이동
                                         },
                                         icon = {
                                             Icon(

@@ -8,9 +8,11 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -58,7 +60,9 @@ fun HealthDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={},
     Column(modifier = modifier
         .fillMaxSize()
         .background(MediCareCallTheme.colors.bg)
-        .statusBarsPadding()) {
+        .systemBarsPadding()
+        .imePadding()
+    ) {
         SettingsTopAppBar(
             modifier = modifier,
             title = "어르신 건강정보 설정",
@@ -74,10 +78,10 @@ fun HealthDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={},
         Column(modifier = modifier
             .fillMaxWidth()
             .padding(horizontal = 20.dp)
-            .padding(top = 20.dp)
             .verticalScroll(scrollState)
             ,
         ) {
+            Spacer(Modifier.height(20.dp))
             // 질환 정보
             IllnessInfoItem(
                 diseaseList = diseaseList,
@@ -132,8 +136,7 @@ fun HealthDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={},
                         )
                     )
                     onBack()
-                          },
-                modifier = modifier.height(50.dp),
+                          }, Modifier.padding(bottom = 20.dp)
             )
         }
     }

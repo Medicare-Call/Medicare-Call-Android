@@ -9,8 +9,10 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
@@ -74,10 +76,11 @@ fun PersonalDetailScreen(
         modifier = Modifier
             .fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
-            .statusBarsPadding()
+            .systemBarsPadding()
+            .imePadding()
     ) {
         SettingsTopAppBar(
-            title = "어르신 건강정보 설정",
+            title = "어르신 개인정보 설정",
             leftIcon = {
                 Icon(
                     painterResource(id = R.drawable.ic_settings_back),
@@ -91,9 +94,10 @@ fun PersonalDetailScreen(
         Column(
             modifier = modifier
                 .fillMaxWidth()
-                .padding(20.dp)
+                .padding(horizontal = 20.dp)
                 .verticalScroll(scrollState),
         ) {
+            Spacer(Modifier.height(20.dp))
             Row() {
                 Spacer(modifier = modifier.weight(1f))
                 Text(
@@ -214,8 +218,7 @@ fun PersonalDetailScreen(
                             )
                         )
                         onBack()
-                              },
-                    modifier = modifier.height(50.dp),
+                              }, Modifier.padding(bottom = 20.dp)
                 )
 
             }

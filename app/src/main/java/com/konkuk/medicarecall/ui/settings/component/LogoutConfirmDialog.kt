@@ -64,7 +64,7 @@ fun LogoutConfirmDialog(onDismiss: () -> Unit, onLogout: () -> Unit) {
                     ),
                     modifier = Modifier.weight(1f).height(50.dp)
                 ) {
-                    Text("삭제", style = MediCareCallTheme.typography.B_17)
+                    Text("로그아웃", style = MediCareCallTheme.typography.B_17)
                 }
             }
         }

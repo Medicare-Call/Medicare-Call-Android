@@ -46,7 +46,7 @@ fun SubscribeDetailScreen(
         .statusBarsPadding()) {
         SettingsTopAppBar(
             modifier = modifier,
-            title = "구독 관리",
+            title = "구독관리",
             leftIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),
@@ -91,7 +91,7 @@ fun SubscribeDetailScreen(
                         color = MediCareCallTheme.colors.gray4
                     )
                     val planInfo = when (elderInfo.plan) {
-                        "메디케어콜 스탠다드 플랜" -> "프리미엄 플랜"
+                        "메디케어콜 프리미엄 플랜" -> "프리미엄 플랜"
                         else -> "베이직 플랜"
                     } // 추후 수정 필요 (서버랑 값 비교할 것)
                     Text(

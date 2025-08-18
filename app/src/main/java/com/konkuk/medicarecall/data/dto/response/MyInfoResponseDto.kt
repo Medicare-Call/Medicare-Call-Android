@@ -7,18 +7,18 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class MyInfoResponseDto(
-    val name : String,
-    val birthDate : String,
-    val gender : GenderType,
-    val phone : String,
-    val pushNotification : PushNotificationDto
+    val name: String,
+    val birthDate: String,
+    val gender: GenderType,
+    val phone: String,
+    val pushNotification: PushNotificationDto
 )
 
 @Serializable
 data class PushNotificationDto(
-    val all: NotificationStateType? = null,
-    val carecallCompleted: NotificationStateType? = null,
-    val healthAlert: NotificationStateType? = null,
-    val carecallMissed: NotificationStateType? = null
+    val all: NotificationStateType = NotificationStateType.OFF,
+    val carecallCompleted: NotificationStateType = NotificationStateType.OFF,
+    val healthAlert: NotificationStateType = NotificationStateType.OFF,
+    val carecallMissed: NotificationStateType = NotificationStateType.OFF
 )
 

@@ -27,6 +27,7 @@ class CheckLoginStatusUseCase @Inject constructor(
             }
 
             // 어르신 정보가 있으면 ID를 로컬에 저장
+            elderIdRepository.clearElderId()
             elders.forEach { elderInfo ->
                 elderIdRepository.addElderId(elderInfo.name, elderInfo.elderId)
             }

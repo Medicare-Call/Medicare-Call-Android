@@ -5,14 +5,14 @@ import android.util.Log
 import android.webkit.WebView
 import android.webkit.WebViewClient
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
@@ -27,16 +27,15 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.viewinterop.AndroidView
+import androidx.core.net.toUri
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.login.login_payment.viewmodel.NaverPayViewModel
-import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
-import com.konkuk.medicarecall.ui.settings.viewmodel.EldersInfoViewModel
-import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-import androidx.core.net.toUri
 import com.konkuk.medicarecall.ui.model.PaymentResult
+import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
+import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
@@ -50,7 +49,8 @@ fun NaverPayScreen(
         modifier = modifier
             .fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
-            .statusBarsPadding()
+            .systemBarsPadding()
+            .imePadding()
     ) {
         SettingsTopAppBar(
             modifier = modifier,
@@ -78,6 +78,8 @@ fun NaverPayScreen(
 
         val context = LocalContext.current
         val baseHost = "medicare-call.shop"
+
+        var popupWebView by remember { mutableStateOf<WebView?>(null) }
 
         // ViewModel 상태 스냅샷
         val orderCode = naverPayViewModel.orderCode
@@ -124,22 +126,254 @@ fun NaverPayScreen(
 
                         // 3) 새창 요청을 같은 WebView에서 처리
                         webChromeClient = object : android.webkit.WebChromeClient() {
+
                             override fun onCreateWindow(
                                 view: WebView?,
                                 isDialog: Boolean,
                                 isUserGesture: Boolean,
                                 resultMsg: android.os.Message?
                             ): Boolean {
-                                val transport = resultMsg?.obj as WebView.WebViewTransport
-                                transport.webView = this@apply
+                                val ctx = view?.context ?: return false
+
+                                // 새 팝업 WebView 생성
+                                val popup = WebView(ctx).apply {
+                                    settings.javaScriptEnabled = true
+                                    settings.domStorageEnabled = true
+                                    settings.setSupportMultipleWindows(true)
+                                    settings.javaScriptCanOpenWindowsAutomatically = true
+
+                                    // 쿠키(3rd party 포함)
+                                    val cm = android.webkit.CookieManager.getInstance()
+                                    cm.setAcceptCookie(true)
+                                    cm.setAcceptThirdPartyCookies(this, true)
+
+                                    // ─────────────────────────────────────────────
+                                    // ① 팝업에도 동일한 JS 브릿지(이름 "Android") 추가
+                                    //    payment-result.html에서 Android.onPaymentComplete/closePage() 호출
+                                    // ─────────────────────────────────────────────
+                                    addJavascriptInterface(object {
+                                        @android.webkit.JavascriptInterface
+                                        fun onPaymentComplete(json: String) {
+                                            android.os.Handler(android.os.Looper.getMainLooper())
+                                                .post {
+                                                    try {
+                                                        val o = org.json.JSONObject(json)
+                                                        val result =
+                                                            com.konkuk.medicarecall.ui.model.PaymentResult(
+                                                                success = o.optBoolean(
+                                                                    "success",
+                                                                    false
+                                                                ),
+                                                                orderCode = o.optString(
+                                                                    "orderCode",
+                                                                    null
+                                                                ),
+                                                                paymentId = o.optString(
+                                                                    "paymentId",
+                                                                    null
+                                                                ),
+                                                                resultCode = o.optString(
+                                                                    "resultCode",
+                                                                    null
+                                                                ),
+                                                                message = o.optString(
+                                                                    "message",
+                                                                    null
+                                                                )
+                                                            )
+                                                        android.util.Log.d(
+                                                            "NaverPayScreen",
+                                                            "Popup payment result: $result"
+                                                        )
+
+                                                        if (result.success && !navigated) {
+                                                            navigated = true
+                                                            // 팝업 닫고 성공 네비게이션
+                                                            popupWebView?.destroy()
+                                                            popupWebView = null
+                                                            navController.navigate(com.konkuk.medicarecall.navigation.Route.FinishSplash.route) {
+                                                                popUpTo(com.konkuk.medicarecall.navigation.Route.NaverPay.route) {
+                                                                    inclusive = true
+                                                                }
+                                                            }
+                                                        } else if (!result.success) {
+                                                            android.util.Log.w(
+                                                                "NaverPayScreen",
+                                                                "Payment failed: ${result.message ?: "unknown"}"
+                                                            )
+                                                        }
+                                                    } catch (e: Exception) {
+                                                        android.util.Log.e(
+                                                            "NaverPayScreen",
+                                                            "Parse error: ${e.message}"
+                                                        )
+                                                    }
+                                                }
+                                        }
+
+                                        @android.webkit.JavascriptInterface
+                                        fun closePage() {
+                                            android.os.Handler(android.os.Looper.getMainLooper())
+                                                .post {
+                                                    popupWebView?.destroy()
+                                                    popupWebView = null
+                                                }
+                                        }
+                                    }, "Android")
+
+                                    // ─────────────────────────────────────────────
+                                    // ② 팝업 내 네비게이션/스킴 처리 + fallback JS
+                                    // ─────────────────────────────────────────────
+                                    webViewClient = object : WebViewClient() {
+
+                                        override fun shouldOverrideUrlLoading(
+                                            v: WebView,
+                                            req: android.webkit.WebResourceRequest
+                                        ): Boolean {
+                                            val url = req.url.toString()
+                                            val host = req.url.host ?: ""
+                                            val scheme = req.url.scheme ?: ""
+
+                                            // intent://, market:// 등 외부 스킴
+                                            if (scheme.equals("intent", true)) {
+                                                try {
+                                                    val intent = android.content.Intent.parseUri(
+                                                        url,
+                                                        android.content.Intent.URI_INTENT_SCHEME
+                                                    )
+                                                    try {
+                                                        v.context.startActivity(intent)
+                                                    } catch (_: Exception) {
+                                                        val fallback =
+                                                            intent.getStringExtra("browser_fallback_url")
+                                                        if (!fallback.isNullOrEmpty()) {
+                                                            v.loadUrl(fallback)
+                                                        } else {
+                                                            val pkg = intent.`package`
+                                                            if (!pkg.isNullOrEmpty()) {
+                                                                val market = android.content.Intent(
+                                                                    android.content.Intent.ACTION_VIEW,
+                                                                    ("market://details?id=" + pkg).toUri()
+                                                                )
+                                                                v.context.startActivity(market)
+                                                            }
+                                                        }
+                                                    }
+                                                } catch (e: Exception) {
+                                                    android.util.Log.e(
+                                                        "NaverPayWebView",
+                                                        "intent scheme error: ${e.message}"
+                                                    )
+                                                }
+                                                return true
+                                            }
+
+                                            if (scheme in listOf("tel", "mailto", "sms")) {
+                                                try {
+                                                    val i = android.content.Intent(
+                                                        android.content.Intent.ACTION_VIEW,
+                                                        req.url
+                                                    )
+                                                    v.context.startActivity(i)
+                                                } catch (_: Exception) {
+                                                }
+                                                return true
+                                            }
+
+                                            // 우리 서버 이동 시 토큰 재부착 (팝업에서도 동일 정책)
+                                            if (host == "medicare-call.shop") {
+                                                val token = naverPayViewModel.accessToken
+                                                if (!token.isNullOrBlank()) {
+                                                    v.loadUrl(
+                                                        url,
+                                                        mapOf("Authorization" to "Bearer $token")
+                                                    )
+                                                    return true
+                                                }
+                                            }
+
+                                            return false // 나머지는 WebView가 처리
+                                        }
+
+                                        override fun onPageFinished(v: WebView, url: String) {
+                                            android.util.Log.d(
+                                                "NaverPayWebView",
+                                                "POPUP FINISHED: $url"
+                                            )
+                                            // 결제 결과 페이지 방어적 fallback 호출
+                                            if (url.contains("/api/payments/result")) {
+                                                v.evaluateJavascript(
+                                                    """
+                            (function() {
+                              try {
+                                if (window.Android && Android.onPaymentComplete && window.paymentResult) {
+                                  Android.onPaymentComplete(JSON.stringify(window.paymentResult));
+                                  return 'bridged';
+                                }
+                                return 'no-bridge-or-result';
+                              } catch (e) {
+                                return 'error:' + (e && e.message);
+                              }
+                            })();
+                            """.trimIndent()
+                                                ) { ret ->
+                                                    android.util.Log.d(
+                                                        "NaverPayWebView",
+                                                        "popup fallback: $ret"
+                                                    )
+                                                }
+                                            }
+                                        }
+
+                                        override fun onReceivedHttpError(
+                                            v: WebView,
+                                            req: android.webkit.WebResourceRequest,
+                                            res: android.webkit.WebResourceResponse
+                                        ) {
+                                            android.util.Log.e(
+                                                "NaverPayWebView",
+                                                "POPUP HTTP ${res.statusCode} on ${req.url}"
+                                            )
+                                        }
+
+                                        override fun onReceivedError(
+                                            v: WebView,
+                                            req: android.webkit.WebResourceRequest,
+                                            err: android.webkit.WebResourceError
+                                        ) {
+                                            android.util.Log.e(
+                                                "NaverPayWebView",
+                                                "POPUP ERR ${err.errorCode} on ${req.url}: ${err.description}"
+                                            )
+                                        }
+                                    }
+
+                                    // 팝업 자체의 close 제어
+                                    webChromeClient = object : android.webkit.WebChromeClient() {
+                                        override fun onCloseWindow(window: WebView?) {
+                                            popupWebView?.destroy()
+                                            popupWebView = null
+                                        }
+                                    }
+                                }
+
+                                // Compose 쪽에 팝업 표시
+                                popupWebView = popup
+
+                                // 새 창에 popup WebView를 연결
+                                val transport =
+                                    resultMsg?.obj as? WebView.WebViewTransport ?: return false
+                                transport.webView = popup
                                 resultMsg.sendToTarget()
                                 return true
                             }
+
                             override fun onConsoleMessage(msg: android.webkit.ConsoleMessage?): Boolean {
-                                android.util.Log.d("NaverPayWebView", "CONSOLE: ${msg?.message()}")
+                                Log.d("NaverPayWebView", "CONSOLE: ${msg?.message()}")
                                 return super.onConsoleMessage(msg)
                             }
                         }
+
 
                         // 4) 네비게이션 처리: 우리 도메인은 Authorization 재부착, intent 스킴 처리
                         webViewClient = object : WebViewClient() {
@@ -154,10 +388,15 @@ fun NaverPayScreen(
                                 // intent://, market:// 등 외부 스킴 처리
                                 if (scheme.equals("intent", true)) {
                                     try {
-                                        val intent = android.content.Intent.parseUri(url, android.content.Intent.URI_INTENT_SCHEME)
-                                        try { view.context.startActivity(intent) }
-                                        catch (_: Exception) {
-                                            val fallback = intent.getStringExtra("browser_fallback_url")
+                                        val intent = android.content.Intent.parseUri(
+                                            url,
+                                            android.content.Intent.URI_INTENT_SCHEME
+                                        )
+                                        try {
+                                            view.context.startActivity(intent)
+                                        } catch (_: Exception) {
+                                            val fallback =
+                                                intent.getStringExtra("browser_fallback_url")
                                             if (!fallback.isNullOrEmpty()) {
                                                 view.loadUrl(fallback)
                                             } else {
@@ -172,15 +411,22 @@ fun NaverPayScreen(
                                             }
                                         }
                                     } catch (e: Exception) {
-                                        android.util.Log.e("NaverPayWebView", "intent scheme error: ${e.message}")
+                                        android.util.Log.e(
+                                            "NaverPayWebView",
+                                            "intent scheme error: ${e.message}"
+                                        )
                                     }
                                     return true
                                 }
-                                if (scheme in listOf("tel","mailto","sms")) {
+                                if (scheme in listOf("tel", "mailto", "sms")) {
                                     try {
-                                        val i = android.content.Intent(android.content.Intent.ACTION_VIEW, request.url)
+                                        val i = android.content.Intent(
+                                            android.content.Intent.ACTION_VIEW,
+                                            request.url
+                                        )
                                         view.context.startActivity(i)
-                                    } catch (_: Exception) {}
+                                    } catch (_: Exception) {
+                                    }
                                     return true
                                 }
 
@@ -203,40 +449,50 @@ fun NaverPayScreen(
                                 if (url.contains("/api/payments/result")) {
                                     view.evaluateJavascript(
                                         """
-            (function() {
-              try {
-                if (window.AndroidBridge && AndroidBridge.onPaymentComplete && window.paymentResult) {
-                  AndroidBridge.onPaymentComplete(JSON.stringify(window.paymentResult));
-                  return 'bridged';
-                }
-                return 'no-bridge-or-result';
-              } catch (e) {
-                return 'error:' + (e && e.message);
-              }
-            })();
-            """.trimIndent()
+    (function() {
+      try {
+        if (window.Android && Android.onPaymentComplete && window.paymentResult) {
+          Android.onPaymentComplete(JSON.stringify(window.paymentResult));
+          return 'bridged';
+        }onPaymentComplete
+        return 'no-bridge-or-result';
+      } catch (e) {
+        return 'error:' + (e && e.message);
+      }
+    })();
+    """.trimIndent()
                                     ) { ret -> Log.d("NaverPayWebView", "fallback bridge: $ret") }
+
                                 }
                             } // 서버가 호출안하면 우리가 호출 (결과 페이지 도달)
+
                             override fun onReceivedHttpError(
                                 view: WebView,
                                 request: android.webkit.WebResourceRequest,
                                 errorResponse: android.webkit.WebResourceResponse
                             ) {
-                                android.util.Log.e("NaverPayWebView", "HTTP ${errorResponse.statusCode} on ${request.url}")
+                                android.util.Log.e(
+                                    "NaverPayWebView",
+                                    "HTTP ${errorResponse.statusCode} on ${request.url}"
+                                )
                             }
+
                             override fun onReceivedError(
                                 view: WebView,
                                 request: android.webkit.WebResourceRequest,
                                 error: android.webkit.WebResourceError
                             ) {
-                                android.util.Log.e("NaverPayWebView", "ERR ${error.errorCode} on ${request.url}: ${error.description}")
+                                android.util.Log.e(
+                                    "NaverPayWebView",
+                                    "ERR ${error.errorCode} on ${request.url}: ${error.description}"
+                                )
                             }
                         }
 
                         addJavascriptInterface(object {
                             @android.webkit.JavascriptInterface
                             fun onPaymentComplete(json: String) {
+                                Log.d("NaverPayScreen", "Payment complete callback: $json")
                                 android.os.Handler(android.os.Looper.getMainLooper()).post {
                                     try {
                                         val o = org.json.JSONObject(json)
@@ -251,25 +507,43 @@ fun NaverPayScreen(
 
                                         if (result.success && !navigated) {
                                             navigated = true
+                                            Log.d("NaverPayScreen", "navigate FinishSplash")
                                             navController.navigate(Route.FinishSplash.route) {
                                                 // 결제 화면 스택 정리(원치 않으면 제거)
                                                 popUpTo(Route.NaverPay.route) { inclusive = true }
                                             }
                                         } else if (!result.success) {
-                                            Log.w("NaverPayScreen", "Payment failed: ${result.message ?: "unknown"}")
+                                            Log.w(
+                                                "NaverPayScreen",
+                                                "Payment failed: ${result.message ?: "unknown"}"
+                                            )
                                             // TODO: 실패 UI/토스트 등
+                                            navController.popBackStack()
                                         }
                                     } catch (e: Exception) {
                                         Log.e("NaverPayScreen", "Parse error: ${e.message}")
                                     }
                                 }
                             }
-                        }, "AndroidBridge")
+                        }, "Android")
 
                     }
+
                 }
             )
-
+            if (popupWebView != null) {
+                androidx.compose.ui.window.Dialog(
+                    onDismissRequest = {
+                        popupWebView?.destroy()
+                        popupWebView = null
+                    }
+                ) {
+                    AndroidView(
+                        factory = { popupWebView!! },
+                        modifier = Modifier.fillMaxSize()
+                    )
+                }
+            }
             if (orderCode.isNullOrBlank() || accessToken.isNullOrBlank()) {
                 Log.d("NaverPayScreen", "Waiting for orderCode/accessToken...")
                 androidx.compose.material3.CircularProgressIndicator()

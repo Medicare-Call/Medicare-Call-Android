@@ -18,6 +18,7 @@ import androidx.navigation.navigation
 import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
+import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.NoticesResponseDto
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
 import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
@@ -65,10 +66,11 @@ import java.nio.charset.StandardCharsets
 fun NavHostController.navigateTopLevel(route: String) {
     navigate(route) {
         // 그래프 시작점까지 popUp + 상태 저장/복원
-        popUpTo(graph.startDestinationId) {
+        popUpTo(Route.Home.route) {
+            inclusive = false
             saveState = true
         }
-        launchSingleTop = true
+//        launchSingleTop = true
         restoreState = true
     }
 }
@@ -126,7 +128,7 @@ fun NavGraph(
 
             // 홈
             composable(route = Route.Home.route) {
-                TopLevelBackHandler(navController)
+//                TopLevelBackHandler(navController)
                 HomeScreen(
                     navController = navController,
                     onNavigateToMealDetail = { navController.navigate(Route.MealDetail.route) },
@@ -176,7 +178,7 @@ fun NavGraph(
 
             // 통계
             composable(route = Route.Statistics.route) {
-                TopLevelBackHandler(navController)
+//                TopLevelBackHandler(navController)
                 StatisticsScreen(
                     navController = navController
                 )
@@ -185,7 +187,7 @@ fun NavGraph(
 
             // 설정
             composable(route = Route.Settings.route) {
-                TopLevelBackHandler(navController)
+//                TopLevelBackHandler(navController)
                 SettingsScreen(
                     onNavigateToMyDataSetting = {
                         navController.navigate(Route.MyDataSetting.route)
@@ -223,9 +225,14 @@ fun NavGraph(
             }
 
             composable(
-                route = Route.MyDetail.route
-            ) {
+                route = "${Route.MyDetail}/{myDataJson}",
+                arguments = listOf(navArgument("myDataJson") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val encodedJson = backStackEntry.arguments?.getString("myDataJson") ?: ""
+                val decodedJson = URLDecoder.decode(encodedJson, StandardCharsets.UTF_8.toString())
+                val myDataInfo = Json.decodeFromString<MyInfoResponseDto>(decodedJson)
                 MyDetailScreen(
+                    myDataInfo = myDataInfo,
                     onBack = {
                         navController.popBackStack()
                     },
@@ -242,7 +249,7 @@ fun NavGraph(
             }
 
             composable(
-                route = "${Route.SubscribeDetail.route}/{noticeJson}",
+                route = "${Route.AnnouncementDetail.route}/{noticeJson}",
                 arguments = listOf(navArgument("noticeJson") { type = NavType.StringType })
             ) { backStackEntry ->
                 val encodedJson = backStackEntry.arguments?.getString("noticeJson") ?: ""
@@ -338,12 +345,18 @@ fun NavGraph(
                 )
             }
 
-            composable(route = Route.SettingAlarm.route) {
+            composable( route = "${Route.MyDetail}/{myDataJson}",
+                arguments = listOf(navArgument("myDataJson") { type = NavType.StringType })) {
+                    backStackEntry ->
+                val encodedJson = backStackEntry.arguments?.getString("myDataJson") ?: ""
+                val decodedJson = URLDecoder.decode(encodedJson, StandardCharsets.UTF_8.toString())
+                val myDataInfo = Json.decodeFromString<MyInfoResponseDto>(decodedJson)
+
                 SettingAlarmScreen(
+                    myDataInfo = myDataInfo,
                     onBack = {
                         navController.popBackStack()
-                    },
-                    navController = navController
+                    }
                 )
             }
 

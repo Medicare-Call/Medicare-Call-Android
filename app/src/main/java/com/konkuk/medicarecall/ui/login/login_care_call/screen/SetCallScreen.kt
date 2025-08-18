@@ -13,13 +13,16 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
+import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
+import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
 import androidx.compose.foundation.lazy.itemsIndexed
 import androidx.compose.foundation.lazy.rememberLazyListState
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
@@ -32,6 +35,7 @@ import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -64,20 +68,21 @@ fun SetCallScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
     navController: NavHostController,
-    eldersInfoViewModel : EldersInfoViewModel = hiltViewModel(),
+    eldersInfoViewModel: EldersInfoViewModel = hiltViewModel(),
     callTimeViewModel: CallTimeViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState() // 스크롤 상태
     var showBottomSheet by remember { mutableStateOf(false) } // 하단 시트 제어
-    val elderNames = eldersInfoViewModel.eldersInfoList.map { it.name } // 어르신 이름 리스트
+    val elderNames = eldersInfoViewModel.elderNameIdMapList.map { it.keys.first() } // 어르신 이름 리스트
+    val elderIds = eldersInfoViewModel.elderNameIdMapList.map { it.values.first() } // 어르신 아이디 리스트
 
     var selectedIndex by remember { mutableIntStateOf(0) } // 선택된 어르신 인덱스
-    val selectedName = elderNames.getOrNull(selectedIndex).orEmpty() // 선택된 어르신 이름
-    val saved = callTimeViewModel.timeMap[selectedName] ?: CallTimes()
+    val selectedId = elderIds.getOrNull(selectedIndex) ?: 0// 선택된 어르신 아이디
+    val saved = callTimeViewModel.timeMap[selectedId] ?: CallTimes()
     var selectedTabIndex by remember { mutableIntStateOf(0) }
 
 
-    val allComplete = callTimeViewModel.isAllComplete(elderNames)
+    val allComplete = callTimeViewModel.isAllComplete(elderIds)
 //    val allComplete = elderNames.isNotEmpty() && timeMap.values.all { it.first != null && it.second != null && it.third != null }
 
     Column(
@@ -85,16 +90,16 @@ fun SetCallScreen(
             .fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
             .padding(horizontal = 20.dp)
-            .padding(top = 16.dp, bottom = 20.dp)
-            .statusBarsPadding()
+            .systemBarsPadding()
+            .imePadding()
     ) {
         LoginBackButton(onClick = onBack)
-        Spacer(modifier = modifier.height(20.dp))
         Column(
             modifier = modifier.verticalScroll(scrollState)
         ) {
+            Spacer(modifier = modifier.height(20.dp))
             Text(
-                text = "케이콜 설정하기",
+                text = "케어콜 설정하기",
                 style = MediCareCallTheme.typography.M_17,
                 color = MediCareCallTheme.colors.gray8
             )
@@ -180,6 +185,7 @@ fun SetCallScreen(
                     Text(
                         text = name,
                         modifier = Modifier
+                            .clip(CircleShape)
                             .border(
                                 width = if (idx == selectedIndex) 0.dp else (1.2).dp,
                                 color = if (idx == selectedIndex) MediCareCallTheme.colors.main else MediCareCallTheme.colors.gray2,
@@ -227,26 +233,26 @@ fun SetCallScreen(
                         selectedTabIndex = 0
                     }
                 )
-                    Spacer(modifier = modifier.height(20.dp))
-                    TimeSettingItem(
-                        category = "2차",
-                        timeType = TimeSettingType.SECOND,
-                        timeText = saved.second?.toDisplayString(),
-                        modifier = Modifier.clickable {
-                            showBottomSheet = true
-                            selectedTabIndex = 1
-                        }
-                    )
-                    Spacer(modifier = modifier.height(20.dp))
-                    TimeSettingItem(
-                        category = "3차",
-                        timeType = TimeSettingType.THIRD,
-                        timeText = saved.third?.toDisplayString(),
-                        modifier = Modifier.clickable {
-                            showBottomSheet = true
-                            selectedTabIndex = 2
-                        }
-                    )
+                Spacer(modifier = modifier.height(20.dp))
+                TimeSettingItem(
+                    category = "2차",
+                    timeType = TimeSettingType.SECOND,
+                    timeText = saved.second?.toDisplayString(),
+                    modifier = Modifier.clickable {
+                        showBottomSheet = true
+                        selectedTabIndex = 1
+                    }
+                )
+                Spacer(modifier = modifier.height(20.dp))
+                TimeSettingItem(
+                    category = "3차",
+                    timeType = TimeSettingType.THIRD,
+                    timeText = saved.third?.toDisplayString(),
+                    modifier = Modifier.clickable {
+                        showBottomSheet = true
+                        selectedTabIndex = 2
+                    }
+                )
             }
             Spacer(modifier = modifier.height(30.dp))
 
@@ -296,8 +302,8 @@ fun SetCallScreen(
                 text = "확인",
                 onClick = {
                     if (!allComplete) return@CTAButton
-                    callTimeViewModel.submitAllByName(
-                        elderNames = elderNames,
+                    callTimeViewModel.submitAllByIds(
+                        elderIds = elderIds,
                         onSuccess = {
                             navController.navigate(Route.Payment.route)
                             Log.d("SetCallScreen", "콜 시간 설정 완료")
@@ -312,25 +318,26 @@ fun SetCallScreen(
                             ).show()
                         }
                     )
-                }) // 입력여부에 따라 Type 바뀌도록 수정 필요
+                },
+                modifier = Modifier.padding(bottom = 20.dp)) // 입력여부에 따라 Type 바뀌도록 수정 필요
             if (showBottomSheet) {
                 TimePickerBottomSheet(
                     visible = true,
                     initialTabIndex = selectedTabIndex,
                     // 기존에 선택됐던 값을 다시 초기값으로 넘겨주면 UX가 매끄러워집니다.
-                    initialFirstAmPm   = saved.first?.first  ?: 0,
-                    initialFirstHour   = saved.first?.second ?: 9,
-                    initialFirstMinute = saved.first?.third  ?: 0,
-                    initialSecondAmPm   = saved.second?.first  ?: 1,
-                    initialSecondHour   = saved.second?.second ?: 12,
-                    initialSecondMinute = saved.second?.third  ?: 0,
-                    initialThirdAmPm   = saved.third?.first  ?: 1,
-                    initialThirdHour   = saved.third?.second ?: 6,
-                    initialThirdMinute = saved.third?.third  ?: 0,
+                    initialFirstAmPm = saved.first?.first ?: 0,
+                    initialFirstHour = saved.first?.second ?: 9,
+                    initialFirstMinute = saved.first?.third ?: 0,
+                    initialSecondAmPm = saved.second?.first ?: 1,
+                    initialSecondHour = saved.second?.second ?: 12,
+                    initialSecondMinute = saved.second?.third ?: 0,
+                    initialThirdAmPm = saved.third?.first ?: 1,
+                    initialThirdHour = saved.third?.second ?: 6,
+                    initialThirdMinute = saved.third?.third ?: 0,
                     onDismiss = { showBottomSheet = false },
-                    onConfirm = { fAm, fH, fM, sAm, sH, sM, tAm,tH,tM ->
+                    onConfirm = { fAm, fH, fM, sAm, sH, sM, tAm, tH, tM ->
                         callTimeViewModel.setTimes(
-                            selectedName,
+                            selectedId,
                             CallTimes(
                                 first = Triple(fAm, fH, fM),
                                 second = Triple(sAm, sH, sM),

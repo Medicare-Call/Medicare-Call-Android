@@ -47,6 +47,7 @@ import com.konkuk.medicarecall.ui.login.login_care_call.viewmodel.CallTimeViewMo
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.CallTimes
 import com.konkuk.medicarecall.ui.model.TimeSettingType
+import com.konkuk.medicarecall.ui.settings.viewmodel.EldersInfoViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import kotlinx.coroutines.launch
 
@@ -63,17 +64,17 @@ fun SetCallScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
     navController: NavHostController,
-    loginElderViewModel: LoginElderViewModel,
+    eldersInfoViewModel : EldersInfoViewModel = hiltViewModel(),
     callTimeViewModel: CallTimeViewModel = hiltViewModel()
 ) {
     val scrollState = rememberScrollState() // 스크롤 상태
     var showBottomSheet by remember { mutableStateOf(false) } // 하단 시트 제어
-    val elderNames = loginElderViewModel.elderDataList.map { it.name } // 어르신 이름 리스트
-    val elders = loginElderViewModel.elderDataList // 어르신 데이터 리스트
+    val elderNames = eldersInfoViewModel.eldersInfoList.map { it.name } // 어르신 이름 리스트
 
     var selectedIndex by remember { mutableIntStateOf(0) } // 선택된 어르신 인덱스
     val selectedName = elderNames.getOrNull(selectedIndex).orEmpty() // 선택된 어르신 이름
     val saved = callTimeViewModel.timeMap[selectedName] ?: CallTimes()
+    var selectedTabIndex by remember { mutableIntStateOf(0) }
 
 
     val allComplete = callTimeViewModel.isAllComplete(elderNames)
@@ -213,6 +214,7 @@ fun SetCallScreen(
                     timeText = null,
                     modifier = Modifier.clickable {
                         showBottomSheet = true
+                        selectedTabIndex = 0
                     }
                 )
             } else {
@@ -222,6 +224,7 @@ fun SetCallScreen(
                     timeText = saved.first.toDisplayString(),
                     modifier = Modifier.clickable {
                         showBottomSheet = true
+                        selectedTabIndex = 0
                     }
                 )
                     Spacer(modifier = modifier.height(20.dp))
@@ -231,6 +234,7 @@ fun SetCallScreen(
                         timeText = saved.second?.toDisplayString(),
                         modifier = Modifier.clickable {
                             showBottomSheet = true
+                            selectedTabIndex = 1
                         }
                     )
                     Spacer(modifier = modifier.height(20.dp))
@@ -240,6 +244,7 @@ fun SetCallScreen(
                         timeText = saved.third?.toDisplayString(),
                         modifier = Modifier.clickable {
                             showBottomSheet = true
+                            selectedTabIndex = 2
                         }
                     )
             }
@@ -311,6 +316,7 @@ fun SetCallScreen(
             if (showBottomSheet) {
                 TimePickerBottomSheet(
                     visible = true,
+                    initialTabIndex = selectedTabIndex,
                     // 기존에 선택됐던 값을 다시 초기값으로 넘겨주면 UX가 매끄러워집니다.
                     initialFirstAmPm   = saved.first?.first  ?: 0,
                     initialFirstHour   = saved.first?.second ?: 9,

@@ -15,38 +15,43 @@ data class HomeUiState(
     val glucoseLevelAverageToday: Int = 0
 ) {
     companion object {
-        val EMPTY = HomeUiState()
-        private fun mapNextTimeToKor(nextTime: String?): String {
-            return when (nextTime) {
-                "MORNING" -> "아침"
-                "LUNCH" -> "점심"
-                "DINNER" -> "저녁"
-                else -> "-"
-            }
-        }
-        fun from(dto: HomeResponseDto): HomeUiState {
-            return HomeUiState(
-                elderName = dto.elderName,
-                balloonMessage = dto.aiSummary,
-                isRecorded = dto.mealStatus.breakfast || dto.mealStatus.lunch || dto.mealStatus.dinner,
-                isEaten = dto.mealStatus.breakfast || dto.mealStatus.lunch || dto.mealStatus.dinner,
-                breakfastEaten = dto.mealStatus.breakfast,
-                lunchEaten = dto.mealStatus.lunch,
-                dinnerEaten = dto.mealStatus.dinner,
-                medicines = dto.medicationStatus.medicationList.map {
-                    MedicineUiState(
-                        medicineName = it.type,
-                        todayTakenCount = it.taken,
-                        todayRequiredCount = it.goal,
-                        nextDoseTime = mapNextTimeToKor(it.nextTime)
-                    )
-                },
-                sleep = dto.sleep,
-                healthStatus = dto.healthStatus,
-                mentalStatus = dto.mentalStatus,
-                glucoseLevelAverageToday = dto.bloodSugar.meanValue
-            )
-        }
+        val EMPTY = HomeUiState(
+            elderName = "",
+            balloonMessage = "",
+            isRecorded = false,
+            isEaten = false,
+            medicines = emptyList(),
+            sleep = HomeResponseDto.SleepDto(0, 0),
+            healthStatus = "",
+            mentalStatus = "",
+            glucoseLevelAverageToday = 0
+        )
+        fun from(dto: HomeResponseDto): HomeUiState = HomeUiState(
+            elderName = dto.elderName,
+            balloonMessage = dto.aiSummary,
+            isRecorded = dto.mealStatus.breakfast || dto.mealStatus.lunch || dto.mealStatus.dinner,
+            isEaten = dto.mealStatus.breakfast || dto.mealStatus.lunch || dto.mealStatus.dinner,
+            breakfastEaten = dto.mealStatus.breakfast,
+            lunchEaten = dto.mealStatus.lunch,
+            dinnerEaten = dto.mealStatus.dinner,
+            medicines = dto.medicationStatus.medicationList.map {
+                MedicineUiState(
+                    medicineName = it.type,
+                    todayTakenCount = it.taken,
+                    todayRequiredCount = it.goal,
+                    nextDoseTime = when (it.nextTime) {
+                        "MORNING" -> "아침"
+                        "LUNCH"   -> "점심"
+                        "DINNER"  -> "저녁"
+                        else      -> "-"
+                    }
+                )
+            },
+            sleep = dto.sleep,
+            healthStatus = dto.healthStatus,
+            mentalStatus = dto.mentalStatus,
+            glucoseLevelAverageToday = dto.bloodSugar.meanValue
+        )
     }
 }
 

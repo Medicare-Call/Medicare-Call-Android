@@ -1,45 +1,56 @@
 package com.konkuk.medicarecall.ui.home.model
 
-import com.google.gson.annotations.SerializedName
+import kotlinx.serialization.SerialName
+import kotlinx.serialization.Serializable
 
+@Serializable
 data class HomeResponseDto(
-    val elderName: String,
+    @SerialName("memberName")
+    val elderName: String = "",
 
-    @SerializedName("AISummary")
-    val aiSummary: String,
-    val mealStatus: MealStatusDto,
-    val medicationStatus: MedicationStatusDto,
-    val sleep: SleepDto,
-    val healthStatus: String,
-    val mentalStatus: String,
-    val bloodSugar: BloodSugarDto
+    @SerialName("AISummary")
+    val aiSummary: String = "",
+
+    val mealStatus: MealStatusDto = MealStatusDto(),
+    val medicationStatus: MedicationStatusDto = MedicationStatusDto(),
+    val sleep: SleepDto = SleepDto(),
+    val healthStatus: String = "",
+    val mentalStatus: String = "",
+    val bloodSugar: BloodSugarDto = BloodSugarDto()
 ) {
+    @Serializable
     data class MealStatusDto(
-        val breakfast: Boolean,
-        val lunch: Boolean,
-        val dinner: Boolean
+        val breakfast: Boolean = false,
+        val lunch: Boolean = false,
+        val dinner: Boolean = false
     )
 
+    @Serializable
     data class MedicationStatusDto(
-        val totalTaken: Int,
-        val totalGoal: Int,
-        val nextMedicationTime: String,
-        val medicationList: List<MedicationDto>
+        val totalTaken: Int = 0,
+        val totalGoal: Int = 0,
+        val nextMedicationTime: String? = null,
+
+        val medicationList: List<MedicationDto> = emptyList()
     )
 
+    @Serializable
     data class MedicationDto(
-        val type: String,
-        val taken: Int,
-        val goal: Int,
-        val nextTime: String
+        val type: String = "",
+        val taken: Int = 0,
+        val goal: Int = 0,
+        val nextTime: String? = null
     )
 
+    @Serializable
     data class SleepDto(
-        val meanHours: Int,
-        val meanMinutes: Int
+        val meanHours: Int = 0,
+        val meanMinutes: Int = 0
     )
 
+    @Serializable
     data class BloodSugarDto(
-        val meanValue: Int
+        @SerialName("meanValue")
+        val meanValue: Int = 0
     )
 }

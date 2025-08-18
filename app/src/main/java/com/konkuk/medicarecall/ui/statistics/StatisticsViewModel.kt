@@ -3,6 +3,9 @@ package com.konkuk.medicarecall.ui.statistics
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.konkuk.medicarecall.data.repository.EldersInfoRepository
+import com.konkuk.medicarecall.ui.home.ElderInfo
+import com.konkuk.medicarecall.ui.home.mapState
 import com.konkuk.medicarecall.ui.statistics.data.StatisticsRepository
 import com.konkuk.medicarecall.ui.statistics.model.StatisticsResponseDto
 import com.konkuk.medicarecall.ui.statistics.model.WeeklyGlucoseUiState
@@ -11,9 +14,15 @@ import com.konkuk.medicarecall.ui.statistics.model.WeeklyMedicineUiState
 import com.konkuk.medicarecall.ui.statistics.model.WeeklyMentalUiState
 import com.konkuk.medicarecall.ui.statistics.model.WeeklySummaryUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
+import kotlinx.coroutines.CoroutineScope
+import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
+import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
+import kotlinx.coroutines.flow.combine
+import kotlinx.coroutines.flow.map
+import kotlinx.coroutines.flow.stateIn
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.time.LocalDate
@@ -28,13 +37,23 @@ data class StatisticsUiState(
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
     private val repository: StatisticsRepository,
+    private val eldersInfoRepository: EldersInfoRepository
 ) : ViewModel() {
+
+
 
     private val _uiState = MutableStateFlow(StatisticsUiState())
     val uiState: StateFlow<StatisticsUiState> = _uiState.asStateFlow()
 
+    // ViewModel이 직접 관리하는 상태들
+    private val _elderInfoList = MutableStateFlow<List<ElderInfo>>(emptyList())
+    val elderNameList: StateFlow<List<String>> = _elderInfoList.mapState { list -> list.map { it.name } }
+    private val _selectedElderId = MutableStateFlow<Int?>(null)
+
+    // 주차 이동 관련 상태
     private val _currentWeek = MutableStateFlow(getWeekRange(LocalDate.now()))
     val currentWeek: StateFlow<Pair<LocalDate, LocalDate>> = _currentWeek
+
 
     private val _isLatestWeek = MutableStateFlow(true)
     val isLatestWeek: StateFlow<Boolean> = _isLatestWeek
@@ -46,13 +65,37 @@ class StatisticsViewModel @Inject constructor(
     private var earliestDate: LocalDate = LocalDate.now()
 
     init {
+        fetchElderList()
+
         viewModelScope.launch {
-            // TODO: 실제 earliestDate 로드
-            earliestDate = LocalDate.now()
-            jumpToWeekOf(LocalDate.now())
+            _selectedElderId.combine(_currentWeek) { id, week ->
+                Pair(id, week)
+            }.collect { (id, week) ->
+                if (id != null) {
+                    getWeeklyStatistics(elderId = id, startDate = week.first)
+                }
+            }
+        }
+    }
+    private fun fetchElderList() {
+        viewModelScope.launch {
+            eldersInfoRepository.getElders()
+                .onSuccess { elders ->
+                    _elderInfoList.value = elders.map { ElderInfo(id = it.elderId, name = it.name, phone = null) }
+                    if (_selectedElderId.value == null && _elderInfoList.value.isNotEmpty()) {
+                        _selectedElderId.value = _elderInfoList.value.first().id
+                    }
+                }
+                .onFailure { error -> Log.e("StatsVM", "어르신 목록 로딩 실패", error) }
         }
     }
 
+    fun selectElder(elderName: String) {
+        val selectedElder = _elderInfoList.value.find { it.name == elderName }
+        if (selectedElder != null) {
+            _selectedElderId.value = selectedElder.id
+        }
+    }
     /* ---------------- Week 이동 ---------------- */
 
     fun showPreviousWeek() {
@@ -91,7 +134,7 @@ class StatisticsViewModel @Inject constructor(
 
     /* ---------------- 데이터 로딩 ---------------- */
 
-    fun getWeeklyStatistics(elderId: Int, startDate: LocalDate) {
+    private fun getWeeklyStatistics(elderId: Int, startDate: LocalDate) {
         if (_uiState.value.isLoading) return
 
         viewModelScope.launch {
@@ -121,6 +164,8 @@ class StatisticsViewModel @Inject constructor(
 
     private fun StatisticsResponseDto.toWeeklySummaryUiState(): WeeklySummaryUiState {
         return WeeklySummaryUiState(
+            elderName = this.elderName,
+
             weeklyMealRate = this.summaryStats.mealRate,
             weeklyMedicineRate = this.summaryStats.medicationRate,
             weeklyHealthIssueCount = this.summaryStats.healthSignals,
@@ -161,3 +206,9 @@ class StatisticsViewModel @Inject constructor(
         )
     }
 }
+
+
+fun <T, R> StateFlow<T>.mapState(
+    scope: CoroutineScope = GlobalScope,
+    transform: (T) -> R
+): StateFlow<R> = map(transform).stateIn(scope, SharingStarted.Eagerly, transform(value))

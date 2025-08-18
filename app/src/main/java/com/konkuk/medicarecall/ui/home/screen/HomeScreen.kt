@@ -34,6 +34,7 @@ import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
@@ -47,8 +48,8 @@ import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.component.NameBar
+import com.konkuk.medicarecall.ui.component.NameDropdown
 import com.konkuk.medicarecall.ui.home.HomeViewModel
-import com.konkuk.medicarecall.ui.home.NameDropdown
 import com.konkuk.medicarecall.ui.home.component.CareCallFloatingButton
 import com.konkuk.medicarecall.ui.home.component.CareCallSnackBar
 import com.konkuk.medicarecall.ui.home.component.HomeGlucoseLevelContainer
@@ -57,7 +58,9 @@ import com.konkuk.medicarecall.ui.home.component.HomeMedicineContainer
 import com.konkuk.medicarecall.ui.home.component.HomeSleepContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateHealthContainer
 import com.konkuk.medicarecall.ui.home.component.HomeStateMentalContainer
+import com.konkuk.medicarecall.ui.home.model.HomeResponseDto
 import com.konkuk.medicarecall.ui.home.model.HomeUiState
+import com.konkuk.medicarecall.ui.home.model.MedicineUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
 import kotlinx.coroutines.launch
@@ -74,10 +77,9 @@ fun HomeScreen(
     onNavigateToStateMentalDetail: () -> Unit,
     onNavigateToGlucoseDetail: () -> Unit,
 ) {
-    val homeUiState by homeViewModel.homeUiState.collectAsState(initial = HomeUiState.EMPTY)
-
-
-    val dropdownOpened = remember { mutableStateOf(false) }
+    val homeUiState by homeViewModel.homeUiState.collectAsState()
+    val elderNameList by homeViewModel.elderNameList.collectAsState()
+    var dropdownOpened by remember { mutableStateOf(false) }
 
 
     val snackbarHostState = remember { SnackbarHostState() }
@@ -88,9 +90,14 @@ fun HomeScreen(
         modifier = modifier,
         navController = navController,
         homeUiState = homeUiState,
-        dropdownOpened = dropdownOpened.value,
-        onDropdownClick = { dropdownOpened.value = !dropdownOpened.value },
-        onDropdownDismiss = { dropdownOpened.value = false },
+        elderNameList = elderNameList,
+        dropdownOpened = dropdownOpened,
+        onDropdownClick = { dropdownOpened = true },
+        onDropdownDismiss = { dropdownOpened = false },
+        onDropdownItemSelected = { selectedName ->
+            homeViewModel.selectElder(selectedName)
+            dropdownOpened = false
+        },
         onNavigateToMealDetail = onNavigateToMealDetail,
         onNavigateToMedicineDetail = onNavigateToMedicineDetail,
         onNavigateToSleepDetail = onNavigateToSleepDetail,
@@ -112,9 +119,11 @@ fun HomeScreenLayout(
     modifier: Modifier = Modifier,
     navController: NavHostController,
     homeUiState: HomeUiState,
+    elderNameList: List<String>,
     dropdownOpened: Boolean,
     onDropdownClick: () -> Unit,
     onDropdownDismiss: () -> Unit,
+    onDropdownItemSelected: (String) -> Unit,
     onNavigateToMealDetail: () -> Unit,
     onNavigateToMedicineDetail: () -> Unit,
     onNavigateToSleepDetail: () -> Unit,
@@ -124,6 +133,13 @@ fun HomeScreenLayout(
     snackbarHostState: SnackbarHostState,
     onFabClick: () -> Unit
 ) {
+
+    val selectedElderName = remember(homeUiState.elderName, elderNameList) {
+
+        homeUiState.elderName.ifEmpty {
+            elderNameList.firstOrNull() ?: "어르신 선택"
+        }
+    }
     Scaffold(
 
         contentWindowInsets = WindowInsets(0),
@@ -142,6 +158,7 @@ fun HomeScreenLayout(
                     .background(Color.White).padding(innerPadding)
             ) {
                 NameBar(
+                    name = selectedElderName,
                     modifier = Modifier.statusBarsPadding(),
                     navController = navController,
                     onDropdownClick = onDropdownClick
@@ -287,12 +304,13 @@ fun HomeScreenLayout(
                 }
 
             }
+
             if (dropdownOpened) {
                 NameDropdown(
-                    items = listOf("김헬레나", "박막례"),
-                    selectedName = "김헬레나",
+                    items = elderNameList,
+                    selectedName = selectedElderName,
                     onDismiss = onDropdownDismiss,
-                    onItemSelected = { /*TODO*/ }
+                    onItemSelected = onDropdownItemSelected
                 )
             }
             SnackbarHost(
@@ -318,13 +336,34 @@ val SpeechTail = GenericShape { size, _ ->
 @Preview(showBackground = true, heightDp = 1500)
 @Composable
 fun PreviewHomeScreen() {
+
+    val previewUiState = HomeUiState(
+        elderName = "김옥자",
+        balloonMessage = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요.",
+        breakfastEaten = true,
+        lunchEaten = true,
+        dinnerEaten = false,
+        medicines = listOf(
+            MedicineUiState("혈압약", 2, 3, "저녁"),
+            MedicineUiState("당뇨약", 1, 2, "저녁")
+        ),
+        sleep = HomeResponseDto.SleepDto(meanHours = 8, meanMinutes = 15),
+        healthStatus = "좋음",
+        mentalStatus = "좋음",
+        glucoseLevelAverageToday = 120
+    )
+
+    val previewNameList = listOf("김옥자", "박막례", "최이순")
+
     MediCareCallTheme {
         HomeScreenLayout(
             navController = rememberNavController(),
-            homeUiState = HomeUiState.EMPTY,
+            homeUiState = previewUiState,
+            elderNameList = previewNameList,
             dropdownOpened = false,
             onDropdownClick = {},
             onDropdownDismiss = {},
+            onDropdownItemSelected = {},
             onNavigateToMealDetail = {},
             onNavigateToMedicineDetail = {},
             onNavigateToSleepDetail = {},

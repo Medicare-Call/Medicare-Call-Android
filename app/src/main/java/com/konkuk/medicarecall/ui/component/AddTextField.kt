@@ -33,8 +33,8 @@ fun AddTextField(
     Row(modifier = modifier.fillMaxWidth(), verticalAlignment = Alignment.CenterVertically) {
         OutlinedTextField(
             modifier = modifier
-                .weight(1f)
-                .height(55.dp),
+                .weight(1f),
+//                .height(55.dp),
             value = inputText,
             shape = RoundedCornerShape(14.dp),
             onValueChange = onTextChange,

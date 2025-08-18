@@ -329,7 +329,7 @@ fun SetCallScreen(
                     initialFirstMinute = saved.first?.third ?: 0,
                     initialSecondHour = saved.second?.second ?: 12,
                     initialSecondMinute = saved.second?.third ?: 0,
-                    initialThirdHour = saved.third?.second ?: 6,
+                    initialThirdHour = saved.third?.second ?: 5,
                     initialThirdMinute = saved.third?.third ?: 0,
                     onDismiss = { showBottomSheet = false },
                     onConfirm = { fH, fM, sH, sM, tH, tM ->

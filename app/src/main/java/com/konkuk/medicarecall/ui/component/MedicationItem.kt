@@ -3,14 +3,18 @@ package com.konkuk.medicarecall.ui.component
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
+import androidx.compose.foundation.horizontalScroll
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.MutableState
@@ -35,14 +39,18 @@ private fun MedicationTimeSection(
     // 약 목록이 비어있지 않을 때만 UI를 표시
     if (medications.isNotEmpty()) {
         Column {
+
             Text(
                 text = title,
                 color = MediCareCallTheme.colors.gray5,
                 style = MediCareCallTheme.typography.R_15
             )
             Spacer(Modifier.height(10.dp))
+            val scrollState = rememberScrollState()
             Row(
-                modifier = Modifier.padding(bottom = 16.dp),
+                modifier = Modifier
+                    .padding(bottom = 16.dp)
+                    .horizontalScroll(scrollState),
                 horizontalArrangement = Arrangement.spacedBy(10.dp)
             ) {
                 // 안전한 순회를 위해 toList()로 복사본을 만들어 사용
@@ -98,7 +106,9 @@ fun MedicationItem(
             Spacer(Modifier.height(20.dp))
 
         val selectedList = remember { mutableStateListOf<MedicationTimeType>() }
-        Row(horizontalArrangement = Arrangement.spacedBy(8.dp)) {
+        Row(
+            horizontalArrangement = Arrangement.spacedBy(8.dp)
+        ) {
             MedicationTimeType.entries.forEach {
                 Box(
                     Modifier

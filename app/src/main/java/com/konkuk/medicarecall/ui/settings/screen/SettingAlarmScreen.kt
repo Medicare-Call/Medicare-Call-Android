@@ -17,6 +17,8 @@ import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
@@ -39,95 +41,135 @@ import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.component.SwitchButton
 import com.konkuk.medicarecall.ui.settings.viewmodel.DetailMyDataViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-
 @Composable
-fun SettingAlarmScreen(modifier: Modifier = Modifier,myDataViewModel: DetailMyDataViewModel = hiltViewModel(),myDataInfo : MyInfoResponseDto, onBack: () -> Unit = {}) {
-    // 1) 상태 선언
+fun SettingAlarmScreen(
+    modifier: Modifier = Modifier,
+    myDataViewModel: DetailMyDataViewModel = hiltViewModel(),
+    myDataInfo: MyInfoResponseDto,
+    onBack: () -> Unit = {}
+) {
+    // 1. UI를 위한 로컬 상태를 선언합니다.
+    var masterChecked by remember { mutableStateOf(false) }
+    var completeChecked by remember { mutableStateOf(false) }
+    var abnormalChecked by remember { mutableStateOf(false) }
+    var missedChecked by remember { mutableStateOf(false) }
 
-    var masterChecked by remember { mutableStateOf(myDataInfo.pushNotification.all == "ON") }
-    var completeChecked by remember { mutableStateOf((myDataInfo.pushNotification.carecallCompleted == "ON") ||(myDataInfo.pushNotification.all == "ON")) }
-    var abnormalChecked by remember { mutableStateOf((myDataInfo.pushNotification.healthAlert == "ON")||(myDataInfo.pushNotification.all == "ON")) }
-    var missedChecked by remember { mutableStateOf((myDataInfo.pushNotification.carecallMissed == "ON")||(myDataInfo.pushNotification.all == "ON")) }
+    // 2. `LaunchedEffect`를 사용해 외부 데이터(myDataInfo)가 바뀔 때마다 로컬 상태를 동기화합니다.
+    //    이렇게 하면 데이터가 변경되었을 때 UI가 즉시 올바르게 반영됩니다.
+    LaunchedEffect(myDataInfo) {
+        masterChecked = myDataInfo.pushNotification.all == "ON"
+        completeChecked = myDataInfo.pushNotification.carecallCompleted == "ON" || masterChecked
+        abnormalChecked = myDataInfo.pushNotification.healthAlert == "ON" || masterChecked
+        missedChecked = myDataInfo.pushNotification.carecallMissed == "ON" || masterChecked
+    }
 
-    Column(modifier = modifier
-        .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)
-        .statusBarsPadding()) {
+    // 3. 상태를 업데이트하고 ViewModel을 호출하는 함수를 만듭니다. (코드 중복 제거)
+    val updateSettings = {
+        myDataViewModel.updateUserData(
+            userInfo = myDataInfo.copy( // 기존 데이터를 복사하여 변경사항만 적용
+                pushNotification = PushNotificationDto(
+                    all = if (masterChecked) "ON" else "OFF",
+                    carecallCompleted = if (completeChecked) "ON" else "OFF",
+                    healthAlert = if (abnormalChecked) "ON" else "OFF",
+                    carecallMissed = if (missedChecked) "ON" else "OFF"
+                )
+            )
+        )
+    }
+
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MediCareCallTheme.colors.bg)
+            .statusBarsPadding()
+    ) {
         SettingsTopAppBar(
-            modifier = modifier,
             title = "푸시 알림 설정",
             leftIcon = {
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "go_back",
-                    modifier = modifier.size(24.dp).clickable{
-                        myDataViewModel.updateUserData(
-                            userInfo = MyInfoResponseDto(
-                                name = myDataInfo.name,
-                                birthDate = myDataInfo.birthDate,
-                                gender = myDataInfo.gender,
-                                phone = myDataInfo.phone,
-                                pushNotification = PushNotificationDto(
-                                    all = if (masterChecked) "ON" else "OFF",
-                                    carecallCompleted = if (completeChecked) "ON" else "OFF",
-                                    healthAlert = if (abnormalChecked) "ON" else "OFF",
-                                    carecallMissed = if (missedChecked) "ON" else "OFF"
-                                )
-                            )
-                        )
-                        onBack()
-                    },
+                    modifier = Modifier.size(24.dp).clickable { onBack() },
                     tint = Color.Black
                 )
             }
         )
-        Column(modifier = modifier
-            .fillMaxWidth()
-            .padding(20.dp)
-            .verticalScroll(rememberScrollState()),
+        Column(
+            modifier = Modifier
+                .fillMaxWidth()
+                .padding(20.dp)
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(24.dp)
+        ) {
+            // 전체 푸시 알림
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
             ) {
-            Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
                 Text("전체 푸시 알림", style = MediCareCallTheme.typography.SB_16, color = Color.Black)
-                SwitchButton(masterChecked, onCheckedChange = { isChecked ->
-                    masterChecked = isChecked
-                    completeChecked = isChecked
-                    abnormalChecked = isChecked
-                    missedChecked = isChecked
-                },
-                    modifier = modifier.clip(CircleShape)
+                SwitchButton(
+                    checked = masterChecked,
+                    onCheckedChange = { isChecked ->
+                        // 4. 상태를 먼저 모두 변경하고,
+                        masterChecked = isChecked
+                        completeChecked = isChecked
+                        abnormalChecked = isChecked
+                        missedChecked = isChecked
+                        // 5. 마지막에 변경된 최종 상태로 ViewModel을 호출합니다.
+                        updateSettings()
+                    }
                 )
             }
-            Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
+            // 케어콜 완료 알림
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text("케어콜 완료 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                SwitchButton(completeChecked, onCheckedChange = { isChecked ->
-                    completeChecked = isChecked
-                    if (!isChecked) {
-                        masterChecked = false
+                SwitchButton(
+                    checked = completeChecked,
+                    onCheckedChange = { isChecked ->
+                        completeChecked = isChecked
+                        if (!isChecked) {
+                            masterChecked = false
+                        }
+                        updateSettings()
                     }
-                },
-                    modifier = modifier.clip(CircleShape)
                 )
             }
-            Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
+            // 건강 이상 징후 알림
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text("건강 이상 징후 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                SwitchButton(abnormalChecked, onCheckedChange = { isChecked ->
-                    abnormalChecked = isChecked
-                    if (!isChecked) {
-                        masterChecked = false
+                SwitchButton(
+                    checked = abnormalChecked,
+                    onCheckedChange = { isChecked ->
+                        abnormalChecked = isChecked
+                        if (!isChecked) {
+                            masterChecked = false
+                        }
+                        updateSettings()
                     }
-                },
-                    modifier = modifier.clip(CircleShape))
+                )
             }
-            Row(modifier = modifier.fillMaxWidth(),horizontalArrangement = Arrangement.SpaceBetween) {
+            // 케어콜 부재중 알림
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.SpaceBetween
+            ) {
                 Text("케어콜 부재중 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
-                SwitchButton(missedChecked, onCheckedChange = { isChecked ->
-                    missedChecked = isChecked
-                    if (!isChecked) {
-                        masterChecked = false
+                SwitchButton(
+                    checked = missedChecked,
+                    onCheckedChange = { isChecked ->
+                        missedChecked = isChecked
+                        if (!isChecked) {
+                            masterChecked = false
+                        }
+                        updateSettings()
                     }
-                },
-                    modifier = modifier.clip(CircleShape))
+                )
             }
         }
     }

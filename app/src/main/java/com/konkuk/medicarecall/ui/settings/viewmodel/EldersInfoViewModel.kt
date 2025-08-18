@@ -7,6 +7,7 @@ import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
+import com.konkuk.medicarecall.data.repository.ElderIdRepository
 import com.konkuk.medicarecall.data.repository.EldersInfoRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
@@ -14,11 +15,14 @@ import javax.inject.Inject
 
 @HiltViewModel
 class EldersInfoViewModel @Inject constructor(
-    private val eldersInfoRepository: EldersInfoRepository
+    private val eldersInfoRepository: EldersInfoRepository,
+    private val elderIdRepository: ElderIdRepository
 ) : ViewModel() {
 
     var eldersInfoList by mutableStateOf<List<EldersInfoResponseDto>>(emptyList())
         private set
+
+    var elderNameIdMapList = elderIdRepository.getElderIds()
 
     var errorMessage by mutableStateOf<String?>(null)
         private set

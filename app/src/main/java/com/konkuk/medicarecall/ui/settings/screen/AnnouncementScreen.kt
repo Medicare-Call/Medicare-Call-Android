@@ -27,6 +27,9 @@ import com.konkuk.medicarecall.ui.settings.component.AnnouncementCard
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.viewmodel.NoticeViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import kotlinx.serialization.json.Json
+import java.net.URLEncoder
+import java.nio.charset.StandardCharsets
 
 @Composable
 fun AnnouncementScreen( modifier: Modifier = Modifier, onBack : () -> Unit = {}, navController: NavHostController, viewModel: NoticeViewModel = hiltViewModel()) {
@@ -60,12 +63,17 @@ fun AnnouncementScreen( modifier: Modifier = Modifier, onBack : () -> Unit = {},
             modifier = modifier.verticalScroll(scrollState)
         ) {
             if (error != null) {
-                AnnouncementCard("공지사항 오류 발생", error)
+                AnnouncementCard("공지사항 오류 발생", error, onClick = {})
             } else {
                 notices.forEach { notice ->
                     AnnouncementCard(
                         title = notice.title,
-                        date = notice.publishedAt.replace("-", ".")
+                        date = notice.publishedAt.replace("-", "."),
+                        onClick = {
+                            val json = Json.encodeToString(notice)
+                            val encodedJson = URLEncoder.encode(json, StandardCharsets.UTF_8.toString())
+                            navController.navigate("announcement_detail/$encodedJson")
+                        }
                     )
                 }
             }

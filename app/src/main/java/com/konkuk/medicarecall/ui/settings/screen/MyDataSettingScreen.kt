@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
@@ -146,6 +147,7 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
             onLogout = {
                 myDataViewModel.logout(
                     onSuccess = {
+                        Log.d("MyDataSettingScreen", "Logout successful")
                         // 로그아웃 성공 후 동작
                         navController.navigate("login") {
                             popUpTo("main") { inclusive = true }
@@ -156,7 +158,7 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
                     },
                     onError = { error ->
                         // 로그아웃 실패 처리 (예: 에러 메시지 표시)
-                        println("로그아웃 실패: ${error.message}")
+                        Log.e("MyDataSettingScreen", "Logout failed: $error")
                     }
                 )
 

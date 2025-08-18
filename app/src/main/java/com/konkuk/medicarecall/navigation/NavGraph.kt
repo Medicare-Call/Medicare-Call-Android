@@ -18,6 +18,7 @@ import androidx.navigation.navigation
 import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
+import com.konkuk.medicarecall.data.dto.response.NoticesResponseDto
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
 import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
@@ -39,6 +40,7 @@ import com.konkuk.medicarecall.ui.login.login_payment.screen.PaymentScreen
 import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
 import com.konkuk.medicarecall.ui.login.login_elder.screen.LoginElderScreen
 import com.konkuk.medicarecall.ui.login.login_elder.screen.LoginElderMedInfoScreen
+import com.konkuk.medicarecall.ui.settings.screen.AnnouncementDetailScreen
 import com.konkuk.medicarecall.ui.settings.screen.AnnouncementScreen
 import com.konkuk.medicarecall.ui.settings.screen.HealthDetailScreen
 import com.konkuk.medicarecall.ui.settings.screen.HealthInfoScreen
@@ -185,7 +187,6 @@ fun NavGraph(
             composable(route = Route.Settings.route) {
                 TopLevelBackHandler(navController)
                 SettingsScreen(
-                    navController = navController,
                     onNavigateToMyDataSetting = {
                         navController.navigate(Route.MyDataSetting.route)
                     },
@@ -228,7 +229,6 @@ fun NavGraph(
                     onBack = {
                         navController.popBackStack()
                     },
-                    navController = navController
                 )
             }
 
@@ -238,6 +238,20 @@ fun NavGraph(
                         navController.popBackStack()
                     },
                     navController = navController
+                )
+            }
+
+            composable(
+                route = "${Route.SubscribeDetail.route}/{noticeJson}",
+                arguments = listOf(navArgument("noticeJson") { type = NavType.StringType })
+            ) { backStackEntry ->
+                val encodedJson = backStackEntry.arguments?.getString("noticeJson") ?: ""
+                val decodedJson = URLDecoder.decode(encodedJson, StandardCharsets.UTF_8.toString())
+                val noticeInfo = Json.decodeFromString<NoticesResponseDto>(decodedJson)
+
+                AnnouncementDetailScreen(
+                    noticeInfo = noticeInfo,
+                    onBack = {navController.popBackStack()}
                 )
             }
 
@@ -372,7 +386,6 @@ fun NavGraph(
                         navController.popBackStack()
                     },
                     navController = navController,
-                    loginElderViewModel = loginElderViewModel
                 )
             }
 
@@ -382,7 +395,6 @@ fun NavGraph(
                         navController.popBackStack()
                     },
                     navController = navController,
-                    loginElderViewModel = loginElderViewModel
                 )
             }
 

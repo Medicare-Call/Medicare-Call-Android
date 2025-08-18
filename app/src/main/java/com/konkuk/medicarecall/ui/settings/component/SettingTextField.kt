@@ -37,7 +37,7 @@ fun SettingTextField(category : String,value : String,hint: String, modifier: Mo
             colors = TextFieldDefaults.colors(
                 focusedContainerColor = MediCareCallTheme.colors.white,
                 unfocusedContainerColor = MediCareCallTheme.colors.white,
-                focusedIndicatorColor = MediCareCallTheme.colors.gray2,
+                focusedIndicatorColor = MediCareCallTheme.colors.main,
                 unfocusedIndicatorColor = MediCareCallTheme.colors.gray2,
 
             )

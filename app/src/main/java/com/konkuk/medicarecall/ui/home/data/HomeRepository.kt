@@ -1,17 +1,15 @@
 package com.konkuk.medicarecall.ui.home.data
 
-import android.util.Log
 import com.konkuk.medicarecall.ui.home.model.HomeUiState
 import com.konkuk.medicarecall.ui.home.model.MedicineUiState
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.withContext
-import retrofit2.HttpException
 import java.time.LocalDate
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
     private val homeApi: HomeApi
 ) {
+    suspend fun requestImmediateCareCall() = homeApi.requestImmediateCareCall()
+
     private fun mapNextTimeToKor(nextTime: String?): String = when (nextTime) {
         "MORNING" -> "아침"
         "LUNCH"   -> "점심"
@@ -59,21 +57,4 @@ class HomeRepository @Inject constructor(
         }
     }
 
-    suspend fun startTestCall(phoneNumber: String, prompt: String): Result<String> =
-        withContext(Dispatchers.IO) {
-            return@withContext try {
-                val res = homeApi.startTestCall(TestCallRequest(phoneNumber, prompt))
-                if (res.isSuccessful) {
-
-                    val body = res.body()?.string().orEmpty()
-                    Result.success(body.ifEmpty { "OK" })
-                } else {
-                    val err = res.errorBody()?.string().orEmpty()
-                    Log.e("HomeRepo", "startTestCall failed: ${res.code()} $err")
-                    Result.failure(HttpException(res))
-                }
-            } catch (t: Throwable) {
-                Result.failure(t)
-            }
-        }
 }

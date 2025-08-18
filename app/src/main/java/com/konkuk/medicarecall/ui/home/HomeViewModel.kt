@@ -28,6 +28,23 @@ class HomeViewModel @Inject constructor(
     private val homeRepository: HomeRepository
 ) : ViewModel() {
 
+    fun callCareCallImmediate(
+        onSuccess: () -> Unit = {},
+        onFailure: (String) -> Unit = {}
+    ) {
+        viewModelScope.launch {
+            try {
+                val res = homeRepository.requestImmediateCareCall()
+                if (res.isSuccessful) {
+                    onSuccess()
+                } else {
+                    onFailure("요청 실패 (${res.code()})")
+                }
+            } catch (e: Exception) {
+                onFailure(e.message ?: "알 수 없는 에러")
+            }
+        }
+    }
     private companion object {
         const val TAG = "HomeViewModel"
     }

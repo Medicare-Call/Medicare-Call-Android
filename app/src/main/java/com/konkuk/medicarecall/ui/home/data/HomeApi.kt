@@ -3,7 +3,6 @@ package com.konkuk.medicarecall.ui.home.data
 import com.konkuk.medicarecall.ui.home.model.HomeResponseDto
 import okhttp3.ResponseBody
 import retrofit2.Response
-import retrofit2.http.Body
 import retrofit2.http.GET
 import retrofit2.http.POST
 import retrofit2.http.Path
@@ -14,10 +13,10 @@ interface HomeApi {
         @Path("elderId") elderId: Int
     ): HomeResponseDto
 
-    @POST("test-care-call")
-    suspend fun startTestCall(
-        @Body body: TestCallRequest
-    ): Response<ResponseBody>
+
+    @POST("care-call/immediate")
+    suspend fun requestImmediateCareCall(): Response<ResponseBody>
+
 }
 
     data class TestCallRequest(

@@ -4,6 +4,7 @@ import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
+import androidx.compose.foundation.layout.navigationBarsPadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
@@ -49,6 +50,7 @@ fun LoginStartScreen(
         modifier
             .fillMaxSize()
             .background(MediCareCallTheme.colors.main)
+            .navigationBarsPadding()
     ) {
         Image(
             painter = painterResource(R.drawable.bg_login_start),

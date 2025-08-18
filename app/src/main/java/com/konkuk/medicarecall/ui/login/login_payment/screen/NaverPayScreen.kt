@@ -103,14 +103,8 @@ fun NaverPayScreen(
             }
         }
 
-        Box(
-            modifier = Modifier
-                .fillMaxSize()
-                .background(MediCareCallTheme.colors.gray2),
-            contentAlignment = Alignment.Center
-        ) {
+        Box() {
             AndroidView(
-                modifier = Modifier.fillMaxSize(),
                 factory = {
                     webView.apply {
                         // 1) 쿠키 허용 + 3rd-party 쿠키 허용 (네이버 도메인 세션 유지)

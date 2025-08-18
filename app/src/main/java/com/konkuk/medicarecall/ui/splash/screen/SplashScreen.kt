@@ -1,11 +1,14 @@
 package com.konkuk.medicarecall.ui.splash.screen
 
+import android.app.Activity
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -57,6 +60,25 @@ fun SplashScreen(navController: NavController) {
 
         }
     }
+
+    val context = LocalContext.current
+
+    // DisposableEffect를 사용하여 화면에서 벗어날 때 원래 방향으로 복구합니다.
+    DisposableEffect(Unit) {
+        // 이 화면에 진입했을 때 실행될 코드
+        val activity = context as? Activity
+        // 현재 화면 방향을 저장해 둡니다.
+        val originalOrientation = activity?.requestedOrientation
+        // 화면 방향을 세로로 고정합니다.
+        activity?.requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+
+        onDispose {
+            // 이 화면에서 벗어날 때 실행될 코드
+            // 저장해 둔 원래 방향으로 되돌립니다.
+            activity?.requestedOrientation = originalOrientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+        }
+    }
+
 
     Box(
         Modifier

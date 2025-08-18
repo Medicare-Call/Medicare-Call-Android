@@ -8,23 +8,33 @@ import com.konkuk.medicarecall.data.repository.UserRepository
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
 import javax.inject.Inject
+import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class DetailMyDataViewModel @Inject constructor(
     private val userRepository: UserRepository
 ) : ViewModel(){
-    fun updateUserData(
-        userInfo : MyInfoResponseDto
-    ) {
+    fun updateUserData(userInfo: MyInfoResponseDto) {
         viewModelScope.launch {
-            userRepository.updateMyInfo(userInfo)
-                .onSuccess {
-                    Log.d("DetailMyDataViewModel", "사용자 정보 업데이트 성공: $it")
-                }
-                .onFailure { exception ->
-                    Log.e("DetailMyDataViewModel", "사용자 정보 업데이트 실패: ${exception.message}", exception)
-                    exception.printStackTrace()
-                }
+            try {
+                val result = userRepository.updateMyInfo(userInfo)
+                result
+                    .onSuccess {
+                        Log.d("DetailMyDataViewModel", "사용자 정보 업데이트 성공: $it")
+                    }
+                    .onFailure { e ->
+                        if (e is CancellationException) {
+                            Log.d("DetailMyDataViewModel", "업데이트 취소됨: ${e.message}")
+                            throw e // 취소 상태 유지
+                        } else {
+                            Log.e("DetailMyDataViewModel", "사용자 정보 업데이트 실패: ${e.message}", e)
+                        }
+                    }
+            } catch (ce: CancellationException) {
+                Log.d("DetailMyDataViewModel", "job cancelled(normal): ${ce.message}")
+                throw ce
+            }
         }
     }
+
 }

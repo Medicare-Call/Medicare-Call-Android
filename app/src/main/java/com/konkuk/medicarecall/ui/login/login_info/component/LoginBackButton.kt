@@ -1,8 +1,10 @@
 package com.konkuk.medicarecall.ui.login.login_info.component
 
+import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
+import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.padding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -17,12 +19,14 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 fun LoginBackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
     Box(
         modifier
+            .fillMaxWidth()
             .background(MediCareCallTheme.colors.bg)
     ) {
         Icon(
             painter = painterResource(R.drawable.ic_settings_back),
             contentDescription = null,
             modifier = Modifier
+                .padding(vertical = 16.dp)
                 .clickable(
                     indication = null,
                     interactionSource = null,
@@ -31,4 +35,11 @@ fun LoginBackButton(onClick: () -> Unit, modifier: Modifier = Modifier) {
             tint = MediCareCallTheme.colors.black
         )
     }
+}
+
+@Preview
+@Composable
+private fun Barprev() {
+    LoginBackButton({})
+
 }

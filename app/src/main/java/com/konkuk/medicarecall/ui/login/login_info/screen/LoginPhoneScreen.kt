@@ -2,6 +2,7 @@ package com.konkuk.medicarecall.ui.login.login_info.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -18,6 +19,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.focus.FocusRequester
 import androidx.compose.ui.focus.focusRequester
@@ -32,6 +34,7 @@ import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.PhoneNumberVisualTransformation
+import kotlinx.coroutines.coroutineScope
 import kotlinx.coroutines.launch
 import kotlin.text.isDigit
 
@@ -51,67 +54,69 @@ fun LoginPhoneScreen(
         focusRequester.requestFocus()
     }
 
-    Scaffold(
+    Box(
         modifier
+            .fillMaxSize()
             .background(MediCareCallTheme.colors.bg)
-            .statusBarsPadding(),
-        snackbarHost = { DefaultSnackBar(snackBarState) },
-        topBar = {
+            .padding(horizontal = 20.dp)
+            .statusBarsPadding()
+    ) {
+        Column {
             LoginBackButton({
                 navController.popBackStack()
-            }, Modifier.padding(start = 20.dp, top = 30.dp))
-        },
-        containerColor = MediCareCallTheme.colors.bg
+            })
+            Column(
+                Modifier
+                    .verticalScroll(scrollState)
+            ) {
 
-    ) { paddingValues ->
-        Column(
-            modifier
-                .padding(top = paddingValues.calculateTopPadding())
-                .padding(top = 16.dp)
-                .padding(horizontal = 20.dp)
-                .verticalScroll(scrollState)
-        ) {
+                Spacer(Modifier.height(20.dp))
+                Text(
+                    "휴대폰 번호를\n입력해주세요",
+                    style = MediCareCallTheme.typography.B_26,
+                    color = MediCareCallTheme.colors.black
+                )
+                Spacer(Modifier.height(40.dp))
+                DefaultTextField(
+                    loginViewModel.phoneNumber,
+                    { input ->
+                        val filtered = input.filter { it.isDigit() }.take(11)
+                        loginViewModel.onPhoneNumberChanged(filtered)
+                    },
+                    placeHolder = "휴대폰 번호",
+                    keyboardType = KeyboardType.Number,
+                    visualTransformation = PhoneNumberVisualTransformation(),
+                    textFieldModifier = Modifier
+                        .focusRequester(focusRequester)
+                )
 
-            Spacer(Modifier.height(20.dp))
-            Text(
-                "휴대폰 번호를\n입력해주세요",
-                style = MediCareCallTheme.typography.B_26,
-                color = MediCareCallTheme.colors.black
-            )
-            Spacer(Modifier.height(40.dp))
-            DefaultTextField(
-                loginViewModel.phoneNumber,
-                { input ->
-                    val filtered = input.filter { it.isDigit() }.take(11)
-                    loginViewModel.onPhoneNumberChanged(filtered)
-                },
-                placeHolder = "휴대폰 번호",
-                keyboardType = KeyboardType.Number,
-                visualTransformation = PhoneNumberVisualTransformation(),
-                textFieldModifier = Modifier
-                    .focusRequester(focusRequester)
-            )
-
-            Spacer(Modifier.height(30.dp))
-            CTAButton(
-                type = if (loginViewModel.phoneNumber.length == 11) CTAButtonType.GREEN else CTAButtonType.DISABLED,
-                "인증번호 받기",
-                {
-                    // TODO: 서버에 인증번호 요청하기
-                    if (loginViewModel.phoneNumber.startsWith("010")) {
-                        loginViewModel.postPhoneNumber(loginViewModel.phoneNumber)
-                        navController.navigate("login_verification")
-                    } else {
-                        coroutineScope.launch {
-                            snackBarState.showSnackbar(
-                                "휴대폰 번호를 다시 확인해주세요",
-                                duration = SnackbarDuration.Short
-                            )
+                Spacer(Modifier.height(30.dp))
+                CTAButton(
+                    type = if (loginViewModel.phoneNumber.length == 11) CTAButtonType.GREEN else CTAButtonType.DISABLED,
+                    "인증번호 받기",
+                    {
+                        // TODO: 서버에 인증번호 요청하기
+                        if (loginViewModel.phoneNumber.startsWith("010")) {
+                            loginViewModel.postPhoneNumber(loginViewModel.phoneNumber)
+                            navController.navigate("login_verification")
+                        } else {
+                            coroutineScope.launch {
+                                snackBarState.showSnackbar(
+                                    "휴대폰 번호를 다시 확인해주세요",
+                                    duration = SnackbarDuration.Short
+                                )
+                            }
                         }
-                    }
-                })
+                    })
 
+            }
         }
+        DefaultSnackBar(
+            snackBarState,
+            Modifier
+                .align(Alignment.BottomCenter)
+                .padding(bottom = 14.dp)
+        )
     }
 
 

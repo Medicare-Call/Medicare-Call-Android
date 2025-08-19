@@ -2,6 +2,7 @@ package com.konkuk.medicarecall.ui.homedetail.glucoselevel.component
 
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Canvas
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.gestures.detectTapGestures
 import androidx.compose.foundation.horizontalScroll
@@ -35,6 +36,7 @@ import kotlin.math.max
 @Composable
 fun GlucoseGraph(
     data: List<GraphDataPoint>,
+    scrollState: ScrollState,
     selectedIndex: Int,
     onPointClick: (Int) -> Unit,
 ) {
@@ -73,14 +75,10 @@ fun GlucoseGraph(
             // 최종 섹션 너비도 Dp 단위로 계산
             val sectionWidth: Dp = if (data.isNotEmpty()) totalGraphWidth / data.size else fixedSectionWidth
 
-            val scrollState = rememberScrollState()
-            LaunchedEffect(data.size) {
-                // 데이터가 변경될 때마다 가장 오른쪽으로 스크롤
-                scrollState.scrollTo(scrollState.maxValue)
-            }
+
 
             Row(
-                modifier = Modifier.horizontalScroll(scrollState)
+                modifier = Modifier.horizontalScroll(scrollState, reverseScrolling = true)
             ) {
                 Column {
                     //그래프
@@ -188,11 +186,14 @@ fun PreviewGlucoseGraph_TwoPoints() {
             value = (70..210).random().toFloat()
         )
     }.reversed()
+    val scrollState = rememberScrollState()
+
     MediCareCallTheme {
         GlucoseGraph(
             data = sampleData,
             selectedIndex = sampleData.lastIndex,
-            onPointClick = {}
+            onPointClick = {},
+            scrollState = scrollState
         )
     }
 }
@@ -200,6 +201,7 @@ fun PreviewGlucoseGraph_TwoPoints() {
 @Preview(showBackground = true, name = "데이터 14개일 때")
 @Composable
 fun PreviewGlucoseGraph_ManyPoints() {
+    val scrollState = rememberScrollState()
     // 14일치 가상 데이터
     val sampleData = (0..13).map {
         GraphDataPoint(
@@ -211,7 +213,8 @@ fun PreviewGlucoseGraph_ManyPoints() {
         GlucoseGraph(
             data = sampleData,
             selectedIndex = sampleData.lastIndex,
-            onPointClick = {}
+            onPointClick = {},
+            scrollState = scrollState
         )
     }
 }

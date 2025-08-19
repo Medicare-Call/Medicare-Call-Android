@@ -1,7 +1,7 @@
 package com.konkuk.medicarecall.ui.homedetail.glucoselevel.data
 
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseGraphResponseDto
-import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseType
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseResponseDto
+import retrofit2.HttpException
 import javax.inject.Inject
 
 class GlucoseRepository @Inject constructor(
@@ -9,14 +9,18 @@ class GlucoseRepository @Inject constructor(
 ) {
     suspend fun getGlucoseGraph(
         elderId: Int,
-        startDate: String,
-        type: GlucoseType
-    ): GlucoseGraphResponseDto {
-        return glucoseApi.getGlucoseGraph(
-            elderId = elderId,
-            startDate = startDate,
-            type = type
-        )
-    }
+        counter: Int,
+        type: String
+    ): Result<GlucoseResponseDto> =
+        runCatching {
+            val response = glucoseApi.getGlucoseGraph(elderId, counter, type)
+            if (response.isSuccessful) {
+                response.body() ?: throw IllegalStateException("Response body is null")
+            } else {
+                val errorBody = response.errorBody()?.string() ?: "Unknown error"
+                throw HttpException(response)
+            }
+        }
+
 
 }

@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.settings.component
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -23,53 +24,62 @@ import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun SettingsTopAppBar(modifier: Modifier = Modifier,
-                      title: String = "",
-                      leftIcon: @Composable () -> Unit = {},
-                      leftIconClick : () -> Unit = {},
-                      rightIcon: @Composable () -> Unit = {},
-                      rightIconClick: () -> Unit = {}
+fun SettingsTopAppBar(
+    modifier: Modifier = Modifier,
+    title: String = "",
+    leftIcon: @Composable () -> Unit = {},
+    leftIconClick: () -> Unit = {},
+    rightIcon: @Composable () -> Unit = {},
+    rightIconClick: () -> Unit = {}
 ) {
     Column(modifier = Modifier.fillMaxWidth()) {
-    Surface(
-        modifier = modifier
-            .fillMaxWidth()
-            .height(56.dp)
-        ,
-    ) {
-
-        Box(
+        Surface(
             modifier = modifier
                 .fillMaxWidth()
-                .background(MediCareCallTheme.colors.bg)
-                .padding(start = 10.dp, end = 12.dp)
+                .height(56.dp),
         ) {
-            IconButton(
-                onClick = leftIconClick,
-                modifier = Modifier
-                    .align(Alignment.CenterStart)
-                    .size(24.dp)
+
+            Box(
+                modifier = modifier
+                    .fillMaxWidth()
+                    .background(MediCareCallTheme.colors.bg)
+                    .padding(start = 10.dp, end = 12.dp)
             ) {
-                leftIcon()
-            }
-            Text(
-                text = title,
-                color = Color.Black,
-                modifier = Modifier
-                    .align(Alignment.Center),
-                style = MediCareCallTheme.typography.SB_20
-            )
-            IconButton(
-                onClick = rightIconClick,
-                modifier = Modifier
-                    .align(Alignment.CenterEnd)
-                    .size(24.dp)
-            ) {
-                rightIcon()
+                Box(
+                    modifier = Modifier
+                        .align(Alignment.CenterStart)
+                        .size(24.dp)
+                        .clickable(
+                            indication = null,
+                            interactionSource = null,
+                            onClick = { leftIconClick }
+                        )
+                ) {
+                    leftIcon()
+                }
+                Text(
+                    text = title,
+                    color = Color.Black,
+                    modifier = Modifier
+                        .align(Alignment.Center),
+                    style = MediCareCallTheme.typography.SB_20
+                )
+                IconButton(
+                    onClick = rightIconClick,
+                    modifier = Modifier
+                        .align(Alignment.CenterEnd)
+                        .size(24.dp)
+                ) {
+                    rightIcon()
+                }
             }
         }
-    }
-        Box(modifier = Modifier.fillMaxWidth().background(MediCareCallTheme.colors.gray2).height(1.dp))
+        Box(
+            modifier = Modifier
+                .fillMaxWidth()
+                .background(MediCareCallTheme.colors.gray2)
+                .height(1.dp)
+        )
     }
 }
 
@@ -83,11 +93,7 @@ private fun SettingTopAppBarPreview(
         SettingsTopAppBar(
             title = "설정",
             leftIcon = {
-                Icon(
-                    painter = painterResource(id = R.drawable.ic_settings_back),
-                    contentDescription = null,
-                    tint = MaterialTheme.colorScheme.secondary
-                )
+
             },
             leftIconClick = { /* Handle left icon click */ },
             rightIcon = { /* Add your right icon here */ },

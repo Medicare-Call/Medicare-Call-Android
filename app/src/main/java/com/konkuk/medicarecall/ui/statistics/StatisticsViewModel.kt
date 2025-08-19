@@ -3,9 +3,6 @@ package com.konkuk.medicarecall.ui.statistics
 import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konkuk.medicarecall.data.repository.EldersInfoRepository
-import com.konkuk.medicarecall.ui.home.ElderInfo
-import com.konkuk.medicarecall.ui.home.mapState
 import com.konkuk.medicarecall.ui.statistics.data.StatisticsRepository
 import com.konkuk.medicarecall.ui.statistics.model.StatisticsResponseDto
 import com.konkuk.medicarecall.ui.statistics.model.WeeklyGlucoseUiState
@@ -14,15 +11,11 @@ import com.konkuk.medicarecall.ui.statistics.model.WeeklyMedicineUiState
 import com.konkuk.medicarecall.ui.statistics.model.WeeklyMentalUiState
 import com.konkuk.medicarecall.ui.statistics.model.WeeklySummaryUiState
 import dagger.hilt.android.lifecycle.HiltViewModel
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.GlobalScope
 import kotlinx.coroutines.flow.MutableStateFlow
-import kotlinx.coroutines.flow.SharingStarted
 import kotlinx.coroutines.flow.StateFlow
 import kotlinx.coroutines.flow.asStateFlow
 import kotlinx.coroutines.flow.combine
-import kotlinx.coroutines.flow.map
-import kotlinx.coroutines.flow.stateIn
+import kotlinx.coroutines.flow.distinctUntilChanged
 import kotlinx.coroutines.launch
 import retrofit2.HttpException
 import java.time.LocalDate
@@ -36,26 +29,18 @@ data class StatisticsUiState(
 
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
-    private val repository: StatisticsRepository,
-    private val eldersInfoRepository: EldersInfoRepository
+    private val repository: StatisticsRepository
 ) : ViewModel() {
 
-
-    fun setSelectedElderId(id: Int) {
-        _selectedElderId.value = id
-    }
     private val _uiState = MutableStateFlow(StatisticsUiState())
     val uiState: StateFlow<StatisticsUiState> = _uiState.asStateFlow()
 
-    // ViewModel이 직접 관리하는 상태들
-    private val _elderInfoList = MutableStateFlow<List<ElderInfo>>(emptyList())
-    val elderNameList: StateFlow<List<String>> = _elderInfoList.mapState { list -> list.map { it.name } }
+
     private val _selectedElderId = MutableStateFlow<Int?>(null)
 
-    // 주차 이동 관련 상태
+    // 주차 이동 상태
     private val _currentWeek = MutableStateFlow(getWeekRange(LocalDate.now()))
     val currentWeek: StateFlow<Pair<LocalDate, LocalDate>> = _currentWeek
-
 
     private val _isLatestWeek = MutableStateFlow(true)
     val isLatestWeek: StateFlow<Boolean> = _isLatestWeek
@@ -63,41 +48,33 @@ class StatisticsViewModel @Inject constructor(
     private val _isEarliestWeek = MutableStateFlow(true)
     val isEarliestWeek: StateFlow<Boolean> = _isEarliestWeek
 
-    // 사용자의 데이터 시작일
+    // 필요 시 서버로부터 갱신 (초기값은 오늘 기준)
     private var earliestDate: LocalDate = LocalDate.now()
 
     init {
-        fetchElderList()
-
+        // ★ elderId/주차가 바뀔 때에만 로드
         viewModelScope.launch {
-            _selectedElderId.combine(_currentWeek) { id, week ->
-                Pair(id, week)
-            }.collect { (id, week) ->
-                if (id != null) {
-                    getWeeklyStatistics(elderId = id, startDate = week.first)
+            _selectedElderId
+                .combine(_currentWeek) { id, week -> id to week }
+                .distinctUntilChanged()
+                .collect { (id, week) ->
+                    if (id != null) getWeeklyStatistics(elderId = id, startDate = week.first)
                 }
-            }
-        }
-    }
-    private fun fetchElderList() {
-        viewModelScope.launch {
-            eldersInfoRepository.getElders()
-                .onSuccess { elders ->
-                    _elderInfoList.value = elders.map { ElderInfo(id = it.elderId, name = it.name, phone = null) }
-                    if (_selectedElderId.value == null && _elderInfoList.value.isNotEmpty()) {
-                        _selectedElderId.value = _elderInfoList.value.first().id
-                    }
-                }
-                .onFailure { error -> Log.e("StatsVM", "어르신 목록 로딩 실패", error) }
         }
     }
 
-    fun selectElder(elderName: String) {
-        val selectedElder = _elderInfoList.value.find { it.name == elderName }
-        if (selectedElder != null) {
-            _selectedElderId.value = selectedElder.id
-        }
+    /** 설정에서 복약 항목 변경 후 강제 새로고침 */
+    fun refresh() {
+        val id = _selectedElderId.value ?: return
+        val start = _currentWeek.value.first
+        getWeeklyStatistics(elderId = id, startDate = start, ignoreLoadingGate = true) // ✅ forceRefresh 제거
     }
+
+    // ★ 외부(HomeVM)에서만 elderId 설정
+    fun setSelectedElderId(id: Int) {
+        if (_selectedElderId.value != id) _selectedElderId.value = id
+    }
+
     /* ---------------- Week 이동 ---------------- */
 
     fun showPreviousWeek() {
@@ -112,14 +89,11 @@ class StatisticsViewModel @Inject constructor(
         updateWeekState(newStart)
     }
 
-    /** 오늘이 속한 주로 이동 */
     fun jumpToTodayWeek() = jumpToWeekOf(LocalDate.now())
-
-    /** 주어진 날짜가 속한 주로 이동 */
     fun jumpToWeekOf(date: LocalDate) = updateWeekState(weekStartOf(date))
 
     private fun updateWeekState(weekStart: LocalDate) {
-        _currentWeek.value = Pair(weekStart, weekStart.plusDays(6))
+        _currentWeek.value = weekStart to weekStart.plusDays(6)
         _isLatestWeek.value = weekStart == weekStartOf(LocalDate.now())
         _isEarliestWeek.value = weekStart == weekStartOf(earliestDate)
     }
@@ -128,7 +102,7 @@ class StatisticsViewModel @Inject constructor(
 
     private fun getWeekRange(date: LocalDate): Pair<LocalDate, LocalDate> {
         val start = weekStartOf(date)
-        return Pair(start, start.plusDays(6))
+        return start to start.plusDays(6)
     }
 
     private fun weekStartOf(date: LocalDate): LocalDate =
@@ -136,21 +110,26 @@ class StatisticsViewModel @Inject constructor(
 
     /* ---------------- 데이터 로딩 ---------------- */
 
-    private fun getWeeklyStatistics(elderId: Int, startDate: LocalDate) {
-        if (_uiState.value.isLoading) return
+    private fun getWeeklyStatistics(
+        elderId: Int,
+        startDate: LocalDate,
+        ignoreLoadingGate: Boolean = false
+    ) {
+        if (_uiState.value.isLoading && !ignoreLoadingGate) return
 
         viewModelScope.launch {
-            _uiState.value = StatisticsUiState(isLoading = true)
+            _uiState.value = _uiState.value.copy(isLoading = true, error = null)
 
-            val formatted = startDate.format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE)
-            try {
-                val dto = repository.getStatistics(elderId, formatted)
+            runCatching {
+                val formatted = startDate.format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE)
+                repository.getStatistics(elderId, formatted)
+            }.onSuccess { dto ->
                 _uiState.value = StatisticsUiState(
                     isLoading = false,
                     summary = dto.toWeeklySummaryUiState(),
                     error = null
                 )
-            } catch (e: Exception) {
+            }.onFailure { e ->
                 if (e is HttpException && e.code() == 404) {
                     Log.i("API_INFO", "No data found (404), showing empty state.")
                     _uiState.value = StatisticsUiState(isLoading = false, summary = WeeklySummaryUiState.EMPTY)
@@ -159,26 +138,21 @@ class StatisticsViewModel @Inject constructor(
                     _uiState.value = StatisticsUiState(isLoading = false, error = "데이터 로딩 실패: ${e.message}")
                 }
             }
-
         }
     }
-
 
     private fun StatisticsResponseDto.toWeeklySummaryUiState(): WeeklySummaryUiState {
         return WeeklySummaryUiState(
             elderName = this.elderName,
-
             weeklyMealRate = this.summaryStats.mealRate,
             weeklyMedicineRate = this.summaryStats.medicationRate,
             weeklyHealthIssueCount = this.summaryStats.healthSignals,
             weeklyUnansweredCount = this.summaryStats.missedCalls,
-
             weeklyMeals = listOf(
                 WeeklyMealUiState("아침", this.mealStats.breakfast, 7),
                 WeeklyMealUiState("점심", this.mealStats.lunch, 7),
                 WeeklyMealUiState("저녁", this.mealStats.dinner, 7)
             ),
-
             weeklyMedicines = this.medicationStats.map { (name, stats) ->
                 WeeklyMedicineUiState(
                     medicineName = name,
@@ -186,17 +160,14 @@ class StatisticsViewModel @Inject constructor(
                     totalCount = stats.totalCount
                 )
             },
-
             weeklyHealthNote = this.healthSummary,
             weeklySleepHours = this.averageSleep.hours,
             weeklySleepMinutes = this.averageSleep.minutes,
-
             weeklyMental = WeeklyMentalUiState(
                 good = this.psychSummary.good,
                 normal = this.psychSummary.normal,
                 bad = this.psychSummary.bad
             ),
-
             weeklyGlucose = WeeklyGlucoseUiState(
                 beforeMealNormal = this.bloodSugar.beforeMeal.normal,
                 beforeMealHigh = this.bloodSugar.beforeMeal.high,
@@ -208,9 +179,3 @@ class StatisticsViewModel @Inject constructor(
         )
     }
 }
-
-
-fun <T, R> StateFlow<T>.mapState(
-    scope: CoroutineScope = GlobalScope,
-    transform: (T) -> R
-): StateFlow<R> = map(transform).stateIn(scope, SharingStarted.Eagerly, transform(value))

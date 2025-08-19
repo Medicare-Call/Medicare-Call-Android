@@ -7,6 +7,7 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.IntrinsicSize
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
+import androidx.compose.foundation.layout.fillMaxHeight
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
@@ -16,6 +17,7 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
@@ -26,6 +28,9 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.LifecycleEventObserver
+import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.component.NameBar
@@ -47,32 +52,66 @@ import com.konkuk.medicarecall.ui.statistics.weeklycard.WeeklyMentalCard
 import com.konkuk.medicarecall.ui.statistics.weeklycard.WeeklySleepCard
 import com.konkuk.medicarecall.ui.statistics.weeklycard.WeeklySummaryCard
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import kotlinx.coroutines.flow.MutableStateFlow
 import java.time.LocalDate
 
 @Composable
 fun StatisticsScreen(
     modifier: Modifier = Modifier,
     navController: NavHostController,
+    homeViewModel: HomeViewModel,
     statisticsViewModel: StatisticsViewModel = hiltViewModel()
 ) {
-    // HomeViewModel 공유 (route = "main")
+    // 화면 복귀 시 자동 새로고침
+    val lifecycleOwner = LocalLifecycleOwner.current
+    DisposableEffect(lifecycleOwner) {
+        val observer = LifecycleEventObserver { _, event ->
+            if (event == Lifecycle.Event.ON_RESUME) {
+                statisticsViewModel.refresh()   // ← 현재 elderId + 현재 주 기준으로 재조회
+            }
+        }
+        lifecycleOwner.lifecycle.addObserver(observer)
+        onDispose { lifecycleOwner.lifecycle.removeObserver(observer) }
+    }
+
+    // ① HomeVM에서 어르신 전체 목록과 이름 목록을 가져옵니다.
+    val elderInfoList by homeViewModel.elderInfoList.collectAsState()
+    val elderNameList = elderInfoList.map { it.name }
+
+    // ② 선택된 어르신의 ID를 가져옵니다.
+    val selectedElderId by homeViewModel.selectedElderId.collectAsState()
+
+    // ③ 통계 VM의 상태를 구독합니다.
     val uiState by statisticsViewModel.uiState.collectAsState()
-    val elderNameList by statisticsViewModel.elderNameList.collectAsState()
     val currentWeek by statisticsViewModel.currentWeek.collectAsState()
     val isLatestWeek by statisticsViewModel.isLatestWeek.collectAsState()
     val isEarliestWeek by statisticsViewModel.isEarliestWeek.collectAsState()
 
-    // 홈의 네임드롭 선택이 바뀌면 통계에도 반영
-    val mainEntry = remember {
-        runCatching { navController.getBackStackEntry("main") }.getOrNull()
+    // ④ 표시할 이름을 결정합니다.
+    // 우선순위 1: 통계 데이터에 포함된 이름 (가장 정확함)
+    // 우선순위 2: ID를 통해 전체 목록에서 찾은 이름 (로딩 중일 때 표시)
+    // 우선순위 3: 목록의 첫 번째 이름 (초기 상태)
+    val currentElderName = remember(uiState.summary, elderInfoList, selectedElderId) {
+        uiState.summary?.elderName?.takeIf { it.isNotEmpty() }
+            ?: elderInfoList.find { it.id == selectedElderId }?.name
+            ?: elderNameList.firstOrNull()
+            ?: "어르신 통계"
     }
-    val homeViewModel: HomeViewModel? = mainEntry?.let { hiltViewModel(it) }
 
-    val selectedElderId = homeViewModel?.selectedElderId?.collectAsState()?.value
+    // elderId가 바뀌면 통계 VM에 알려줍니다.
     LaunchedEffect(selectedElderId) {
         selectedElderId?.let { statisticsViewModel.setSelectedElderId(it) }
     }
+    val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
+    val medsChanged by (savedStateHandle?.getStateFlow("medsChanged", false) ?: MutableStateFlow(false))
+        .collectAsState()
 
+    LaunchedEffect(medsChanged) {
+        if (medsChanged) {
+            statisticsViewModel.refresh()
+            savedStateHandle?.set("medsChanged", false)
+        }
+    }
     StatisticsScreenLayout(
         modifier = modifier,
         uiState = uiState,
@@ -83,8 +122,8 @@ fun StatisticsScreen(
         isEarliestWeek = isEarliestWeek,
         onPreviousWeek = { statisticsViewModel.showPreviousWeek() },
         onNextWeek = { statisticsViewModel.showNextWeek() },
-        onDropdownItemSelected = { name -> statisticsViewModel.selectElder(name) }
-
+        onDropdownItemSelected = { name -> homeViewModel.selectElder(name) },
+        currentElderName = currentElderName
     )
 }
 
@@ -101,15 +140,9 @@ fun StatisticsScreenLayout(
     onPreviousWeek: () -> Unit,
     onNextWeek: () -> Unit,
     onDropdownItemSelected: (String) -> Unit,
+    currentElderName: String
 ) {
     val dropdownOpened = remember { mutableStateOf(false) }
-
-
-    val selectedElderName = remember(uiState.summary?.elderName, elderNameList) {
-        (uiState.summary?.elderName ?: "").ifEmpty {
-            elderNameList.firstOrNull() ?: "어르신 통계"
-        }
-    }
 
     Column(
         modifier = modifier
@@ -117,7 +150,7 @@ fun StatisticsScreenLayout(
             .background(MediCareCallTheme.colors.white)
     ) {
         NameBar(
-            name = selectedElderName,
+            name = currentElderName,
             modifier = Modifier.statusBarsPadding(),
             navController = navController,
             onDropdownClick = { dropdownOpened.value = !dropdownOpened.value }
@@ -156,7 +189,7 @@ fun StatisticsScreenLayout(
     if (dropdownOpened.value) {
         NameDropdown(
             items = elderNameList,
-            selectedName = selectedElderName,
+            selectedName = currentElderName,
             onDismiss = { dropdownOpened.value = false },
             onItemSelected = { name ->
                 onDropdownItemSelected(name)
@@ -200,11 +233,14 @@ private fun StatisticsContent(
             horizontalArrangement = Arrangement.spacedBy(10.dp)
         ) {
             WeeklyMealCard(
-                modifier = Modifier.weight(1f),
-                meal = summary.weeklyMeals
+                modifier = Modifier
+                    .fillMaxHeight(),
+                        meal = summary.weeklyMeals
             )
             WeeklyMedicineCard(
-                modifier = Modifier.weight(1f),
+                modifier = Modifier
+                    .weight(1f)
+                    .fillMaxHeight(),
                 medicine = summary.weeklyMedicines
             )
         }
@@ -239,6 +275,7 @@ private fun StatisticsContent(
 fun PreviewStatisticsScreen_Recorded() {
 
     val dummySummary = WeeklySummaryUiState(
+        elderName = "김옥자", // Preview에 이름 추가
         weeklyMealRate = 65,
         weeklyMedicineRate = 57,
         weeklyHealthIssueCount = 3,
@@ -275,7 +312,8 @@ fun PreviewStatisticsScreen_Recorded() {
             isEarliestWeek = false,
             onPreviousWeek = {},
             onNextWeek = {},
-            onDropdownItemSelected = {}
+            onDropdownItemSelected = {},
+            currentElderName = "김옥자"
         )
 
     }
@@ -288,7 +326,7 @@ fun PreviewStatisticsScreen_Unrecorded() {
 
     MediCareCallTheme {
         StatisticsScreenLayout(
-            uiState = StatisticsUiState(summary = WeeklySummaryUiState.EMPTY),
+            uiState = StatisticsUiState(summary = WeeklySummaryUiState.EMPTY.copy(elderName = "김옥자")), // Preview에 이름 추가
             elderNameList = listOf("김옥자", "박막례"),
             navController = rememberNavController(),
             currentWeek = Pair(LocalDate.now(), LocalDate.now().plusDays(6)),
@@ -296,7 +334,8 @@ fun PreviewStatisticsScreen_Unrecorded() {
             isEarliestWeek = true,
             onPreviousWeek = {},
             onNextWeek = {},
-            onDropdownItemSelected = {}
+            onDropdownItemSelected = {},
+            currentElderName = "김옥자"
         )
     }
 

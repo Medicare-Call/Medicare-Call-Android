@@ -5,6 +5,7 @@ import androidx.activity.compose.BackHandler
 import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.platform.LocalContext
 import androidx.hilt.navigation.compose.hiltViewModel
@@ -22,6 +23,7 @@ import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.NoticesResponseDto
 import com.konkuk.medicarecall.ui.alarm.screen.AlarmScreen
 import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
+import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.home.screen.HomeScreen
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen.GlucoseDetail
 import com.konkuk.medicarecall.ui.homedetail.meal.screen.MealDetail
@@ -126,8 +128,13 @@ fun NavGraph(
 
 
             // 홈
-            composable(route = Route.Home.route) {
+            composable(route = Route.Home.route) { backStackEntry ->
                 //TopLevelBackHandler(navController)
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("main")
+                }
+                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
+
                 HomeScreen(
                     navController = navController,
                     onNavigateToMealDetail = { navController.navigate(Route.MealDetail.route) },
@@ -135,36 +142,77 @@ fun NavGraph(
                     onNavigateToSleepDetail = { navController.navigate(Route.SleepDetail.route) },
                     onNavigateToStateHealthDetail = { navController.navigate(Route.StateHealthDetail.route) },
                     onNavigateToStateMentalDetail = { navController.navigate(Route.StateMentalDetail.route) },
-                    onNavigateToGlucoseDetail = { navController.navigate(Route.GlucoseDetail.route) }
+                    onNavigateToGlucoseDetail = { navController.navigate(Route.GlucoseDetail.route) },
+                    homeViewModel = homeViewModel
                 )
             }
 
             // 홈 상세 화면_식사 화면
-            composable(route = Route.MealDetail.route) {
-                MealDetail(navController = navController)
+            composable(route = Route.MealDetail.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("main")
+                }
+                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
+
+                MealDetail(
+                    navController = navController,
+                    homeViewModel = homeViewModel
+                )
             }
 
 
             // 홈 상세 화면_복용 화면
-            composable(route = Route.MedicineDetail.route) {
-                MedicineDetail(navController = navController)
+            composable(route = Route.MedicineDetail.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("main")
+                }
+                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
+
+                MedicineDetail(
+                    navController = navController,
+                    homeViewModel = homeViewModel
+                )
             }
 
+
             //홈 상세 화면_수면 화면
-            composable(route = Route.SleepDetail.route) {
-                SleepDetail(navController = navController)
+            composable(route = Route.SleepDetail.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("main")
+                }
+                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
+
+                SleepDetail(
+                    navController = navController,
+                    homeViewModel = homeViewModel
+                )
             }
 
 
             //홈 상세 화면_건강 징후 화면
-            composable(route = Route.StateHealthDetail.route) {
-                StateHealthDetail(navController = navController)
+            composable(route = Route.StateHealthDetail.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("main")
+                }
+                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
+
+                StateHealthDetail(
+                    navController = navController,
+                    homeViewModel = homeViewModel
+                )
             }
 
-
             //홈 상세 화면_심리 상태 화면
-            composable(route = Route.StateMentalDetail.route) {
-                StateMentalDetail(navController = navController)
+            composable(route = Route.StateMentalDetail.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("main")
+                }
+                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
+
+                StateMentalDetail(
+                    navController = navController,
+                    homeViewModel = homeViewModel
+                )
             }
 
 
@@ -176,13 +224,17 @@ fun NavGraph(
 
 
             // 통계
-            composable(route = Route.Statistics.route) {
-                //TopLevelBackHandler(navController)
+            composable(route = Route.Statistics.route) { backStackEntry ->
+                val parentEntry = remember(backStackEntry) {
+                    navController.getBackStackEntry("main")
+                }
+                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
+
                 StatisticsScreen(
-                    navController = navController
+                    navController = navController,
+                    homeViewModel = homeViewModel
                 )
             }
-
 
             // 설정
             composable(route = Route.Settings.route) {

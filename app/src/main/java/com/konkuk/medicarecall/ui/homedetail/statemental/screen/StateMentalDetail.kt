@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -38,11 +39,15 @@ import java.time.LocalDate
 @Composable
 fun StateMentalDetail(
     navController: NavHostController,
-    homeViewModel: HomeViewModel,
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     mentalViewModel: MentalViewModel = hiltViewModel(),
 
 ) {
+    val homeEntry = remember(navController.currentBackStackEntry) {
+        navController.getBackStackEntry("main")
+    }
+    val homeViewModel: HomeViewModel = hiltViewModel(homeEntry)
+
     // 재진입 시 오늘로 초기화
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
         calendarViewModel.resetToToday()
@@ -50,11 +55,15 @@ fun StateMentalDetail(
 
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val mental by mentalViewModel.mental.collectAsState()
-    val elderId = homeViewModel.selectedElderId.collectAsState().value
 
-    // 날짜/어르신 변경 시 로드
+    // 네임드롭에서 선택된 어르신
+    val elderId by homeViewModel.selectedElderId.collectAsState()
+
+    // 날짜/어르신 변경 시마다 로드
     LaunchedEffect(elderId, selectedDate) {
-        elderId?.let { mentalViewModel.loadMentalDataForDate(it, selectedDate) }
+        elderId?.let { id ->
+            mentalViewModel.loadMentalDataForDate(id, selectedDate)
+        }
     }
 
 

@@ -148,70 +148,40 @@ fun NavGraph(
             }
 
             // 홈 상세 화면_식사 화면
-            composable(route = Route.MealDetail.route) { backStackEntry ->
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry("main")
-                }
-                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
-
+            composable(route = Route.MealDetail.route) {
                 MealDetail(
-                    navController = navController,
-                    homeViewModel = homeViewModel
+                    navController = navController
                 )
             }
 
 
             // 홈 상세 화면_복용 화면
-            composable(route = Route.MedicineDetail.route) { backStackEntry ->
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry("main")
-                }
-                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
-
+            composable(route = Route.MedicineDetail.route) {
                 MedicineDetail(
-                    navController = navController,
-                    homeViewModel = homeViewModel
+                    navController = navController
                 )
             }
 
 
             //홈 상세 화면_수면 화면
-            composable(route = Route.SleepDetail.route) { backStackEntry ->
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry("main")
-                }
-                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
-
+            composable(route = Route.SleepDetail.route) {
                 SleepDetail(
-                    navController = navController,
-                    homeViewModel = homeViewModel
+                    navController = navController
                 )
             }
 
 
             //홈 상세 화면_건강 징후 화면
-            composable(route = Route.StateHealthDetail.route) { backStackEntry ->
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry("main")
-                }
-                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
-
+            composable(route = Route.StateHealthDetail.route) {
                 StateHealthDetail(
-                    navController = navController,
-                    homeViewModel = homeViewModel
+                    navController = navController
                 )
             }
 
             //홈 상세 화면_심리 상태 화면
-            composable(route = Route.StateMentalDetail.route) { backStackEntry ->
-                val parentEntry = remember(backStackEntry) {
-                    navController.getBackStackEntry("main")
-                }
-                val homeViewModel: HomeViewModel = hiltViewModel(parentEntry)
-
+            composable(route = Route.StateMentalDetail.route) {
                 StateMentalDetail(
-                    navController = navController,
-                    homeViewModel = homeViewModel
+                    navController = navController
                 )
             }
 

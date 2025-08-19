@@ -25,6 +25,7 @@ import com.konkuk.medicarecall.ui.calendar.CalendarUiState
 import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.calendar.DateSelector
 import com.konkuk.medicarecall.ui.calendar.WeeklyCalendar
+import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.statemental.MentalViewModel
 import com.konkuk.medicarecall.ui.homedetail.statemental.component.StateMentalDetailCard
@@ -36,9 +37,10 @@ import java.time.LocalDate
 fun StateMentalDetail(
     navController: NavHostController,
     calendarViewModel: CalendarViewModel = hiltViewModel(),
-    mentalViewModel: MentalViewModel = hiltViewModel()
+    mentalViewModel: MentalViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
-    // ✅ 상세 재진입 시 오늘로 초기화
+    // 상세 재진입 시 오늘로 초기화
     val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
     androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
         val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
@@ -53,9 +55,16 @@ fun StateMentalDetail(
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val mental by mentalViewModel.mental.collectAsState()
 
-    LaunchedEffect(selectedDate) {
-        mentalViewModel.loadMentalDataForDate(selectedDate)
+    // 홈 뷰모델에서 어르신 ID 가져오기
+    val elderId = homeViewModel.selectedElderId.collectAsState().value
+
+    // 날짜 or elderId 바뀔 때마다 API 호출
+    LaunchedEffect(elderId, selectedDate) {
+        elderId?.let { id ->
+            mentalViewModel.loadMentalDataForDate(id, selectedDate)
+        }
     }
+
 
     StateMentalDetailLayout(
         navController = navController,

@@ -58,6 +58,7 @@ class HomeViewModel @Inject constructor(
 
     // 어르신 전체 목록
     private val _elderInfoList = MutableStateFlow<List<ElderInfo>>(emptyList())
+    val elderInfoList: StateFlow<List<ElderInfo>> = _elderInfoList
 
     // 드롭다운에 표시할 어르신 이름 목록
     val elderNameList: StateFlow<List<String>> = _elderInfoList.mapState { list ->

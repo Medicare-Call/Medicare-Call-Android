@@ -14,18 +14,20 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.calendar.CalendarUiState
 import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.calendar.DateSelector
 import com.konkuk.medicarecall.ui.calendar.WeeklyCalendar
+import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.sleep.SleepViewModel
 import com.konkuk.medicarecall.ui.homedetail.sleep.component.SleepDetailCard
@@ -38,15 +40,15 @@ import java.time.LocalDate
 @Composable
 fun SleepDetail(
     navController: NavHostController,
+    homeViewModel: HomeViewModel,
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     sleepViewModel: SleepViewModel = hiltViewModel()
 ) {
 
-    // 어르신 선택 상태(selectedElderId) 관리
-    val mainEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry("main")
+    // 재진입 시 오늘로 초기화
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        calendarViewModel.resetToToday()
     }
-    val homeViewModel: com.konkuk.medicarecall.ui.home.HomeViewModel = hiltViewModel(mainEntry)
 
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val sleep by sleepViewModel.sleep.collectAsState()
@@ -60,18 +62,6 @@ fun SleepDetail(
             sleepViewModel.loadSleepDataForDate(id, selectedDate)
         }
     }
-    // 상세 재진입 시 오늘로 초기화
-    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
-    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
-        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
-            if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-                calendarViewModel.resetToToday()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(obs)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
-    }
-
 
     SleepDetailLayout(
         modifier = Modifier,

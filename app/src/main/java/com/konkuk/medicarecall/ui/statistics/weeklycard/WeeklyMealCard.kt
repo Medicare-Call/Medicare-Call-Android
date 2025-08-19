@@ -4,7 +4,6 @@ import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
@@ -37,7 +36,6 @@ fun WeeklyMealCard(
 
     Card(
         modifier = modifier
-            .fillMaxWidth()
             .wrapContentHeight()
             .figmaShadow(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
@@ -87,8 +85,7 @@ fun WeeklyMealCard(
                     }
 
                     Row(
-                        modifier = Modifier
-                            .fillMaxWidth(),
+                        modifier = Modifier,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(

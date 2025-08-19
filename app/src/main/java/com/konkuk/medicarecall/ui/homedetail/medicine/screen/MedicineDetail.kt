@@ -15,12 +15,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.calendar.CalendarUiState
@@ -41,41 +42,27 @@ import java.time.LocalDate
 @Composable
 fun MedicineDetail(
     navController: NavHostController,
+    homeViewModel: HomeViewModel,
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     medicineViewModel: MedicineViewModel = hiltViewModel()
 ) {
 
-    // 어르신 선택 상태 관리
-    val homeEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry("main")
+    // 재진입 시 오늘로 초기화
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        calendarViewModel.resetToToday()
     }
-    val homeViewModel: HomeViewModel = hiltViewModel(homeEntry)
 
+    val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val elderId = homeViewModel.selectedElderId.collectAsState().value
-    val selectedDate = calendarViewModel.selectedDate.collectAsState().value
 
+    // 날짜/어르신 변경 시마다 로드
     LaunchedEffect(elderId, selectedDate) {
-        Log.d("MED_UI", "LaunchedEffect triggered: elderId=$elderId, date=$selectedDate")
-        elderId?.let { id ->
-            medicineViewModel.loadMedicinesForDate(id, selectedDate)
-        }
+        Log.d("MED_UI", "LaunchedEffect: elderId=$elderId, date=$selectedDate")
+        elderId?.let { medicineViewModel.loadMedicinesForDate(it, selectedDate) }
     }
 
     val uiState by medicineViewModel.state.collectAsState()
     Log.d("MED_UI", "render medicines=${uiState.items.size}")
-
-    // 상세 재진입 시 오늘로 초기화
-    val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
-    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
-        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
-            if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-                calendarViewModel.resetToToday()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(obs)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
-    }
-
 
 
 

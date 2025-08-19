@@ -14,12 +14,13 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.calendar.CalendarUiState
@@ -38,25 +39,13 @@ import java.time.LocalDate
 @Composable
 fun MealDetail(
     navController: NavHostController,
+    homeViewModel: HomeViewModel,
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     mealViewModel: MealViewModel = hiltViewModel()
 ) {
-    // 어르신 선택 상태(selectedElderId) 관리
-    val homeEntry = remember(navController.currentBackStackEntry) {
-        navController.getBackStackEntry("main")
-    }
-    val homeViewModel: HomeViewModel = hiltViewModel(homeEntry)
-
-    // 상세 재진입 시 오늘로 초기화
-    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
-    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
-        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
-            if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-                calendarViewModel.resetToToday()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(obs)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
+    // 재진입 시 오늘로 초기화
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        calendarViewModel.resetToToday()
     }
 
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
@@ -64,10 +53,9 @@ fun MealDetail(
 
     // 날짜/어르신 변경 시마다 로드
     LaunchedEffect(elderId, selectedDate) {
-        elderId?.let { id ->
-            mealViewModel.loadMealsForDate(id, selectedDate)
-        }
+        elderId?.let { id -> mealViewModel.loadMealsForDate(id, selectedDate) }
     }
+
     val meals by mealViewModel.meals.collectAsState()
 
     MealDetailLayout(

@@ -36,7 +36,7 @@ class CallTimeViewModel @Inject constructor(
         ids.isNotEmpty() && ids.all { isCompleteFor(it) }
 
 
-    /** SetCallScreen에서 '확인' 눌렀을 때: 이름 기준으로 안전 저장 (순서 의존 X) */
+
     fun submitAllByIds(
         elderIds: List<Int>,
         onSuccess: () -> Unit,
@@ -67,56 +67,3 @@ class CallTimeViewModel @Inject constructor(
     }
 }
 
-    /** 특정 인덱스 선택 저장이 필요하면: 인덱스 -> 이름 -> ID 로 안전 매핑 */
-//    fun submitOneByIndex(
-//        elderNamesInOrder: List<String>,
-//        selectedIndex: Int,
-//        onSuccess: () -> Unit,
-//        onError: (Throwable) -> Unit
-//    ) {
-//        viewModelScope.launch {
-//            isLoading.value = true
-//            lastError.value = null
-//            try {
-//                require(selectedIndex in elderNamesInOrder.indices) { "잘못된 인덱스" }
-//
-//                val name = elderNamesInOrder[selectedIndex]
-//                val times = timeMap[name] ?: error("'$name'의 시간이 비어있습니다.")
-//                val elderId = buildNameToId()[name]
-//                    ?: error("'$name'에 해당하는 elderId를 찾을 수 없습니다.")
-//
-//                setCallRepo.saveForElder(elderId, times).getOrThrow()
-//                Log.d("CallTimeViewModel", "Saved call times for $name(id=$elderId)")
-//                onSuccess()
-//            } catch (t: Throwable) {
-//                Log.e("CallTimeViewModel", "submitOneByIndex failed", t)
-//                lastError.value = t
-//                onError(t)
-//            } finally {
-//                isLoading.value = false
-//            }
-//        }
-//
-//        fun submitAllWithPairs(
-//            pairs: List<Pair<String, Int>>, // (displayName, elderId)
-//            onSuccess: () -> Unit,
-//            onError: (Throwable) -> Unit
-//        ) {
-//            viewModelScope.launch {
-//                isLoading.value = true; lastError.value = null
-//                try {
-//                    val jobs = pairs.map { (name, id) ->
-//                        val times = timeMap[name] ?: error("'$name'의 시간이 비어있습니다.")
-//                        async { setCallRepo.saveForElder(id, times).getOrThrow() }
-//                    }
-//                    jobs.awaitAll()
-//                    onSuccess()
-//                } catch (t: Throwable) {
-//                    Log.e("CallTimeViewModel", "submitAllWithPairs failed", t)
-//                    lastError.value = t
-//                    onError(t)
-//                } finally { isLoading.value = false }
-//            }
-//        }
-
-//    }

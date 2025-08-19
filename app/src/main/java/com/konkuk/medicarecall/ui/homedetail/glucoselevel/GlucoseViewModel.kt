@@ -108,38 +108,5 @@ class GlucoseViewModel @Inject constructor(
             selectedTiming = newTiming
         )
     }
-    fun loadRecentWeek(elderId: Int) {
-        viewModelScope.launch {
-            val today = LocalDate.now().format(DateTimeFormatter.ISO_LOCAL_DATE)
 
-            val before = try {
-                val dto = glucoseRepository.getGlucoseGraph(
-                    elderId = elderId,
-                    startDate = today,
-                    type = GlucoseType.BEFORE_MEAL
-                )
-                dto.data.sortedBy { it.date }
-                    .map { GraphDataPoint(LocalDate.parse(it.date), it.value.toFloat()) }
-            } catch (e: Exception) { emptyList() }
-
-            val after = try {
-                val dto = glucoseRepository.getGlucoseGraph(
-                    elderId = elderId,
-                    startDate = today,
-                    type = GlucoseType.AFTER_MEAL
-                )
-                dto.data.sortedBy { it.date }
-                    .map { GraphDataPoint(LocalDate.parse(it.date), it.value.toFloat()) }
-            } catch (e: Exception) { emptyList() }
-
-            beforeMealData = before
-            afterMealData = after
-
-            val currentTiming = _uiState.value.selectedTiming
-            val dataToShow =
-                if (currentTiming == GlucoseTiming.BEFORE_MEAL) beforeMealData else afterMealData
-
-            _uiState.value = _uiState.value.copy(graphDataPoints = dataToShow)
-        }
-    }
 }

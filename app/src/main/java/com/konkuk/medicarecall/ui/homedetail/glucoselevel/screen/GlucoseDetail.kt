@@ -73,7 +73,7 @@ fun GlucoseDetail(
     // 선택된 어르신이 바뀌면 실제 데이터 로드
     LaunchedEffect(elderId) {
         elderId?.let { id ->
-            viewModel.loadRecentWeek(elderId = id)
+            viewModel.loadWeekFromServer(elderId = id)
         }
     }
     // 그래프 데이터가 바뀔 때마다 포커스를 마지막 점으로 이동

@@ -50,7 +50,7 @@ fun CareCallFloatingButton(
         },
         shape = RoundedCornerShape(50),
         colors = ButtonDefaults.buttonColors(
-            containerColor = MediCareCallTheme.colors.positive
+            containerColor = MediCareCallTheme.colors.main
         ),
         contentPadding = PaddingValues(horizontal = 10.dp, vertical = 10.dp)
     ) {

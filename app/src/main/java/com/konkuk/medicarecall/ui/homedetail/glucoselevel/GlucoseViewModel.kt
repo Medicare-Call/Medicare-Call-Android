@@ -51,7 +51,10 @@ class GlucoseViewModel @Inject constructor(
                                     value = record.value.toFloat()
                                 )
                             })
-                            _uiState.value = _uiState.value.copy(graphDataPoints = beforeMealData)
+                            _uiState.value = _uiState.value.copy(
+                                graphDataPoints = beforeMealData,
+                                selectedIndex = beforeMealData.lastIndex
+                            )
                         }
 
                         GlucoseTiming.AFTER_MEAL -> {
@@ -61,7 +64,10 @@ class GlucoseViewModel @Inject constructor(
                                     value = record.value.toFloat()
                                 )
                             })
-                            _uiState.value = _uiState.value.copy(graphDataPoints = afterMealData)
+                            _uiState.value = _uiState.value.copy(
+                                graphDataPoints = afterMealData,
+                                selectedIndex = afterMealData.lastIndex
+                            )
 
                         }
                     }
@@ -69,6 +75,7 @@ class GlucoseViewModel @Inject constructor(
                     _uiState.value = _uiState.value.copy(hasNext = it.hasNextPage)
                 }
             _uiState.value = _uiState.value.copy(isLoading = false)
+
 
         }
     }
@@ -82,8 +89,13 @@ class GlucoseViewModel @Inject constructor(
         _uiState.value = _uiState.value.copy(
             graphDataPoints = dataToShow,
             selectedTiming = newTiming,
-            hasNext = true
+            hasNext = true,
+            selectedIndex = dataToShow.lastIndex,
         )
     }
 
+
+    fun onClickDots(newIndex: Int) {
+        _uiState.value.copy(selectedIndex = newIndex)
+    }
 }

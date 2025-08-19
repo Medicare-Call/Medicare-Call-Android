@@ -76,7 +76,6 @@ fun GlucoseDetail(
     val homeViewModel: HomeViewModel = hiltViewModel(homeEntry)
 
     val uiState by viewModel.uiState.collectAsState()
-    val selectedIndex = remember { mutableIntStateOf(-1) }
 
     // 선택된 어르신 ID를 구독 (null 가능)
     val elderId = homeViewModel.selectedElderId.collectAsState().value
@@ -91,6 +90,7 @@ fun GlucoseDetail(
 
     LaunchedEffect(counter[GlucoseTiming.BEFORE_MEAL], counter[GlucoseTiming.AFTER_MEAL]) {
         Log.d("glucose_counter", "$counter")
+
     }
 
 
@@ -103,6 +103,7 @@ fun GlucoseDetail(
                 GlucoseTiming.BEFORE_MEAL)
             counter[GlucoseTiming.BEFORE_MEAL] = counter[GlucoseTiming.BEFORE_MEAL]!! + 1
             counter[GlucoseTiming.AFTER_MEAL] = counter[GlucoseTiming.AFTER_MEAL]!! + 1
+
 
         }
     }
@@ -121,7 +122,7 @@ fun GlucoseDetail(
         uiState = uiState,
 
         selectedTiming = uiState.selectedTiming,
-        selectedIndex = selectedIndex.intValue,
+        selectedIndex = uiState.selectedIndex,
 
         // '공복'/'식후' 버튼
         onTimingChange = { newTiming ->
@@ -131,7 +132,7 @@ fun GlucoseDetail(
             }
         },
         // 그래프 점
-        onPointClick = { newIndex -> selectedIndex.intValue = newIndex },
+        onPointClick = { newIndex -> viewModel.onClickDots(newIndex) },
         scrollState = scrollState,
         navController = navController
     )

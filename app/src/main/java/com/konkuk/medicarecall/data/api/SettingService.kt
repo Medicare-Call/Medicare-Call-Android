@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.data.api
 
-import com.konkuk.medicarecall.data.dto.response.DelElderInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto

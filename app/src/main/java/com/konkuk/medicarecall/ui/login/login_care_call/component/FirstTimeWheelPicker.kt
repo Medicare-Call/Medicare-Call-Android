@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.login_care_call.component
+package com.konkuk.medicarecall.ui.login.login_care_call.component
 
 import android.annotation.SuppressLint
 import android.graphics.Color
@@ -31,14 +31,13 @@ import androidx.core.graphics.drawable.toDrawable
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun TimeWheelPicker(
+fun FirstTimeWheelPicker(
     modifier: Modifier = Modifier,
-    initialAmPm: Int = 0,
-    initialHour: Int = 1,
+    initialHour: Int = 9,
     initialMinute: Int = 0,
-    onTimeChange: (amPm: Int, hour: Int, minute: Int) -> Unit = { _, _, _ -> }
+    onTimeChange: (hour: Int, minute: Int) -> Unit = { _, _ -> }
 ) {
-    var amPm by remember { mutableStateOf(initialAmPm) } // 0 = 오전, 1 = 오후
+
     var hour by remember { mutableStateOf(initialHour) }
     var minute by remember { mutableStateOf(initialMinute) }
 
@@ -60,15 +59,14 @@ fun TimeWheelPicker(
             AndroidView(
                 factory = { ctx ->
                     NumberPicker(ctx).apply {
-                        displayedValues = arrayOf("오전", "오후")
-                        minValue = 0; maxValue = 1
+                        displayedValues = arrayOf("오전")
                         wrapSelectorWheel = false
-                        setOnValueChangedListener { _, _, newVal ->
-                            amPm = newVal
-                            onTimeChange(amPm, hour, minute)
-
-                            //setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
-                        }
+//                        setOnValueChangedListener { _, _, newVal ->
+//                            amPm = newVal
+//                            onTimeChange(amPm, hour, minute)
+//
+//                            //setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
+//                        }
                         setPickerTextColor(mainColor)
 //                        for (i in 0 until childCount) {
 //                            val child = getChildAt(i)
@@ -105,7 +103,6 @@ fun TimeWheelPicker(
                     }
                 },
                 update = { picker ->
-                    picker.value = amPm
                     @SuppressLint("DiscouragedPrivateApi", "SoonBlockedPrivateApi", "UseKtx")
                     fun hideDividers() {
                         try {
@@ -136,7 +133,7 @@ fun TimeWheelPicker(
             )
             Spacer(Modifier.width(32.dp))
 
-            // 시 (1 ~ 12)
+
             AndroidView(
                 factory = { ctx ->
                     NumberPicker(ctx).apply {
@@ -144,7 +141,7 @@ fun TimeWheelPicker(
                         wrapSelectorWheel = false
                         setOnValueChangedListener { _, _, newVal ->
                             hour = newVal
-                            onTimeChange(amPm, hour, minute)
+                            onTimeChange(hour, minute)
 //                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                         }
                         setPickerTextColor(mainColor) // 텍스트 색상 변경
@@ -301,7 +298,7 @@ fun TimeWheelPicker(
 @Preview(showBackground = true)
 @Composable
 private fun TimeWheelPreview() {
-    TimeWheelPicker(
+    FirstTimeWheelPicker(
         modifier = Modifier
             .fillMaxWidth()
             .height(206.dp)

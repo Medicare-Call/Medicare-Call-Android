@@ -17,6 +17,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
@@ -41,6 +42,8 @@ fun MyDetailScreen(myDataInfo : MyInfoResponseDto,modifier: Modifier = Modifier,
     var name by remember { mutableStateOf(myDataInfo.name) }
     var birth by remember { mutableStateOf(myDataInfo.birthDate.replace("-", "")) }
     val scrollState = rememberScrollState()
+
+    val scope = rememberCoroutineScope()
     Column(
         modifier = Modifier
             .fillMaxSize()

@@ -18,9 +18,9 @@ import androidx.compose.material3.rememberModalBottomSheetState
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
+import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
@@ -28,10 +28,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.component.CTAButton
-import com.konkuk.medicarecall.ui.login_care_call.component.TimeWheelPicker
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-import kotlinx.coroutines.launch
 
 
 @OptIn(ExperimentalMaterial3Api::class)
@@ -39,20 +37,17 @@ import kotlinx.coroutines.launch
 fun TimePickerBottomSheet(
     visible: Boolean,
     initialTabIndex: Int = 0,
-    initialFirstAmPm: Int = 0,
     initialFirstHour: Int = 1,
     initialFirstMinute: Int = 0,
-    initialSecondAmPm: Int = 0,
     initialSecondHour: Int = 1,
     initialSecondMinute: Int = 0,
-    initialThirdAmPm: Int = 0,
     initialThirdHour: Int = 1,
     initialThirdMinute: Int = 0,
     onDismiss: () -> Unit,
     onConfirm: (
-        firstAmPm: Int, firstHour: Int, firstMinute: Int,
-        secondAmPm: Int, secondHour: Int, secondMinute: Int,
-        thirdAmPm: Int, thirdHour: Int, thirdMinute: Int
+        firstHour: Int, firstMinute: Int,
+        secondHour: Int, secondMinute: Int,
+        thirdHour: Int, thirdMinute: Int
     ) -> Unit
 ) {
     if (!visible) return
@@ -61,21 +56,19 @@ fun TimePickerBottomSheet(
 
 
     // 1차, 2차 각각의 시간 상태 관리
-    var firstAmPm by remember { mutableStateOf(initialFirstAmPm) }
-    var firstHour by remember { mutableStateOf(initialFirstHour) }
-    var firstMinute by remember { mutableStateOf(initialFirstMinute) }
+    var firstHour by remember { mutableIntStateOf(initialFirstHour) }
+    var firstMinute by remember { mutableIntStateOf(initialFirstMinute) }
 
-    var secondAmPm by remember { mutableStateOf(initialSecondAmPm) }
-    var secondHour by remember { mutableStateOf(initialSecondHour) }
-    var secondMinute by remember { mutableStateOf(initialSecondMinute) }
+    var secondHour by remember { mutableIntStateOf(initialSecondHour) }
+    var secondMinute by remember { mutableIntStateOf(initialSecondMinute) }
 
-    var thirdAmPm by remember { mutableStateOf(initialThirdAmPm) }
-    var thirdHour by remember { mutableStateOf(initialThirdHour) }
-    var thirdMinute by remember { mutableStateOf(initialThirdMinute) }
+
+    var thirdHour by remember { mutableIntStateOf(initialThirdHour) }
+    var thirdMinute by remember { mutableIntStateOf(initialThirdMinute) }
 
 
     // 탭 구성
-    var tabIndex by remember { mutableStateOf(initialTabIndex) }
+    var tabIndex by remember { mutableIntStateOf(initialTabIndex) }
 
     val tabs = listOf("1차", "2차", "3차")
     ModalBottomSheet(
@@ -139,37 +132,34 @@ fun TimePickerBottomSheet(
 
             key(tabIndex) {
                 if (tabIndex == 0) {
-                    TimeWheelPicker(
+                    FirstTimeWheelPicker(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(206.dp),
-                        initialAmPm = firstAmPm,
                         initialHour = firstHour,
                         initialMinute = firstMinute,
-                    ) { amPm, hour, minute ->
-                        firstAmPm = amPm; firstHour = hour; firstMinute = minute
+                    ) { hour, minute ->
+                        firstHour = hour; firstMinute = minute
                     }
                 } else if (tabIndex == 1) {
-                    TimeWheelPicker(
+                    SecondTimeWheelPicker(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(206.dp),
-                        initialAmPm = secondAmPm,
                         initialHour = secondHour,
                         initialMinute = secondMinute,
-                    ) { amPm, hour, minute ->
-                        secondAmPm = amPm; secondHour = hour; secondMinute = minute
+                    ) { hour, minute ->
+                       secondHour = hour; secondMinute = minute
                     }
                 } else if (tabIndex == 2) {
-                    TimeWheelPicker(
+                    ThirdTimeWheelPicker(
                         modifier = Modifier
                             .fillMaxWidth()
                             .height(206.dp),
-                        initialAmPm = thirdAmPm,
                         initialHour = thirdHour,
                         initialMinute = thirdMinute,
-                    ) { amPm, hour, minute ->
-                        thirdAmPm = amPm; thirdHour = hour; thirdMinute = minute
+                    ) { hour, minute ->
+                         thirdHour = hour; thirdMinute = minute
                     }
                 }
             }
@@ -201,9 +191,9 @@ fun TimePickerBottomSheet(
                     CTAButtonType.GREEN, "확인",
                     onClick = {
                         onConfirm(
-                            firstAmPm, firstHour, firstMinute,
-                            secondAmPm, secondHour, secondMinute,
-                            thirdAmPm, thirdHour, thirdMinute,
+                            firstHour, firstMinute,
+                             secondHour, secondMinute,
+                            thirdHour, thirdMinute,
                         )
                         onDismiss()
                     }, modifier = Modifier
@@ -225,7 +215,7 @@ private fun TimePickerBottomSheetPreview() {
         TimePickerBottomSheet(
             visible = true,
             onDismiss = {},
-            onConfirm = { _, _, _, _, _, _, _, _, _ -> }
+            onConfirm = { _, _, _, _, _, _ -> }
         )
     }
 }

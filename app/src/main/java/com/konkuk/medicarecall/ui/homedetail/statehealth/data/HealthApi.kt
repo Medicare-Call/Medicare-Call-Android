@@ -8,7 +8,7 @@ import retrofit2.http.Query
 interface HealthApi {
     @GET("elders/{elderId}/health-analysis")
     suspend fun getDailyHealth(
-        @Path("elderIdId") elderIdId: Int,
+        @Path("elderId") elderId: Int,
         @Query("date") date: String
     ): HealthResponseDto
 }

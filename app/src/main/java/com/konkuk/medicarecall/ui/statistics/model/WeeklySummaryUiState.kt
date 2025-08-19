@@ -38,12 +38,8 @@ data class WeeklySummaryUiState(
                 WeeklyMealUiState("점심", -1, 7),
                 WeeklyMealUiState("저녁", -1, 7)
             ),
-            weeklyMedicines = listOf(
-                WeeklyMedicineUiState("혈압약", -1, 14),
-                WeeklyMedicineUiState("영양제", -1, 7),
-                WeeklyMedicineUiState("당뇨약", -1, 21)
-            ),
-            weeklyHealthNote = "",
+            weeklyMedicines = emptyList(),
+            weeklyHealthNote = "아직 충분한 기록이 쌓이지 않았어요.",
             weeklySleepHours = -1,
             weeklySleepMinutes = -1,
             weeklyMental = WeeklyMentalUiState.EMPTY,
@@ -93,7 +89,7 @@ data class WeeklyMentalUiState(
 /**
  * ✅ 혈당 공복/식후 통계용
  * ex) 공복: 정상 5, 높음 2, 낮음 1
- *     식후: 정상 5, 높음 0, 낮음 2
+ * 식후: 정상 5, 높음 0, 낮음 2
  */
 data class WeeklyGlucoseUiState(
     val beforeMealNormal: Int, // 공복 정상 횟수

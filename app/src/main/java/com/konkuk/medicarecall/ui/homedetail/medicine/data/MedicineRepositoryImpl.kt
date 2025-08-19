@@ -1,6 +1,6 @@
 package com.konkuk.medicarecall.ui.homedetail.medicine.data
 
-import android.util.Log
+import com.konkuk.medicarecall.data.repository.EldersHealthInfoRepository
 import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatus
 import com.konkuk.medicarecall.ui.homedetail.medicine.model.DoseStatusItem
 import com.konkuk.medicarecall.ui.homedetail.medicine.model.MedicineUiState
@@ -12,99 +12,124 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 class MedicineRepositoryImpl @Inject constructor(
-    private val medicineApi: MedicineApi
+    private val medicineApi: MedicineApi,
+    private val eldersHealthInfoRepository: EldersHealthInfoRepository
 ) : MedicineRepository {
 
     private val json = Json { ignoreUnknownKeys = true }
 
-    private var lastTemplate: List<Pair<String, Int>> = emptyList()
+    /** 설정 스케줄을 “회색 카드” UI로 변환 */
+    override suspend fun getConfiguredMedicineUiList(elderId: Int): List<MedicineUiState> {
+        val schedule = eldersHealthInfoRepository.getEldersHealthInfo()
+            .getOrNull()
+            ?.firstOrNull { it.elderId == elderId }
+            ?.medications
+            ?: emptyMap()
 
+        // 약 이름별 1일 횟수 + 시간 라벨(아침/점심/저녁)
+        val countByMed = linkedMapOf<String, Int>()
+        val timesByMed = linkedMapOf<String, MutableList<String>>()
+        schedule.forEach { (timeEnum, meds) ->
+            val label = when (timeEnum.name) {
+                "MORNING" -> "아침"
+                "LUNCH"   -> "점심"
+                "DINNER"  -> "저녁"
+                else      -> ""
+            }
+            meds.forEach { raw ->
+                val name = raw.trim()
+                if (name.isNotEmpty()) {
+                    countByMed[name] = (countByMed[name] ?: 0) + 1
+                    timesByMed.getOrPut(name) { mutableListOf() }.add(label)
+                }
+            }
+        }
+
+        if (countByMed.isEmpty()) return emptyList()
+
+        return countByMed.map { (name, goal) ->
+            val labels = timesByMed[name].orEmpty().let { lst ->
+                if (lst.size >= goal) lst.take(goal) else lst + List(goal - lst.size) { "" }
+            }
+            MedicineUiState(
+                medicineName = name,
+                todayTakenCount = 0,
+                todayRequiredCount = goal,
+                doseStatusList = labels.map { lab ->
+                    DoseStatusItem(time = lab, doseStatus = DoseStatus.NOT_RECORDED) // 회색
+                }
+            )
+        }
+    }
+
+    /** 날짜별 기록 호출 + 없으면 스케줄 fallback */
     override suspend fun getMedicineUiStateList(
         elderId: Int,
         date: LocalDate
     ): List<MedicineUiState> {
-        return try {
-            val res = medicineApi.getDailyMedication(elderId, date.toString())
 
-            Log.d("MedicineRepo", "response=${res.body()}")
-            if (res.isSuccessful) {
-                val dto = res.body() ?: return buildUnrecordedCardsOrMessage(serverMsg = null)
-                if (dto.medications.isEmpty()) return buildUnrecordedCardsOrMessage(serverMsg = null)
+        val grayTemplate = runCatching { getConfiguredMedicineUiList(elderId) }.getOrDefault(emptyList())
 
-                // 성공 응답 매핑
-                val ui = dto.medications.map { m ->
-                    // 1) 시간대 고정 순서(아침-점심-저녁)로 정렬
-                    val order = listOf("MORNING", "LUNCH", "DINNER")
-                    val kor = mapOf("MORNING" to "아침", "LUNCH" to "점심", "DINNER" to "저녁")
+        return runCatching { medicineApi.getDailyMedication(elderId, date.toString()) }
+            .fold(
+                onSuccess = { res ->
+                    if (res.isSuccessful) {
+                        val dto = res.body()
+                        if (dto == null || dto.medications.isEmpty()) {
+                            // 성공이지만 자료 없음 → 스케줄로 대체
+                            return@fold if (grayTemplate.isNotEmpty()) grayTemplate else emptyList()
+                        }
 
-                    val mapped = order.mapNotNull { slot ->
-                        m.times.find { it.time == slot }?.let { t ->
-                            DoseStatusItem(
-                                time = kor[slot] ?: slot,
-                                // 서버가 해당 슬롯에 레코드를 내려줬는데 taken=false 라면 → '건너뜀'(빨강)
-                                doseStatus = if (t.taken) DoseStatus.TAKEN else DoseStatus.SKIPPED
+                        // --- 순서 정렬 로직 시작 ---
+
+                        val correctOrder = grayTemplate.map { it.medicineName }
+
+                        val sortedMedications = dto.medications.sortedBy { medDto ->
+                            correctOrder.indexOf(medDto.type).let { if (it == -1) Int.MAX_VALUE else it }
+                        }
+
+
+
+                        val order = listOf("MORNING", "LUNCH", "DINNER")
+                        val kor   = mapOf("MORNING" to "아침", "LUNCH" to "점심", "DINNER" to "저녁")
+
+
+                        return@fold sortedMedications.map { m ->
+                            val mapped = order.mapNotNull { slot ->
+                                m.times.find { it.time == slot }?.let { t ->
+                                    DoseStatusItem(
+                                        time = kor[slot] ?: slot,
+                                        doseStatus = if (t.taken) DoseStatus.TAKEN else DoseStatus.SKIPPED
+                                    )
+                                }
+                            }
+                            val padded = if (mapped.size < m.goalCount) {
+                                mapped + List(m.goalCount - mapped.size) {
+                                    DoseStatusItem(time = "", doseStatus = DoseStatus.NOT_RECORDED)
+                                }
+                            } else mapped.take(m.goalCount)
+
+                            MedicineUiState(
+                                medicineName = m.type,
+                                todayTakenCount = m.takenCount,
+                                todayRequiredCount = m.goalCount,
+                                doseStatusList = padded
                             )
                         }
-                    }
-
-                    // 2) 기록이 아예 없는 슬롯은 회색으로 패딩
-                    val padded = if (mapped.size < m.goalCount) {
-                        mapped + List(m.goalCount - mapped.size) {
-                            DoseStatusItem(time = "", doseStatus = DoseStatus.NOT_RECORDED) // 회색
-                        }
                     } else {
-                        mapped.take(m.goalCount)
+                        // 에러 응답 → 스케줄로 대체 (없으면 빈 목록)
+                        val errorMessage = res.errorBody()?.string()?.let { b ->
+                            runCatching {
+                                json.parseToJsonElement(b).jsonObject["message"]?.jsonPrimitive?.contentOrNull
+                            }.getOrNull()
+                        }
+                        if (grayTemplate.isNotEmpty()) grayTemplate else emptyList()
                     }
+                },
+                onFailure = {
 
-                    MedicineUiState(
-                        medicineName = m.type,
-                        todayTakenCount = m.takenCount,
-                        todayRequiredCount = m.goalCount,
-                        doseStatusList = padded
-                    )
+                    if (grayTemplate.isNotEmpty()) grayTemplate else emptyList()
                 }
-
-
-
-                lastTemplate = dto.medications.map { it.type to it.goalCount }
-                ui
-            } else {
-                // ✅ 서버 메시지(400/404 등) 파싱
-                val serverMsg = res.errorBody()?.string()?.let { body ->
-                    runCatching {
-                        json.parseToJsonElement(body)
-                            .jsonObject["message"]?.jsonPrimitive?.contentOrNull
-                    }.getOrNull()
-                }
-                buildUnrecordedCardsOrMessage(serverMsg)
-            }
-        } catch (_: Exception) {
-            buildUnrecordedCardsOrMessage(serverMsg = null)
-        }
-    }
-
-
-    private fun buildUnrecordedCardsOrMessage(serverMsg: String?): List<MedicineUiState> {
-        if (lastTemplate.isNotEmpty()) {
-
-            return lastTemplate.map { (name, goal) ->
-                MedicineUiState(
-                    medicineName = name,
-                    todayTakenCount = 0,
-                    todayRequiredCount = goal,
-                    doseStatusList = List(goal) {
-                        DoseStatusItem(time = "", doseStatus = DoseStatus.NOT_RECORDED)
-                    }
-                )
-            }
-        }
-        return listOf(
-            MedicineUiState(
-                medicineName = serverMsg ?: "복약 기록 전이에요.",
-                todayTakenCount = 0,
-                todayRequiredCount = 0,
-                doseStatusList = emptyList()
             )
-        )
     }
 }

@@ -14,6 +14,7 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
+import androidx.compose.runtime.remember
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -40,10 +41,14 @@ import java.time.LocalDate
 @Composable
 fun SleepDetail(
     navController: NavHostController,
-    homeViewModel: HomeViewModel,
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     sleepViewModel: SleepViewModel = hiltViewModel()
 ) {
+
+    val homeEntry = remember(navController.currentBackStackEntry) {
+        navController.getBackStackEntry("main")
+    }
+    val homeViewModel: HomeViewModel = hiltViewModel(homeEntry)
 
     // 재진입 시 오늘로 초기화
     LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
@@ -54,7 +59,7 @@ fun SleepDetail(
     val sleep by sleepViewModel.sleep.collectAsState()
 
     // 네임드롭에서 선택된 어르신
-    val elderId = homeViewModel.selectedElderId.collectAsState().value
+    val elderId by homeViewModel.selectedElderId.collectAsState()
 
     // 날짜/어르신 변경 시마다 로드
     LaunchedEffect(elderId, selectedDate) {
@@ -62,6 +67,7 @@ fun SleepDetail(
             sleepViewModel.loadSleepDataForDate(id, selectedDate)
         }
     }
+
 
     SleepDetailLayout(
         modifier = Modifier,

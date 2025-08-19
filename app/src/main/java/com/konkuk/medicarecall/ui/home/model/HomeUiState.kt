@@ -17,39 +17,52 @@ data class HomeUiState(
     companion object {
         val EMPTY = HomeUiState()
 
-//        fun from(dto: HomeResponseDto): HomeUiState = HomeUiState(
-//            elderName = dto.elderName,
-//            balloonMessage = dto.aiSummary,
-//
-//            isRecorded = dto.mealStatus.breakfast || dto.mealStatus.lunch || dto.mealStatus.dinner,
-//            isEaten = dto.mealStatus.breakfast || dto.mealStatus.lunch || dto.mealStatus.dinner,
-//            breakfastEaten = dto.mealStatus.breakfast,
-//            lunchEaten     = dto.mealStatus.lunch,
-//            dinnerEaten    = dto.mealStatus.dinner,
-//
-//            medicines = dto.medicationStatus.medicationList
-//                .orEmpty()
-//                .map {
-//                    MedicineUiState(
-//                        medicineName = it.type,
-//                        todayTakenCount = it.taken,
-//                        todayRequiredCount = it.goal,
-//                        nextDoseTime = when (it.nextTime) {
-//                            "MORNING" -> "아침"
-//                            "LUNCH"   -> "점심"
-//                            "DINNER"  -> "저녁"
-//                            null, ""  -> "-"
-//                            else      -> it.nextTime
-//                        }
-//                    )
-//                },
-//
-//
-//            sleep = dto.sleep ?: HomeResponseDto.SleepDto(0, 0),
-//            healthStatus = dto.healthStatus ?: "",
-//            mentalStatus = dto.mentalStatus ?: "",
-//            glucoseLevelAverageToday = dto.bloodSugar?.meanValue ?: 0
-//        )
+        fun from(dto: HomeResponseDto): HomeUiState = HomeUiState(
+            elderName = dto.elderName,
+            balloonMessage = dto.aiSummary,
+
+            // 기록 존재 여부(세 끼 중 하나라도 null 아님)
+            isRecorded = listOf(
+                dto.mealStatus.breakfast,
+                dto.mealStatus.lunch,
+                dto.mealStatus.dinner
+            ).any { it != null },
+
+            // 오늘 한 끼라도 먹었는지(선택적)
+            isEaten = listOf(
+                dto.mealStatus.breakfast,
+                dto.mealStatus.lunch,
+                dto.mealStatus.dinner
+            ).any { it == true },
+
+            breakfastEaten = dto.mealStatus.breakfast,
+            lunchEaten     = dto.mealStatus.lunch,
+            dinnerEaten    = dto.mealStatus.dinner,
+
+
+            medicines = dto.medicationStatus.medicationList
+                .orEmpty()
+                .map {
+                    MedicineUiState(
+                        medicineName = it.type,
+                        todayTakenCount = it.taken,
+                        todayRequiredCount = it.goal,
+                        nextDoseTime = when (it.nextTime) {
+                            "MORNING" -> "아침"
+                            "LUNCH"   -> "점심"
+                            "DINNER"  -> "저녁"
+                            null, ""  -> "-"
+                            else      -> it.nextTime
+                        }
+                    )
+                },
+
+
+            sleep = dto.sleep ?: HomeResponseDto.SleepDto(0, 0),
+            healthStatus = dto.healthStatus ?: "",
+            mentalStatus = dto.mentalStatus ?: "",
+            glucoseLevelAverageToday = dto.bloodSugar?.meanValue ?: 0
+        )
     }
 }
 

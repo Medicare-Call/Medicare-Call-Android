@@ -96,6 +96,7 @@ fun GlucoseDetail(
 
     LaunchedEffect(Unit) {
         elderId?.let { id ->
+
             viewModel.getGlucoseData(elderId = id, counter.getValue(uiState.selectedTiming),
                 GlucoseTiming.AFTER_MEAL)
             viewModel.getGlucoseData(elderId = id, counter.getValue(uiState.selectedTiming),

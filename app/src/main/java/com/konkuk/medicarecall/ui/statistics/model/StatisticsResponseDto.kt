@@ -23,7 +23,7 @@ data class StatisticsResponseDto(
     val bloodSugar: BloodSugarDto
 )
 
-@Serializable // ✅ 추가
+@Serializable
 data class SummaryStatsDto(
     @SerialName("mealRate")
     val mealRate: Int,

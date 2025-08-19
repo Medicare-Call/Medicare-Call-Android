@@ -177,7 +177,6 @@ fun MedInfoItem(
                 if (name.isNotBlank() && times.isNotEmpty()) {
                     medications.addOrMerge(name, times)
                     inputText = ""
-                    selectedPeriods.value = emptySet()
                 } else if (name.isNotBlank()) {
                     Toast.makeText(context, "복약 주기를 선택하세요", Toast.LENGTH_SHORT).show()
                 }

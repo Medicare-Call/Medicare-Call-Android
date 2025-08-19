@@ -1,9 +1,10 @@
 package com.konkuk.medicarecall.ui.statistics
 
-import android.util.Log
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.konkuk.medicarecall.data.repository.EldersHealthInfoRepository
 import com.konkuk.medicarecall.ui.statistics.data.StatisticsRepository
+import com.konkuk.medicarecall.ui.statistics.model.MedicationStatDto
 import com.konkuk.medicarecall.ui.statistics.model.StatisticsResponseDto
 import com.konkuk.medicarecall.ui.statistics.model.WeeklyGlucoseUiState
 import com.konkuk.medicarecall.ui.statistics.model.WeeklyMealUiState
@@ -29,7 +30,8 @@ data class StatisticsUiState(
 
 @HiltViewModel
 class StatisticsViewModel @Inject constructor(
-    private val repository: StatisticsRepository
+    private val repository: StatisticsRepository,
+    private val eldersHealthInfoRepository: EldersHealthInfoRepository
 ) : ViewModel() {
 
     private val _uiState = MutableStateFlow(StatisticsUiState())
@@ -67,7 +69,11 @@ class StatisticsViewModel @Inject constructor(
     fun refresh() {
         val id = _selectedElderId.value ?: return
         val start = _currentWeek.value.first
-        getWeeklyStatistics(elderId = id, startDate = start, ignoreLoadingGate = true) // ✅ forceRefresh 제거
+        getWeeklyStatistics(
+            elderId = id,
+            startDate = start,
+            ignoreLoadingGate = true
+        )
     }
 
     // ★ 외부(HomeVM)에서만 elderId 설정
@@ -122,59 +128,89 @@ class StatisticsViewModel @Inject constructor(
 
             runCatching {
                 val formatted = startDate.format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE)
-                repository.getStatistics(elderId, formatted)
-            }.onSuccess { dto ->
+
+                // ✅ 등록된 “정답 순서” 가져오기
+                val correctOrder: List<String> =
+                    eldersHealthInfoRepository.getEldersHealthInfo()
+                        .getOrNull()
+                        ?.firstOrNull { it.elderId == elderId }
+                        ?.medications
+                        ?.flatMap { it.value }
+                        ?.distinct()
+                        ?: emptyList()
+
+                // ✅ 통계 API
+                repository.getStatistics(elderId, formatted) to correctOrder
+            }.onSuccess { (dto, order) ->
                 _uiState.value = StatisticsUiState(
                     isLoading = false,
-                    summary = dto.toWeeklySummaryUiState(),
+                    summary = dto.toWeeklySummaryUiState(order),
                     error = null
                 )
             }.onFailure { e ->
                 if (e is HttpException && e.code() == 404) {
-                    Log.i("API_INFO", "No data found (404), showing empty state.")
-                    _uiState.value = StatisticsUiState(isLoading = false, summary = WeeklySummaryUiState.EMPTY)
+                    _uiState.value =
+                        StatisticsUiState(isLoading = false, summary = WeeklySummaryUiState.EMPTY)
                 } else {
-                    Log.e("API_ERROR", "API call failed", e)
-                    _uiState.value = StatisticsUiState(isLoading = false, error = "데이터 로딩 실패: ${e.message}")
+                    _uiState.value =
+                        StatisticsUiState(isLoading = false, error = "데이터 로딩 실패: ${e.message}")
                 }
             }
         }
     }
 
-    private fun StatisticsResponseDto.toWeeklySummaryUiState(): WeeklySummaryUiState {
-        return WeeklySummaryUiState(
-            elderName = this.elderName,
-            weeklyMealRate = this.summaryStats.mealRate,
-            weeklyMedicineRate = this.summaryStats.medicationRate,
-            weeklyHealthIssueCount = this.summaryStats.healthSignals,
-            weeklyUnansweredCount = this.summaryStats.missedCalls,
-            weeklyMeals = listOf(
-                WeeklyMealUiState("아침", this.mealStats.breakfast, 7),
-                WeeklyMealUiState("점심", this.mealStats.lunch, 7),
-                WeeklyMealUiState("저녁", this.mealStats.dinner, 7)
-            ),
-            weeklyMedicines = this.medicationStats.map { (name, stats) ->
+    private fun StatisticsResponseDto.toWeeklySummaryUiState(
+        correctOrder: List<String>
+    ): WeeklySummaryUiState {
+
+        // 키 → 순서 인덱스 맵 (없으면 아주 큰 값)
+        val indexOf: (String) -> Int = { key ->
+            val idx = correctOrder.indexOf(key)
+            if (idx == -1) Int.MAX_VALUE else idx
+        }
+
+        val orderedMedicines = medicationStats
+            .entries
+            .sortedWith(
+                compareBy<Map.Entry<String, MedicationStatDto>>(
+                    { indexOf(it.key) },   // ✅ 등록 순서 우선
+                { it.key }             // 보조: 이름 알파벳/가나다 정렬(순서 없을 때 안정화)
+            ))
+            .map { (name, stats) ->
                 WeeklyMedicineUiState(
                     medicineName = name,
                     takenCount = stats.takenCount,
                     totalCount = stats.totalCount
                 )
-            },
-            weeklyHealthNote = this.healthSummary,
-            weeklySleepHours = this.averageSleep.hours,
-            weeklySleepMinutes = this.averageSleep.minutes,
+            }
+
+        return WeeklySummaryUiState(
+            elderName = elderName,
+            weeklyMealRate = summaryStats.mealRate,
+            weeklyMedicineRate = summaryStats.medicationRate,
+            weeklyHealthIssueCount = summaryStats.healthSignals,
+            weeklyUnansweredCount = summaryStats.missedCalls,
+            weeklyMeals = listOf(
+                WeeklyMealUiState("아침", mealStats.breakfast, 7),
+                WeeklyMealUiState("점심", mealStats.lunch, 7),
+                WeeklyMealUiState("저녁", mealStats.dinner, 7)
+            ),
+            weeklyMedicines = orderedMedicines,     // ✅ 여기!
+            weeklyHealthNote = healthSummary,
+            weeklySleepHours = averageSleep.hours,
+            weeklySleepMinutes = averageSleep.minutes,
             weeklyMental = WeeklyMentalUiState(
-                good = this.psychSummary.good,
-                normal = this.psychSummary.normal,
-                bad = this.psychSummary.bad
+                good = psychSummary.good,
+                normal = psychSummary.normal,
+                bad = psychSummary.bad
             ),
             weeklyGlucose = WeeklyGlucoseUiState(
-                beforeMealNormal = this.bloodSugar.beforeMeal.normal,
-                beforeMealHigh = this.bloodSugar.beforeMeal.high,
-                beforeMealLow = this.bloodSugar.beforeMeal.low,
-                afterMealNormal = this.bloodSugar.afterMeal.normal,
-                afterMealHigh = this.bloodSugar.afterMeal.high,
-                afterMealLow = this.bloodSugar.afterMeal.low
+                beforeMealNormal = bloodSugar.beforeMeal.normal,
+                beforeMealHigh = bloodSugar.beforeMeal.high,
+                beforeMealLow = bloodSugar.beforeMeal.low,
+                afterMealNormal = bloodSugar.afterMeal.normal,
+                afterMealHigh = bloodSugar.afterMeal.high,
+                afterMealLow = bloodSugar.afterMeal.low
             )
         )
     }

@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.homedetail.medicine.screen
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -26,6 +27,7 @@ import com.konkuk.medicarecall.ui.calendar.CalendarUiState
 import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.calendar.DateSelector
 import com.konkuk.medicarecall.ui.calendar.WeeklyCalendar
+import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.medicine.MedicineViewModel
 import com.konkuk.medicarecall.ui.homedetail.medicine.component.MedicineDetailCard
@@ -42,11 +44,25 @@ fun MedicineDetail(
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     medicineViewModel: MedicineViewModel = hiltViewModel()
 ) {
-    // 어르신 선택 상태(selectedElderId) 관리
+
+    // 어르신 선택 상태 관리
     val homeEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry("main")
     }
-    val homeViewModel: com.konkuk.medicarecall.ui.home.HomeViewModel = hiltViewModel(homeEntry)
+    val homeViewModel: HomeViewModel = hiltViewModel(homeEntry)
+
+    val elderId = homeViewModel.selectedElderId.collectAsState().value
+    val selectedDate = calendarViewModel.selectedDate.collectAsState().value
+
+    LaunchedEffect(elderId, selectedDate) {
+        Log.d("MED_UI", "LaunchedEffect triggered: elderId=$elderId, date=$selectedDate")
+        elderId?.let { id ->
+            medicineViewModel.loadMedicinesForDate(id, selectedDate)
+        }
+    }
+
+    val uiState by medicineViewModel.state.collectAsState()
+    Log.d("MED_UI", "render medicines=${uiState.items.size}")
 
     // 상세 재진입 시 오늘로 초기화
     val lifecycleOwner = androidx.lifecycle.compose.LocalLifecycleOwner.current
@@ -60,18 +76,7 @@ fun MedicineDetail(
         onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
     }
 
-    val selectedDate by calendarViewModel.selectedDate.collectAsState()
-    val uiState by medicineViewModel.state.collectAsState()
 
-    // 네임드롭 선택된 어르신
-    val elderId = homeViewModel.selectedElderId.collectAsState().value
-
-    // 날짜 또는 어르신 변경 시 재로딩
-    LaunchedEffect(elderId, selectedDate) {
-        elderId?.let { id ->
-            medicineViewModel.loadMedicinesForDate(id, selectedDate)
-        }
-    }
 
 
     MedicineDetailLayout(

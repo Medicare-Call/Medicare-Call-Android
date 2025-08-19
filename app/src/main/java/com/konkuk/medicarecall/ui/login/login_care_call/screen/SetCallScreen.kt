@@ -60,7 +60,7 @@ import kotlinx.coroutines.launch
 fun Triple<Int, Int, Int>.toDisplayString(): String {
     val (amPm, h, m) = this
     val period = if (amPm == 0) "오전" else "오후"
-    return "${period} ${h.toString().padStart(2, '0')}시 ${m.toString().padStart(2, '0')}분"
+    return "$period ${h.toString().padStart(2, '0')}시 ${m.toString().padStart(2, '0')}분"
 }
 
 @Composable

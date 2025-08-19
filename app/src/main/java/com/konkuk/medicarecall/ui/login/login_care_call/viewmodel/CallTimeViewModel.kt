@@ -27,8 +27,6 @@ class CallTimeViewModel @Inject constructor(
         timeMap[id] = times
     }
 
-    fun getTimes(id: Int): CallTimes? = timeMap[id]
-
     fun isCompleteFor(id: Int): Boolean {
         val t = timeMap[id] ?: return false
         return t.first != null && t.second != null && t.third != null

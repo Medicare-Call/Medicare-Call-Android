@@ -23,9 +23,9 @@ data class HomeResponseDto(
 ) {
     @Serializable
     data class MealStatusDto(
-        val breakfast: Boolean = false,
-        val lunch: Boolean = false,
-        val dinner: Boolean = false
+        val breakfast: Boolean? = null,
+        val lunch: Boolean? = null,
+        val dinner: Boolean? = null
     )
 
     @Serializable

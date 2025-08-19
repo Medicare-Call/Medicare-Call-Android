@@ -5,7 +5,7 @@ data class HomeUiState(
     val balloonMessage: String = "",
     val isRecorded: Boolean = false,
     val isEaten: Boolean = false,
-    val breakfastEaten: Boolean? = null,
+    val breakfastEaten: Boolean? = null, // true/false/null(미기록)
     val lunchEaten: Boolean? = null,
     val dinnerEaten: Boolean? = null,
     val medicines: List<MedicineUiState> = emptyList(),
@@ -21,11 +21,24 @@ data class HomeUiState(
             elderName = dto.elderName,
             balloonMessage = dto.aiSummary,
 
-            isRecorded = dto.mealStatus.breakfast || dto.mealStatus.lunch || dto.mealStatus.dinner,
-            isEaten = dto.mealStatus.breakfast || dto.mealStatus.lunch || dto.mealStatus.dinner,
+            // 기록 존재 여부(세 끼 중 하나라도 null 아님)
+            isRecorded = listOf(
+                dto.mealStatus.breakfast,
+                dto.mealStatus.lunch,
+                dto.mealStatus.dinner
+            ).any { it != null },
+
+            // 오늘 한 끼라도 먹었는지(선택적)
+            isEaten = listOf(
+                dto.mealStatus.breakfast,
+                dto.mealStatus.lunch,
+                dto.mealStatus.dinner
+            ).any { it == true },
+
             breakfastEaten = dto.mealStatus.breakfast,
             lunchEaten     = dto.mealStatus.lunch,
             dinnerEaten    = dto.mealStatus.dinner,
+
 
             medicines = dto.medicationStatus.medicationList
                 .orEmpty()

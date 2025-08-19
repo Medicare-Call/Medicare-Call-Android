@@ -1,7 +1,9 @@
 package com.konkuk.medicarecall.ui.homedetail.glucoselevel.screen
 
+import android.util.Log
 import androidx.compose.foundation.ExperimentalFoundationApi
 import androidx.compose.foundation.Image
+import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
@@ -15,13 +17,18 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBars
 import androidx.compose.foundation.layout.windowInsetsTopHeight
+import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
+import androidx.compose.runtime.mutableStateMapOf
+import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
+import androidx.compose.runtime.rememberCoroutineScope
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -44,9 +51,12 @@ import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseUiState
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GraphDataPoint
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
+import kotlin.collections.getValue
+import kotlin.collections.setValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
@@ -57,6 +67,7 @@ fun GlucoseDetail(
     calendarViewModel: CalendarViewModel
 ) {
 
+    val scrollState = rememberScrollState()
 
     // 어르신 선택 상태(selectedElderId) 관리
     val homeEntry = remember(navController.currentBackStackEntry) {
@@ -64,22 +75,43 @@ fun GlucoseDetail(
     }
     val homeViewModel: HomeViewModel = hiltViewModel(homeEntry)
 
-    val uiState by viewModel.uiState
+    val uiState by viewModel.uiState.collectAsState()
     val selectedIndex = remember { mutableIntStateOf(-1) }
 
     // 선택된 어르신 ID를 구독 (null 가능)
     val elderId = homeViewModel.selectedElderId.collectAsState().value
 
-    // 선택된 어르신이 바뀌면 실제 데이터 로드
-    LaunchedEffect(elderId) {
+    var counter = remember {
+        mutableStateMapOf(
+            GlucoseTiming.BEFORE_MEAL to 0, GlucoseTiming.AFTER_MEAL to 0
+        )
+    }
+
+    val coroutineScope = rememberCoroutineScope()
+
+    LaunchedEffect(counter[GlucoseTiming.BEFORE_MEAL], counter[GlucoseTiming.AFTER_MEAL]) {
+        Log.d("glucose_counter", "$counter")
+    }
+
+
+    LaunchedEffect(Unit) {
         elderId?.let { id ->
-            viewModel.loadWeekFromServer(elderId = id)
+
+            viewModel.getGlucoseData(elderId = id, counter.getValue(uiState.selectedTiming),
+                GlucoseTiming.AFTER_MEAL)
+            viewModel.getGlucoseData(elderId = id, counter.getValue(uiState.selectedTiming),
+                GlucoseTiming.BEFORE_MEAL)
+            counter[GlucoseTiming.BEFORE_MEAL] = counter[GlucoseTiming.BEFORE_MEAL]!! + 1
+            counter[GlucoseTiming.AFTER_MEAL] = counter[GlucoseTiming.AFTER_MEAL]!! + 1
+
         }
     }
-    // 그래프 데이터가 바뀔 때마다 포커스를 마지막 점으로 이동
-    LaunchedEffect(uiState.graphDataPoints) {
-        selectedIndex.intValue =
-            if (uiState.graphDataPoints.isNotEmpty()) uiState.graphDataPoints.lastIndex else -1
+    LaunchedEffect(scrollState.value) {
+        Log.d("scroll", "${scrollState.value}")
+        if (scrollState.value > scrollState.maxValue - 250 && elderId != null && !uiState.isLoading && uiState.hasNext) {
+            viewModel.getGlucoseData(elderId, counter.getValue(uiState.selectedTiming), uiState.selectedTiming)
+            counter[uiState.selectedTiming] = counter[uiState.selectedTiming]!! + 1
+        }
     }
 
 
@@ -94,9 +126,13 @@ fun GlucoseDetail(
         // '공복'/'식후' 버튼
         onTimingChange = { newTiming ->
             viewModel.updateTiming(newTiming)
+            coroutineScope.launch {
+                scrollState.scrollTo(0)
+            }
         },
         // 그래프 점
         onPointClick = { newIndex -> selectedIndex.intValue = newIndex },
+        scrollState = scrollState,
         navController = navController
     )
 }
@@ -110,9 +146,9 @@ fun GlucoseDetailLayout(
     selectedIndex: Int,
     onTimingChange: (GlucoseTiming) -> Unit,
     onPointClick: (Int) -> Unit,
+    scrollState: ScrollState,
     navController: NavHostController,
 ) {
-
 
     val isDataAvailable = uiState.graphDataPoints.isNotEmpty()
 
@@ -135,7 +171,8 @@ fun GlucoseDetailLayout(
         Spacer(modifier = Modifier.height(20.dp))
 
         Row(
-            modifier = Modifier .fillMaxWidth()
+            modifier = Modifier
+                .fillMaxWidth()
                 .padding(horizontal = 20.dp),
             horizontalArrangement = Arrangement.spacedBy(20.dp)
         ) {
@@ -178,14 +215,16 @@ fun GlucoseDetailLayout(
                 GlucoseGraph(
                     data = uiState.graphDataPoints,
                     selectedIndex = selectedIndex,
-                    onPointClick = onPointClick
+                    onPointClick = onPointClick,
+                    scrollState = scrollState
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
                 //그래프 점 클릭시
                 val selectedPoint = uiState.graphDataPoints.getOrNull(selectedIndex)
                 if (selectedPoint != null) {
-                    val timingLabel = if (selectedTiming == GlucoseTiming.BEFORE_MEAL) "아침 | 공복" else "저녁 | 식후"
+                    val timingLabel =
+                        if (selectedTiming == GlucoseTiming.BEFORE_MEAL) "아침 | 공복" else "저녁 | 식후"
 
                     // 날짜 표시
                     val dateText = selectedPoint.date.format(
@@ -215,7 +254,11 @@ fun GlucoseDetailLayout(
                 )
                 Spacer(modifier = Modifier.height(20.dp))
 
-                Text(text = "아직 기록이 없어요", style = MediCareCallTheme.typography.R_18, color = MediCareCallTheme.colors.gray6)
+                Text(
+                    text = "아직 기록이 없어요",
+                    style = MediCareCallTheme.typography.R_18,
+                    color = MediCareCallTheme.colors.gray6
+                )
             }
         }
     }
@@ -235,6 +278,7 @@ fun PreviewGlucoseDetail_DataAvailable() {
         )
     }.reversed()
     val dummyUiState = GlucoseUiState(graphDataPoints = sampleData)
+    val scrollState = rememberScrollState()
 
     MediCareCallTheme {
         GlucoseDetailLayout(
@@ -243,7 +287,8 @@ fun PreviewGlucoseDetail_DataAvailable() {
             selectedIndex = sampleData.lastIndex,
             onTimingChange = {},
             onPointClick = {},
-            navController = rememberNavController()
+            navController = rememberNavController(),
+            scrollState = scrollState
         )
     }
 }
@@ -254,6 +299,7 @@ fun PreviewGlucoseDetail_DataAvailable() {
 fun PreviewGlucoseDetail_Empty() {
     // Empty View 프리뷰
     val dummyUiState = GlucoseUiState(graphDataPoints = emptyList())
+    val scrollState = rememberScrollState()
 
     MediCareCallTheme {
         GlucoseDetailLayout(
@@ -262,7 +308,8 @@ fun PreviewGlucoseDetail_Empty() {
             selectedIndex = -1,
             onTimingChange = {},
             onPointClick = {},
-            navController = rememberNavController()
+            navController = rememberNavController(),
+            scrollState = scrollState
         )
     }
 }

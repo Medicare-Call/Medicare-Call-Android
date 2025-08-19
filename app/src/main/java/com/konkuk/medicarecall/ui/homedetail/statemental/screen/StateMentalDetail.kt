@@ -19,6 +19,8 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.ui.calendar.CalendarUiState
@@ -36,33 +38,23 @@ import java.time.LocalDate
 @Composable
 fun StateMentalDetail(
     navController: NavHostController,
+    homeViewModel: HomeViewModel,
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     mentalViewModel: MentalViewModel = hiltViewModel(),
-    homeViewModel: HomeViewModel = hiltViewModel()
+
 ) {
-    // 상세 재진입 시 오늘로 초기화
-    val lifecycleOwner = androidx.compose.ui.platform.LocalLifecycleOwner.current
-    androidx.compose.runtime.DisposableEffect(lifecycleOwner) {
-        val obs = androidx.lifecycle.LifecycleEventObserver { _, e ->
-            if (e == androidx.lifecycle.Lifecycle.Event.ON_RESUME) {
-                calendarViewModel.resetToToday()
-            }
-        }
-        lifecycleOwner.lifecycle.addObserver(obs)
-        onDispose { lifecycleOwner.lifecycle.removeObserver(obs) }
+    // 재진입 시 오늘로 초기화
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        calendarViewModel.resetToToday()
     }
 
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
     val mental by mentalViewModel.mental.collectAsState()
-
-    // 홈 뷰모델에서 어르신 ID 가져오기
     val elderId = homeViewModel.selectedElderId.collectAsState().value
 
-    // 날짜 or elderId 바뀔 때마다 API 호출
+    // 날짜/어르신 변경 시 로드
     LaunchedEffect(elderId, selectedDate) {
-        elderId?.let { id ->
-            mentalViewModel.loadMentalDataForDate(id, selectedDate)
-        }
+        elderId?.let { mentalViewModel.loadMentalDataForDate(it, selectedDate) }
     }
 
 

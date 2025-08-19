@@ -27,7 +27,8 @@ class MedicineViewModel @Inject constructor(
     data class ScreenState(
         val loading: Boolean = false,
         val items: List<MedicineUiState> = emptyList(),
-        val emptyDate: LocalDate? = null
+        val emptyDate: LocalDate? = null,
+        val hasConfiguredMeds: Boolean = false
     )
 
     private val _state = MutableStateFlow(ScreenState())
@@ -40,16 +41,29 @@ class MedicineViewModel @Inject constructor(
 
             _state.update { it.copy(loading = true, emptyDate = null) }
             try {
-                val list = medicineRepository.getMedicineUiStateList(elderId, date)
 
-                _state.update {
-                    if (list.isEmpty()) {
-                        it.copy(loading = false, items = emptyList(), emptyDate = date)
-                    } else {
-                        it.copy(loading = false, items = list, emptyDate = null)
+                val daily = medicineRepository.getMedicineUiStateList(elderId, date)
+
+                if (daily.isNotEmpty()) {
+                    _state.update {
+                        it.copy(loading = false, items = daily, emptyDate = null, hasConfiguredMeds = true)
+                    }
+                    return@launch
+                }
+
+
+                val configured = medicineRepository.getConfiguredMedicineUiList(elderId)
+                if (configured.isNotEmpty()) {
+                    _state.update {
+                        it.copy(loading = false, items = configured, emptyDate = null, hasConfiguredMeds = true)
+                    }
+                } else {
+
+                    _state.update {
+                        it.copy(loading = false, items = emptyList(), emptyDate = date, hasConfiguredMeds = false)
                     }
                 }
-                Log.i(TAG, "Success elderId=$elderId, date=$formatted, items=${list.size}")
+
             } catch (e: Exception) {
                 when (e) {
                     is HttpException -> {

@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.homedetail.medicine.di
 
+import com.konkuk.medicarecall.data.repository.EldersHealthInfoRepository
 import com.konkuk.medicarecall.ui.homedetail.medicine.data.MedicineApi
 import com.konkuk.medicarecall.ui.homedetail.medicine.data.MedicineRepository
 import com.konkuk.medicarecall.ui.homedetail.medicine.data.MedicineRepositoryImpl
@@ -22,7 +23,10 @@ object MedicineNetworkModule {
 
     @Provides
     @Singleton
-    fun provideMedicineRepository(medicineApi: MedicineApi): MedicineRepository {
-        return MedicineRepositoryImpl(medicineApi)
+    fun provideMedicineRepository(
+        medicineApi: MedicineApi,
+        eldersHealthInfoRepository: EldersHealthInfoRepository
+    ): MedicineRepository {
+        return MedicineRepositoryImpl(medicineApi, eldersHealthInfoRepository)
     }
 }

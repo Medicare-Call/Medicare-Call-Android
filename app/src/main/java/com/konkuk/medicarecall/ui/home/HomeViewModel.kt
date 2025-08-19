@@ -4,6 +4,7 @@ import android.util.Log
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
+import com.konkuk.medicarecall.data.repository.EldersHealthInfoRepository
 import com.konkuk.medicarecall.data.repository.EldersInfoRepository
 import com.konkuk.medicarecall.ui.home.data.HomeRepository
 import com.konkuk.medicarecall.ui.home.model.HomeUiState
@@ -27,7 +28,8 @@ data class ElderInfo(val id: Int, val name: String,  val phone: String?)
 class HomeViewModel @Inject constructor(
     private val eldersInfoRepository: EldersInfoRepository,
     private val homeRepository: HomeRepository,
-    private val savedStateHandle: SavedStateHandle
+    private val savedStateHandle: SavedStateHandle,
+    private val eldersHealthInfoRepository: EldersHealthInfoRepository
 ) : ViewModel() {
 
     fun callCareCallImmediate(
@@ -125,10 +127,26 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             val today = LocalDate.now()
             try {
-
+                // 서버에서 홈 데이터 가져오기
                 val ui = homeRepository.getHomeUiState(elderId, today)
-                Log.d(TAG, "med size=${ui.medicines.size}, data=${ui.medicines}")
-                _homeUiState.value = ui
+
+                // 등록된 약 정보에서 '올바른 순서'를 가져옵니다.
+                val correctMedicationOrder = eldersHealthInfoRepository.getEldersHealthInfo()
+                    .getOrNull()
+                    ?.firstOrNull { it.elderId == elderId }
+                    ?.medications
+                    ?.flatMap { it.value } // 모든 약 이름을 하나의 리스트로 만듦
+                    ?.distinct() ?: emptyList()
+
+                // 서버에서 받은 약 목록을 '올바른 순서'에 맞춰 재정렬
+                val sortedMedicines = ui.medicines.sortedBy { medUiState ->
+                    correctMedicationOrder.indexOf(medUiState.medicineName)
+                        .let { if (it == -1) Int.MAX_VALUE else it }
+                }
+
+                // 정렬된 목록으로 UI 상태를 업데이트
+                _homeUiState.value = ui.copy(medicines = sortedMedicines)
+
             } catch (e: Exception) {
                 Log.e(TAG, "getHomeSummary failed elderId=$elderId", e)
                 _homeUiState.value = HomeUiState.EMPTY

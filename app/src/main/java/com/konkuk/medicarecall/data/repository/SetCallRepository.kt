@@ -16,6 +16,8 @@ class SetCallRepository @Inject constructor(
         runCatching {
             val response = service.saveCareCallTimes(elderId, body)
             if (!response.isSuccessful) {
+                Log.e("SetCallRepository", "HTTP ${response.code()} ${response.message()}")
+                Log.e("SetCallRepository", "ErrorBody=${response.errorBody()?.string()}")
                 throw Exception("Error saving care call times: ${response.errorBody()?.string()} / SetCallRepository.kt")
             }
         }

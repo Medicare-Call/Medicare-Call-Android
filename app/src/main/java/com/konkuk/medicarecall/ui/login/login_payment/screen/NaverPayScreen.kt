@@ -1,5 +1,4 @@
 package com.konkuk.medicarecall.ui.login.login_payment.screen
-
 import android.annotation.SuppressLint
 import android.util.Log
 import android.webkit.WebView
@@ -36,7 +35,6 @@ import com.konkuk.medicarecall.ui.login.login_payment.viewmodel.NaverPayViewMode
 import com.konkuk.medicarecall.ui.model.PaymentResult
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun NaverPayScreen(
@@ -75,24 +73,17 @@ fun NaverPayScreen(
             },
             rightIconClick = { navController.navigate(Route.FinishSplash.route) }
         )
-
         val context = LocalContext.current
         val baseHost = "medicare-call.shop"
-
         var popupWebView by remember { mutableStateOf<WebView?>(null) }
-
         // ViewModel 상태 스냅샷
         val orderCode = naverPayViewModel.orderCode
         val accessToken = naverPayViewModel.accessToken
-
         // 중복 네비 방지
         var navigated by rememberSaveable { mutableStateOf(false) }
-
         // WebView 인스턴스 재사용
         val webView = remember { WebView(context) }
         var loaded by remember { mutableStateOf(false) }
-
-
         LaunchedEffect(orderCode, accessToken) {
             if (!loaded && !orderCode.isNullOrBlank() && !accessToken.isNullOrBlank()) {
                 val url = "https://$baseHost/api/payments/page/$orderCode"
@@ -102,25 +93,27 @@ fun NaverPayScreen(
                 loaded = true
             }
         }
-
-        Box() {
+        Box(
+            modifier = Modifier
+                .fillMaxSize()
+                .background(MediCareCallTheme.colors.gray2),
+            contentAlignment = Alignment.Center
+        ) {
             AndroidView(
+                modifier = Modifier.fillMaxSize(),
                 factory = {
                     webView.apply {
                         // 1) 쿠키 허용 + 3rd-party 쿠키 허용 (네이버 도메인 세션 유지)
                         val cm = android.webkit.CookieManager.getInstance()
                         cm.setAcceptCookie(true)
                         cm.setAcceptThirdPartyCookies(this, true)
-
                         // 2) JS/스토리지 + 팝업 허용
                         settings.javaScriptEnabled = true
                         settings.domStorageEnabled = true
                         settings.javaScriptCanOpenWindowsAutomatically = true
                         settings.setSupportMultipleWindows(true)
-
                         // 3) 새창 요청을 같은 WebView에서 처리
                         webChromeClient = object : android.webkit.WebChromeClient() {
-
                             override fun onCreateWindow(
                                 view: WebView?,
                                 isDialog: Boolean,
@@ -128,19 +121,16 @@ fun NaverPayScreen(
                                 resultMsg: android.os.Message?
                             ): Boolean {
                                 val ctx = view?.context ?: return false
-
                                 // 새 팝업 WebView 생성
                                 val popup = WebView(ctx).apply {
                                     settings.javaScriptEnabled = true
                                     settings.domStorageEnabled = true
                                     settings.setSupportMultipleWindows(true)
                                     settings.javaScriptCanOpenWindowsAutomatically = true
-
                                     // 쿠키(3rd party 포함)
                                     val cm = android.webkit.CookieManager.getInstance()
                                     cm.setAcceptCookie(true)
                                     cm.setAcceptThirdPartyCookies(this, true)
-
                                     // ─────────────────────────────────────────────
                                     // ① 팝업에도 동일한 JS 브릿지(이름 "Android") 추가
                                     //    payment-result.html에서 Android.onPaymentComplete/closePage() 호출
@@ -179,7 +169,6 @@ fun NaverPayScreen(
                                                             "NaverPayScreen",
                                                             "Popup payment result: $result"
                                                         )
-
                                                         if (result.success && !navigated) {
                                                             navigated = true
                                                             // 팝업 닫고 성공 네비게이션
@@ -204,7 +193,6 @@ fun NaverPayScreen(
                                                     }
                                                 }
                                         }
-
                                         @android.webkit.JavascriptInterface
                                         fun closePage() {
                                             android.os.Handler(android.os.Looper.getMainLooper())
@@ -214,12 +202,10 @@ fun NaverPayScreen(
                                                 }
                                         }
                                     }, "Android")
-
                                     // ─────────────────────────────────────────────
                                     // ② 팝업 내 네비게이션/스킴 처리 + fallback JS
                                     // ─────────────────────────────────────────────
                                     webViewClient = object : WebViewClient() {
-
                                         override fun shouldOverrideUrlLoading(
                                             v: WebView,
                                             req: android.webkit.WebResourceRequest
@@ -227,7 +213,6 @@ fun NaverPayScreen(
                                             val url = req.url.toString()
                                             val host = req.url.host ?: ""
                                             val scheme = req.url.scheme ?: ""
-
                                             // intent://, market:// 등 외부 스킴
                                             if (scheme.equals("intent", true)) {
                                                 try {
@@ -261,7 +246,6 @@ fun NaverPayScreen(
                                                 }
                                                 return true
                                             }
-
                                             if (scheme in listOf("tel", "mailto", "sms")) {
                                                 try {
                                                     val i = android.content.Intent(
@@ -273,7 +257,6 @@ fun NaverPayScreen(
                                                 }
                                                 return true
                                             }
-
                                             // 우리 서버 이동 시 토큰 재부착 (팝업에서도 동일 정책)
                                             if (host == "medicare-call.shop") {
                                                 val token = naverPayViewModel.accessToken
@@ -285,10 +268,8 @@ fun NaverPayScreen(
                                                     return true
                                                 }
                                             }
-
                                             return false // 나머지는 WebView가 처리
                                         }
-
                                         override fun onPageFinished(v: WebView, url: String) {
                                             android.util.Log.d(
                                                 "NaverPayWebView",
@@ -318,7 +299,6 @@ fun NaverPayScreen(
                                                 }
                                             }
                                         }
-
                                         override fun onReceivedHttpError(
                                             v: WebView,
                                             req: android.webkit.WebResourceRequest,
@@ -329,7 +309,6 @@ fun NaverPayScreen(
                                                 "POPUP HTTP ${res.statusCode} on ${req.url}"
                                             )
                                         }
-
                                         override fun onReceivedError(
                                             v: WebView,
                                             req: android.webkit.WebResourceRequest,
@@ -341,7 +320,6 @@ fun NaverPayScreen(
                                             )
                                         }
                                     }
-
                                     // 팝업 자체의 close 제어
                                     webChromeClient = object : android.webkit.WebChromeClient() {
                                         override fun onCloseWindow(window: WebView?) {
@@ -350,10 +328,8 @@ fun NaverPayScreen(
                                         }
                                     }
                                 }
-
                                 // Compose 쪽에 팝업 표시
                                 popupWebView = popup
-
                                 // 새 창에 popup WebView를 연결
                                 val transport =
                                     resultMsg?.obj as? WebView.WebViewTransport ?: return false
@@ -361,14 +337,11 @@ fun NaverPayScreen(
                                 resultMsg.sendToTarget()
                                 return true
                             }
-
                             override fun onConsoleMessage(msg: android.webkit.ConsoleMessage?): Boolean {
                                 Log.d("NaverPayWebView", "CONSOLE: ${msg?.message()}")
                                 return super.onConsoleMessage(msg)
                             }
                         }
-
-
                         // 4) 네비게이션 처리: 우리 도메인은 Authorization 재부착, intent 스킴 처리
                         webViewClient = object : WebViewClient() {
                             override fun shouldOverrideUrlLoading(
@@ -378,7 +351,6 @@ fun NaverPayScreen(
                                 val url = request.url.toString()
                                 val host = request.url.host ?: ""
                                 val scheme = request.url.scheme ?: ""
-
                                 // intent://, market:// 등 외부 스킴 처리
                                 if (scheme.equals("intent", true)) {
                                     try {
@@ -423,7 +395,6 @@ fun NaverPayScreen(
                                     }
                                     return true
                                 }
-
                                 // 우리 서버 이동일 땐 토큰 다시 붙여서 로드
                                 if (host == "medicare-call.shop") {
                                     val token = naverPayViewModel.accessToken
@@ -435,10 +406,8 @@ fun NaverPayScreen(
                                 // 그 외(네이버 포함)는 WebView가 자체 처리
                                 return false
                             }
-
                             override fun onPageFinished(view: WebView, url: String) {
                                 Log.d("NaverPayWebView", "FINISHED: $url")
-
                                 // 우리 서버의 결제 완료 페이지에 도달했을 때만 시도
                                 if (url.contains("/api/payments/result")) {
                                     view.evaluateJavascript(
@@ -456,10 +425,8 @@ fun NaverPayScreen(
     })();
     """.trimIndent()
                                     ) { ret -> Log.d("NaverPayWebView", "fallback bridge: $ret") }
-
                                 }
                             } // 서버가 호출안하면 우리가 호출 (결과 페이지 도달)
-
                             override fun onReceivedHttpError(
                                 view: WebView,
                                 request: android.webkit.WebResourceRequest,
@@ -470,7 +437,6 @@ fun NaverPayScreen(
                                     "HTTP ${errorResponse.statusCode} on ${request.url}"
                                 )
                             }
-
                             override fun onReceivedError(
                                 view: WebView,
                                 request: android.webkit.WebResourceRequest,
@@ -482,7 +448,6 @@ fun NaverPayScreen(
                                 )
                             }
                         }
-
                         addJavascriptInterface(object {
                             @android.webkit.JavascriptInterface
                             fun onPaymentComplete(json: String) {
@@ -498,7 +463,6 @@ fun NaverPayScreen(
                                             message = o.optString("message", null)
                                         )
                                         Log.d("NaverPayScreen", "Payment result: $result")
-
                                         if (result.success && !navigated) {
                                             navigated = true
                                             Log.d("NaverPayScreen", "navigate FinishSplash")
@@ -520,9 +484,7 @@ fun NaverPayScreen(
                                 }
                             }
                         }, "Android")
-
                     }
-
                 }
             )
             if (popupWebView != null) {

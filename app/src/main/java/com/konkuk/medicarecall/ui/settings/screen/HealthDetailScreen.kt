@@ -104,18 +104,6 @@ fun HealthDetailScreen(
                 category = "특이사항",
                 scrollState = scrollState,
             )
-//            Button(
-//                modifier = modifier.fillMaxWidth().height(50.dp),
-//                shape = RoundedCornerShape(14.dp),
-//                onClick = {},
-//                colors = ButtonDefaults.buttonColors(
-//                    contentColor = MediCareCallTheme.colors.white,
-//                    containerColor = MediCareCallTheme.colors.main
-//                )
-//
-//            ) {
-//                Text("확인")
-//            }
             Spacer(modifier = modifier.height(20.dp))
             CTAButton(
                 type = CTAButtonType.GREEN,

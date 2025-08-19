@@ -92,6 +92,9 @@ class HomeViewModel @Inject constructor(
         viewModelScope.launch {
             eldersInfoRepository.getElders()
                 .onSuccess { elders ->
+
+                    Log.d(TAG, "elders raw=$elders")
+
                     _elderInfoList.value = elders.map {
                         ElderInfo(id = it.elderId, name = it.name, phone = it.phone)
                     }

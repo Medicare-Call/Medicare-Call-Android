@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.settings.screen
 
-import android.util.Log
 import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Column
@@ -11,14 +10,11 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
-import androidx.compose.runtime.mutableStateListOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.toMutableStateList
 import androidx.compose.ui.Modifier
@@ -41,9 +37,11 @@ import com.konkuk.medicarecall.ui.settings.viewmodel.DetailHealthViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun HealthDetailScreen(modifier: Modifier = Modifier,onBack : () -> Unit ={},
-                       healthInfoResponseDto : EldersHealthResponseDto,
-                       detailViewModel : DetailHealthViewModel = hiltViewModel()
+fun HealthDetailScreen(
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit = {},
+    healthInfoResponseDto: EldersHealthResponseDto,
+    detailViewModel: DetailHealthViewModel = hiltViewModel()
 ) {
 
     val scrollState = rememberScrollState()

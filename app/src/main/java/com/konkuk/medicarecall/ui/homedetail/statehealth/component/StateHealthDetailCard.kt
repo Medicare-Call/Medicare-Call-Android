@@ -28,26 +28,27 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
 fun StateHealthDetailCard(
-
     health: HealthUiState,
     modifier: Modifier = Modifier
 ) {
+    // 1) 전체 미기록은 전용 카드로 일찍 리턴
+    if (!health.isRecorded) {
+        StateHealthUnrecordedCard(modifier)
+        return
+    }
 
-    val healthSummaryText = "주요 증상으로 보아 파킨슨 병이 의심돼요. 어르신과 함께 병원에 방문해 보세요."
-    val trimmedText = healthSummaryText.take(100) // 글자 수 제한
-
+    // 2) 일부만 기록된 경우 섹션별로 분기
     Card(
-        modifier = Modifier
-            .fillMaxWidth().heightIn(min = 166.dp)
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 166.dp)
             .wrapContentHeight()
             .figmaShadow(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
                 cornerRadius = 14.dp
             ),
-
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(10.dp)
-
     ) {
         Column(
             modifier = Modifier
@@ -56,106 +57,131 @@ fun StateHealthDetailCard(
                 .wrapContentHeight(),
             verticalArrangement = Arrangement.spacedBy(20.dp)
         ) {
-
-            Column(
-                verticalArrangement = Arrangement.spacedBy(4.dp)
-            ) {
-                //1) 건강징후 요약
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-
-
+            // (A) 건강징후 요약
+            Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
+                Row(Modifier.fillMaxWidth()) {
                     Text(
                         text = "건강징후 요약",
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray5
                     )
-
                 }
+                Spacer(Modifier.height(4.dp))
 
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-
-                    if (!health.isRecorded) {
-                        Text(
-                            text = "건강징후 기록 전이에요.",
-                            style = MediCareCallTheme.typography.R_16,
-                            color = MediCareCallTheme.colors.gray4
-                        )
-                    } else {
-                        Column(
-                            modifier = Modifier,
-
-                            ) {
-                            health.symptoms.forEach { symptom ->
-                                Row(verticalAlignment = Alignment.Top) {
-                                    Text(
-                                        text = "•",
-                                        style = MediCareCallTheme.typography.R_16,
-                                        color = MediCareCallTheme.colors.gray8
-                                    )
-                                    Spacer(modifier = Modifier.width(8.dp))
-                                    Text(
-                                        text = symptom,
-                                        style = MediCareCallTheme.typography.R_16,
-                                        color = MediCareCallTheme.colors.gray8
-                                    )
-                                }
-
+                if (health.symptoms.isEmpty()) {
+                    Text(
+                        text = "건강징후 기록 전이에요.",
+                        style = MediCareCallTheme.typography.R_16,
+                        color = MediCareCallTheme.colors.gray4
+                    )
+                } else {
+                    Column(verticalArrangement = Arrangement.spacedBy(6.dp)) {
+                        health.symptoms.forEach { symptom ->
+                            Row(verticalAlignment = Alignment.Top) {
+                                Text(
+                                    text = "•",
+                                    style = MediCareCallTheme.typography.R_16,
+                                    color = MediCareCallTheme.colors.gray8
+                                )
+                                Spacer(Modifier.width(8.dp))
+                                Text(
+                                    text = symptom.trim(),
+                                    style = MediCareCallTheme.typography.R_16,
+                                    color = MediCareCallTheme.colors.gray8,
+                                    maxLines = 3,
+                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                                )
                             }
                         }
                     }
                 }
             }
 
-            //증상 분석
+            // (B) 증상 분석
             Column(verticalArrangement = Arrangement.spacedBy(4.dp)) {
-                Row(
-                    modifier = Modifier
-                        .fillMaxWidth()
-                ) {
-
-
+                Row(Modifier.fillMaxWidth()) {
                     Text(
                         text = "증상 분석",
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray5
                     )
                 }
+                Spacer(Modifier.height(4.dp))
 
-                Spacer(modifier = Modifier.height(4.dp))
-
-                Row(
-                    modifier = Modifier,
-                    verticalAlignment = Alignment.CenterVertically
-                ) {
-                    if (!health.isRecorded) {
-                        Text(
-                            text = "증상분석 전이에요.",
-                            style = MediCareCallTheme.typography.R_16,
-                            color = MediCareCallTheme.colors.gray4
-                        )
-                    } else {
-                        Text(
-                            text = health.symptomAnalysis.take(100),
-                            //TODO: 병명 볼드처리
-                            style = MediCareCallTheme.typography.R_16,
-                            color = MediCareCallTheme.colors.gray8
-                        )
-                    }
-
+                val analysis = health.symptomAnalysis.trim()
+                if (analysis.isBlank()) {
+                    Text(
+                        text = "증상분석 전이에요.",
+                        style = MediCareCallTheme.typography.R_16,
+                        color = MediCareCallTheme.colors.gray4
+                    )
+                } else {
+                    Text(
+                        text = analysis,
+                        style = MediCareCallTheme.typography.R_16,
+                        color = MediCareCallTheme.colors.gray8,
+                        maxLines = 3,
+                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
+                    )
                 }
             }
         }
     }
 }
+/**
+ * 전체 미기록 전용 카드 (isRecorded == false)
+ * 기존에 쓰던 디자인/문구가 있다면 이 컴포저블 안에서 구성하세요.
+ */
+@Composable
+fun StateHealthUnrecordedCard(
+    modifier: Modifier = Modifier
+) {
+    Card(
+        modifier = modifier
+            .fillMaxWidth()
+            .heightIn(min = 166.dp)
+            .wrapContentHeight()
+            .figmaShadow(
+                group = LocalMediCareCallShadowProvider.current.shadow03,
+                cornerRadius = 14.dp
+            ),
+        colors = CardDefaults.cardColors(containerColor = Color.White),
+        shape = RoundedCornerShape(10.dp)
+    ) {
+        Column(
+            modifier = Modifier
+                .padding(20.dp)
+                .fillMaxWidth()
+                .wrapContentHeight(),
+            verticalArrangement = Arrangement.spacedBy(12.dp),
+            horizontalAlignment = Alignment.Start
+        ) {
+            Text(
+                text = "건강징후 요약",
+                style = MediCareCallTheme.typography.R_15,
+                color = MediCareCallTheme.colors.gray5
+            )
+            Text(
+                text = "건강징후 기록 전이에요.",
+                style = MediCareCallTheme.typography.R_16,
+                color = MediCareCallTheme.colors.gray4
+            )
 
+            Spacer(Modifier.height(8.dp))
+
+            Text(
+                text = "증상 분석",
+                style = MediCareCallTheme.typography.R_15,
+                color = MediCareCallTheme.colors.gray5
+            )
+            Text(
+                text = "증상분석 전이에요.",
+                style = MediCareCallTheme.typography.R_16,
+                color = MediCareCallTheme.colors.gray4
+            )
+        }
+    }
+}
 @Preview(showBackground = true)
 @Composable
 fun PreviewStateHealthDetailCard() {

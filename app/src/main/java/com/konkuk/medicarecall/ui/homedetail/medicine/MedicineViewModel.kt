@@ -62,17 +62,41 @@ class MedicineViewModel @Inject constructor(
                                     else -> ""
                                 }
                                 Log.w(TAG, "$tag elderId=$elderId, date=$formatted")
-                                _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
+                                _state.update {
+                                    it.copy(
+                                        loading = false,
+                                        items = emptyList(),
+                                        emptyDate = date
+                                    )
+                                }
                             }
+
                             else -> {
-                                Log.e(TAG, "API error code=${e.code()} elderId=$elderId, date=$formatted", e)
-                                _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
+                                Log.e(
+                                    TAG,
+                                    "API error code=${e.code()} elderId=$elderId, date=$formatted",
+                                    e
+                                )
+                                _state.update {
+                                    it.copy(
+                                        loading = false,
+                                        items = emptyList(),
+                                        emptyDate = date
+                                    )
+                                }
                             }
                         }
                     }
+
                     else -> {
                         Log.e(TAG, "Unexpected error elderId=$elderId, date=$formatted", e)
-                        _state.update { it.copy(loading = false, items = emptyList(), emptyDate = date) }
+                        _state.update {
+                            it.copy(
+                                loading = false,
+                                items = emptyList(),
+                                emptyDate = date
+                            )
+                        }
                     }
                 }
             }

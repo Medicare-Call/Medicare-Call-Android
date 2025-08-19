@@ -6,8 +6,8 @@ import androidx.compose.animation.EnterTransition
 import androidx.compose.animation.ExitTransition
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
-import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.compose.ui.platform.LocalContext
+import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavHostController
 import androidx.navigation.NavType
 import androidx.navigation.compose.NavHost
@@ -30,6 +30,9 @@ import com.konkuk.medicarecall.ui.homedetail.sleep.screen.SleepDetail
 import com.konkuk.medicarecall.ui.homedetail.statehealth.screen.StateHealthDetail
 import com.konkuk.medicarecall.ui.homedetail.statemental.screen.StateMentalDetail
 import com.konkuk.medicarecall.ui.login.login_care_call.screen.SetCallScreen
+import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
+import com.konkuk.medicarecall.ui.login.login_elder.screen.LoginElderMedInfoScreen
+import com.konkuk.medicarecall.ui.login.login_elder.screen.LoginElderScreen
 import com.konkuk.medicarecall.ui.login.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login.login_info.screen.LoginPhoneScreen
 import com.konkuk.medicarecall.ui.login.login_info.screen.LoginStartScreen
@@ -38,9 +41,6 @@ import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.login.login_payment.screen.FinishSplashScreen
 import com.konkuk.medicarecall.ui.login.login_payment.screen.NaverPayScreen
 import com.konkuk.medicarecall.ui.login.login_payment.screen.PaymentScreen
-import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
-import com.konkuk.medicarecall.ui.login.login_elder.screen.LoginElderScreen
-import com.konkuk.medicarecall.ui.login.login_elder.screen.LoginElderMedInfoScreen
 import com.konkuk.medicarecall.ui.settings.screen.AnnouncementDetailScreen
 import com.konkuk.medicarecall.ui.settings.screen.AnnouncementScreen
 import com.konkuk.medicarecall.ui.settings.screen.HealthDetailScreen
@@ -59,7 +59,6 @@ import com.konkuk.medicarecall.ui.statistics.screen.StatisticsScreen
 import kotlinx.serialization.json.Json
 import java.net.URLDecoder
 import java.nio.charset.StandardCharsets
-
 
 
 // ----- 헬퍼: 탑레벨 전환은 back stack 확장 없이 -----

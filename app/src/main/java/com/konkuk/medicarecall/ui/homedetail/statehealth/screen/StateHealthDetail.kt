@@ -25,6 +25,7 @@ import com.konkuk.medicarecall.ui.calendar.CalendarUiState
 import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.calendar.DateSelector
 import com.konkuk.medicarecall.ui.calendar.WeeklyCalendar
+import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.statehealth.HealthViewModel
 import com.konkuk.medicarecall.ui.homedetail.statehealth.component.StateHealthDetailCard
@@ -37,13 +38,14 @@ import java.time.LocalDate
 fun StateHealthDetail(
     navController: NavHostController,
     calendarViewModel: CalendarViewModel = hiltViewModel(),
-    healthViewModel: HealthViewModel = hiltViewModel()
+    healthViewModel: HealthViewModel = hiltViewModel(),
+    homeViewModel: HomeViewModel = hiltViewModel()
 ) {
     // 어르신 선택 상태(selectedElderId) 관리
     val mainEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry("main")
     }
-    val homeViewModel: com.konkuk.medicarecall.ui.home.HomeViewModel = hiltViewModel(mainEntry)
+
 
 
     // 상세 재진입 시 오늘로 초기화

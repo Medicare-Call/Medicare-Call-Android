@@ -5,10 +5,6 @@ data class MentalUiState(
     val isRecorded : Boolean,   //기록 여부
 ) {
     companion object {
-
-        val EMPTY = MentalUiState(
-            mentalSummary = emptyList(),
-            isRecorded = false
-        )
+        val EMPTY = MentalUiState(emptyList(), false)
     }
 }

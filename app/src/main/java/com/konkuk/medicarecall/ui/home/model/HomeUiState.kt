@@ -5,7 +5,7 @@ data class HomeUiState(
     val balloonMessage: String = "",
     val isRecorded: Boolean = false,
     val isEaten: Boolean = false,
-    val breakfastEaten: Boolean? = null, // true/false/null(미기록)
+    val breakfastEaten: Boolean? = null,
     val lunchEaten: Boolean? = null,
     val dinnerEaten: Boolean? = null,
     val medicines: List<MedicineUiState> = emptyList(),

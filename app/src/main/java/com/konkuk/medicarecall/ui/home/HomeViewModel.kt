@@ -1,6 +1,9 @@
 package com.konkuk.medicarecall.ui.home
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -31,6 +34,8 @@ class HomeViewModel @Inject constructor(
     private val savedStateHandle: SavedStateHandle,
     private val eldersHealthInfoRepository: EldersHealthInfoRepository
 ) : ViewModel() {
+
+    var isLoading by mutableStateOf(true)
 
     fun callCareCallImmediate(
         onSuccess: () -> Unit = {},
@@ -125,6 +130,7 @@ class HomeViewModel @Inject constructor(
      */
     private fun fetchHomeSummaryForToday(elderId: Int) {
         viewModelScope.launch {
+            isLoading = true
             val today = LocalDate.now()
             try {
                 // 서버에서 홈 데이터 가져오기
@@ -151,6 +157,7 @@ class HomeViewModel @Inject constructor(
                 Log.e(TAG, "getHomeSummary failed elderId=$elderId", e)
                 _homeUiState.value = HomeUiState.EMPTY
             }
+            isLoading = false
         }
     }
 

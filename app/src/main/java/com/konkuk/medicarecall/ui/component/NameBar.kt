@@ -48,6 +48,10 @@ fun NameBar(
 
 
             Row(
+                Modifier.clickable(
+                    indication = null,
+                    interactionSource = null
+                ) { onDropdownClick() },
                 verticalAlignment = Alignment.CenterVertically
             ) {
                 Text(
@@ -58,7 +62,7 @@ fun NameBar(
                 Spacer(modifier = Modifier.width(4.dp))
                 Icon(
                     modifier = Modifier
-                        .clickable { onDropdownClick() }
+
                         .size(18.dp),
                     painter = painterResource(id = R.drawable.ic_arrow_down),
                     contentDescription = "arrow down",

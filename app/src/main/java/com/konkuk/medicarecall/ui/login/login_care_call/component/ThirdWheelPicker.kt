@@ -229,11 +229,11 @@ fun ThirdTimeWheelPicker(
                         maxValue = minuteOptions.lastIndex
                         displayedValues = minuteOptions
                         wrapSelectorWheel = false
-//                        setOnValueChangedListener { _, _, newValue ->
-//                            minute = newValue * 10 // Convert index to actual minute value
-//                            onTimeChange(amPm, hour, minute)
-////                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
-//                        }
+                        setOnValueChangedListener { _, _, newValue ->
+                            minute = newValue * 10 // Convert index to actual minute value
+                            onTimeChange(hour, minute)
+//                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
+                        }
                         setPickerTextColor(mainColor)
                         //                        for (i in 0 until childCount) {
 //                            val child = getChildAt(i)

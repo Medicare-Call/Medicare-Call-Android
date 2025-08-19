@@ -87,7 +87,7 @@ fun DatePickerModal(
             }
         ) {
             Surface(shape = RoundedCornerShape(16.dp), color = Color.White) {
-                DatePicker(state = datePickerState, colors = dpColors, showModeToggle = false)
+                DatePicker(state = datePickerState, colors = dpColors)
             }
         }
     }

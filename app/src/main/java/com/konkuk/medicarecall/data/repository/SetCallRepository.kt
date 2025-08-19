@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.data.repository
 
+import android.util.Log
 import com.konkuk.medicarecall.data.api.SetCallService
 import com.konkuk.medicarecall.data.dto.request.SetCallTimeRequestDto
 import com.konkuk.medicarecall.ui.model.CallTimes
@@ -33,6 +34,7 @@ class SetCallRepository @Inject constructor(
             amPm == 1 && h12 < 12  -> h12 + 12
             else -> h12 % 24
         }
+        Log.d("SetCallRepository", "Converting time: $this to 24-hour format: $h24:$m")
         return "%02d:%02d".format(h24, m)
     }
 

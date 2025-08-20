@@ -13,6 +13,7 @@ import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -23,7 +24,8 @@ fun GlucoseListItem(
     modifier: Modifier = Modifier,
     date: LocalDate,
     timingLabel: String,
-    value: Int
+    value: Int,
+    timing: GlucoseTiming
 ) {
     val formatter = DateTimeFormatter.ofPattern("M월 d일 (E)", Locale.KOREAN)
     val formattedDate = date.format(formatter)
@@ -66,7 +68,10 @@ fun GlucoseListItem(
 
             Spacer(Modifier.weight(1f))
 
-            GlucoseStatusChip(value)//낮음,정상,높음
+            GlucoseStatusChip(
+                value = value,
+                timing = timing
+            )//낮음,정상,높음
 
 
         }
@@ -81,7 +86,8 @@ private fun PreviewGlucoseListItem() {
         GlucoseListItem(
             date = LocalDate.now(),
             timingLabel = "아침 | 공복",
-            value = 180
+            value = 180,
+            timing = GlucoseTiming.BEFORE_MEAL
         )
     }
 }

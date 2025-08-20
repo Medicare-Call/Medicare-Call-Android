@@ -2,6 +2,9 @@ package com.konkuk.medicarecall.ui.homedetail.sleep.data
 
 import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepUiState
 import java.time.LocalDate
+import java.time.LocalTime
+import java.time.format.DateTimeFormatter
+import java.util.Locale
 import javax.inject.Inject
 
 class SleepRepositoryImpl @Inject constructor(
@@ -9,53 +12,41 @@ class SleepRepositoryImpl @Inject constructor(
 ) : SleepRepository {
 
 
+    private fun formatTime(timeStr: String?): String {
+        // 서버에서 받은 시간이 "HH:mm" 형식이 아닐 경우를 대비한 방어 코드
+        if (timeStr.isNullOrBlank() || !timeStr.contains(":")) return ""
+        return try {
+            val parsedTime = LocalTime.parse(timeStr)
+            parsedTime.format(DateTimeFormatter.ofPattern("a hh:mm", Locale.KOREAN))
+        } catch (e: Exception) {
+            ""
+        }
+    }
+
     override suspend fun getSleepUiState(
         elderId: Int,
         date: LocalDate
     ): SleepUiState {
-
-        // 테스트: 2025-07-23
-        if (date.toString() == "2025-07-23") {
-            return SleepUiState(
-                date = "2025-07-23",
-                totalSleepHours = 8,
-                totalSleepMinutes = 12,
-                bedTime = "오후 10:12",
-                wakeUpTime = "오전 6:00",
-                isRecorded = true
-            )
-        }
-
         return try {
             val response = sleepApi.getDailySleep(elderId, date.toString())
-            if (response.totalSleep != null && response.sleepTime != null && response.wakeTime != null) {
+
+            // 서버 응답의 모든 값이 유효한지 확인
+            if (response.totalSleep?.hours != null && response.totalSleep.minutes != null && !response.sleepTime.isNullOrBlank() && !response.wakeTime.isNullOrBlank()) {
                 SleepUiState(
                     date = response.date,
-                    totalSleepHours = response.totalSleep.hours ?: 0,
-                    totalSleepMinutes = response.totalSleep.minutes ?: 0,
-                    bedTime = response.sleepTime,
-                    wakeUpTime = response.wakeTime,
+                    totalSleepHours = response.totalSleep.hours,
+                    totalSleepMinutes = response.totalSleep.minutes,
+                    bedTime = formatTime(response.sleepTime),
+                    wakeUpTime = formatTime(response.wakeTime),
                     isRecorded = true
                 )
             } else {
-                SleepUiState(
-                    date = response.date,
-                    totalSleepHours = 0,
-                    totalSleepMinutes = 0,
-                    bedTime = "오후 --:--",
-                    wakeUpTime = "오전 --:--",
-                    isRecorded = false
-                )
+                // 데이터 미기록 상태
+                SleepUiState.EMPTY.copy(date = response.date)
             }
         } catch (e: Exception) {
-            SleepUiState(
-                date = date.toString(),
-                totalSleepHours = 0,
-                totalSleepMinutes = 0,
-                bedTime = "오후 --:--",
-                wakeUpTime = "오전 --:--",
-                isRecorded = false
-            )
+            // API 호출 실패 시의 미기록 상태
+            SleepUiState.EMPTY.copy(date = date.toString())
         }
     }
 }

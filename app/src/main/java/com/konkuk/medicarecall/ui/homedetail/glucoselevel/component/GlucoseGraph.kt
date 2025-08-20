@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.geometry.Offset
@@ -27,7 +26,10 @@ import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.Dp
 import androidx.compose.ui.unit.dp
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseLevel
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GraphDataPoint
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.classifyGlucose
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
@@ -39,6 +41,7 @@ fun GlucoseGraph(
     scrollState: ScrollState,
     selectedIndex: Int,
     onPointClick: (Int) -> Unit,
+    timing: GlucoseTiming,
 ) {
     val colors = MediCareCallTheme.colors
     val lineColor = colors.gray2
@@ -124,10 +127,10 @@ fun GlucoseGraph(
                         //점
                         points.forEachIndexed { index, point ->
                             val value = data[index].value
-                            val color = when {
-                                value < 90f -> colors.active
-                                value < 130f -> colors.main
-                                else -> colors.negative
+                            val color = when (classifyGlucose(value, timing)) {   // 공복/식후 기준 반영
+                                GlucoseLevel.LOW    -> colors.active     // 낮음
+                                GlucoseLevel.NORMAL -> colors.main       // 정상
+                                GlucoseLevel.HIGH   -> colors.negative   // 높음
                             }
                             if (index == selectedIndex) {
                                 drawCircle(color = color.copy(alpha = 0.2f), radius = iconRadiusDp.toPx() * 3, center = point)
@@ -193,7 +196,8 @@ fun PreviewGlucoseGraph_TwoPoints() {
             data = sampleData,
             selectedIndex = sampleData.lastIndex,
             onPointClick = {},
-            scrollState = scrollState
+            scrollState = scrollState,
+            timing = GlucoseTiming.BEFORE_MEAL
         )
     }
 }
@@ -214,7 +218,8 @@ fun PreviewGlucoseGraph_ManyPoints() {
             data = sampleData,
             selectedIndex = sampleData.lastIndex,
             onPointClick = {},
-            scrollState = scrollState
+            scrollState = scrollState,
+            timing = GlucoseTiming.AFTER_MEAL
         )
     }
 }

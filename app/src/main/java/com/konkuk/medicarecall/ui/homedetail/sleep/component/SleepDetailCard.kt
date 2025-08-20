@@ -16,7 +16,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
-
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.homedetail.sleep.model.SleepUiState
@@ -26,11 +25,9 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
 fun SleepDetailCard(
-
     sleeps: SleepUiState,
     modifier: Modifier = Modifier
 ) {
-
     Card(
         modifier = Modifier
             .fillMaxWidth()
@@ -38,10 +35,8 @@ fun SleepDetailCard(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
                 cornerRadius = 14.dp
             ),
-
         colors = CardDefaults.cardColors(containerColor = Color.White),
         shape = RoundedCornerShape(10.dp)
-
     ) {
         Column(
             modifier = Modifier
@@ -49,22 +44,17 @@ fun SleepDetailCard(
                 .fillMaxWidth(),
             verticalArrangement = Arrangement.spacedBy(11.dp)
         ) {
-
-
             //1) 총 수면 시간
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
+                modifier = Modifier.fillMaxWidth()
             ) {
                 Column {
-
                     Text(
                         text = "총 수면시간",
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray5
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-
                     Row(
                         modifier = Modifier,
                         verticalAlignment = Alignment.Bottom
@@ -81,51 +71,39 @@ fun SleepDetailCard(
                             color = MediCareCallTheme.colors.gray8,
                         )
                         Spacer(modifier = Modifier.width(4.dp))
-
                         Text(
                             text = if (sleeps.isRecorded) "${sleeps.totalSleepMinutes}" else "--",
                             style = MediCareCallTheme.typography.SB_22,
                             color = MediCareCallTheme.colors.gray8,
                         )
-
                         Spacer(modifier = Modifier.width(4.dp))
-
                         Text(
                             "분",
                             style = MediCareCallTheme.typography.R_16,
                             color = MediCareCallTheme.colors.gray8,
                         )
-
-
                     }
                 }
-
             }
-
-
 
             //취침 + 기상
             Row(
-                modifier = Modifier
-                    .fillMaxWidth()
-            ) { // TODO: 오전 오후 수정
+                modifier = Modifier.fillMaxWidth()
+            ) {
                 //2) 취침 시간
                 Column {
-
                     Text(
                         text = "취침 시간",
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray5
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-
                     Row(
                         modifier = Modifier,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
-
                         Text(
-                            text = sleeps.bedTime,
+                            text = sleeps.bedTime.ifBlank { "오후 --:--" },
                             style = MediCareCallTheme.typography.SB_16,
                             color = MediCareCallTheme.colors.gray8,
                         )
@@ -135,40 +113,33 @@ fun SleepDetailCard(
                 Spacer(modifier = Modifier.width(32.dp))
 
                 //3) 기상 시간
-
                 Column {
-
                     Text(
                         text = "기상 시간",
                         style = MediCareCallTheme.typography.R_15,
                         color = MediCareCallTheme.colors.gray5
                     )
                     Spacer(modifier = Modifier.height(4.dp))
-
                     Row(
                         modifier = Modifier,
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(
-                            text = sleeps.wakeUpTime,
+                            text = sleeps.wakeUpTime.ifBlank { "오전 --:--" },
                             style = MediCareCallTheme.typography.SB_16,
                             color = MediCareCallTheme.colors.gray8,
                         )
-
-
                     }
                 }
-
             }
         }
-
     }
 }
 
 
-@Preview(showBackground = true)
+@Preview(showBackground = true, name="기록 있음")
 @Composable
-fun PreviewSleepDetailCard() {
+fun PreviewSleepDetailCard_Recorded() {
     SleepDetailCard(
         sleeps = SleepUiState(
             date = "2025-07-07",
@@ -179,6 +150,12 @@ fun PreviewSleepDetailCard() {
             isRecorded = true
         )
     )
+}
 
-
+@Preview(showBackground = true, name="미기록")
+@Composable
+fun PreviewSleepDetailCard_Unrecorded() {
+    SleepDetailCard(
+        sleeps = SleepUiState.EMPTY
+    )
 }

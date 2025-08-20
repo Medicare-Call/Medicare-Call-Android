@@ -23,12 +23,9 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateMapOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.rememberCoroutineScope
-import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
@@ -36,10 +33,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LifecycleEventEffect
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.ui.calendar.CalendarViewModel
 import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.homedetail.TopAppBar
 import com.konkuk.medicarecall.ui.homedetail.glucoselevel.GlucoseViewModel
@@ -55,16 +53,12 @@ import kotlinx.coroutines.launch
 import java.time.LocalDate
 import java.time.format.DateTimeFormatter
 import java.util.Locale
-import kotlin.collections.getValue
-import kotlin.collections.setValue
 
 @OptIn(ExperimentalFoundationApi::class)
 @Composable
 fun GlucoseDetail(
     modifier: Modifier = Modifier,
-    navController: NavHostController,
-    viewModel: GlucoseViewModel = hiltViewModel(),
-    calendarViewModel: CalendarViewModel
+    navController: NavHostController
 ) {
 
     val scrollState = rememberScrollState()
@@ -74,13 +68,14 @@ fun GlucoseDetail(
         navController.getBackStackEntry("main")
     }
     val homeViewModel: HomeViewModel = hiltViewModel(homeEntry)
+    val viewModel: GlucoseViewModel = hiltViewModel(homeEntry)
 
     val uiState by viewModel.uiState.collectAsState()
 
     // 선택된 어르신 ID를 구독 (null 가능)
-    val elderId = homeViewModel.selectedElderId.collectAsState().value
+    val elderId by homeViewModel.selectedElderId.collectAsState()
 
-    var counter = remember {
+    val counter = remember {
         mutableStateMapOf(
             GlucoseTiming.BEFORE_MEAL to 0, GlucoseTiming.AFTER_MEAL to 0
         )
@@ -88,39 +83,43 @@ fun GlucoseDetail(
 
     val coroutineScope = rememberCoroutineScope()
 
-    LaunchedEffect(counter[GlucoseTiming.BEFORE_MEAL], counter[GlucoseTiming.AFTER_MEAL]) {
-        Log.d("glucose_counter", "$counter")
-
-    }
-
-
-    LaunchedEffect(Unit) {
-        elderId?.let { id ->
-
-            viewModel.getGlucoseData(elderId = id, counter.getValue(uiState.selectedTiming),
-                GlucoseTiming.AFTER_MEAL)
-            viewModel.getGlucoseData(elderId = id, counter.getValue(uiState.selectedTiming),
-                GlucoseTiming.BEFORE_MEAL)
-            counter[GlucoseTiming.BEFORE_MEAL] = counter[GlucoseTiming.BEFORE_MEAL]!! + 1
-            counter[GlucoseTiming.AFTER_MEAL] = counter[GlucoseTiming.AFTER_MEAL]!! + 1
-
-
+    // 데이터 새로고침 로직
+    val refreshData = remember(viewModel) {
+        {
+            elderId?.let { id ->
+                counter[GlucoseTiming.BEFORE_MEAL] = 0
+                counter[GlucoseTiming.AFTER_MEAL] = 0
+                viewModel.getGlucoseData(id, 0, GlucoseTiming.BEFORE_MEAL, true)
+                viewModel.getGlucoseData(id, 0, GlucoseTiming.AFTER_MEAL, true)
+            }
         }
     }
+
+    // 어르신이 바뀔 때마다 데이터를 새로고침합니다.
+    LaunchedEffect(elderId) {
+        refreshData()
+    }
+
+    // 화면에 다시 진입할 때마다 데이터를 새로고침합니다.
+    LifecycleEventEffect(Lifecycle.Event.ON_RESUME) {
+        refreshData()
+    }
+
+
+    // 무한 스크롤
     LaunchedEffect(scrollState.value) {
         Log.d("scroll", "${scrollState.value}")
         if (scrollState.value > scrollState.maxValue - 250 && elderId != null && !uiState.isLoading && uiState.hasNext) {
-            viewModel.getGlucoseData(elderId, counter.getValue(uiState.selectedTiming), uiState.selectedTiming)
-            counter[uiState.selectedTiming] = counter[uiState.selectedTiming]!! + 1
+            val currentTiming = uiState.selectedTiming
+            val currentPage = counter.getValue(currentTiming)
+            viewModel.getGlucoseData(elderId!!, currentPage + 1, currentTiming)
+            counter[currentTiming] = currentPage + 1
         }
     }
-
-
 
     GlucoseDetailLayout(
         modifier = modifier,
         uiState = uiState,
-
         selectedTiming = uiState.selectedTiming,
         selectedIndex = uiState.selectedIndex,
 
@@ -217,7 +216,8 @@ fun GlucoseDetailLayout(
                     data = uiState.graphDataPoints,
                     selectedIndex = selectedIndex,
                     onPointClick = onPointClick,
-                    scrollState = scrollState
+                    scrollState = scrollState,
+                    timing = selectedTiming
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -235,7 +235,8 @@ fun GlucoseDetailLayout(
                     GlucoseListItem(
                         date = selectedPoint.date,
                         timingLabel = timingLabel,
-                        value = selectedPoint.value.toInt()
+                        value = selectedPoint.value.toInt(),
+                        timing = selectedTiming
                     )
                 }
             }
@@ -270,7 +271,7 @@ fun GlucoseDetailLayout(
 @Preview(showBackground = true, name = "데이터 있을 때")
 @Composable
 fun PreviewGlucoseDetail_DataAvailable() {
-    // 프리뷰 용 더미 데이터
+    // 더미 데이터 프리뷰
     val today = LocalDate.now()
     val sampleData = (0..6).map { i ->
         GraphDataPoint(

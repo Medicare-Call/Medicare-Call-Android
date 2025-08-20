@@ -110,8 +110,10 @@ fun MyDetailScreen(myDataInfo : MyInfoResponseDto,modifier: Modifier = Modifier,
                         gender = gender,
                         phone = myDataInfo.phone,
                         pushNotification = myDataInfo.pushNotification
-                    ))
-                    onBack()
+                    )) {
+                        onBack()
+
+                    }
                 }
             )
         }

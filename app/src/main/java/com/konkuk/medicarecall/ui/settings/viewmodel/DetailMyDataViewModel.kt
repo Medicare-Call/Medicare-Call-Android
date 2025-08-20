@@ -12,15 +12,21 @@ import kotlin.coroutines.cancellation.CancellationException
 
 @HiltViewModel
 class DetailMyDataViewModel @Inject constructor(
-    private val userRepository: UserRepository
-) : ViewModel(){
-    fun updateUserData(userInfo: MyInfoResponseDto) {
+    private val userRepository: UserRepository,
+
+
+    ) : ViewModel() {
+    fun updateUserData(
+        userInfo: MyInfoResponseDto,
+        onComplete: (() -> Unit)? = null
+    ) {
         viewModelScope.launch {
             try {
                 val result = userRepository.updateMyInfo(userInfo)
                 result
                     .onSuccess {
                         Log.d("DetailMyDataViewModel", "사용자 정보 업데이트 성공: $it")
+                        onComplete?.invoke()
                     }
                     .onFailure { e ->
                         if (e is CancellationException) {

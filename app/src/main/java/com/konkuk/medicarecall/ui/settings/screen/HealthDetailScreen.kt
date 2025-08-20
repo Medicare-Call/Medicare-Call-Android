@@ -120,8 +120,10 @@ fun HealthDetailScreen(
                             medications = medications.toTimeMap(),
                             notes = noteEnums
                         )
-                    )
-                    onBack()
+                    ) {
+                        onBack()
+
+                    }
                           }, Modifier.padding(bottom = 20.dp)
             )
         }

@@ -215,8 +215,10 @@ fun PersonalDetailScreen(
                                 relationship = relationship,
                                 residenceType = residenceType
                             )
-                        )
-                        onBack()
+                        ) {
+                            onBack()
+
+                        }
                               }, Modifier.padding(bottom = 20.dp)
                 )
 

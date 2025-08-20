@@ -14,22 +14,21 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseLevel
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.GlucoseTiming
+import com.konkuk.medicarecall.ui.homedetail.glucoselevel.model.classifyGlucose
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
 fun GlucoseStatusChip(
-    value: Int
+    value: Int,
+    timing: GlucoseTiming
 ) {
-    val statusText = when {
-        value >= 130 -> "높음"
-        value <= 90 -> "낮음"
-        else -> "정상"
-    }
-
-    val statusColor = when (statusText) {
-        "높음" -> MediCareCallTheme.colors.negative
-        "낮음" -> MediCareCallTheme.colors.active
-        else -> MediCareCallTheme.colors.positive
+    val level = classifyGlucose(value.toFloat(), timing)
+    val (text, color) = when (level) {
+        GlucoseLevel.LOW    -> "낮음" to MediCareCallTheme.colors.active
+        GlucoseLevel.NORMAL -> "정상" to MediCareCallTheme.colors.main
+        GlucoseLevel.HIGH   -> "높음" to MediCareCallTheme.colors.negative
     }
 
 
@@ -37,8 +36,7 @@ fun GlucoseStatusChip(
         modifier = Modifier
             .height(30.dp),
         shape = RoundedCornerShape(10.dp),
-        colors = CardDefaults.cardColors(containerColor = statusColor),
-
+        colors = CardDefaults.cardColors(containerColor = color)
         ) {
         Row(
             modifier = Modifier
@@ -48,7 +46,7 @@ fun GlucoseStatusChip(
 
             ) {
             Text(
-                text = statusText,
+                text = text,
                 style = MediCareCallTheme.typography.R_16,
                 color = Color.White
             )
@@ -58,6 +56,12 @@ fun GlucoseStatusChip(
 
 @Preview
 @Composable
-private fun PreviewGlucoseStatusChip() {
-    GlucoseStatusChip(value = 100)
+private fun PreviewGlucoseStatusChip_Before() {
+    GlucoseStatusChip(value = 89, timing = GlucoseTiming.BEFORE_MEAL)
+}
+
+@Preview
+@Composable
+private fun PreviewGlucoseStatusChip_After() {
+    GlucoseStatusChip(value = 150, timing = GlucoseTiming.AFTER_MEAL)
 }

@@ -216,7 +216,8 @@ fun GlucoseDetailLayout(
                     data = uiState.graphDataPoints,
                     selectedIndex = selectedIndex,
                     onPointClick = onPointClick,
-                    scrollState = scrollState
+                    scrollState = scrollState,
+                    timing = selectedTiming
                 )
                 Spacer(modifier = Modifier.height(24.dp))
 
@@ -234,7 +235,8 @@ fun GlucoseDetailLayout(
                     GlucoseListItem(
                         date = selectedPoint.date,
                         timingLabel = timingLabel,
-                        value = selectedPoint.value.toInt()
+                        value = selectedPoint.value.toInt(),
+                        timing = selectedTiming
                     )
                 }
             }

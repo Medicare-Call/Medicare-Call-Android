@@ -129,7 +129,7 @@ fun SettingsScreen(
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.clickable { onNavigateToAnnouncement() }
+                        modifier = Modifier.clickable{onNavigateToAnnouncement()}.weight(2f)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_announcement),
@@ -146,7 +146,8 @@ fun SettingsScreen(
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     Column(
-                        modifier = Modifier.clickable { onNavigateToCenter() },
+
+                        modifier = Modifier.clickable{onNavigateToCenter()}.weight(2f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
@@ -164,7 +165,8 @@ fun SettingsScreen(
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     Column(
-                        modifier = Modifier.clickable { onNavigateToSubscribe() },
+
+                        modifier = Modifier.clickable{onNavigateToSubscribe()}.weight(2f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
@@ -182,7 +184,8 @@ fun SettingsScreen(
                     }
                     Spacer(modifier = Modifier.weight(1f))
                     Column(
-                        modifier = Modifier.clickable {}, // 결제내역 클릭 시 동작 추가
+
+                        modifier = Modifier.clickable{}.weight(2f), // 결제내역 클릭 시 동작 추가
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(

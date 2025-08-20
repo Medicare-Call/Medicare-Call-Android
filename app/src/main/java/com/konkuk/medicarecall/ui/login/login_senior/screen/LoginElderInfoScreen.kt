@@ -1,6 +1,8 @@
 package com.konkuk.medicarecall.ui.login.login_elder.screen
 
+import android.R.attr.onClick
 import android.R.attr.top
+import androidx.activity.compose.BackHandler
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
@@ -57,6 +59,27 @@ fun LoginElderScreen(
     loginElderViewModel: LoginElderViewModel,
     modifier: Modifier = Modifier
 ) {
+    BackHandler {
+        if (!navController.popBackStack(Route.LoginStart.route, false)) {
+            navController.navigate(Route.LoginStart.route) {
+                // 로그인 네스트 그래프 루트가 "login"이라면 그대로 사용
+                popUpTo("login") { inclusive = false }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
+
+    // 상단 뒤로가기 버튼도 동일 로직으로 통일
+    val onBack: () -> Unit = {
+        if (!navController.popBackStack(Route.LoginStart.route, false)) {
+            navController.navigate(Route.LoginStart.route) {
+                popUpTo("login") { inclusive = false }
+                launchSingleTop = true
+                restoreState = true
+            }
+        }
+    }
 
     val scrollState = rememberScrollState()
     val snackBarState = remember { SnackbarHostState() }
@@ -71,9 +94,7 @@ fun LoginElderScreen(
             .imePadding(),
     ) {
         Column {
-            LoginBackButton({
-                navController.popBackStack()
-            })
+            LoginBackButton(onClick = onBack)
             Column(
                 modifier
                     .verticalScroll(scrollState)

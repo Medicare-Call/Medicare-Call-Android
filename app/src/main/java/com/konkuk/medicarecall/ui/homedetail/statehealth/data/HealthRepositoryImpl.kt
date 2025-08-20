@@ -16,7 +16,6 @@ class HealthRepositoryImpl @Inject constructor(
                 symptomAnalysis = response.analysisComment.orEmpty(),
                 isRecorded = response.symptomList!!.isNotEmpty() || !response.analysisComment.isNullOrBlank()
             )
-            HealthUiState.EMPTY
         }
 
 

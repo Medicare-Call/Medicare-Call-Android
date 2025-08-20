@@ -503,7 +503,10 @@ fun NaverPayScreen(
             }
             if (orderCode.isNullOrBlank() || accessToken.isNullOrBlank()) {
                 Log.d("NaverPayScreen", "Waiting for orderCode/accessToken...")
-                androidx.compose.material3.CircularProgressIndicator()
+                androidx.compose.material3.CircularProgressIndicator(
+                    color = MediCareCallTheme.colors.main,
+                    modifier = Modifier.align(Alignment.Center)
+                )
             }
         }
     }

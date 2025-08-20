@@ -70,7 +70,7 @@ fun WeeklyMealCard(
             ) {
                 meal.forEach { weeklyMeal ->
 
-                    val isUnrecorded = weeklyMeal.eatenCount < 0 // -1과 같은 음수 값으로 미기록 판단
+                    val isUnrecorded = weeklyMeal.eatenCount == null || weeklyMeal.eatenCount < 0 // -1과 같은 음수 값으로 미기록 판단
 
                     val iconColor = if (isUnrecorded) {
                         MediCareCallTheme.colors.gray2

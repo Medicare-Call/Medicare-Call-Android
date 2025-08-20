@@ -84,18 +84,18 @@ private fun WeeklySummaryItem(
     unit: String
 ) {
 
-    val isUnrecorded = value < 0
+    val isUnrecorded = if (title != "건강징후") value <= 0 else value < 0
     val valueText = if (isUnrecorded) "-" else value.toString()
 
     Column(
         modifier = modifier,
         horizontalAlignment = Alignment.CenterHorizontally
     ) {
-        Text(modifier = Modifier.align(Alignment.Start),
+        Text(
+            modifier = Modifier.align(Alignment.Start),
             text = title,
             style = MediCareCallTheme.typography.R_14,
             color = MediCareCallTheme.colors.gray6,
-
         )
         Spacer(modifier = Modifier.height(4.dp))
 

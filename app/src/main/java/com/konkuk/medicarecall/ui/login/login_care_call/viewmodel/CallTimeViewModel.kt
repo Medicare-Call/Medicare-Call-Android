@@ -17,7 +17,6 @@ import javax.inject.Inject
 @HiltViewModel
 class CallTimeViewModel @Inject constructor(
     private val setCallRepo: SetCallRepository,
-    private val elderIdRepo: ElderIdRepository
 ) : ViewModel() {
     val timeMap = mutableStateMapOf<Int, CallTimes>()
     val isLoading = mutableStateOf(false)

@@ -1,21 +1,48 @@
 package com.konkuk.medicarecall.ui.home.data
 
+import android.util.Log
 import com.konkuk.medicarecall.ui.home.model.HomeResponseDto
 import com.konkuk.medicarecall.ui.home.model.HomeUiState
+import com.konkuk.medicarecall.ui.home.model.ImmediateCallRequestDto
 import com.konkuk.medicarecall.ui.home.model.MedicineUiState
+import retrofit2.HttpException
 import java.time.LocalDate
 import javax.inject.Inject
 
 class HomeRepository @Inject constructor(
     private val homeApi: HomeApi
 ) {
-    suspend fun requestImmediateCareCall() = homeApi.requestImmediateCareCall()
+    suspend fun requestImmediateCareCall(
+        elderId: Int, careCallOption: String
+    ) = runCatching {
+        val response = homeApi.requestImmediateCareCall(
+            ImmediateCallRequestDto(
+                elderId, careCallOption
+            )
+        )
+        if (response.isSuccessful) {
+            Log.d(
+                "httplog",
+                "전화 걸림, 어르신: $Int, 시간: $careCallOption"
+            )
+        } else {
+            val errorBody =
+                response.errorBody()?.string() ?: "Unknown error(updating health info)"
+            Log.e(
+                "httplog",
+                "전화 걸기 실패: ${response.code()} - $errorBody"
+            )
+            throw HttpException(response)
+        }
+
+    }
+
 
     private fun mapNextTimeToKor(nextTime: String?): String = when (nextTime) {
         "MORNING" -> "아침"
-        "LUNCH"   -> "점심"
-        "DINNER"  -> "저녁"
-        else      -> "-"
+        "LUNCH" -> "점심"
+        "DINNER" -> "저녁"
+        else -> "-"
     }
 
     suspend fun getHomeUiState(elderId: Int, date: LocalDate): HomeUiState {
@@ -38,8 +65,8 @@ class HomeRepository @Inject constructor(
                 elderName = res.elderName,
                 balloonMessage = res.aiSummary,
                 breakfastEaten = res.mealStatus.breakfast,
-                lunchEaten     = res.mealStatus.lunch,
-                dinnerEaten    = res.mealStatus.dinner,
+                lunchEaten = res.mealStatus.lunch,
+                dinnerEaten = res.mealStatus.dinner,
 
                 medicines = res.medicationStatus.medicationList.orEmpty().map {
                     MedicineUiState(
@@ -64,10 +91,9 @@ class HomeRepository @Inject constructor(
 }
 
 
-
 private fun mapNextTimeToKor(nextTime: String?): String = when (nextTime) {
     "MORNING" -> "아침"
-    "LUNCH"   -> "점심"
-    "DINNER"  -> "저녁"
-    else      -> "-"
+    "LUNCH" -> "점심"
+    "DINNER" -> "저녁"
+    else -> "-"
 }

@@ -59,7 +59,12 @@ fun LoginVerificationScreen(
             when (event) {
                 is LoginEvent.VerificationSuccessNew -> {
                     // 인증 성공 시 회원정보 화면으로 이동
-                    navController.navigate(Route.LoginMyInfo.route)
+
+                    navController.navigate(Route.LoginMyInfo.route) {
+                        popUpTo(Route.LoginVerification.route) {
+                            inclusive = true
+                        }
+                    }
                 }
 
                 is LoginEvent.VerificationSuccessExisting -> {
@@ -93,7 +98,7 @@ fun LoginVerificationScreen(
                 is NavigationDestination.GoToHome -> Route.Home.route
             }
             navController.navigate(route) {
-                popUpTo(Route.LoginVerification.route) {
+                popUpTo(Route.LoginPhone.route) {
                     inclusive = true
                 }
             }

@@ -189,7 +189,7 @@ fun NavGraph(
             //홈 상세 화면_혈당 화면
 
             composable(route = Route.GlucoseDetail.route) {
-                GlucoseDetail(navController = navController, calendarViewModel = calendarViewModel)
+                GlucoseDetail(navController = navController)
             }
 
 

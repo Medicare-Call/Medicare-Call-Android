@@ -64,6 +64,7 @@ fun HomeMedicineContainer(
                     contentDescription = "pills icon",
 
                     )
+                Spacer(Modifier.width(4.dp))
 
                 Text(
                     "복약",

@@ -156,7 +156,7 @@ fun StatisticsScreenLayout(
             onDropdownClick = { dropdownOpened.value = !dropdownOpened.value }
         )
 
-        Spacer(modifier = Modifier.height(17.dp))
+//        Spacer(modifier = Modifier.height(17.dp))
         when {
             uiState.isLoading -> {
                 Box(
@@ -214,6 +214,7 @@ private fun StatisticsContent(
             .verticalScroll(rememberScrollState())
             .padding(horizontal = 20.dp),
     ) {
+        Spacer(Modifier.height(17.dp))
         WeekendBar(
             currentWeek = currentWeek,
             isLatestWeek = isLatestWeek,

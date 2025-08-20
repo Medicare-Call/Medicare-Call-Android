@@ -11,6 +11,7 @@ import androidx.compose.material3.Text
 import androidx.compose.material3.TextButton
 import androidx.compose.material3.rememberDatePickerState
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.key
 import androidx.compose.runtime.remember
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -41,6 +42,7 @@ fun DatePickerModal(
         selectedDayContentColor = Color.White,
         todayContentColor = MediCareCallTheme.colors.black,
         todayDateBorderColor = MediCareCallTheme.colors.main,
+        selectedYearContentColor = MediCareCallTheme.colors.white
     )
 
     //세계 표준시
@@ -54,7 +56,7 @@ fun DatePickerModal(
     }
 
     // initialDate가 바뀌면 상태 재생성
-    androidx.compose.runtime.key(initialMillis) {
+    key(initialMillis) {
         val datePickerState = rememberDatePickerState(
             initialSelectedDateMillis = initialMillis,
             initialDisplayedMonthMillis = initialMonthMillis
@@ -66,6 +68,9 @@ fun DatePickerModal(
 
         DatePickerDialog(
             onDismissRequest = onDismiss,
+            colors = DatePickerDefaults.colors(
+                containerColor = MediCareCallTheme.colors.white
+            ),
             confirmButton = {
                 TextButton(
                     colors = ButtonDefaults.textButtonColors(

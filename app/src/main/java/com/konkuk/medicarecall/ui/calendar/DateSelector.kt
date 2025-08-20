@@ -1,5 +1,6 @@
 package com.konkuk.medicarecall.ui.calendar
 
+import android.R.attr.contentDescription
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row
@@ -34,7 +35,11 @@ fun DateSelector(
 
     Row(
         modifier = Modifier
-            .fillMaxWidth(),
+            .fillMaxWidth()
+            .clickable(
+                indication = null,
+                interactionSource = null
+            ) { showDatePicker = true },
 
         horizontalArrangement = Arrangement.Center,
         verticalAlignment = Alignment.CenterVertically
@@ -46,8 +51,6 @@ fun DateSelector(
             modifier = Modifier.padding(end = 4.dp)
         )
         Icon(
-            modifier = Modifier
-                .clickable { showDatePicker = true }, // 여기서 모달 열기
             painter = painterResource(id = R.drawable.ic_arrow_down),
             contentDescription = "Month Select",
             tint = MediCareCallTheme.colors.gray4
@@ -56,7 +59,8 @@ fun DateSelector(
 
     // 모달 표시 조건
     if (showDatePicker) {
-        DatePickerModal( initialDate = selectedDate,
+        DatePickerModal(
+            initialDate = selectedDate,
             onDateSelected = {
                 onDateSelected(it)
                 showDatePicker = false

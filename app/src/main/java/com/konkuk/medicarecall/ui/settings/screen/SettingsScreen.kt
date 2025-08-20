@@ -124,6 +124,7 @@ fun SettingsScreen(
                         .clip(RoundedCornerShape(14.dp))
                         .background(MediCareCallTheme.colors.white)
                         .padding(20.dp),
+                    horizontalArrangement = Arrangement.SpaceBetween
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
@@ -144,7 +145,6 @@ fun SettingsScreen(
                             color = MediCareCallTheme.colors.gray8,
                         )
                     }
-                    Spacer(modifier = Modifier.weight(1f))
                     Column(
 
                         modifier = Modifier
@@ -165,7 +165,6 @@ fun SettingsScreen(
                             color = MediCareCallTheme.colors.gray8,
                         )
                     }
-                    Spacer(modifier = Modifier.weight(1f))
                     Column(
 
                         modifier = Modifier
@@ -186,7 +185,6 @@ fun SettingsScreen(
                             color = MediCareCallTheme.colors.gray8,
                         )
                     }
-                    Spacer(modifier = Modifier.weight(1f))
                     Column(
 
                         modifier = Modifier

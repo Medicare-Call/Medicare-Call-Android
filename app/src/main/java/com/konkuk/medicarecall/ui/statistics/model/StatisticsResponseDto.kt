@@ -50,7 +50,7 @@ data class MedicationStatDto(
     @SerialName("totalCount")
     val totalCount: Int,
     @SerialName("takenCount")
-    val takenCount: Int
+    val takenCount: Int?
 )
 
 @Serializable

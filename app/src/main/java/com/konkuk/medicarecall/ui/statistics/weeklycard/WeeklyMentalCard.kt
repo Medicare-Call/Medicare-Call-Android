@@ -95,7 +95,7 @@ private fun MentalStatusRow(
     iconResId: Int,
     count: Int
 ) {
-    val isUnrecorded = count < 0
+    val isUnrecorded = count <= 0
     val countText = if (isUnrecorded) "-" else count.toString()
     val textColor = if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.gray6
 

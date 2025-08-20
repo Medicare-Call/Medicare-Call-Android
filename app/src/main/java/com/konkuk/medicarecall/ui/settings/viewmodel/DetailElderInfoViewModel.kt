@@ -15,7 +15,10 @@ class DetailElderInfoViewModel @Inject constructor(
     private val eldersInfoRepository: UpdateElderInfoRepository,
 ) : ViewModel() {
 
-    fun updateElderInfo(elderInfo : EldersInfoResponseDto) {
+    fun updateElderInfo(
+        elderInfo: EldersInfoResponseDto,
+        onComplete: (() -> Unit)? = null
+    ) {
         val updateInfo = ElderRegisterRequestDto(
             name = elderInfo.name,
             birthDate = elderInfo.birthDate,
@@ -32,6 +35,7 @@ class DetailElderInfoViewModel @Inject constructor(
             )
                 .onSuccess {
                     Log.d("UpdateElderInfoViewModel", "어르신 개인 정보 수정 완료: $it")
+                    onComplete?.invoke()
                 }
                 .onFailure { exception ->
                     Log.e("UpdateElderInfoViewModel", "어르신 개인 정보 수정 실패: $exception")

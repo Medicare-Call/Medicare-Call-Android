@@ -13,11 +13,15 @@ import javax.inject.Inject
 class DetailHealthViewModel @Inject constructor(
     private val eldersHealthInfoRepository: EldersHealthInfoRepository,
 ) : ViewModel() {
-    fun updateElderHealth(healthInfo: EldersHealthResponseDto) {
+    fun updateElderHealth(
+        healthInfo: EldersHealthResponseDto,
+        onComplete: (() -> Unit)? = null
+    ) {
         viewModelScope.launch {
             eldersHealthInfoRepository.updateHealthInfo(healthInfo)
                 .onSuccess {
                     Log.d("DetailHealthViewModel", "건강 정보 수정 성공: $it")
+                    onComplete?.invoke()
                 }
                 .onFailure { exception ->
                     Log.e("DetailHealthViewModel", "건강 정보 수정 실패: ${exception.message}", exception)

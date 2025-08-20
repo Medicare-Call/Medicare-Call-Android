@@ -97,11 +97,12 @@ class HomeViewModel @Inject constructor(
     }
 
     // 케어콜 및 화면 재진입 시 데이터 갱신
-    fun forceRefreshHomeData() {
+    fun forceRefreshHomeData(onComplete: (() -> Unit)? = null) {
         viewModelScope.launch {
 
             eldersHealthInfoRepository.refresh()
             _selectedElderId.value?.let { fetchHomeSummaryForToday(it) }
+            onComplete?.invoke()
         }
     }
 

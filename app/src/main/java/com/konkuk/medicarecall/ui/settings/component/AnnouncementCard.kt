@@ -16,8 +16,7 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun AnnouncementCard(title : String,date : String,modifier: Modifier = Modifier, onClick: () -> Unit) {
         Column(
-            modifier = modifier.fillMaxWidth().height(89.dp).clickable(onClick = {onClick()}).padding(20.dp)
-                .background(color = MediCareCallTheme.colors.bg)
+            modifier = modifier.fillMaxWidth().clickable(onClick = {onClick()}).background(color = MediCareCallTheme.colors.bg).padding(20.dp)
 
         ) {
             Text(text = title,style = MediCareCallTheme.typography.SB_16, color = MediCareCallTheme.colors.black)

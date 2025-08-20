@@ -38,11 +38,11 @@ data class SummaryStatsDto(
 @Serializable
 data class MealStatsDto(
     @SerialName("breakfast")
-    val breakfast: Int,
+    val breakfast: Int?,
     @SerialName("lunch")
-    val lunch: Int,
+    val lunch: Int?,
     @SerialName("dinner")
-    val dinner: Int
+    val dinner: Int?
 )
 
 @Serializable
@@ -50,7 +50,7 @@ data class MedicationStatDto(
     @SerialName("totalCount")
     val totalCount: Int,
     @SerialName("takenCount")
-    val takenCount: Int
+    val takenCount: Int?
 )
 
 @Serializable

@@ -288,6 +288,12 @@ fun PreviewStatisticsScreen_Recorded() {
         weeklyMedicines = listOf(
             WeeklyMedicineUiState("혈압약", 0, 14),
             WeeklyMedicineUiState("영양제", 4, 7),
+            WeeklyMedicineUiState("영양제", 4, 7),
+            WeeklyMedicineUiState("영양제", 4, 7),
+            WeeklyMedicineUiState("영양제", 4, 7),
+            WeeklyMedicineUiState("영양제", 4, 7),
+            WeeklyMedicineUiState("영양제", 4, 7),
+            WeeklyMedicineUiState("영양제", 4, 7),
             WeeklyMedicineUiState("당뇨약", 21, 21)
         ),
 

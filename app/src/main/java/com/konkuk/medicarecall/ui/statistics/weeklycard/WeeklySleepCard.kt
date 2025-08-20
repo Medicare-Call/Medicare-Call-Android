@@ -34,9 +34,9 @@ fun WeeklySleepCard(
     modifier: Modifier = Modifier,
     summary: WeeklySummaryUiState
 ) {
-    val isUnrecorded = summary.weeklySleepHours < 0
-    val hoursText = if (isUnrecorded) "-" else summary.weeklySleepHours.toString()
-    val minutesText = if (isUnrecorded) "-" else summary.weeklySleepMinutes.toString()
+    val isUnrecorded = summary.weeklySleepHours == null
+    val hoursText = if (isUnrecorded) "--" else summary.weeklySleepHours.toString()
+    val minutesText = if (isUnrecorded) "--" else summary.weeklySleepMinutes.toString()
     val textColor = if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.gray8
 
 

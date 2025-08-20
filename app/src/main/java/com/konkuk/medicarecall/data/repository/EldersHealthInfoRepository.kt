@@ -1,7 +1,6 @@
 package com.konkuk.medicarecall.data.repository
 
 import android.util.Log
-import android.util.Log.e
 import com.konkuk.medicarecall.data.api.ElderRegisterService
 import com.konkuk.medicarecall.data.api.EldersInfoService
 import com.konkuk.medicarecall.data.dto.request.ElderHealthRegisterRequestDto
@@ -10,21 +9,43 @@ import com.konkuk.medicarecall.data.dto.response.EldersHealthResponseDto
 import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import retrofit2.HttpException
 import javax.inject.Inject
+import javax.inject.Singleton
 
+@Singleton
 class EldersHealthInfoRepository @Inject constructor(
     private val elderInfoService : EldersInfoService,
     private val elderRegisterService : ElderRegisterService
 ) {
-    suspend fun getEldersHealthInfo(): Result<List<EldersHealthResponseDto>> =
-        runCatching {
+
+    private var cachedHealthInfo: List<EldersHealthResponseDto>? = null
+
+
+    fun refresh() {
+        Log.d("Cache", "EldersHealthInfoRepository cache invalidated")
+        cachedHealthInfo = null
+    }
+
+    suspend fun getEldersHealthInfo(): Result<List<EldersHealthResponseDto>> {
+
+        cachedHealthInfo?.let {
+            Log.d("Cache", "Returning cached health info")
+            return Result.success(it)
+        }
+
+
+        return runCatching {
+            Log.d("Cache", "Fetching new health info from server")
             val response = elderInfoService.getElderHealthInfo()
             if (response.isSuccessful) {
-                response.body() ?: throw IllegalStateException("Response body is null(eldersHealthInfo)")
+                val body = response.body() ?: throw IllegalStateException("Response body is null(eldersHealthInfo)")
+                cachedHealthInfo = body // 캐시에 저장
+                body
             } else {
-                val errorBody = response.errorBody()?.string() ?: "Unknown error(eldersHealthInfo)"
                 throw HttpException(response)
             }
         }
+    }
+
 
     suspend fun updateHealthInfo(
         elderInfo : EldersHealthResponseDto
@@ -41,10 +62,12 @@ class EldersHealthInfoRepository @Inject constructor(
                 elder
             )
             if (response.isSuccessful) {
+
+                refresh()
                 Log.d("EldersHealthInfoRepository", "Health info updated successfully for elderId: ${elderInfo.elderId}")
             } else {
                 val errorBody = response.errorBody()?.string() ?: "Unknown error(updating health info)"
-                e("EldersHealthInfoRepository", "Failed to update health info: ${response.code()} - $errorBody")
+                Log.e("EldersHealthInfoRepository", "Failed to update health info: ${response.code()} - $errorBody")
                 throw HttpException(response)
             }
         }
@@ -65,4 +88,3 @@ class EldersHealthInfoRepository @Inject constructor(
     }
 
 }
-

@@ -129,7 +129,8 @@ class StatisticsViewModel @Inject constructor(
             runCatching {
                 val formatted = startDate.format(java.time.format.DateTimeFormatter.ISO_LOCAL_DATE)
 
-                // ✅ 등록된 “정답 순서” 가져오기
+                // 설정(건강정보) 최신화 후 순서 확보
+
                 val correctOrder: List<String> =
                     eldersHealthInfoRepository.getEldersHealthInfo()
                         .getOrNull()
@@ -139,42 +140,49 @@ class StatisticsViewModel @Inject constructor(
                         ?.distinct()
                         ?: emptyList()
 
-                // ✅ 통계 API
                 repository.getStatistics(elderId, formatted) to correctOrder
             }.onSuccess { (dto, order) ->
+
+                android.util.Log.d("STATISTICS_DEBUG", "onSuccess: DTO 수신 완료\n$dto")
+                val summary = dto.toWeeklySummaryUiState(order)
+                android.util.Log.d("STATISTICS_DEBUG", "onSuccess: UI State로 변환 완료\n$summary")
+
                 _uiState.value = StatisticsUiState(
                     isLoading = false,
-                    summary = dto.toWeeklySummaryUiState(order),
+                    summary = summary,
                     error = null
                 )
             }.onFailure { e ->
+
+                android.util.Log.e("STATISTICS_DEBUG", "onFailure: 데이터 로딩 실패", e)
+
                 if (e is HttpException && e.code() == 404) {
-                    _uiState.value =
-                        StatisticsUiState(isLoading = false, summary = WeeklySummaryUiState.EMPTY)
+                    _uiState.value = StatisticsUiState(
+                        isLoading = false,
+                        summary = WeeklySummaryUiState.EMPTY
+                    )
                 } else {
-                    _uiState.value =
-                        StatisticsUiState(isLoading = false, error = "데이터 로딩 실패: ${e.message}")
+                    _uiState.value = StatisticsUiState(
+                        isLoading = false,
+                        error = "데이터 로딩 실패: ${e.message}"
+                    )
                 }
             }
         }
     }
-
     private fun StatisticsResponseDto.toWeeklySummaryUiState(
         correctOrder: List<String>
     ): WeeklySummaryUiState {
 
-        // 키 → 순서 인덱스 맵 (없으면 아주 큰 값)
         val indexOf: (String) -> Int = { key ->
             val idx = correctOrder.indexOf(key)
             if (idx == -1) Int.MAX_VALUE else idx
         }
 
-        val orderedMedicines = medicationStats
-            .entries
+        val orderedMedicines = medicationStats.entries
             .sortedWith(
                 compareBy<Map.Entry<String, MedicationStatDto>>(
-                    { indexOf(it.key) },   // ✅ 등록 순서 우선
-                { it.key }             // 보조: 이름 알파벳/가나다 정렬(순서 없을 때 안정화)
+                { indexOf(it.key) }, { it.key }
             ))
             .map { (name, stats) ->
                 WeeklyMedicineUiState(
@@ -183,6 +191,10 @@ class StatisticsViewModel @Inject constructor(
                     totalCount = stats.totalCount
                 )
             }
+
+
+        val sleepH = averageSleep.hours
+        val sleepM = averageSleep.minutes
 
         return WeeklySummaryUiState(
             elderName = elderName,
@@ -195,10 +207,10 @@ class StatisticsViewModel @Inject constructor(
                 WeeklyMealUiState("점심", mealStats.lunch, 7),
                 WeeklyMealUiState("저녁", mealStats.dinner, 7)
             ),
-            weeklyMedicines = orderedMedicines,     // ✅ 여기!
+            weeklyMedicines = orderedMedicines,
             weeklyHealthNote = healthSummary,
-            weeklySleepHours = averageSleep.hours,
-            weeklySleepMinutes = averageSleep.minutes,
+            weeklySleepHours = sleepH,
+            weeklySleepMinutes = sleepM,
             weeklyMental = WeeklyMentalUiState(
                 good = psychSummary.good,
                 normal = psychSummary.normal,
@@ -212,6 +224,7 @@ class StatisticsViewModel @Inject constructor(
                 afterMealHigh = bloodSugar.afterMeal.high,
                 afterMealLow = bloodSugar.afterMeal.low
             )
+
         )
     }
 }

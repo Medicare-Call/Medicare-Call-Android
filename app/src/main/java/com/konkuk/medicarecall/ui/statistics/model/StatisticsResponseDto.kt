@@ -56,9 +56,9 @@ data class MedicationStatDto(
 @Serializable
 data class AverageSleepDto(
     @SerialName("hours")
-    val hours: Int,
+    val hours: Int? = null,
     @SerialName("minutes")
-    val minutes: Int
+    val minutes: Int? = null
 )
 
 @Serializable

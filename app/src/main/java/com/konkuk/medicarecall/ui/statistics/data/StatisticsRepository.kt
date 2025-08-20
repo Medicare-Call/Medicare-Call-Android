@@ -25,23 +25,19 @@ class StatisticsRepositoryImpl @Inject constructor(
     override suspend fun getStatistics(elderId: Int, startDate: String): StatisticsResponseDto {
         return try {
             val response = statisticsApi.getStatistics(elderId = elderId, startDate = startDate)
-
-
-            // 서버가 200 OK로 응답했지만, 내용이 '미기록' 상태일 때만 보내주는 특정 메시지인지 확인
-            // "실제 0% 기록"과 "미기록"을 구분
             val isUnrecordedSummary = response.healthSummary.contains("전혀 이루어지지 않아")
 
             if (isUnrecordedSummary) {
-                // 요약 메시지가 '미기록'을 의미하면, 직접 미기록 DTO를 생성하여 반환
+
                 createUnrecordedStatisticsDto(elderId)
             } else {
 
                 response
             }
-            // --- 수정된 부분 끝 ---
+
 
         } catch (e: Exception) {
-            // 404 에러가 발생하는 경우에도 미기록 DTO를 생성합니다.
+
             if (e is HttpException && e.code() == 404) {
                 createUnrecordedStatisticsDto(elderId)
             } else {
@@ -74,7 +70,7 @@ class StatisticsRepositoryImpl @Inject constructor(
             mealStats = MealStatsDto(breakfast = -1, lunch = -1, dinner = -1),
             medicationStats = medicationStats,
             healthSummary = "아직 충분한 기록이 쌓이지 않았어요.",
-            averageSleep = AverageSleepDto(hours = -1, minutes = -1),
+            averageSleep = AverageSleepDto(hours = null, minutes = null),
             psychSummary = PsychSummaryDto(good = -1, normal = -1, bad = -1),
             bloodSugar = BloodSugarDto(
                 beforeMeal = BloodSugarDetailDto(normal = 0, high = 0, low = 0),

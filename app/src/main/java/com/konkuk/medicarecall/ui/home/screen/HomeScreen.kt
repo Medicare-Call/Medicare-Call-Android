@@ -30,6 +30,7 @@ import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
@@ -45,6 +46,9 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.zIndex
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.Lifecycle
+import androidx.lifecycle.compose.LocalLifecycleOwner
+import androidx.lifecycle.repeatOnLifecycle
 import androidx.navigation.NavHostController
 import androidx.navigation.compose.rememberNavController
 import com.konkuk.medicarecall.R
@@ -64,6 +68,7 @@ import com.konkuk.medicarecall.ui.home.model.HomeUiState
 import com.konkuk.medicarecall.ui.home.model.MedicineUiState
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.main
+import kotlinx.coroutines.delay
 import kotlinx.coroutines.launch
 
 @Composable
@@ -85,8 +90,14 @@ fun HomeScreen(
 
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
+    val lifecycleOwner = LocalLifecycleOwner.current
 
-
+    // 데이터 갱신
+    LaunchedEffect(lifecycleOwner) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+            homeViewModel.forceRefreshHomeData()
+        }
+    }
 
     HomeScreenLayout(
         modifier = modifier,
@@ -111,6 +122,8 @@ fun HomeScreen(
         onFabClick = {
             scope.launch {
                 snackbarHostState.showSnackbar("케어콜이 곧 연결됩니다. 잠시만 기다려 주세요.")
+                delay(3000) // 케어콜 데이터 처리 기다리는 시간
+                homeViewModel.forceRefreshHomeData()
             }
         }
     )
@@ -155,7 +168,10 @@ fun HomeScreenLayout(
         },
         floatingActionButtonPosition = FabPosition.Center,
     ) { innerPadding ->
-        Box(modifier = modifier.fillMaxSize()) {
+        Box(
+            modifier = modifier
+                .fillMaxSize()
+        ) {
             Column(
                 modifier = Modifier
                     .fillMaxSize()
@@ -200,9 +216,9 @@ fun HomeScreenLayout(
                             ) {
 
 
-                                //val balloonText = "아침·점심 복약과 식사는 문제 없으나, 저녁 약 복용이 늦어질 우려가 있어요."
+
                                 val balloonText = homeUiState.balloonMessage
-                                val trimmedText = balloonText.take(45) // 글자 수 제한
+                                val trimmedText = balloonText.take(45)
 
 
                                 //말풍선

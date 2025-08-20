@@ -94,7 +94,10 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
-
+    // 케어콜 후 데이터 불러오기
+    fun forceRefreshHomeData() {
+        _selectedElderId.value = _selectedElderId.value
+    }
     // 서버에서 어르신 전체 목록을 불러옴
     private fun fetchElderList() {
         viewModelScope.launch {

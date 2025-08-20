@@ -64,7 +64,7 @@ data class WeeklyMealUiState(
  */
 data class WeeklyMedicineUiState(
     val medicineName: String, // 예: "혈압약"
-    val takenCount: Int,      // 완료 횟수
+    val takenCount: Int?,      // 완료 횟수
     val totalCount: Int       // 총 예정 횟수
 )
 

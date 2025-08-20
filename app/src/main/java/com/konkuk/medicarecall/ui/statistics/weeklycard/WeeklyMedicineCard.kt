@@ -77,7 +77,7 @@ fun WeeklyMedicineCard(
             ) {
                 medicine.forEach { weeklyMedicine ->
 
-                    val isUnrecorded = weeklyMedicine.takenCount < 0 // -1과 같은 음수 값으로 미기록 판단
+                    val isUnrecorded = weeklyMedicine.takenCount == null||weeklyMedicine.takenCount < 0 // -1과 같은 음수 값으로 미기록 판단
                     val iconColor = if (isUnrecorded) {
                         MediCareCallTheme.colors.gray2
                     } else {

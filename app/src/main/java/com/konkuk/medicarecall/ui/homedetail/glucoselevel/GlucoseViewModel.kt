@@ -44,9 +44,7 @@ class GlucoseViewModel @Inject constructor(
         viewModelScope.launch {
             glucoseRepository.getGlucoseGraph(elderId, counter, type.toString())
                 .onSuccess { response ->
-                    val processedData = response.data
-                        .distinctBy { it.date }
-                        .reversed()
+                    val processedData = response.data.reversed()
 
                     val newData = processedData.map { record ->
                         GraphDataPoint(

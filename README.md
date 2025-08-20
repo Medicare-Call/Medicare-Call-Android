@@ -1,4 +1,8 @@
-# ✨ MediCareCall ✨
+# MediCareCall Android
+<p align="center">
+  <img width="3840" height="2160" alt="image" src="https://github.com/user-attachments/assets/431df588-c2ad-48d4-bf39-462c14475114" />
+ </p>
+
 
 <p align="center">
   <img src="https://img.shields.io/badge/platform-Android-green.svg" alt="Platform Android"/>

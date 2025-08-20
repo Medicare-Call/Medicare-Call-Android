@@ -72,7 +72,11 @@ fun LoginElderScreen(
     ) {
         Column {
             LoginBackButton({
-                navController.popBackStack()
+                navController.navigate(Route.LoginElderInfoScreen.route) {
+                    popUpTo(Route.LoginStart.route) { inclusive = false } // ← 스택 정리
+                    launchSingleTop = true
+                    restoreState = true
+                }
             })
             Column(
                 modifier

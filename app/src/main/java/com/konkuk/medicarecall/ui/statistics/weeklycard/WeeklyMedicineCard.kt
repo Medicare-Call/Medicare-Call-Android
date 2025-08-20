@@ -10,6 +10,8 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
+import androidx.compose.foundation.layout.wrapContentHeight
+import androidx.compose.foundation.layout.wrapContentWidth
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -37,7 +39,8 @@ fun WeeklyMedicineCard(
 
     Card(
         modifier = modifier
-            .fillMaxWidth() .fillMaxHeight()
+            .fillMaxWidth()
+            .fillMaxHeight()
             .figmaShadow(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
                 cornerRadius = 14.dp
@@ -50,7 +53,9 @@ fun WeeklyMedicineCard(
         Column(
             modifier = Modifier
                 .padding(20.dp)
-                .width(110.dp)
+                .wrapContentWidth()
+                .wrapContentHeight()
+
         ) {
 
             //1) Title: 복약 통계
@@ -87,7 +92,7 @@ fun WeeklyMedicineCard(
 
                     Row(
                         modifier = Modifier
-                            .fillMaxWidth(),
+                            .wrapContentWidth(),
                         verticalAlignment = Alignment.CenterVertically
                     ) {
                         Text(

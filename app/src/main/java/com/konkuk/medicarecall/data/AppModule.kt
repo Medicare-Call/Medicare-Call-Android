@@ -38,6 +38,7 @@ import okhttp3.OkHttpClient
 import okhttp3.logging.HttpLoggingInterceptor
 import retrofit2.Retrofit
 import retrofit2.converter.kotlinx.serialization.asConverterFactory
+import java.util.concurrent.TimeUnit
 import javax.inject.Singleton
 
 
@@ -68,6 +69,7 @@ object AppModule {
     @Singleton
     fun provideOkHttpClient(authInterceptor: Interceptor): OkHttpClient {
         return OkHttpClient.Builder()
+            .readTimeout(20, TimeUnit.SECONDS)
             .addInterceptor(authInterceptor)
             .addInterceptor(logging)
             .build()
@@ -169,7 +171,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSetCallRepository(service: SetCallService): SetCallRepository {
-       return SetCallRepository(service)
+        return SetCallRepository(service)
     }
 
     @Provides
@@ -192,7 +194,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideEldersHealthInfoRepository(elderInfoService : EldersInfoService, elderRegisterService: ElderRegisterService) : EldersHealthInfoRepository {
+    fun provideEldersHealthInfoRepository(
+        elderInfoService: EldersInfoService,
+        elderRegisterService: ElderRegisterService
+    ): EldersHealthInfoRepository {
         return EldersHealthInfoRepository(elderInfoService, elderRegisterService)
     }
 
@@ -209,21 +214,22 @@ object AppModule {
     @Singleton
     fun provideUpdateElderRepository(
         eldersInfoService: EldersInfoService
-    ) : UpdateElderInfoRepository {
+    ): UpdateElderInfoRepository {
         return UpdateElderInfoRepository(eldersInfoService)
     }
 
     @Provides
     @Singleton
     fun provideNaverPayService(retrofit: Retrofit)
-    : NaverPayService {
+            : NaverPayService {
         return retrofit.create(NaverPayService::class.java)
     }
 
     @Provides
     @Singleton
     fun provideNaverPayRepository(
-        naverPayService: NaverPayService) : NaverPayRepository {
+        naverPayService: NaverPayService
+    ): NaverPayRepository {
         return NaverPayRepository(naverPayService)
     }
 

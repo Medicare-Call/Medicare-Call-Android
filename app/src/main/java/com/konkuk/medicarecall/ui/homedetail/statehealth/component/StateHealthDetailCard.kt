@@ -88,8 +88,6 @@ fun StateHealthDetailCard(
                                     text = symptom.trim(),
                                     style = MediCareCallTheme.typography.R_16,
                                     color = MediCareCallTheme.colors.gray8,
-                                    maxLines = 3,
-                                    overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                                 )
                             }
                         }
@@ -120,8 +118,6 @@ fun StateHealthDetailCard(
                         text = analysis,
                         style = MediCareCallTheme.typography.R_16,
                         color = MediCareCallTheme.colors.gray8,
-                        maxLines = 3,
-                        overflow = androidx.compose.ui.text.style.TextOverflow.Ellipsis
                     )
                 }
             }

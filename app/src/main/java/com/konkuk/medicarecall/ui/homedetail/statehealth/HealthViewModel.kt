@@ -1,6 +1,9 @@
 package com.konkuk.medicarecall.ui.homedetail.statehealth
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
 import com.konkuk.medicarecall.ui.homedetail.statehealth.data.HealthRepository
@@ -23,57 +26,29 @@ class HealthViewModel @Inject constructor(
         const val TAG = "HEALTH_API"
     }
 
+    private val _isLoading = MutableStateFlow(true)
+    val isLoading: StateFlow<Boolean> = _isLoading
+
     private val _health = MutableStateFlow(HealthUiState.EMPTY)
     val health: StateFlow<HealthUiState> = _health
 
     fun loadHealthDataForDate(elderId: Int, date: LocalDate) {
         viewModelScope.launch {
+            if (!_isLoading.value) _isLoading.value = true
             val formatted = date.format(DateTimeFormatter.ISO_LOCAL_DATE)
             Log.d(TAG, "Request elderId=$elderId, date=$formatted")
 
-            try {
-                val ui = healthRepository.getHealthUiState(elderId = elderId, date = date)
-                _health.value = ui
-                Log.i(TAG, "Success elderId=$elderId, date=$formatted")
-            } catch (e: Exception) {
-                when (e) {
-                    is HttpException -> {
-                        when (e.code()) {
-                            404 -> { // 미기록
-                                Log.i(TAG, "No data (404) elderId=$elderId, date=$formatted")
-                                _health.value = HealthUiState.EMPTY
-                            }
 
-                            400 -> {
-                                Log.w(
-                                    TAG,
-                                    "Bad request (400) elderId=$elderId, date=$formatted, msg=${e.message()}"
-                                )
-                                _health.value = HealthUiState.EMPTY
-                            }
-
-                            401, 403 -> {
-                                Log.w(TAG, "Unauthorized (${e.code()}) elderId=$elderId")
-                                _health.value = HealthUiState.EMPTY
-                            }
-
-                            else -> {
-                                Log.e(
-                                    TAG,
-                                    "API error code=${e.code()} elderId=$elderId, date=$formatted",
-                                    e
-                                )
-                                _health.value = HealthUiState.EMPTY
-                            }
-                        }
-                    }
-
-                    else -> {
-                        Log.e(TAG, "Unexpected error elderId=$elderId, date=$formatted", e)
-                        _health.value = HealthUiState.EMPTY
-                    }
+            healthRepository.getHealthUiState(elderId = elderId, date = date)
+                .onSuccess {
+                    _health.value = it
+                    Log.d(TAG, "Success elderId=$elderId, date=$formatted")
                 }
-            }
+                .onFailure {
+                    Log.d(TAG, "Failed elderId=$elderId, date=$formatted")
+                    _health.value = HealthUiState.EMPTY
+                }
+            _isLoading.value = false
         }
     }
 }

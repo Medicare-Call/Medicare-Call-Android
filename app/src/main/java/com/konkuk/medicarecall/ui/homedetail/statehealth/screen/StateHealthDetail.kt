@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.homedetail.statehealth.screen
 
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
@@ -9,11 +10,13 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.remember
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.tooling.preview.Preview
@@ -43,6 +46,7 @@ fun StateHealthDetail(
     healthViewModel: HealthViewModel = hiltViewModel()
 ) {
 
+    val isLoading = healthViewModel.isLoading.collectAsState()
 
     val homeEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry("main")
@@ -69,16 +73,23 @@ fun StateHealthDetail(
 
 
 
-
-    StateHealthDetailLayout(
-        modifier = Modifier,
-        navController = navController,
-        selectedDate = selectedDate,
-        health = health,
-        weekDates = calendarViewModel.getCurrentWeekDates(),
-        onDateSelected = { calendarViewModel.selectDate(it) },
-        onMonthClick = { /* 모달 열기 */ }
-    )
+    if (!isLoading.value)
+        StateHealthDetailLayout(
+            modifier = Modifier,
+            navController = navController,
+            selectedDate = selectedDate,
+            health = health,
+            weekDates = calendarViewModel.getCurrentWeekDates(),
+            onDateSelected = { calendarViewModel.selectDate(it) },
+            onMonthClick = { /* 모달 열기 */ }
+        )
+    else
+        Box(Modifier.fillMaxSize().background(color = MediCareCallTheme.colors.white)) {
+            CircularProgressIndicator(
+                modifier = Modifier.align(Alignment.Center),
+                color = MediCareCallTheme.colors.main
+            )
+        }
 }
 
 

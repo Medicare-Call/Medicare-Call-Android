@@ -1,4 +1,4 @@
-# Medicare-Call-FrontEnd
+# Medicare-Call-Android
 ## Branch
 ```
 main               ← 최종 배포용 

@@ -20,8 +20,9 @@ data class WeeklySummaryUiState(
     val weeklyMeals: List<WeeklyMealUiState> = emptyList(),
     val weeklyMedicines: List<WeeklyMedicineUiState> = emptyList(),
     val weeklyHealthNote: String = "",
-    val weeklySleepHours: Int = 0,
-    val weeklySleepMinutes: Int = 0,
+    val weeklySleepHours: Int? = 0,
+    val weeklySleepMinutes: Int? = 0,
+    val weeklySleepRecorded: Boolean = true,
     val weeklyMental: WeeklyMentalUiState = WeeklyMentalUiState.EMPTY,
     val weeklyGlucose: WeeklyGlucoseUiState = WeeklyGlucoseUiState.EMPTY
 ) {
@@ -40,8 +41,8 @@ data class WeeklySummaryUiState(
             ),
             weeklyMedicines = emptyList(),
             weeklyHealthNote = "아직 충분한 기록이 쌓이지 않았어요.",
-            weeklySleepHours = -1,
-            weeklySleepMinutes = -1,
+            weeklySleepHours = null,
+            weeklySleepMinutes = null,
             weeklyMental = WeeklyMentalUiState.EMPTY,
             weeklyGlucose = WeeklyGlucoseUiState.EMPTY
         )

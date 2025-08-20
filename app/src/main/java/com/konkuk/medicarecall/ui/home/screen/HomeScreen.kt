@@ -128,7 +128,7 @@ fun HomeScreen(
         onNavigateToStateMentalDetail = onNavigateToStateMentalDetail,
         onNavigateToGlucoseDetail = onNavigateToGlucoseDetail,
         snackbarHostState = snackbarHostState,
-        isLoading = homeViewModel.isLoading,
+        isLoading = homeUiState.isLoading,
         onFabClick = {
             scope.launch {
                 snackbarHostState.showSnackbar("케어콜이 곧 연결됩니다. 잠시만 기다려 주세요.")

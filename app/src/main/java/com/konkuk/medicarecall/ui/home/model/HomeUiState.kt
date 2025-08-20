@@ -1,6 +1,7 @@
 package com.konkuk.medicarecall.ui.home.model
 
 data class HomeUiState(
+    val isLoading: Boolean = true,
     val elderName: String = "",
     val balloonMessage: String = "",
     val isRecorded: Boolean = false,

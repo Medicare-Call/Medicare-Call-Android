@@ -25,16 +25,7 @@ class StatisticsRepositoryImpl @Inject constructor(
     override suspend fun getStatistics(elderId: Int, startDate: String): StatisticsResponseDto {
         return try {
             val response = statisticsApi.getStatistics(elderId = elderId, startDate = startDate)
-            val isUnrecordedSummary = response.healthSummary.contains("전혀 이루어지지 않아")
-
-            if (isUnrecordedSummary) {
-
-                createUnrecordedStatisticsDto(elderId)
-            } else {
-
-                response
-            }
-
+            response
 
         } catch (e: Exception) {
 

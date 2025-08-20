@@ -1,7 +1,10 @@
 package com.konkuk.medicarecall.ui.home.screen
 
+import android.R.attr.onClick
+import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
+import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
@@ -18,13 +21,21 @@ import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.GenericShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material.icons.filled.Close
+import androidx.compose.material.icons.filled.Edit
+import androidx.compose.material.icons.filled.Share
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
 import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.FabPosition
+import androidx.compose.material3.FloatingActionButton
+import androidx.compose.material3.Icon
 import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHost
 import androidx.compose.material3.SnackbarHostState
@@ -87,7 +98,6 @@ fun HomeScreen(
     val elderNameList by homeViewModel.elderNameList.collectAsState()
     var dropdownOpened by remember { mutableStateOf(false) }
 
-
     val snackbarHostState = remember { SnackbarHostState() }
     val scope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
@@ -125,6 +135,8 @@ fun HomeScreen(
                 delay(3000) // 케어콜 데이터 처리 기다리는 시간
                 homeViewModel.forceRefreshHomeData()
             }
+        }, immediateCall = {
+            homeViewModel.callImmediate(it)
         }
     )
 }
@@ -149,6 +161,7 @@ fun HomeScreenLayout(
     snackbarHostState: SnackbarHostState,
     isLoading: Boolean,
     onFabClick: () -> Unit,
+    immediateCall: (String) -> Unit
 ) {
 
     val selectedElderName = remember(homeUiState.elderName, elderNameList) {
@@ -157,16 +170,68 @@ fun HomeScreenLayout(
             elderNameList.firstOrNull() ?: "어르신 선택"
         }
     }
+    var expanded by remember { mutableStateOf(false) }
+
     Scaffold(
 
         contentWindowInsets = WindowInsets(0),
         floatingActionButton = {
-            CareCallFloatingButton(
-                modifier = modifier,
-                onClick = onFabClick
-            )
+            Column(
+                horizontalAlignment = Alignment.End,
+                verticalArrangement = Arrangement.spacedBy(12.dp),
+                modifier = Modifier.padding(end = 16.dp, bottom = 16.dp)
+            ) {
+                // 세부 FAB들
+                AnimatedVisibility(visible = expanded) {
+                    Column(
+                        horizontalAlignment = Alignment.End,
+                        verticalArrangement = Arrangement.spacedBy(12.dp)
+                    ) {
+                        CareCallFloatingButton(
+                            modifier = modifier,
+                            onClick = {
+                                onFabClick()
+                                immediateCall("FIRST")
+                            },
+                            careCallOption = "FIRST",
+                            text = "1차"
+                        )
+                        CareCallFloatingButton(
+                            modifier = modifier,
+                            onClick = {
+                                onFabClick()
+                                immediateCall("SECOND")
+                            },
+                            careCallOption = "SECOND",
+                            text = "2차"
+                        )
+                        CareCallFloatingButton(
+                            modifier = modifier,
+                            onClick = {
+                                onFabClick()
+                                immediateCall("THIRD")
+                            },
+                            careCallOption = "THIRD",
+                            text = "3차"
+                        )
+                    }
+                }
+
+                // 메인 FAB
+                FloatingActionButton(
+                    onClick = { expanded = !expanded },
+                    containerColor = MediCareCallTheme.colors.main,
+                    contentColor = MediCareCallTheme.colors.white,
+                    shape = CircleShape
+                ) {
+                    Icon(
+                        painter = painterResource(R.drawable.ic_carecall),
+                        contentDescription = "메인 FAB"
+                    )
+                }
+            }
         },
-        floatingActionButtonPosition = FabPosition.Center,
+//        floatingActionButtonPosition = FabPosition.,
     ) { innerPadding ->
         Box(
             modifier = modifier
@@ -214,7 +279,6 @@ fun HomeScreenLayout(
                                 modifier = Modifier.padding(horizontal = 20.dp, vertical = 40.dp),
                                 verticalAlignment = Alignment.CenterVertically
                             ) {
-
 
 
                                 val balloonText = homeUiState.balloonMessage
@@ -403,6 +467,7 @@ fun PreviewHomeScreen() {
             onNavigateToGlucoseDetail = {},
             snackbarHostState = SnackbarHostState(),
             isLoading = true,
+            immediateCall = {},
             onFabClick = {}
         )
     }

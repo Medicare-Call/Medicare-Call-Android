@@ -25,7 +25,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 
-data class ElderInfo(val id: Int, val name: String,  val phone: String?)
+data class ElderInfo(val id: Int, val name: String, val phone: String?)
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -37,23 +37,20 @@ class HomeViewModel @Inject constructor(
 
     var isLoading by mutableStateOf(true)
 
-    fun callCareCallImmediate(
-        onSuccess: () -> Unit = {},
-        onFailure: (String) -> Unit = {}
+    fun callImmediate(
+        careCallTimeOption: String
     ) {
         viewModelScope.launch {
-            try {
-                val res = homeRepository.requestImmediateCareCall()
-                if (res.isSuccessful) {
-                    onSuccess()
-                } else {
-                    onFailure("요청 실패 (${res.code()})")
-                }
-            } catch (e: Exception) {
-                onFailure(e.message ?: "알 수 없는 에러")
+            homeRepository.requestImmediateCareCall(
+                elderId = selectedElderId.value!!,
+                careCallOption = careCallTimeOption
+            ).onSuccess {
+
             }
+                .onFailure { }
         }
     }
+
     private companion object {
         const val TAG = "HomeViewModel"
         const val KEY_SELECTED_ELDER_ID = "selectedElderId"
@@ -94,10 +91,12 @@ class HomeViewModel @Inject constructor(
             }
         }
     }
+
     // 케어콜 후 데이터 불러오기
     fun forceRefreshHomeData() {
         _selectedElderId.value = _selectedElderId.value
     }
+
     // 서버에서 어르신 전체 목록을 불러옴
     private fun fetchElderList() {
         viewModelScope.launch {
@@ -175,6 +174,7 @@ class HomeViewModel @Inject constructor(
         // 선택된 ID 갱신 → collect 블록이 fetchHomeSummaryForToday(id) 호출
         _selectedElderId.value = id
     }
+
     // 이름 → ID 매핑
     private val elderIdByName: StateFlow<Map<String, Int>> =
         _elderInfoList.mapState { list -> list.associate { it.name to it.id } }

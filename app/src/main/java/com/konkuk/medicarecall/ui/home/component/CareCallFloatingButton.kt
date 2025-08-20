@@ -19,6 +19,7 @@ import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
+import androidx.lifecycle.viewmodel.compose.viewModel
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.home.HomeViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -26,29 +27,19 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 @Composable
 fun CareCallFloatingButton(
     modifier: Modifier = Modifier,
+    careCallOption: String,
+    text: String,
     onClick: () -> Unit = {},
-    onError: (String) -> Unit = {}
 ) {
 
 
-    val viewModel: HomeViewModel = androidx.hilt.navigation.compose.hiltViewModel()
-    val context = LocalContext.current
 
     Button(
         modifier = modifier,
         onClick = {
-            viewModel.callCareCallImmediate(
-                onSuccess = {
-                    Toast.makeText(context, "케어콜 요청이 전송되었습니다.", Toast.LENGTH_SHORT).show()
-                    onClick()
-                },
-                onFailure = { msg ->
-                    Toast.makeText(context, "요청 실패: $msg", Toast.LENGTH_SHORT).show()
-                    onError(msg)
-                }
-            )
+            onClick()
         },
-        shape = RoundedCornerShape(50),
+        shape = RoundedCornerShape(14.dp),
         colors = ButtonDefaults.buttonColors(
             containerColor = MediCareCallTheme.colors.main
         ),
@@ -63,9 +54,9 @@ fun CareCallFloatingButton(
                 tint = Color.White,
                 modifier = Modifier.size(20.dp)
             )
-            Spacer(modifier = Modifier.width(8.dp))
+            Spacer(modifier = Modifier.width(4.dp))
             Text(
-                text = "케어콜 걸기",
+                text = text,
                 style = MediCareCallTheme.typography.SB_16,
                 color = Color.White
             )
@@ -74,10 +65,10 @@ fun CareCallFloatingButton(
 }
 
 
-@Preview
-@Composable
-private fun PreviewCareCallFloatingButton() {
-
-    CareCallFloatingButton(onClick = {})
-
-}
+//@Preview
+//@Composable
+//private fun PreviewCareCallFloatingButton() {
+//
+//    CareCallFloatingButton(onClick = {})
+//
+//}

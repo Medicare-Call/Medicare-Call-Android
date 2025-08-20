@@ -26,8 +26,11 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 fun LogoutConfirmDialog(onDismiss: () -> Unit, onLogout: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
         Column(
-            modifier = Modifier.clip(RoundedCornerShape(14.dp)).
-            background(MediCareCallTheme.colors.white).padding(20.dp).fillMaxWidth()
+            modifier = Modifier
+                .clip(RoundedCornerShape(14.dp))
+                .background(MediCareCallTheme.colors.white)
+                .padding(20.dp)
+                .fillMaxWidth()
 
 
         ) {
@@ -50,7 +53,9 @@ fun LogoutConfirmDialog(onDismiss: () -> Unit, onLogout: () -> Unit) {
                         containerColor = MediCareCallTheme.colors.gray1,
                         contentColor = MediCareCallTheme.colors.gray6
                     ),
-                    modifier = Modifier.weight(1f).height(50.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp)
                 ) {
                     Text("취소", style = MediCareCallTheme.typography.B_17)
                 }
@@ -62,7 +67,9 @@ fun LogoutConfirmDialog(onDismiss: () -> Unit, onLogout: () -> Unit) {
                         containerColor = MediCareCallTheme.colors.negative,
                         contentColor = MediCareCallTheme.colors.white
                     ),
-                    modifier = Modifier.weight(1f).height(50.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp)
                 ) {
                     Text("로그아웃", style = MediCareCallTheme.typography.B_17)
                 }

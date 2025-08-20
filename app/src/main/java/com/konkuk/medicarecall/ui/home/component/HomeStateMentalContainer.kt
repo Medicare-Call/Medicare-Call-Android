@@ -30,7 +30,7 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 fun HomeStateMentalContainer(
     modifier: Modifier = Modifier,
     mentalStatus: String,
-            onClick: () -> Unit
+    onClick: () -> Unit
 ) {
 
 
@@ -97,7 +97,7 @@ fun HomeStateMentalContainer(
                         style = MediCareCallTheme.typography.SB_22,
                         color = textColor
                     )
-             }
+                }
             }
 
 

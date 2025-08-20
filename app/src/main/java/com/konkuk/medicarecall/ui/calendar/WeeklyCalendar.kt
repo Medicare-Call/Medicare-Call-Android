@@ -74,7 +74,7 @@ fun WeeklyCalendar(
                         .size(29.dp)
                         .clip(CircleShape)
                         .background(if (isSelected) MediCareCallTheme.colors.main else Color.Transparent)
-                        .clickable {onDateSelected(date)},
+                        .clickable { onDateSelected(date) },
                     contentAlignment = Alignment.Center
                 ) {
 

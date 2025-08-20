@@ -11,36 +11,28 @@ import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.CircleShape
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
-import androidx.compose.runtime.DisposableEffect
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
-import androidx.compose.runtime.rememberCoroutineScope
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
-import androidx.navigation.NavController
-import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.data.dto.response.MyInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.PushNotificationDto
-import com.konkuk.medicarecall.ui.model.NotificationStateType
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.component.SwitchButton
 import com.konkuk.medicarecall.ui.settings.viewmodel.DetailMyDataViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+
 @Composable
 fun SettingAlarmScreen(
     modifier: Modifier = Modifier,
@@ -89,7 +81,9 @@ fun SettingAlarmScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "go_back",
-                    modifier = Modifier.size(24.dp).clickable { onBack() },
+                    modifier = Modifier
+                        .size(24.dp)
+                        .clickable { onBack() },
                     tint = Color.Black
                 )
             }
@@ -125,7 +119,11 @@ fun SettingAlarmScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("케어콜 완료 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
+                Text(
+                    "케어콜 완료 알림",
+                    style = MediCareCallTheme.typography.R_16,
+                    color = MediCareCallTheme.colors.gray8
+                )
                 SwitchButton(
                     checked = completeChecked,
                     onCheckedChange = { isChecked ->
@@ -142,7 +140,11 @@ fun SettingAlarmScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("건강 이상 징후 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
+                Text(
+                    "건강 이상 징후 알림",
+                    style = MediCareCallTheme.typography.R_16,
+                    color = MediCareCallTheme.colors.gray8
+                )
                 SwitchButton(
                     checked = abnormalChecked,
                     onCheckedChange = { isChecked ->
@@ -159,7 +161,11 @@ fun SettingAlarmScreen(
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.SpaceBetween
             ) {
-                Text("케어콜 부재중 알림", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
+                Text(
+                    "케어콜 부재중 알림",
+                    style = MediCareCallTheme.typography.R_16,
+                    color = MediCareCallTheme.colors.gray8
+                )
                 SwitchButton(
                     checked = missedChecked,
                     onCheckedChange = { isChecked ->

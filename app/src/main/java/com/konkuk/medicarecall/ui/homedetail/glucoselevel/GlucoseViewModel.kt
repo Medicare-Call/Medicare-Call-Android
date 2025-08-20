@@ -59,6 +59,7 @@ class GlucoseViewModel @Inject constructor(
                             beforeMealData.addAll(0, newData)
                             beforeMealData
                         }
+
                         GlucoseTiming.AFTER_MEAL -> {
                             if (isRefresh) afterMealData.clear()
                             afterMealData.addAll(0, newData)

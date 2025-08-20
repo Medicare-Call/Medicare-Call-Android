@@ -68,7 +68,7 @@ fun FirstTimeWheelPicker(
 //                            //setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
 //                        }
                         setPickerTextColor(mainColor)
-//                        for (i in 0 until childCount) {
+                        //                        for (i in 0 until childCount) {
 //                            val child = getChildAt(i)
 //                            if (child is EditText) {
 //                                child.textSize = 20f
@@ -82,15 +82,18 @@ fun FirstTimeWheelPicker(
                                 val dividerField = NumberPicker::class.java
                                     .getDeclaredField("mSelectionDivider")
                                     .apply { isAccessible = true }
-                                dividerField.set(this,
-                                    Color.TRANSPARENT.toDrawable())
+                                dividerField.set(
+                                    this,
+                                    Color.TRANSPARENT.toDrawable()
+                                )
 
                                 // mSelectionDividerHeight(높이)를 0 으로
                                 val heightField = NumberPicker::class.java
                                     .getDeclaredField("mSelectionDividerHeight")
                                     .apply { isAccessible = true }
                                 heightField.setInt(this, 0)
-                            } catch (ignored: Exception) {}
+                            } catch (ignored: Exception) {
+                            }
                         }
 
                         hideDividers()
@@ -110,15 +113,18 @@ fun FirstTimeWheelPicker(
                             val dividerField = NumberPicker::class.java
                                 .getDeclaredField("mSelectionDivider")
                                 .apply { isAccessible = true }
-                            dividerField.set(this,
-                                Color.TRANSPARENT.toDrawable())
+                            dividerField.set(
+                                this,
+                                Color.TRANSPARENT.toDrawable()
+                            )
 
                             // mSelectionDividerHeight(높이)를 0 으로
                             val heightField = NumberPicker::class.java
                                 .getDeclaredField("mSelectionDividerHeight")
                                 .apply { isAccessible = true }
                             heightField.setInt(this, 0)
-                        } catch (ignored: Exception) { }
+                        } catch (ignored: Exception) {
+                        }
                     }
                     hideDividers()
 //                    for (i in 0 until picker.childCount) {
@@ -145,7 +151,7 @@ fun FirstTimeWheelPicker(
 //                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                         }
                         setPickerTextColor(mainColor) // 텍스트 색상 변경
-//                        for (i in 0 until childCount) {
+                        //                        for (i in 0 until childCount) {
 //                            val child = getChildAt(i)
 //                            if (child is EditText) {
 //                                child.textSize = 20f
@@ -159,15 +165,18 @@ fun FirstTimeWheelPicker(
                                 val dividerField = NumberPicker::class.java
                                     .getDeclaredField("mSelectionDivider")
                                     .apply { isAccessible = true }
-                                dividerField.set(this,
-                                    Color.TRANSPARENT.toDrawable())
+                                dividerField.set(
+                                    this,
+                                    Color.TRANSPARENT.toDrawable()
+                                )
 
                                 // mSelectionDividerHeight(높이)를 0 으로
                                 val heightField = NumberPicker::class.java
                                     .getDeclaredField("mSelectionDividerHeight")
                                     .apply { isAccessible = true }
                                 heightField.setInt(this, 0)
-                            } catch (ignored: Exception) { }
+                            } catch (ignored: Exception) {
+                            }
                         }
                         hideDividers()
 //                        for (i in 0 until childCount) {
@@ -187,15 +196,18 @@ fun FirstTimeWheelPicker(
                             val dividerField = NumberPicker::class.java
                                 .getDeclaredField("mSelectionDivider")
                                 .apply { isAccessible = true }
-                            dividerField.set(this,
-                                Color.TRANSPARENT.toDrawable())
+                            dividerField.set(
+                                this,
+                                Color.TRANSPARENT.toDrawable()
+                            )
 
                             // mSelectionDividerHeight(높이)를 0 으로
                             val heightField = NumberPicker::class.java
                                 .getDeclaredField("mSelectionDividerHeight")
                                 .apply { isAccessible = true }
                             heightField.setInt(this, 0)
-                        } catch (ignored: Exception) { }
+                        } catch (ignored: Exception) {
+                        }
                     }
                     hideDividers()
 //                    for (i in 0 until picker.childCount) {
@@ -209,7 +221,11 @@ fun FirstTimeWheelPicker(
                 }
             )
             Spacer(modifier = Modifier.width(18.dp))
-            Text(":", style = MediCareCallTheme.typography.M_20, color = MediCareCallTheme.colors.main)
+            Text(
+                ":",
+                style = MediCareCallTheme.typography.M_20,
+                color = MediCareCallTheme.colors.main
+            )
             Spacer(modifier = Modifier.width(18.dp))
 
             // 분 (00, 10, 20, 30, 40, 50)
@@ -226,7 +242,7 @@ fun FirstTimeWheelPicker(
 //                            setPickerTextStyle(mainColor, 20f, Typeface.DEFAULT_BOLD)
                         }
                         setPickerTextColor(mainColor)
-//                        for (i in 0 until childCount) {
+                        //                        for (i in 0 until childCount) {
 //                            val child = getChildAt(i)
 //                            if (child is EditText) {
 //                                child.textSize = 20f
@@ -240,15 +256,18 @@ fun FirstTimeWheelPicker(
                                 val dividerField = NumberPicker::class.java
                                     .getDeclaredField("mSelectionDivider")
                                     .apply { isAccessible = true }
-                                dividerField.set(this,
-                                    Color.TRANSPARENT.toDrawable())
+                                dividerField.set(
+                                    this,
+                                    Color.TRANSPARENT.toDrawable()
+                                )
 
                                 // mSelectionDividerHeight(높이)를 0 으로
                                 val heightField = NumberPicker::class.java
                                     .getDeclaredField("mSelectionDividerHeight")
                                     .apply { isAccessible = true }
                                 heightField.setInt(this, 0)
-                            } catch (ignored: Exception) { }
+                            } catch (ignored: Exception) {
+                            }
                         }
                         hideDividers()
 //                        for (i in 0 until childCount) {
@@ -268,15 +287,18 @@ fun FirstTimeWheelPicker(
                             val dividerField = NumberPicker::class.java
                                 .getDeclaredField("mSelectionDivider")
                                 .apply { isAccessible = true }
-                            dividerField.set(this,
-                                Color.TRANSPARENT.toDrawable())
+                            dividerField.set(
+                                this,
+                                Color.TRANSPARENT.toDrawable()
+                            )
 
                             // mSelectionDividerHeight(높이)를 0 으로
                             val heightField = NumberPicker::class.java
                                 .getDeclaredField("mSelectionDividerHeight")
                                 .apply { isAccessible = true }
                             heightField.setInt(this, 0)
-                        } catch (ignored: Exception) { }
+                        } catch (ignored: Exception) {
+                        }
                     }
                     hideDividers()
 //                    for (i in 0 until picker.childCount) {

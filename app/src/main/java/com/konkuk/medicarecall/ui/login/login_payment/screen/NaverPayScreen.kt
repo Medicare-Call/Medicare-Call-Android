@@ -1,4 +1,5 @@
 package com.konkuk.medicarecall.ui.login.login_payment.screen
+
 import android.annotation.SuppressLint
 import android.util.Log
 import android.webkit.WebView
@@ -10,7 +11,6 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
@@ -36,6 +36,7 @@ import com.konkuk.medicarecall.ui.login.login_payment.viewmodel.NaverPayViewMode
 import com.konkuk.medicarecall.ui.model.PaymentResult
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
+
 @SuppressLint("SetJavaScriptEnabled")
 @Composable
 fun NaverPayScreen(
@@ -58,7 +59,9 @@ fun NaverPayScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "go_back",
-                    modifier = modifier.size(24.dp).clickable { onBack() },
+                    modifier = modifier
+                        .size(24.dp)
+                        .clickable { onBack() },
                     tint = Color.Black
                 )
             },
@@ -194,6 +197,7 @@ fun NaverPayScreen(
                                                     }
                                                 }
                                         }
+
                                         @android.webkit.JavascriptInterface
                                         fun closePage() {
                                             android.os.Handler(android.os.Looper.getMainLooper())
@@ -271,6 +275,7 @@ fun NaverPayScreen(
                                             }
                                             return false // 나머지는 WebView가 처리
                                         }
+
                                         override fun onPageFinished(v: WebView, url: String) {
                                             android.util.Log.d(
                                                 "NaverPayWebView",
@@ -300,6 +305,7 @@ fun NaverPayScreen(
                                                 }
                                             }
                                         }
+
                                         override fun onReceivedHttpError(
                                             v: WebView,
                                             req: android.webkit.WebResourceRequest,
@@ -310,6 +316,7 @@ fun NaverPayScreen(
                                                 "POPUP HTTP ${res.statusCode} on ${req.url}"
                                             )
                                         }
+
                                         override fun onReceivedError(
                                             v: WebView,
                                             req: android.webkit.WebResourceRequest,
@@ -338,6 +345,7 @@ fun NaverPayScreen(
                                 resultMsg.sendToTarget()
                                 return true
                             }
+
                             override fun onConsoleMessage(msg: android.webkit.ConsoleMessage?): Boolean {
                                 Log.d("NaverPayWebView", "CONSOLE: ${msg?.message()}")
                                 return super.onConsoleMessage(msg)
@@ -407,6 +415,7 @@ fun NaverPayScreen(
                                 // 그 외(네이버 포함)는 WebView가 자체 처리
                                 return false
                             }
+
                             override fun onPageFinished(view: WebView, url: String) {
                                 Log.d("NaverPayWebView", "FINISHED: $url")
                                 // 우리 서버의 결제 완료 페이지에 도달했을 때만 시도
@@ -428,6 +437,7 @@ fun NaverPayScreen(
                                     ) { ret -> Log.d("NaverPayWebView", "fallback bridge: $ret") }
                                 }
                             } // 서버가 호출안하면 우리가 호출 (결과 페이지 도달)
+
                             override fun onReceivedHttpError(
                                 view: WebView,
                                 request: android.webkit.WebResourceRequest,
@@ -438,6 +448,7 @@ fun NaverPayScreen(
                                     "HTTP ${errorResponse.statusCode} on ${request.url}"
                                 )
                             }
+
                             override fun onReceivedError(
                                 view: WebView,
                                 request: android.webkit.WebResourceRequest,

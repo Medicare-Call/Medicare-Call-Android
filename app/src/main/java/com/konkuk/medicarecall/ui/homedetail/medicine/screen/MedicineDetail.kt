@@ -75,7 +75,7 @@ fun MedicineDetail(
         medicines = uiState.items,
         weekDates = calendarViewModel.getCurrentWeekDates(),
         onDateSelected = { calendarViewModel.selectDate(it) },
-                onMonthClick = { /* 모달 열기 */ }
+        onMonthClick = { /* 모달 열기 */ }
     )
 }
 
@@ -150,7 +150,7 @@ fun PreviewMedicineDetail() {
             todayRequiredCount = 3,
             doseStatusList = listOf(
                 DoseStatusItem(time = "MORNING", doseStatus = DoseStatus.TAKEN),
-                DoseStatusItem(time = "LUNCH",   doseStatus = DoseStatus.SKIPPED)
+                DoseStatusItem(time = "LUNCH", doseStatus = DoseStatus.SKIPPED)
             )
         ),
         MedicineUiState(

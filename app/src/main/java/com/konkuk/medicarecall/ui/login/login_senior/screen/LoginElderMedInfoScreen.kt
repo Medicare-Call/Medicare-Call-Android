@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.login.login_elder.screen
+package com.konkuk.medicarecall.ui.login.login_senior.screen
 
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
@@ -13,13 +13,11 @@ import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.verticalScroll
-import androidx.compose.material3.Scaffold
 import androidx.compose.material3.SnackbarHostState
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
@@ -38,7 +36,7 @@ import com.konkuk.medicarecall.ui.component.DefaultSnackBar
 import com.konkuk.medicarecall.ui.component.DiseaseNamesItem
 import com.konkuk.medicarecall.ui.component.MedicationItem
 import com.konkuk.medicarecall.ui.login.login_info.component.LoginBackButton
-import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
+import com.konkuk.medicarecall.ui.login.login_senior.LoginElderViewModel
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.HealthIssueType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -65,7 +63,7 @@ fun LoginElderMedInfoScreen(
             .systemBarsPadding()
             .imePadding()
     ) {
-        Column{
+        Column {
             LoginBackButton({
                 navController.popBackStack()
             })

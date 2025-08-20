@@ -137,7 +137,7 @@ fun SleepDetailCard(
 }
 
 
-@Preview(showBackground = true, name="기록 있음")
+@Preview(showBackground = true, name = "기록 있음")
 @Composable
 fun PreviewSleepDetailCard_Recorded() {
     SleepDetailCard(
@@ -152,7 +152,7 @@ fun PreviewSleepDetailCard_Recorded() {
     )
 }
 
-@Preview(showBackground = true, name="미기록")
+@Preview(showBackground = true, name = "미기록")
 @Composable
 fun PreviewSleepDetailCard_Unrecorded() {
     SleepDetailCard(

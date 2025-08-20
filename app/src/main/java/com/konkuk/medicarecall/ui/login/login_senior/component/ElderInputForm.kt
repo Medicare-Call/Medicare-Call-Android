@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.login.login_elder.component
+package com.konkuk.medicarecall.ui.login.login_senior.component
 
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.animation.expandVertically
@@ -26,9 +26,9 @@ import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
-import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
-import com.konkuk.medicarecall.ui.model.RelationshipType
+import com.konkuk.medicarecall.ui.login.login_senior.LoginElderViewModel
 import com.konkuk.medicarecall.ui.model.ElderResidenceType
+import com.konkuk.medicarecall.ui.model.RelationshipType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation

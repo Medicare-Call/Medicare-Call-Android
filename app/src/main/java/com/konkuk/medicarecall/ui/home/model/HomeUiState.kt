@@ -37,8 +37,8 @@ data class HomeUiState(
             ).any { it == true },
 
             breakfastEaten = dto.mealStatus.breakfast,
-            lunchEaten     = dto.mealStatus.lunch,
-            dinnerEaten    = dto.mealStatus.dinner,
+            lunchEaten = dto.mealStatus.lunch,
+            dinnerEaten = dto.mealStatus.dinner,
 
 
             medicines = dto.medicationStatus.medicationList
@@ -50,10 +50,10 @@ data class HomeUiState(
                         todayRequiredCount = it.goal,
                         nextDoseTime = when (it.nextTime) {
                             "MORNING" -> "아침"
-                            "LUNCH"   -> "점심"
-                            "DINNER"  -> "저녁"
-                            null, ""  -> "-"
-                            else      -> it.nextTime
+                            "LUNCH" -> "점심"
+                            "DINNER" -> "저녁"
+                            null, "" -> "-"
+                            else -> it.nextTime
                         }
                     )
                 },

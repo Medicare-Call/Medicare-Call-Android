@@ -1,4 +1,3 @@
-
 package com.konkuk.medicarecall.ui.homedetail.sleep.model
 
 data class SleepUiState(

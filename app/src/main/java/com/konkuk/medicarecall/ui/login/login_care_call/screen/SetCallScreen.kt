@@ -15,7 +15,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.lazy.LazyRow
@@ -47,9 +46,8 @@ import com.konkuk.medicarecall.ui.component.CTAButton
 import com.konkuk.medicarecall.ui.login.login_care_call.component.BenefitItem
 import com.konkuk.medicarecall.ui.login.login_care_call.component.TimePickerBottomSheet
 import com.konkuk.medicarecall.ui.login.login_care_call.component.TimeSettingItem
-import com.konkuk.medicarecall.ui.login.login_info.component.LoginBackButton
-import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
 import com.konkuk.medicarecall.ui.login.login_care_call.viewmodel.CallTimeViewModel
+import com.konkuk.medicarecall.ui.login.login_info.component.LoginBackButton
 import com.konkuk.medicarecall.ui.model.CTAButtonType
 import com.konkuk.medicarecall.ui.model.CallTimes
 import com.konkuk.medicarecall.ui.model.TimeSettingType
@@ -83,7 +81,13 @@ fun SetCallScreen(
 
     when {
         isLoading -> {
-            Box(Modifier.fillMaxSize().background(MediCareCallTheme.colors.bg).systemBarsPadding(), contentAlignment = Alignment.Center) {
+            Box(
+                Modifier
+                    .fillMaxSize()
+                    .background(MediCareCallTheme.colors.bg)
+                    .systemBarsPadding(),
+                contentAlignment = Alignment.Center
+            ) {
                 CircularProgressIndicator(
                     color = MediCareCallTheme.colors.main,
                     modifier = Modifier.align(Alignment.Center)
@@ -91,6 +95,7 @@ fun SetCallScreen(
             }
             return
         }
+
         error != null -> {
             Column(
                 Modifier.fillMaxSize(),
@@ -107,6 +112,7 @@ fun SetCallScreen(
             }
             return
         }
+
         nameIdList.isEmpty() -> {
             Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
                 Text("등록된 어르신이 없습니다.")
@@ -362,7 +368,8 @@ fun SetCallScreen(
                         }
                     )
                 },
-                modifier = Modifier.padding(bottom = 20.dp)) // 입력여부에 따라 Type 바뀌도록 수정 필요
+                modifier = Modifier.padding(bottom = 20.dp)
+            ) // 입력여부에 따라 Type 바뀌도록 수정 필요
             if (showBottomSheet) {
                 TimePickerBottomSheet(
                     visible = true,

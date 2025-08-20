@@ -21,6 +21,7 @@ fun String.formatAsDate(): String {
         ""
     }
 }
+
 fun String.isValidDate(): Boolean {
     if (this.length != 8) return false
 

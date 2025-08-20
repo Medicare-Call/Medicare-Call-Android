@@ -32,9 +32,9 @@ class MedicineRepositoryImpl @Inject constructor(
         schedule.forEach { (timeEnum, meds) ->
             val label = when (timeEnum.name) {
                 "MORNING" -> "아침"
-                "LUNCH"   -> "점심"
-                "DINNER"  -> "저녁"
-                else      -> ""
+                "LUNCH" -> "점심"
+                "DINNER" -> "저녁"
+                else -> ""
             }
             meds.forEach { raw ->
                 val name = raw.trim()
@@ -68,7 +68,8 @@ class MedicineRepositoryImpl @Inject constructor(
         date: LocalDate
     ): List<MedicineUiState> {
 
-        val grayTemplate = runCatching { getConfiguredMedicineUiList(elderId) }.getOrDefault(emptyList())
+        val grayTemplate =
+            runCatching { getConfiguredMedicineUiList(elderId) }.getOrDefault(emptyList())
 
         return runCatching { medicineApi.getDailyMedication(elderId, date.toString()) }
             .fold(
@@ -85,13 +86,13 @@ class MedicineRepositoryImpl @Inject constructor(
                         val correctOrder = grayTemplate.map { it.medicineName }
 
                         val sortedMedications = dto.medications.sortedBy { medDto ->
-                            correctOrder.indexOf(medDto.type).let { if (it == -1) Int.MAX_VALUE else it }
+                            correctOrder.indexOf(medDto.type)
+                                .let { if (it == -1) Int.MAX_VALUE else it }
                         }
 
 
-
                         val order = listOf("MORNING", "LUNCH", "DINNER")
-                        val kor   = mapOf("MORNING" to "아침", "LUNCH" to "점심", "DINNER" to "저녁")
+                        val kor = mapOf("MORNING" to "아침", "LUNCH" to "점심", "DINNER" to "저녁")
 
 
                         return@fold sortedMedications.map { m ->

@@ -11,7 +11,7 @@ class NaverPayRepository @Inject constructor(
 
     suspend fun postReserveInfo(
         request: ReservePayRequestDto
-    ) : Result<ReservePayResponseDto> = runCatching {
+    ): Result<ReservePayResponseDto> = runCatching {
         val response = naverPayService.postReservePay(request)
         if (response.isSuccessful) {
             response.body() ?: throw IllegalStateException("Response body is null")

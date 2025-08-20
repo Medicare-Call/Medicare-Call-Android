@@ -2,7 +2,6 @@ package com.konkuk.medicarecall.data.mapper
 
 import com.konkuk.medicarecall.data.dto.request.MedicationSchedule
 import com.konkuk.medicarecall.ui.model.MedicationTimeType
-import kotlin.collections.map
 
 object ElderHealthMapper {
 

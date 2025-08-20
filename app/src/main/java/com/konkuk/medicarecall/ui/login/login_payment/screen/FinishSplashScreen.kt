@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.imePadding
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.runtime.Composable
@@ -64,7 +63,7 @@ fun FinishSplashScreen(
         Spacer(modifier = modifier.weight(1f))
         CTAButton(
             CTAButtonType.WHITE, "확인",
-            onClick = {  navController.navigateToMainAfterLogin() },
+            onClick = { navController.navigateToMainAfterLogin() },
             modifier = modifier.padding(horizontal = 20.dp)
         )
         Spacer(modifier = modifier.height(30.dp))

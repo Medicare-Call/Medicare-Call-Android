@@ -14,6 +14,7 @@ sealed class Route(val route: String) {
     object NaverPayWithCode : Route("naver_pay/{orderCode}") {
         fun create(orderCode: String) = "naver_pay/$orderCode"
     }
+
     object FinishSplash : Route("finish_splash")
     object Home : Route("home")
     object Statistics : Route("statistics")

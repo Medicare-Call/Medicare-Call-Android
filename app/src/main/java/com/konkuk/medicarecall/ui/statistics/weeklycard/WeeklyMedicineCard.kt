@@ -77,11 +77,15 @@ fun WeeklyMedicineCard(
             ) {
                 medicine.forEach { weeklyMedicine ->
 
-                    val isUnrecorded = weeklyMedicine.takenCount == null||weeklyMedicine.takenCount < 0 // -1과 같은 음수 값으로 미기록 판단
+                    val isUnrecorded =
+                        weeklyMedicine.takenCount == null || weeklyMedicine.takenCount < 0 // -1과 같은 음수 값으로 미기록 판단
                     val iconColor = if (isUnrecorded) {
                         MediCareCallTheme.colors.gray2
                     } else {
-                        WeeklySummaryUtil.getMedicineIconColor(weeklyMedicine, MediCareCallTheme.colors)
+                        WeeklySummaryUtil.getMedicineIconColor(
+                            weeklyMedicine,
+                            MediCareCallTheme.colors
+                        )
                     }
 
                     val takenText = if (isUnrecorded) {
@@ -130,7 +134,7 @@ fun WeeklyMedicineCard(
 fun PreviewWeeklyMedicineCard_Recorded() {
     WeeklyMedicineCard(
         modifier = Modifier
-            .size(150.dp,140.dp),
+            .size(150.dp, 140.dp),
         medicine = listOf(
             WeeklyMedicineUiState("혈압약", 0, 14),
             WeeklyMedicineUiState("영양제", 4, 7),
@@ -145,7 +149,7 @@ fun PreviewWeeklyMedicineCard_Recorded() {
 fun PreviewWeeklyMedicineCard_UnRecorded() {
     WeeklyMedicineCard(
         modifier = Modifier
-            .size(150.dp,140.dp),
+            .size(150.dp, 140.dp),
         medicine = listOf(
             WeeklyMedicineUiState("혈압약", -1, 14),
             WeeklyMedicineUiState("영양제", -1, 7),

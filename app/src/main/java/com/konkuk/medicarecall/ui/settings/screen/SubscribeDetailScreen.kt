@@ -37,13 +37,15 @@ import java.util.Locale
 fun SubscribeDetailScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
-    elderInfo : EldersSubscriptionResponseDto
+    elderInfo: EldersSubscriptionResponseDto
 ) {
     val scrollState = rememberScrollState()
-    Column(modifier = modifier
-        .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)
-        .statusBarsPadding()) {
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MediCareCallTheme.colors.bg)
+            .statusBarsPadding()
+    ) {
         SettingsTopAppBar(
             modifier = modifier,
             title = "구독관리",

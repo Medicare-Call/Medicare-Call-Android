@@ -5,12 +5,10 @@ import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxHeight
-import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
-import androidx.compose.foundation.layout.wrapContentHeight
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.material3.Card
 import androidx.compose.material3.CardDefaults
@@ -55,11 +53,11 @@ fun WeeklyMealCard(
 
             //1) Title: 식사 통계
 
-                Text(
-                    "식사통계",
-                    style = MediCareCallTheme.typography.R_15,
-                    color = MediCareCallTheme.colors.gray5,
-                )
+            Text(
+                "식사통계",
+                style = MediCareCallTheme.typography.R_15,
+                color = MediCareCallTheme.colors.gray5,
+            )
 
 
             Spacer(modifier = Modifier.height(8.dp))
@@ -72,7 +70,8 @@ fun WeeklyMealCard(
             ) {
                 meal.forEach { weeklyMeal ->
 
-                    val isUnrecorded = weeklyMeal.eatenCount == null || weeklyMeal.eatenCount < 0 // -1과 같은 음수 값으로 미기록 판단
+                    val isUnrecorded =
+                        weeklyMeal.eatenCount == null || weeklyMeal.eatenCount < 0 // -1과 같은 음수 값으로 미기록 판단
 
                     val iconColor = if (isUnrecorded) {
                         MediCareCallTheme.colors.gray2

@@ -83,7 +83,8 @@ fun HomeGlucoseLevelContainer(
 
                 val isRecorded = glucoseLevelAverageToday > 0
                 val glucoseText = if (isRecorded) "$glucoseLevelAverageToday" else "--"
-                val textColor = if (isRecorded) MediCareCallTheme.colors.gray8 else MediCareCallTheme.colors.gray4
+                val textColor =
+                    if (isRecorded) MediCareCallTheme.colors.gray8 else MediCareCallTheme.colors.gray4
 
                 Row(
                     modifier = Modifier,
@@ -102,7 +103,6 @@ fun HomeGlucoseLevelContainer(
                         style = MediCareCallTheme.typography.R_16,
                         color = MediCareCallTheme.colors.gray8
                     )
-
 
 
                 }

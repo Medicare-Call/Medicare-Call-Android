@@ -79,7 +79,7 @@ fun PreviewWeekendBar() {
     WeekendBar(
         currentWeek = Pair(LocalDate.now(), LocalDate.now()),
         isLatestWeek = true,
-        isEarliestWeek= true,
+        isEarliestWeek = true,
         onPreviousWeek = {},
         onNextWeek = {}
     )

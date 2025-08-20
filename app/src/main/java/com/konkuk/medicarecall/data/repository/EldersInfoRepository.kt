@@ -5,10 +5,10 @@ import com.konkuk.medicarecall.data.dto.request.ElderRegisterRequestDto
 import com.konkuk.medicarecall.data.dto.response.CallTimeResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.data.dto.response.EldersSubscriptionResponseDto
-import com.konkuk.medicarecall.ui.model.GenderType
-import com.konkuk.medicarecall.ui.model.RelationshipType
 import com.konkuk.medicarecall.ui.model.ElderData
 import com.konkuk.medicarecall.ui.model.ElderResidenceType
+import com.konkuk.medicarecall.ui.model.GenderType
+import com.konkuk.medicarecall.ui.model.RelationshipType
 import com.konkuk.medicarecall.ui.util.formatAsDate
 import retrofit2.HttpException
 import javax.inject.Inject

@@ -1,7 +1,6 @@
 package com.konkuk.medicarecall.ui.splash.screen
 
 import android.app.Activity
-import android.content.Intent
 import android.content.pm.ActivityInfo
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.background
@@ -16,17 +15,13 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.layout.ContentScale
 import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.res.painterResource
-import androidx.core.splashscreen.SplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
-import androidx.navigation.NavOptions
-import com.konkuk.medicarecall.MainActivity
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.model.NavigationDestination
 import com.konkuk.medicarecall.ui.splash.viewmodel.SplashViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-import kotlinx.coroutines.delay
 
 @Composable
 fun SplashScreen(navController: NavController) {
@@ -50,7 +45,7 @@ fun SplashScreen(navController: NavController) {
                 launchSingleTop = true
             }
             navController.navigate(route) {
-                if(route == Route.Home.route) {
+                if (route == Route.Home.route) {
                     popUpTo(Route.LoginStart.route) {
                         inclusive = true
                     }
@@ -75,7 +70,8 @@ fun SplashScreen(navController: NavController) {
         onDispose {
             // 이 화면에서 벗어날 때 실행될 코드
             // 저장해 둔 원래 방향으로 되돌립니다.
-            activity?.requestedOrientation = originalOrientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
+            activity?.requestedOrientation =
+                originalOrientation ?: ActivityInfo.SCREEN_ORIENTATION_UNSPECIFIED
         }
     }
 

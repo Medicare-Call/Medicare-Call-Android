@@ -10,7 +10,6 @@ import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
-import androidx.compose.foundation.layout.statusBarsPadding
 import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
@@ -27,12 +26,17 @@ import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun AnnouncementDetailScreen(modifier: Modifier = Modifier,  noticeInfo : NoticesResponseDto,  onBack: () -> Unit = {}) {
+fun AnnouncementDetailScreen(
+    modifier: Modifier = Modifier,
+    noticeInfo: NoticesResponseDto,
+    onBack: () -> Unit = {}
+) {
     val scrollState = rememberScrollState()
-    Column(modifier = modifier
-        .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)
-        .systemBarsPadding()
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MediCareCallTheme.colors.bg)
+            .systemBarsPadding()
     ) {
         SettingsTopAppBar(
             modifier = modifier,
@@ -41,7 +45,9 @@ fun AnnouncementDetailScreen(modifier: Modifier = Modifier,  noticeInfo : Notice
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "go_back",
-                    modifier = modifier.size(24.dp).clickable{onBack()},
+                    modifier = modifier
+                        .size(24.dp)
+                        .clickable { onBack() },
                     tint = Color.Black
                 )
             },
@@ -70,7 +76,12 @@ fun AnnouncementDetailScreen(modifier: Modifier = Modifier,  noticeInfo : Notice
                     modifier = modifier.fillMaxWidth()
                 )
                 Spacer(modifier = modifier.height(10.dp))
-                Box(modifier = modifier.fillMaxWidth().height(1.dp).background(MediCareCallTheme.colors.gray1))
+                Box(
+                    modifier = modifier
+                        .fillMaxWidth()
+                        .height(1.dp)
+                        .background(MediCareCallTheme.colors.gray1)
+                )
                 Spacer(modifier = modifier.height(10.dp))
                 Text(
                     text = noticeInfo.contents,

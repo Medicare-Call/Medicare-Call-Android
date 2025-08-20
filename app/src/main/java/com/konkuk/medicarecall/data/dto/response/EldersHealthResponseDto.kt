@@ -7,9 +7,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class EldersHealthResponseDto(
-    val elderId : Int,
-    val name : String,
-    val diseases : List<String> = emptyList(),
-    val medications : Map<MedicationTimeType, List<String>> = emptyMap(),
-    val notes : List<HealthIssueType>
-    )
+    val elderId: Int,
+    val name: String,
+    val diseases: List<String> = emptyList(),
+    val medications: Map<MedicationTimeType, List<String>> = emptyMap(),
+    val notes: List<HealthIssueType>
+)

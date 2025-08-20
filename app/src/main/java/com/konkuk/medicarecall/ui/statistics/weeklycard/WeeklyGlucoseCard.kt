@@ -33,8 +33,10 @@ fun WeeklyGlucoseCard(
     weeklyGlucose: WeeklyGlucoseUiState
 ) {
 
-    val hasBeforeMealData = weeklyGlucose.beforeMealNormal > 0 || weeklyGlucose.beforeMealHigh > 0 || weeklyGlucose.beforeMealLow > 0
-    val hasAfterMealData = weeklyGlucose.afterMealNormal > 0 || weeklyGlucose.afterMealHigh > 0 || weeklyGlucose.afterMealLow > 0
+    val hasBeforeMealData =
+        weeklyGlucose.beforeMealNormal > 0 || weeklyGlucose.beforeMealHigh > 0 || weeklyGlucose.beforeMealLow > 0
+    val hasAfterMealData =
+        weeklyGlucose.afterMealNormal > 0 || weeklyGlucose.afterMealHigh > 0 || weeklyGlucose.afterMealLow > 0
 
     Card(
         modifier = modifier
@@ -81,9 +83,18 @@ fun WeeklyGlucoseCard(
                     ) {
                         if (hasBeforeMealData) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                if (weeklyGlucose.beforeMealNormal > 0) GlucoseStatusRow("정상", weeklyGlucose.beforeMealNormal)
-                                if (weeklyGlucose.beforeMealHigh > 0) GlucoseStatusRow("높음", weeklyGlucose.beforeMealHigh)
-                                if (weeklyGlucose.beforeMealLow > 0) GlucoseStatusRow("낮음", weeklyGlucose.beforeMealLow)
+                                if (weeklyGlucose.beforeMealNormal > 0) GlucoseStatusRow(
+                                    "정상",
+                                    weeklyGlucose.beforeMealNormal
+                                )
+                                if (weeklyGlucose.beforeMealHigh > 0) GlucoseStatusRow(
+                                    "높음",
+                                    weeklyGlucose.beforeMealHigh
+                                )
+                                if (weeklyGlucose.beforeMealLow > 0) GlucoseStatusRow(
+                                    "낮음",
+                                    weeklyGlucose.beforeMealLow
+                                )
                             }
                         } else {
                             Text(
@@ -121,9 +132,18 @@ fun WeeklyGlucoseCard(
                     ) {
                         if (hasAfterMealData) {
                             Column(horizontalAlignment = Alignment.CenterHorizontally) {
-                                if (weeklyGlucose.afterMealNormal > 0) GlucoseStatusRow("정상", weeklyGlucose.afterMealNormal)
-                                if (weeklyGlucose.afterMealHigh > 0) GlucoseStatusRow("높음", weeklyGlucose.afterMealHigh)
-                                if (weeklyGlucose.afterMealLow > 0) GlucoseStatusRow("낮음", weeklyGlucose.afterMealLow)
+                                if (weeklyGlucose.afterMealNormal > 0) GlucoseStatusRow(
+                                    "정상",
+                                    weeklyGlucose.afterMealNormal
+                                )
+                                if (weeklyGlucose.afterMealHigh > 0) GlucoseStatusRow(
+                                    "높음",
+                                    weeklyGlucose.afterMealHigh
+                                )
+                                if (weeklyGlucose.afterMealLow > 0) GlucoseStatusRow(
+                                    "낮음",
+                                    weeklyGlucose.afterMealLow
+                                )
                             }
                         } else {
                             Text(

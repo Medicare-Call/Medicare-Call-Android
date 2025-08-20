@@ -5,32 +5,42 @@ import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.shape.RoundedCornerShape
+import androidx.compose.material3.OutlinedTextField
 import androidx.compose.material3.Text
+import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
-import androidx.compose.material3.OutlinedTextField
-import androidx.compose.material3.TextFieldDefaults
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun SettingTextField(category : String,value : String,hint: String, modifier: Modifier = Modifier) {
+fun SettingTextField(category: String, value: String, hint: String, modifier: Modifier = Modifier) {
     Column(modifier = modifier.fillMaxWidth()) {
         var text by remember { mutableStateOf(value) }
-        Text(text = category, color = MediCareCallTheme.colors.gray7, style = MediCareCallTheme.typography.M_17)
+        Text(
+            text = category,
+            color = MediCareCallTheme.colors.gray7,
+            style = MediCareCallTheme.typography.M_17
+        )
         Spacer(modifier = modifier.height(10.dp))
         OutlinedTextField(
             modifier = modifier
                 .fillMaxWidth(),
             value = value,
             shape = RoundedCornerShape(14.dp),
-            onValueChange = {text = it},
-            placeholder = {Text(text = hint, color = MediCareCallTheme.colors.gray3, style = MediCareCallTheme.typography.M_16)},
+            onValueChange = { text = it },
+            placeholder = {
+                Text(
+                    text = hint,
+                    color = MediCareCallTheme.colors.gray3,
+                    style = MediCareCallTheme.typography.M_16
+                )
+            },
             textStyle = MediCareCallTheme.typography.M_16.copy(
                 color = MediCareCallTheme.colors.black
             ),
@@ -40,7 +50,7 @@ fun SettingTextField(category : String,value : String,hint: String, modifier: Mo
                 focusedIndicatorColor = MediCareCallTheme.colors.main,
                 unfocusedIndicatorColor = MediCareCallTheme.colors.gray2,
 
-            )
+                )
         )
     }
 }
@@ -48,5 +58,5 @@ fun SettingTextField(category : String,value : String,hint: String, modifier: Mo
 @Preview(showBackground = true)
 @Composable
 private fun SettingTextFieldPreview() {
-    SettingTextField("이름","홍길동","이름")
+    SettingTextField("이름", "홍길동", "이름")
 }

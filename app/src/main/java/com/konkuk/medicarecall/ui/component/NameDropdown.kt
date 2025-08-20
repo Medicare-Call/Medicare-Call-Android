@@ -151,9 +151,11 @@ private fun DropdownItem(
 @Composable
 fun PreviewNameDropdown() {
     MediCareCallTheme {
-        Box(modifier = Modifier.fillMaxSize().background(Color.Gray)) {
+        Box(modifier = Modifier
+            .fillMaxSize()
+            .background(Color.Gray)) {
             NameDropdown(
-                items = listOf("김옥자", "박막례","김헬레나부시크"),
+                items = listOf("김옥자", "박막례", "김헬레나부시크"),
                 selectedName = "김옥자",
                 onDismiss = {},
                 onItemSelected = {}

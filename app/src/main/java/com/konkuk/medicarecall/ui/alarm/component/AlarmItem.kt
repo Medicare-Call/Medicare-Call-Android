@@ -14,7 +14,7 @@ import com.konkuk.medicarecall.ui.model.AlarmType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun AlarmItem(alarmType: AlarmType, content: String, date : String, modifier: Modifier = Modifier) {
+fun AlarmItem(alarmType: AlarmType, content: String, date: String, modifier: Modifier = Modifier) {
 
     Column(
         modifier = modifier
@@ -22,8 +22,16 @@ fun AlarmItem(alarmType: AlarmType, content: String, date : String, modifier: Mo
             .background(if (alarmType == AlarmType.NEW_ALARM) MediCareCallTheme.colors.g50 else Color.Transparent)
             .padding(14.dp)
     ) {
-        Text(text = content, color = MediCareCallTheme.colors.black, style = MediCareCallTheme.typography.R_15)
-        Text(text = date, color = MediCareCallTheme.colors.gray5, style = MediCareCallTheme.typography.R_14)
+        Text(
+            text = content,
+            color = MediCareCallTheme.colors.black,
+            style = MediCareCallTheme.typography.R_15
+        )
+        Text(
+            text = date,
+            color = MediCareCallTheme.colors.gray5,
+            style = MediCareCallTheme.typography.R_14
+        )
     }
 }
 
@@ -42,5 +50,5 @@ private fun AlarmItemPreview() {
             "7월 7일 13:15"
         )
     }
-    
+
 }

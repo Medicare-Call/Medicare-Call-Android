@@ -14,7 +14,6 @@ import androidx.compose.foundation.layout.WindowInsets
 import androidx.compose.foundation.layout.WindowInsetsSides
 import androidx.compose.foundation.layout.only
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.safeDrawing
 import androidx.compose.foundation.layout.systemBars
 import androidx.compose.material3.Icon
 import androidx.compose.material3.NavigationBar
@@ -33,7 +32,6 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.unit.dp
 import androidx.core.view.WindowCompat
-import androidx.lifecycle.viewmodel.compose.viewModel
 import androidx.core.splashscreen.SplashScreen.Companion.installSplashScreen
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.currentBackStackEntryAsState
@@ -42,7 +40,7 @@ import com.konkuk.medicarecall.navigation.BottomNavItem
 import com.konkuk.medicarecall.navigation.NavGraph
 import com.konkuk.medicarecall.navigation.navigateTopLevel
 import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
-import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
+import com.konkuk.medicarecall.ui.login.login_senior.LoginElderViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -73,9 +71,9 @@ class MainActivity : ComponentActivity() {
             window.decorView.systemUiVisibility = View.SYSTEM_UI_FLAG_LIGHT_NAVIGATION_BAR
 
         }
-        if(Build.VERSION.SDK_INT >= 35) {
+        if (Build.VERSION.SDK_INT >= 35) {
             window.isNavigationBarContrastEnforced = false
-        }  else {
+        } else {
             window.isNavigationBarContrastEnforced = false
 
             @Suppress("DEPRECATION")

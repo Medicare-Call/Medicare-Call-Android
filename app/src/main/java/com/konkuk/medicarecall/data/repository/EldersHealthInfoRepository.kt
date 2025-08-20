@@ -13,8 +13,8 @@ import javax.inject.Singleton
 
 @Singleton
 class EldersHealthInfoRepository @Inject constructor(
-    private val elderInfoService : EldersInfoService,
-    private val elderRegisterService : ElderRegisterService
+    private val elderInfoService: EldersInfoService,
+    private val elderRegisterService: ElderRegisterService
 ) {
 
     private var cachedHealthInfo: List<EldersHealthResponseDto>? = null
@@ -37,7 +37,8 @@ class EldersHealthInfoRepository @Inject constructor(
             Log.d("Cache", "Fetching new health info from server")
             val response = elderInfoService.getElderHealthInfo()
             if (response.isSuccessful) {
-                val body = response.body() ?: throw IllegalStateException("Response body is null(eldersHealthInfo)")
+                val body = response.body()
+                    ?: throw IllegalStateException("Response body is null(eldersHealthInfo)")
                 cachedHealthInfo = body // 캐시에 저장
                 body
             } else {
@@ -48,8 +49,8 @@ class EldersHealthInfoRepository @Inject constructor(
 
 
     suspend fun updateHealthInfo(
-        elderInfo : EldersHealthResponseDto
-    ) : Result<Unit> =
+        elderInfo: EldersHealthResponseDto
+    ): Result<Unit> =
         runCatching {
             val medicationSchedule = elderInfo.medications.toMedicationSchedules()
             val elder = ElderHealthRegisterRequestDto(
@@ -64,10 +65,17 @@ class EldersHealthInfoRepository @Inject constructor(
             if (response.isSuccessful) {
 
                 refresh()
-                Log.d("EldersHealthInfoRepository", "Health info updated successfully for elderId: ${elderInfo.elderId}")
+                Log.d(
+                    "EldersHealthInfoRepository",
+                    "Health info updated successfully for elderId: ${elderInfo.elderId}"
+                )
             } else {
-                val errorBody = response.errorBody()?.string() ?: "Unknown error(updating health info)"
-                Log.e("EldersHealthInfoRepository", "Failed to update health info: ${response.code()} - $errorBody")
+                val errorBody =
+                    response.errorBody()?.string() ?: "Unknown error(updating health info)"
+                Log.e(
+                    "EldersHealthInfoRepository",
+                    "Failed to update health info: ${response.code()} - $errorBody"
+                )
                 throw HttpException(response)
             }
         }

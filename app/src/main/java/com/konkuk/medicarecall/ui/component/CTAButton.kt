@@ -70,7 +70,9 @@ fun CTAButton(
             text = text,
             color = textColor,
             style = MediCareCallTheme.typography.B_17,
-            modifier = Modifier.padding(vertical = 16.dp).align(Alignment.Center)
+            modifier = Modifier
+                .padding(vertical = 16.dp)
+                .align(Alignment.Center)
         )
     }
 }

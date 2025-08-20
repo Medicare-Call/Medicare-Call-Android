@@ -76,7 +76,8 @@ fun GlucoseGraph(
             val totalGraphWidth = with(density) { totalGraphWidthPx.toDp() }
 
             // 최종 섹션 너비도 Dp 단위로 계산
-            val sectionWidth: Dp = if (data.isNotEmpty()) totalGraphWidth / data.size else fixedSectionWidth
+            val sectionWidth: Dp =
+                if (data.isNotEmpty()) totalGraphWidth / data.size else fixedSectionWidth
 
 
 
@@ -101,9 +102,11 @@ fun GlucoseGraph(
                     ) {
                         // 혈당 값(value)을 Canvas의 Y좌표로 변환하는 함수
                         fun valueToY(v: Float): Float {
-                            val ratio = ((v - minGlucose) / (maxGlucose - minGlucose)).coerceIn(0f, 1f)
+                            val ratio =
+                                ((v - minGlucose) / (maxGlucose - minGlucose)).coerceIn(0f, 1f)
                             return size.height * (1f - ratio)
                         }
+
                         val points = data.mapIndexed { idx, pointData ->
                             // X 좌표 계산 시 동적으로 계산된 섹션 너비 사용
                             val x = (idx * sectionWidth.toPx()) + (sectionWidth.toPx() / 2)
@@ -113,27 +116,40 @@ fun GlucoseGraph(
                         // 200, 130, 90, 60 가로 가이드라인
                         listOf(200f, 130f, 90f, 60f).forEach { value ->
                             drawLine(
-                                color = if (value == 200f || value == 60f) lineColor else lineColor.copy(alpha = 0.5f),
+                                color = if (value == 200f || value == 60f) lineColor else lineColor.copy(
+                                    alpha = 0.5f
+                                ),
                                 start = Offset(0f, valueToY(value)),
                                 end = Offset(size.width, valueToY(value)),
                                 strokeWidth = 1.dp.toPx(),
-                                pathEffect = if (value == 130f || value == 90f) PathEffect.dashPathEffect(floatArrayOf(10f, 10f)) else null
+                                pathEffect = if (value == 130f || value == 90f) PathEffect.dashPathEffect(
+                                    floatArrayOf(10f, 10f)
+                                ) else null
                             )
                         }
                         //선
                         for (i in 0 until points.size - 1) {
-                            drawLine(color = lineColor, start = points[i], end = points[i + 1], strokeWidth = 1.5.dp.toPx())
+                            drawLine(
+                                color = lineColor,
+                                start = points[i],
+                                end = points[i + 1],
+                                strokeWidth = 1.5.dp.toPx()
+                            )
                         }
                         //점
                         points.forEachIndexed { index, point ->
                             val value = data[index].value
                             val color = when (classifyGlucose(value, timing)) {   // 공복/식후 기준 반영
-                                GlucoseLevel.LOW    -> colors.active     // 낮음
+                                GlucoseLevel.LOW -> colors.active     // 낮음
                                 GlucoseLevel.NORMAL -> colors.main       // 정상
-                                GlucoseLevel.HIGH   -> colors.negative   // 높음
+                                GlucoseLevel.HIGH -> colors.negative   // 높음
                             }
                             if (index == selectedIndex) {
-                                drawCircle(color = color.copy(alpha = 0.2f), radius = iconRadiusDp.toPx() * 3, center = point)
+                                drawCircle(
+                                    color = color.copy(alpha = 0.2f),
+                                    radius = iconRadiusDp.toPx() * 3,
+                                    center = point
+                                )
                             }
                             drawCircle(color = color, radius = iconRadiusDp.toPx(), center = point)
                         }
@@ -171,10 +187,30 @@ fun GlucoseGraph(
                 textAlign = android.graphics.Paint.Align.LEFT
             }
             val labelX = 8.dp.toPx()
-            drawContext.canvas.nativeCanvas.drawText("200", labelX, valueToY(200f) + 5.dp.toPx(), paint)
-            drawContext.canvas.nativeCanvas.drawText("130", labelX, valueToY(130f) + 5.dp.toPx(), paint)
-            drawContext.canvas.nativeCanvas.drawText("90", labelX, valueToY(90f) + 5.dp.toPx(), paint)
-            drawContext.canvas.nativeCanvas.drawText("60", labelX, valueToY(60f) + 5.dp.toPx(), paint)
+            drawContext.canvas.nativeCanvas.drawText(
+                "200",
+                labelX,
+                valueToY(200f) + 5.dp.toPx(),
+                paint
+            )
+            drawContext.canvas.nativeCanvas.drawText(
+                "130",
+                labelX,
+                valueToY(130f) + 5.dp.toPx(),
+                paint
+            )
+            drawContext.canvas.nativeCanvas.drawText(
+                "90",
+                labelX,
+                valueToY(90f) + 5.dp.toPx(),
+                paint
+            )
+            drawContext.canvas.nativeCanvas.drawText(
+                "60",
+                labelX,
+                valueToY(60f) + 5.dp.toPx(),
+                paint
+            )
         }
     }
 }

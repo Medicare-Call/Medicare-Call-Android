@@ -19,18 +19,13 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.derivedStateOf
 import androidx.compose.runtime.getValue
-import androidx.compose.runtime.mutableStateListOf
-import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
-import androidx.compose.runtime.snapshots.SnapshotStateList
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.media3.common.util.Log
 import com.konkuk.medicarecall.data.dto.request.MedicationSchedule
 import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
@@ -38,10 +33,11 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 // 중복, Legacy
 @Composable
 fun MedInfoItem(
-    medications : MutableList<MedicationSchedule>,
+    medications: MutableList<MedicationSchedule>,
     onAddMedication: (MedicationSchedule) -> Unit,
     onRemoveMedication: (MedicationSchedule) -> Unit,
-    modifier: Modifier = Modifier) {
+    modifier: Modifier = Modifier
+) {
     val context = LocalContext.current
 
     var inputText by remember { mutableStateOf("") }
@@ -137,7 +133,7 @@ fun MedInfoItem(
                     Text(
                         text = period.time,
                         color = if (selected) MediCareCallTheme.colors.g50
-                                else MediCareCallTheme.colors.gray5,
+                        else MediCareCallTheme.colors.gray5,
                         style =
                             if (selected) MediCareCallTheme.typography.SB_14
                             else MediCareCallTheme.typography.R_14,

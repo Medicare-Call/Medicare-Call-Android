@@ -103,7 +103,9 @@ fun StatisticsScreen(
         selectedElderId?.let { statisticsViewModel.setSelectedElderId(it) }
     }
     val savedStateHandle = navController.currentBackStackEntry?.savedStateHandle
-    val medsChanged by (savedStateHandle?.getStateFlow("medsChanged", false) ?: MutableStateFlow(false))
+    val medsChanged by (savedStateHandle?.getStateFlow("medsChanged", false) ?: MutableStateFlow(
+        false
+    ))
         .collectAsState()
 
     LaunchedEffect(medsChanged) {
@@ -236,7 +238,7 @@ private fun StatisticsContent(
             WeeklyMealCard(
                 modifier = Modifier
                     .fillMaxHeight(),
-                        meal = summary.weeklyMeals
+                meal = summary.weeklyMeals
             )
             WeeklyMedicineCard(
                 modifier = Modifier

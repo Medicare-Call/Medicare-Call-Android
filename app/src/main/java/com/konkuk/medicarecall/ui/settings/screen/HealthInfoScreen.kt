@@ -5,29 +5,19 @@ import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Column
-import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
 import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
-import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
-import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material3.Icon
-import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.DisposableEffect
-import androidx.compose.runtime.mutableStateOf
-import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.draw.clip
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.lifecycle.Lifecycle
@@ -40,14 +30,16 @@ import com.konkuk.medicarecall.ui.settings.component.PersonalInfoCard
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.viewmodel.EldersHealthViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
-import com.konkuk.medicarecall.ui.theme.figmaShadow
-import kotlinx.serialization.encodeToString
 import kotlinx.serialization.json.Json
 import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
-fun HealthInfoScreen(onBack : () -> Unit ={}, navController : NavHostController, healthInfoViewModel: EldersHealthViewModel = hiltViewModel()) {
+fun HealthInfoScreen(
+    onBack: () -> Unit = {},
+    navController: NavHostController,
+    healthInfoViewModel: EldersHealthViewModel = hiltViewModel()
+) {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val obs = LifecycleEventObserver { _, event ->
@@ -64,27 +56,35 @@ fun HealthInfoScreen(onBack : () -> Unit ={}, navController : NavHostController,
 
     Log.d("HealthInfoScreen", "어르신 건강정보 수: ${healthInfo.size}")
     Log.d("HealthInfoScreen", "Error Message: $error")
-    Log.d("HealthInfoScreen","Elders Info: $healthInfo")
+    Log.d("HealthInfoScreen", "Elders Info: $healthInfo")
     if (healthInfo.isEmpty() && error != null) {
         Log.e("HealthInfoScreen", "Error fetching elders info: $error")
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)
-        .statusBarsPadding()) {
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MediCareCallTheme.colors.bg)
+            .statusBarsPadding()
+    ) {
         SettingsTopAppBar(
             title = "어르신 건강정보 설정",
-            leftIcon = {Icon(painterResource(id = R.drawable.ic_settings_back), contentDescription = "setting back", modifier = Modifier.clickable{onBack()}, tint = MediCareCallTheme.colors.black )},
+            leftIcon = {
+                Icon(
+                    painterResource(id = R.drawable.ic_settings_back),
+                    contentDescription = "setting back",
+                    modifier = Modifier.clickable { onBack() },
+                    tint = MediCareCallTheme.colors.black
+                )
+            },
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp)
-                .verticalScroll(rememberScrollState())
-            ,
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
-        ){
+        ) {
             Spacer(modifier = Modifier.height(20.dp))
             healthInfo.forEach {
                 PersonalInfoCard(

@@ -43,20 +43,31 @@ class HealthViewModel @Inject constructor(
                                 Log.i(TAG, "No data (404) elderId=$elderId, date=$formatted")
                                 _health.value = HealthUiState.EMPTY
                             }
+
                             400 -> {
-                                Log.w(TAG, "Bad request (400) elderId=$elderId, date=$formatted, msg=${e.message()}")
+                                Log.w(
+                                    TAG,
+                                    "Bad request (400) elderId=$elderId, date=$formatted, msg=${e.message()}"
+                                )
                                 _health.value = HealthUiState.EMPTY
                             }
+
                             401, 403 -> {
                                 Log.w(TAG, "Unauthorized (${e.code()}) elderId=$elderId")
                                 _health.value = HealthUiState.EMPTY
                             }
+
                             else -> {
-                                Log.e(TAG, "API error code=${e.code()} elderId=$elderId, date=$formatted", e)
+                                Log.e(
+                                    TAG,
+                                    "API error code=${e.code()} elderId=$elderId, date=$formatted",
+                                    e
+                                )
                                 _health.value = HealthUiState.EMPTY
                             }
                         }
                     }
+
                     else -> {
                         Log.e(TAG, "Unexpected error elderId=$elderId, date=$formatted", e)
                         _health.value = HealthUiState.EMPTY

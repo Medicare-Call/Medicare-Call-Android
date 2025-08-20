@@ -41,7 +41,7 @@ fun GlucoseTimingButton(
             modifier = Modifier.fillMaxSize(),
             contentAlignment = Alignment.Center
 
-        )  {
+        ) {
             Text(
                 text = text,
                 style = MediCareCallTheme.typography.SB_18,

@@ -42,7 +42,7 @@ fun StateMentalDetail(
     calendarViewModel: CalendarViewModel = hiltViewModel(),
     mentalViewModel: MentalViewModel = hiltViewModel(),
 
-) {
+    ) {
     val homeEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry("main")
     }

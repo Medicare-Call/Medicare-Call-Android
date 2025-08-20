@@ -11,12 +11,20 @@ import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun SettingInfoItem(category : String, value : String,modifier: Modifier = Modifier) {
+fun SettingInfoItem(category: String, value: String, modifier: Modifier = Modifier) {
     Column(
         modifier = modifier.fillMaxWidth()
     ) {
-        Text(text = category, style = MediCareCallTheme.typography.R_14, color = MediCareCallTheme.colors.gray4)
+        Text(
+            text = category,
+            style = MediCareCallTheme.typography.R_14,
+            color = MediCareCallTheme.colors.gray4
+        )
         Spacer(modifier = modifier.height(5.dp))
-        Text(text = value, style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
+        Text(
+            text = value,
+            style = MediCareCallTheme.typography.R_16,
+            color = MediCareCallTheme.colors.gray8
+        )
     }
 }

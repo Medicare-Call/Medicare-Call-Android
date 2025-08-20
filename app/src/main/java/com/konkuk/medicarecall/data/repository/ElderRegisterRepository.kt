@@ -6,12 +6,12 @@ import com.konkuk.medicarecall.data.dto.request.ElderHealthRegisterRequestDto
 import com.konkuk.medicarecall.data.dto.request.ElderRegisterRequestDto
 import com.konkuk.medicarecall.data.dto.response.ElderRegisterResponseDto
 import com.konkuk.medicarecall.data.mapper.ElderHealthMapper
-import com.konkuk.medicarecall.ui.model.GenderType
-import com.konkuk.medicarecall.ui.model.HealthIssueType
-import com.konkuk.medicarecall.ui.model.RelationshipType
 import com.konkuk.medicarecall.ui.model.ElderData
 import com.konkuk.medicarecall.ui.model.ElderHealthData
 import com.konkuk.medicarecall.ui.model.ElderResidenceType
+import com.konkuk.medicarecall.ui.model.GenderType
+import com.konkuk.medicarecall.ui.model.HealthIssueType
+import com.konkuk.medicarecall.ui.model.RelationshipType
 import com.konkuk.medicarecall.ui.util.formatAsDate
 import retrofit2.HttpException
 import javax.inject.Inject

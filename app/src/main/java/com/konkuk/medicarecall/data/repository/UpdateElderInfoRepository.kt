@@ -6,16 +6,17 @@ import retrofit2.HttpException
 import javax.inject.Inject
 
 class UpdateElderInfoRepository @Inject constructor(
-    private val eldersInfoService : EldersInfoService
-){
-    suspend fun updateElderInfo(id: Int, request: ElderRegisterRequestDto): Result<Unit> = runCatching {
-        val response = eldersInfoService.updateElder(id, request)
-        if (response.isSuccessful) {
-            response.body() ?: throw IllegalStateException("Response body is null")
-        } else {
-            throw HttpException(response)
+    private val eldersInfoService: EldersInfoService
+) {
+    suspend fun updateElderInfo(id: Int, request: ElderRegisterRequestDto): Result<Unit> =
+        runCatching {
+            val response = eldersInfoService.updateElder(id, request)
+            if (response.isSuccessful) {
+                response.body() ?: throw IllegalStateException("Response body is null")
+            } else {
+                throw HttpException(response)
+            }
         }
-    }
 
     suspend fun deleteElder(id: Int): Result<Unit> = runCatching {
         val response = eldersInfoService.deleteElderSettings(id)

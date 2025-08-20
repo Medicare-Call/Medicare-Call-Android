@@ -37,7 +37,12 @@ import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
 
 @Composable
-fun MyDetailScreen(myDataInfo : MyInfoResponseDto,modifier: Modifier = Modifier,onBack: () -> Unit = {},detailMyDataViewModel: DetailMyDataViewModel = hiltViewModel()) {
+fun MyDetailScreen(
+    myDataInfo: MyInfoResponseDto,
+    modifier: Modifier = Modifier,
+    onBack: () -> Unit = {},
+    detailMyDataViewModel: DetailMyDataViewModel = hiltViewModel()
+) {
     var isMale by remember { mutableStateOf<Boolean?>(myDataInfo.gender == GenderType.MALE) }
     var name by remember { mutableStateOf(myDataInfo.name) }
     var birth by remember { mutableStateOf(myDataInfo.birthDate.replace("-", "")) }
@@ -56,7 +61,7 @@ fun MyDetailScreen(myDataInfo : MyInfoResponseDto,modifier: Modifier = Modifier,
                 Icon(
                     painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "setting back",
-                    modifier = Modifier.clickable{onBack()},
+                    modifier = Modifier.clickable { onBack() },
                     tint = MediCareCallTheme.colors.black
                 )
             },
@@ -104,13 +109,18 @@ fun MyDetailScreen(myDataInfo : MyInfoResponseDto,modifier: Modifier = Modifier,
                 text = "확인",
                 onClick = {
                     val gender = if (isMale == true) GenderType.MALE else GenderType.FEMALE
-                    detailMyDataViewModel.updateUserData(userInfo = MyInfoResponseDto(
-                        name = name,
-                        birthDate = birth.replaceFirst("(\\d{4})(\\d{2})(\\d{2})".toRegex(), "$1-$2-$3"),
-                        gender = gender,
-                        phone = myDataInfo.phone,
-                        pushNotification = myDataInfo.pushNotification
-                    )) {
+                    detailMyDataViewModel.updateUserData(
+                        userInfo = MyInfoResponseDto(
+                            name = name,
+                            birthDate = birth.replaceFirst(
+                                "(\\d{4})(\\d{2})(\\d{2})".toRegex(),
+                                "$1-$2-$3"
+                            ),
+                            gender = gender,
+                            phone = myDataInfo.phone,
+                            pushNotification = myDataInfo.pushNotification
+                        )
+                    ) {
                         onBack()
 
                     }

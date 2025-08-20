@@ -35,7 +35,11 @@ import java.net.URLEncoder
 import java.nio.charset.StandardCharsets
 
 @Composable
-fun PersonalInfoScreen(onBack : () -> Unit ={},navController : NavHostController, personalViewModel : EldersInfoViewModel = hiltViewModel()) {
+fun PersonalInfoScreen(
+    onBack: () -> Unit = {},
+    navController: NavHostController,
+    personalViewModel: EldersInfoViewModel = hiltViewModel()
+) {
     val lifecycleOwner = LocalLifecycleOwner.current
     DisposableEffect(lifecycleOwner) {
         val obs = LifecycleEventObserver { _, event ->
@@ -57,23 +61,30 @@ fun PersonalInfoScreen(onBack : () -> Unit ={},navController : NavHostController
         Log.e("PersonalInfoScreen", "Error loading elders info: $error")
     }
 
-    Column(modifier = Modifier
-        .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)
-        .statusBarsPadding()
+    Column(
+        modifier = Modifier
+            .fillMaxSize()
+            .background(MediCareCallTheme.colors.bg)
+            .statusBarsPadding()
     ) {
         SettingsTopAppBar(
             title = "어르신 개인정보 설정",
-            leftIcon = {Icon(painterResource(id = R.drawable.ic_settings_back), contentDescription = "setting back", modifier = Modifier.clickable{onBack()}, tint = MediCareCallTheme.colors.black)},
+            leftIcon = {
+                Icon(
+                    painterResource(id = R.drawable.ic_settings_back),
+                    contentDescription = "setting back",
+                    modifier = Modifier.clickable { onBack() },
+                    tint = MediCareCallTheme.colors.black
+                )
+            },
         )
         Column(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(start = 20.dp, end = 20.dp)
-                .verticalScroll(rememberScrollState())
-            ,
+                .verticalScroll(rememberScrollState()),
             verticalArrangement = Arrangement.spacedBy(12.dp)
-        ){
+        ) {
             Spacer(modifier = Modifier.height(20.dp))
             eldersInfo.forEach {
                 PersonalInfoCard(

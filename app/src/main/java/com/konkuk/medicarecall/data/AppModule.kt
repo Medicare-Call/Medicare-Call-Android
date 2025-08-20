@@ -169,7 +169,7 @@ object AppModule {
     @Provides
     @Singleton
     fun provideSetCallRepository(service: SetCallService): SetCallRepository {
-       return SetCallRepository(service)
+        return SetCallRepository(service)
     }
 
     @Provides
@@ -192,7 +192,10 @@ object AppModule {
 
     @Provides
     @Singleton
-    fun provideEldersHealthInfoRepository(elderInfoService : EldersInfoService, elderRegisterService: ElderRegisterService) : EldersHealthInfoRepository {
+    fun provideEldersHealthInfoRepository(
+        elderInfoService: EldersInfoService,
+        elderRegisterService: ElderRegisterService
+    ): EldersHealthInfoRepository {
         return EldersHealthInfoRepository(elderInfoService, elderRegisterService)
     }
 
@@ -209,21 +212,22 @@ object AppModule {
     @Singleton
     fun provideUpdateElderRepository(
         eldersInfoService: EldersInfoService
-    ) : UpdateElderInfoRepository {
+    ): UpdateElderInfoRepository {
         return UpdateElderInfoRepository(eldersInfoService)
     }
 
     @Provides
     @Singleton
     fun provideNaverPayService(retrofit: Retrofit)
-    : NaverPayService {
+            : NaverPayService {
         return retrofit.create(NaverPayService::class.java)
     }
 
     @Provides
     @Singleton
     fun provideNaverPayRepository(
-        naverPayService: NaverPayService) : NaverPayRepository {
+        naverPayService: NaverPayService
+    ): NaverPayRepository {
         return NaverPayRepository(naverPayService)
     }
 

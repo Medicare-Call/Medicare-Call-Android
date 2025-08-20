@@ -165,7 +165,8 @@ fun PreviewMealDetail_Recorded() {
         )
     )
     val selectedDate = LocalDate.of(2025, 5, 7)
-    val weekDates = (0..6).map { selectedDate.plusDays(it.toLong() - selectedDate.dayOfWeek.value % 7) }
+    val weekDates =
+        (0..6).map { selectedDate.plusDays(it.toLong() - selectedDate.dayOfWeek.value % 7) }
 
     MediCareCallTheme {
         MealDetailLayout(
@@ -203,7 +204,8 @@ fun PreviewMealDetail_Unrecorded() {
         )
     )
     val selectedDate = LocalDate.of(2025, 5, 7)
-    val weekDates = (0..6).map { selectedDate.plusDays(it.toLong() - selectedDate.dayOfWeek.value % 7) }
+    val weekDates =
+        (0..6).map { selectedDate.plusDays(it.toLong() - selectedDate.dayOfWeek.value % 7) }
 
 
     MediCareCallTheme {

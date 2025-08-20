@@ -1,4 +1,4 @@
-package com.konkuk.medicarecall.ui.login.login_elder
+package com.konkuk.medicarecall.ui.login.login_senior
 
 import android.util.Log
 import androidx.compose.runtime.MutableState
@@ -11,16 +11,14 @@ import androidx.compose.runtime.setValue
 import androidx.compose.runtime.snapshots.SnapshotStateMap
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.google.common.collect.Multimaps.index
 import com.konkuk.medicarecall.data.repository.ElderIdRepository
 import com.konkuk.medicarecall.data.repository.ElderRegisterRepository
 import com.konkuk.medicarecall.data.repository.EldersInfoRepository
-import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import com.konkuk.medicarecall.ui.model.ElderData
 import com.konkuk.medicarecall.ui.model.ElderHealthData
+import com.konkuk.medicarecall.ui.model.MedicationTimeType
 import dagger.hilt.android.lifecycle.HiltViewModel
 import kotlinx.coroutines.launch
-import retrofit2.HttpException
 import javax.inject.Inject
 
 @HiltViewModel

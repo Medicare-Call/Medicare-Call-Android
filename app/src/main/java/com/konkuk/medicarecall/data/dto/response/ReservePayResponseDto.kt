@@ -4,9 +4,9 @@ import kotlinx.serialization.Serializable
 
 @Serializable
 data class ReservePayResponseDto(
-    val code : String,
-    val message : String,
-    val body : ReserveBody
+    val code: String,
+    val message: String,
+    val body: ReserveBody
 )
 
 @Serializable

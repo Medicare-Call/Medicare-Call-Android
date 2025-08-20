@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class UserRepository @Inject constructor(
     private val settingService: SettingService,
-    private val tokenStore : DataStoreRepository
+    private val tokenStore: DataStoreRepository
 ) {
     suspend fun getMyInfo() = runCatching {
         val response = settingService.getMyInfo()

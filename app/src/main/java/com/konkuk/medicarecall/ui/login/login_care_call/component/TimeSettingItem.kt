@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.login.login_care_call.component
 
-import android.util.Log.i
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.layout.Box

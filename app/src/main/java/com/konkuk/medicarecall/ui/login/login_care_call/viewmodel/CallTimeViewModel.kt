@@ -5,7 +5,6 @@ import androidx.compose.runtime.mutableStateMapOf
 import androidx.compose.runtime.mutableStateOf
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
-import com.konkuk.medicarecall.data.repository.ElderIdRepository
 import com.konkuk.medicarecall.data.repository.SetCallRepository
 import com.konkuk.medicarecall.ui.model.CallTimes
 import dagger.hilt.android.lifecycle.HiltViewModel
@@ -33,7 +32,6 @@ class CallTimeViewModel @Inject constructor(
 
     fun isAllComplete(ids: List<Int>): Boolean =
         ids.isNotEmpty() && ids.all { isCompleteFor(it) }
-
 
 
     fun submitAllByIds(

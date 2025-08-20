@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.ui.calendar
 
-import android.R.attr.contentDescription
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.Arrangement
 import androidx.compose.foundation.layout.Row

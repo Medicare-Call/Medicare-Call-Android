@@ -16,10 +16,10 @@ import javax.inject.Inject
 
 @HiltViewModel
 class NaverPayViewModel @Inject constructor(
-    private val naverPayRepo : NaverPayRepository,
-    private val elderInfoRepo : EldersInfoRepository,
-    private val dataStoreRepo : DataStoreRepository
-) : ViewModel(){
+    private val naverPayRepo: NaverPayRepository,
+    private val elderInfoRepo: EldersInfoRepository,
+    private val dataStoreRepo: DataStoreRepository
+) : ViewModel() {
 
     var eldersIdList by mutableStateOf<List<Int>>(emptyList())
         private set
@@ -61,9 +61,9 @@ class NaverPayViewModel @Inject constructor(
 
             Log.d("NaverPayViewModel", "네이버페이 결제 정보 전송 요청: $payInfo")
             naverPayRepo.postReserveInfo(payInfo)
-                .onSuccess {  resp ->
+                .onSuccess { resp ->
                     Log.d("NaverPayViewModel", "네이버페이 결제 전송 성공: $resp")
-                   orderCode = resp.body.code
+                    orderCode = resp.body.code
                     Log.d("NaverPayViewModel", "order code : $orderCode")
                 }
                 .onFailure { exception ->

@@ -32,9 +32,6 @@ import com.konkuk.medicarecall.ui.homedetail.sleep.screen.SleepDetail
 import com.konkuk.medicarecall.ui.homedetail.statehealth.screen.StateHealthDetail
 import com.konkuk.medicarecall.ui.homedetail.statemental.screen.StateMentalDetail
 import com.konkuk.medicarecall.ui.login.login_care_call.screen.SetCallScreen
-import com.konkuk.medicarecall.ui.login.login_elder.LoginElderViewModel
-import com.konkuk.medicarecall.ui.login.login_elder.screen.LoginElderMedInfoScreen
-import com.konkuk.medicarecall.ui.login.login_elder.screen.LoginElderScreen
 import com.konkuk.medicarecall.ui.login.login_info.screen.LoginMyInfoScreen
 import com.konkuk.medicarecall.ui.login.login_info.screen.LoginPhoneScreen
 import com.konkuk.medicarecall.ui.login.login_info.screen.LoginStartScreen
@@ -43,6 +40,9 @@ import com.konkuk.medicarecall.ui.login.login_info.viewmodel.LoginViewModel
 import com.konkuk.medicarecall.ui.login.login_payment.screen.FinishSplashScreen
 import com.konkuk.medicarecall.ui.login.login_payment.screen.NaverPayScreen
 import com.konkuk.medicarecall.ui.login.login_payment.screen.PaymentScreen
+import com.konkuk.medicarecall.ui.login.login_senior.LoginElderViewModel
+import com.konkuk.medicarecall.ui.login.login_senior.screen.LoginElderMedInfoScreen
+import com.konkuk.medicarecall.ui.login.login_senior.screen.LoginElderScreen
 import com.konkuk.medicarecall.ui.settings.screen.AnnouncementDetailScreen
 import com.konkuk.medicarecall.ui.settings.screen.AnnouncementScreen
 import com.konkuk.medicarecall.ui.settings.screen.HealthDetailScreen
@@ -277,7 +277,7 @@ fun NavGraph(
 
                 AnnouncementDetailScreen(
                     noticeInfo = noticeInfo,
-                    onBack = {navController.popBackStack()}
+                    onBack = { navController.popBackStack() }
                 )
             }
 
@@ -322,14 +322,17 @@ fun NavGraph(
                 )
             }
 
-            composable(route = "personal_detail/{elderInfo}",
+            composable(
+                route = "personal_detail/{elderInfo}",
                 arguments = listOf(navArgument("elderInfo") {
                     type = NavType.StringType
                 })
             ) { backStackEntry ->
                 val encodedElderInfo = backStackEntry.arguments?.getString("elderInfo") ?: ""
-                val decodedElderInfo = URLDecoder.decode(encodedElderInfo, StandardCharsets.UTF_8.toString())
-                val eldersInfoResponseDto = Json.decodeFromString<EldersInfoResponseDto>(decodedElderInfo)
+                val decodedElderInfo =
+                    URLDecoder.decode(encodedElderInfo, StandardCharsets.UTF_8.toString())
+                val eldersInfoResponseDto =
+                    Json.decodeFromString<EldersInfoResponseDto>(decodedElderInfo)
                 PersonalDetailScreen(
                     onBack = {
                         navController.popBackStack()
@@ -347,14 +350,17 @@ fun NavGraph(
                 )
             }
 
-            composable(route = "health_detail/{healthInfo}",
+            composable(
+                route = "health_detail/{healthInfo}",
                 arguments = listOf(navArgument("healthInfo") {
                     type = NavType.StringType
                 })
             ) { backStackEntry ->
                 val encodedHealthInfo = backStackEntry.arguments?.getString("healthInfo") ?: ""
-                val decodedHealthInfo = URLDecoder.decode(encodedHealthInfo, StandardCharsets.UTF_8.toString())
-                val healthInfoResponseDto = Json.decodeFromString<EldersHealthResponseDto>(decodedHealthInfo)
+                val decodedHealthInfo =
+                    URLDecoder.decode(encodedHealthInfo, StandardCharsets.UTF_8.toString())
+                val healthInfoResponseDto =
+                    Json.decodeFromString<EldersHealthResponseDto>(decodedHealthInfo)
                 HealthDetailScreen(
                     onBack = {
                         navController.popBackStack()
@@ -364,9 +370,10 @@ fun NavGraph(
                     )
             }
 
-            composable( route = "setting_alarm/{myDataJson}",
-                arguments = listOf(navArgument("myDataJson") { type = NavType.StringType })) {
-                    backStackEntry ->
+            composable(
+                route = "setting_alarm/{myDataJson}",
+                arguments = listOf(navArgument("myDataJson") { type = NavType.StringType })
+            ) { backStackEntry ->
                 val encodedJson = backStackEntry.arguments?.getString("myDataJson") ?: ""
                 val decodedJson = URLDecoder.decode(encodedJson, StandardCharsets.UTF_8.toString())
                 val myDataInfo = Json.decodeFromString<MyInfoResponseDto>(decodedJson)

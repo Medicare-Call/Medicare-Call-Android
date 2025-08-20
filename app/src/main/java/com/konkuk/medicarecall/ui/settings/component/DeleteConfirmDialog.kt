@@ -10,31 +10,31 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.shape.RoundedCornerShape
-import androidx.compose.material3.AlertDialog
 import androidx.compose.material3.Button
 import androidx.compose.material3.ButtonDefaults
-import androidx.compose.runtime.Composable
-import androidx.compose.ui.Modifier
-import androidx.wear.compose.material3.AlertDialog
-import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import androidx.compose.material3.Text
+import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
+import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.window.Dialog
-import androidx.wear.compose.material3.Dialog
+import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
 fun DeleteConfirmDialog(onDismiss: () -> Unit, onDelete: () -> Unit) {
     Dialog(onDismissRequest = onDismiss) {
         Column(
-            modifier = Modifier.clip(RoundedCornerShape(14.dp)).
-            background(MediCareCallTheme.colors.white).padding(20.dp).fillMaxWidth()
+            modifier = Modifier
+                .clip(RoundedCornerShape(14.dp))
+                .background(MediCareCallTheme.colors.white)
+                .padding(20.dp)
+                .fillMaxWidth()
 
 
         ) {
@@ -63,7 +63,9 @@ fun DeleteConfirmDialog(onDismiss: () -> Unit, onDelete: () -> Unit) {
                         containerColor = MediCareCallTheme.colors.gray1,
                         contentColor = MediCareCallTheme.colors.gray6
                     ),
-                    modifier = Modifier.weight(1f).height(50.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp)
                 ) {
                     Text("취소", style = MediCareCallTheme.typography.B_17)
                 }
@@ -75,7 +77,9 @@ fun DeleteConfirmDialog(onDismiss: () -> Unit, onDelete: () -> Unit) {
                         containerColor = MediCareCallTheme.colors.negative,
                         contentColor = MediCareCallTheme.colors.white
                     ),
-                    modifier = Modifier.weight(1f).height(50.dp)
+                    modifier = Modifier
+                        .weight(1f)
+                        .height(50.dp)
                 ) {
                     Text("삭제", style = MediCareCallTheme.typography.B_17)
                 }

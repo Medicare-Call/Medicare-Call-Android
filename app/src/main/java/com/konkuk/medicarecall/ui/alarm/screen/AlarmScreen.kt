@@ -10,9 +10,7 @@ import androidx.compose.material3.Icon
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.res.painterResource
-import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
-import androidx.navigation.NavController
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.alarm.component.AlarmItem
@@ -21,7 +19,11 @@ import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun AlarmScreen(onBack : () -> Unit, navController: NavHostController, modifier: Modifier = Modifier) {
+fun AlarmScreen(
+    onBack: () -> Unit,
+    navController: NavHostController,
+    modifier: Modifier = Modifier
+) {
     Column(
         modifier = modifier
             .fillMaxSize()
@@ -34,7 +36,9 @@ fun AlarmScreen(onBack : () -> Unit, navController: NavHostController, modifier:
                 Icon(
                     painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "setting back",
-                    modifier = modifier.size(24.dp).clickable { onBack() },
+                    modifier = modifier
+                        .size(24.dp)
+                        .clickable { onBack() },
                     tint = MediCareCallTheme.colors.black
                 )
             },

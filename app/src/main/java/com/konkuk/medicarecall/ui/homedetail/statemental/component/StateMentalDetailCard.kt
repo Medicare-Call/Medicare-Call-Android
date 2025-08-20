@@ -36,7 +36,8 @@ fun StateMentalDetailCard(
 
     Card(
         modifier = Modifier
-            .fillMaxWidth().heightIn(min = 160.dp)
+            .fillMaxWidth()
+            .heightIn(min = 160.dp)
             .figmaShadow(
                 group = LocalMediCareCallShadowProvider.current.shadow03,
                 cornerRadius = 14.dp

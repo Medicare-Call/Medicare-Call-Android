@@ -44,20 +44,31 @@ class MealViewModel @Inject constructor(
                                 Log.i(TAG, "No data (404) elderId=$elderId, date=$formatted")
                                 _meals.value = defaultUnrecordedMeals()
                             }
+
                             400 -> {
-                                Log.w(TAG, "Bad request (400) elderId=$elderId, date=$formatted, msg=${e.message()}")
+                                Log.w(
+                                    TAG,
+                                    "Bad request (400) elderId=$elderId, date=$formatted, msg=${e.message()}"
+                                )
                                 _meals.value = defaultUnrecordedMeals()
                             }
+
                             401, 403 -> {
                                 Log.w(TAG, "Unauthorized (${e.code()}) elderId=$elderId")
                                 _meals.value = defaultUnrecordedMeals()
                             }
+
                             else -> {
-                                Log.e(TAG, "API error code=${e.code()} elderId=$elderId, date=$formatted", e)
+                                Log.e(
+                                    TAG,
+                                    "API error code=${e.code()} elderId=$elderId, date=$formatted",
+                                    e
+                                )
                                 _meals.value = defaultUnrecordedMeals()
                             }
                         }
                     }
+
                     else -> {
                         Log.e(TAG, "Unexpected error elderId=$elderId, date=$formatted", e)
                         _meals.value = defaultUnrecordedMeals()

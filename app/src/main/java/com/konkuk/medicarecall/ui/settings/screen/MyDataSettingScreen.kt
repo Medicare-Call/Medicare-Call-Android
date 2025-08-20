@@ -47,7 +47,12 @@ import com.konkuk.medicarecall.ui.theme.figmaShadow
 import kotlinx.serialization.json.Json
 
 @Composable
-fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modifier: Modifier = Modifier, myDataViewModel: MyDataViewModel = hiltViewModel()) {
+fun MyDataSettingScreen(
+    onBack: () -> Unit,
+    navController: NavHostController,
+    modifier: Modifier = Modifier,
+    myDataViewModel: MyDataViewModel = hiltViewModel()
+) {
     val myDataInfo = myDataViewModel.myDataInfo
     var showLogoutDialog by remember { mutableStateOf(false) }
     val gender = when (myDataInfo?.gender) {
@@ -78,7 +83,9 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "go_back",
-                    modifier = modifier.size(24.dp).clickable{onBack()},
+                    modifier = modifier
+                        .size(24.dp)
+                        .clickable { onBack() },
                     tint = Color.Black
                 )
             }
@@ -117,11 +124,12 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
                         color = MediCareCallTheme.colors.active,
                         modifier = modifier.clickable(onClick = {
                             val json = Json.encodeToString(myDataInfo)
-                            val encodedJson = java.net.URLEncoder.encode(json, Charsets.UTF_8.toString())
+                            val encodedJson =
+                                java.net.URLEncoder.encode(json, Charsets.UTF_8.toString())
                             // 네비게이션을 통해 MyDetail 화면으로 이동
                             navController.navigate("${Route.MyDetail.route}/$encodedJson")
                         }
-                    )
+                        )
                     )
                 }
                 SettingInfoItem("이름", myDataInfo?.name ?: "이름 없음")
@@ -153,9 +161,11 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
                     text = "로그아웃",
                     style = MediCareCallTheme.typography.R_16,
                     color = MediCareCallTheme.colors.gray8,
-                    modifier = Modifier.fillMaxWidth().clickable {
-                        showLogoutDialog = true
-                    }
+                    modifier = Modifier
+                        .fillMaxWidth()
+                        .clickable {
+                            showLogoutDialog = true
+                        }
                 )
 
                 Text(
@@ -189,7 +199,7 @@ fun MyDataSettingScreen(onBack: () -> Unit,navController: NavHostController,modi
                     }
                 )
 
-    }
+            }
         )
     }
 }

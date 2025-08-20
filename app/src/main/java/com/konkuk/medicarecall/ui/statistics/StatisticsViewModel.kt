@@ -170,6 +170,7 @@ class StatisticsViewModel @Inject constructor(
             }
         }
     }
+
     private fun StatisticsResponseDto.toWeeklySummaryUiState(
         correctOrder: List<String>
     ): WeeklySummaryUiState {
@@ -182,8 +183,8 @@ class StatisticsViewModel @Inject constructor(
         val orderedMedicines = medicationStats.entries
             .sortedWith(
                 compareBy<Map.Entry<String, MedicationStatDto>>(
-                { indexOf(it.key) }, { it.key }
-            ))
+                    { indexOf(it.key) }, { it.key }
+                ))
             .map { (name, stats) ->
                 WeeklyMedicineUiState(
                     medicineName = name,

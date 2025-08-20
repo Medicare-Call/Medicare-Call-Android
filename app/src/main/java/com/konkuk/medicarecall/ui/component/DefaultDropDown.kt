@@ -1,12 +1,10 @@
 package com.konkuk.medicarecall.ui.component
 
-import android.R.attr.category
 import androidx.compose.animation.AnimatedVisibility
 import androidx.compose.foundation.ScrollState
 import androidx.compose.foundation.background
 import androidx.compose.foundation.border
 import androidx.compose.foundation.clickable
-import androidx.compose.foundation.gestures.animateScrollBy
 import androidx.compose.foundation.layout.Box
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.Spacer
@@ -39,7 +37,6 @@ import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
-import kotlinx.coroutines.delay
 
 @Composable
 fun <T> DefaultDropdown(
@@ -56,15 +53,14 @@ fun <T> DefaultDropdown(
 
     var showDropdown by remember { mutableStateOf(false) }
     var selectedOption by remember { mutableStateOf("") }
-    var scrollNow by remember { mutableIntStateOf(0)}
+    var scrollNow by remember { mutableIntStateOf(0) }
 
     LaunchedEffect(showDropdown) {
 
         if (showDropdown) {
             scrollNow = scrollState.value
-            scrollState.animateScrollTo(scrollState.value+200)
-        }
-        else {
+            scrollState.animateScrollTo(scrollState.value + 200)
+        } else {
             scrollState.animateScrollTo(scrollNow)
         }
     }

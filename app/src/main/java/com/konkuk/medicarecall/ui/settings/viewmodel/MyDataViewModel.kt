@@ -1,7 +1,6 @@
 package com.konkuk.medicarecall.ui.settings.viewmodel
 
 import android.util.Log
-import androidx.compose.runtime.clearCompositionErrors
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.setValue
@@ -24,6 +23,7 @@ class MyDataViewModel @Inject constructor(
     init {
         getUserData()
     }
+
     fun logout(onSuccess: () -> Unit, onError: (Throwable) -> Unit) {
         viewModelScope.launch {
             userRepository.logout()

@@ -1,12 +1,10 @@
 package com.konkuk.medicarecall.data.repository
 
-import android.util.Log
 import com.konkuk.medicarecall.data.api.VerificationService
 import com.konkuk.medicarecall.data.dto.request.CertificationCodeRequestDto
 import com.konkuk.medicarecall.data.dto.request.PhoneNumberConfirmRequestDto
 import com.konkuk.medicarecall.data.dto.response.VerificationResponseDto
 import retrofit2.HttpException
-import retrofit2.Response
 import javax.inject.Inject
 
 class VerificationRepository @Inject constructor(

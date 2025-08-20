@@ -1,7 +1,4 @@
-
-import org.gradle.kotlin.dsl.implementation
 import java.util.Properties
-import kotlin.apply
 
 plugins {
     alias(libs.plugins.android.application)

@@ -26,7 +26,8 @@ class CalendarViewModel @Inject constructor() : ViewModel() {
     /** 현재 선택된 날짜가 속한 주(일~토)를 반환 */
     fun getCurrentWeekDates(): List<LocalDate> {
         val base = _selectedDate.value
-        val startOfWeek = base.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.SUNDAY))
+        val startOfWeek =
+            base.with(java.time.temporal.TemporalAdjusters.previousOrSame(java.time.DayOfWeek.SUNDAY))
         return (0..6).map { startOfWeek.plusDays(it.toLong()) }
     }
 }

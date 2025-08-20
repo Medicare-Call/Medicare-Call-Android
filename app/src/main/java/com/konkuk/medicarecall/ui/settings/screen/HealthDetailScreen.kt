@@ -55,11 +55,12 @@ fun HealthDetailScreen(
         healthInfoResponseDto.notes.map { it.displayName }.toMutableStateList()
     }
 
-    Column(modifier = modifier
-        .fillMaxSize()
-        .background(MediCareCallTheme.colors.bg)
-        .systemBarsPadding()
-        .imePadding()
+    Column(
+        modifier = modifier
+            .fillMaxSize()
+            .background(MediCareCallTheme.colors.bg)
+            .systemBarsPadding()
+            .imePadding()
     ) {
         SettingsTopAppBar(
             modifier = modifier,
@@ -68,16 +69,18 @@ fun HealthDetailScreen(
                 Icon(
                     painter = painterResource(id = R.drawable.ic_settings_back),
                     contentDescription = "go_back",
-                    modifier = modifier.size(24.dp).clickable{onBack()},
+                    modifier = modifier
+                        .size(24.dp)
+                        .clickable { onBack() },
                     tint = Color.Black
                 )
             }
         )
-        Column(modifier = modifier
-            .fillMaxWidth()
-            .padding(horizontal = 20.dp)
-            .verticalScroll(scrollState)
-            ,
+        Column(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(horizontal = 20.dp)
+                .verticalScroll(scrollState),
         ) {
             Spacer(Modifier.height(20.dp))
             // 질환 정보
@@ -124,7 +127,7 @@ fun HealthDetailScreen(
                         onBack()
 
                     }
-                          }, Modifier.padding(bottom = 20.dp)
+                }, Modifier.padding(bottom = 20.dp)
             )
         }
     }

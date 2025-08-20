@@ -9,7 +9,6 @@ import androidx.compose.foundation.layout.Row
 import androidx.compose.foundation.layout.Spacer
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
-import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.width
@@ -24,12 +23,11 @@ import androidx.compose.ui.res.painterResource
 import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.data.dto.response.EldersInfoResponseDto
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.theme.figmaShadow
 
 @Composable
-fun PersonalInfoCard(name : String, modifier: Modifier = Modifier, onClick : () -> Unit = {}) {
+fun PersonalInfoCard(name: String, modifier: Modifier = Modifier, onClick: () -> Unit = {}) {
     Box(
         modifier = modifier
             .fillMaxWidth()
@@ -39,19 +37,27 @@ fun PersonalInfoCard(name : String, modifier: Modifier = Modifier, onClick : () 
             )
             .clip(RoundedCornerShape(14.dp))
             .background(MediCareCallTheme.colors.white)
-            .clickable{onClick()},
+            .clickable { onClick() },
     ) {
-        Row(modifier = modifier
-            .fillMaxWidth()
-            .padding(20.dp)
-            ,
+        Row(
+            modifier = modifier
+                .fillMaxWidth()
+                .padding(20.dp),
             horizontalArrangement = Arrangement.SpaceBetween,
             verticalAlignment = Alignment.CenterVertically
-            ) {
+        ) {
             Row() {
-                Text(text = name, style = MediCareCallTheme.typography.SB_16, color = MediCareCallTheme.colors.gray8)
+                Text(
+                    text = name,
+                    style = MediCareCallTheme.typography.SB_16,
+                    color = MediCareCallTheme.colors.gray8
+                )
                 Spacer(modifier = Modifier.width(5.dp))
-                Text(text = "어르신", style = MediCareCallTheme.typography.R_16, color = MediCareCallTheme.colors.gray8)
+                Text(
+                    text = "어르신",
+                    style = MediCareCallTheme.typography.R_16,
+                    color = MediCareCallTheme.colors.gray8
+                )
             }
             Icon(
                 painter = painterResource(id = R.drawable.ic_arrow_right),

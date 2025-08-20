@@ -14,7 +14,6 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -31,7 +30,7 @@ fun SecondTimeWheelPicker(
     modifier: Modifier = Modifier,
     initialHour: Int = 12,
     initialMinute: Int = 0,
-    onTimeChange: (hour: Int, minute: Int) -> Unit = {_, _ -> }
+    onTimeChange: (hour: Int, minute: Int) -> Unit = { _, _ -> }
 ) {
 
     var hour by remember { mutableIntStateOf(initialHour) }
@@ -139,7 +138,7 @@ fun SecondTimeWheelPicker(
             AndroidView(
                 factory = { ctx ->
                     NumberPicker(ctx).apply {
-                        val values = arrayOf("12","1", "2", "3", "4") // 보여줄 값들
+                        val values = arrayOf("12", "1", "2", "3", "4") // 보여줄 값들
                         minValue = 0
                         maxValue = values.size - 1
                         displayedValues = values
@@ -187,7 +186,7 @@ fun SecondTimeWheelPicker(
                     }
                 },
                 update = { picker ->
-                    val values = arrayOf("12","1", "2", "3", "4",)
+                    val values = arrayOf("12", "1", "2", "3", "4")
                     val index = values.indexOf(hour.toString())
                     if (index >= 0) picker.value = index
                     picker.displayedValues = values

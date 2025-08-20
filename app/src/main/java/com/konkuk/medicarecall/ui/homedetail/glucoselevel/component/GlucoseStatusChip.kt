@@ -26,9 +26,9 @@ fun GlucoseStatusChip(
 ) {
     val level = classifyGlucose(value.toFloat(), timing)
     val (text, color) = when (level) {
-        GlucoseLevel.LOW    -> "낮음" to MediCareCallTheme.colors.active
+        GlucoseLevel.LOW -> "낮음" to MediCareCallTheme.colors.active
         GlucoseLevel.NORMAL -> "정상" to MediCareCallTheme.colors.main
-        GlucoseLevel.HIGH   -> "높음" to MediCareCallTheme.colors.negative
+        GlucoseLevel.HIGH -> "높음" to MediCareCallTheme.colors.negative
     }
 
 
@@ -37,7 +37,7 @@ fun GlucoseStatusChip(
             .height(30.dp),
         shape = RoundedCornerShape(10.dp),
         colors = CardDefaults.cardColors(containerColor = color)
-        ) {
+    ) {
         Row(
             modifier = Modifier
                 .fillMaxHeight()

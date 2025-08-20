@@ -7,7 +7,7 @@ import javax.inject.Singleton
 class ElderIdRepository @Inject constructor() {
 
     private var elderIds: MutableList<Map<String, Int>> = mutableListOf()
-    fun addElderId(name:String, id: Int) {
+    fun addElderId(name: String, id: Int) {
         this.elderIds.add(mapOf(name to id))
     }
 

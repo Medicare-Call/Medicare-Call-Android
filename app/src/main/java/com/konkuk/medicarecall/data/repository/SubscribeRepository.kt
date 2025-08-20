@@ -8,7 +8,7 @@ import javax.inject.Inject
 
 class SubscribeRepository @Inject constructor(
     private val subscribeService: SubscribeService
-){
+) {
     suspend fun getSubscriptions(): Result<List<EldersSubscriptionResponseDto>> {
         Log.d("SubscribeRepository", "구독 정보 불러오기 시작(getSubscriptions() 호출됨)")
         return runCatching {

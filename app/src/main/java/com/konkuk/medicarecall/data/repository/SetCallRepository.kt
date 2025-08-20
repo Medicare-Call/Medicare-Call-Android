@@ -7,18 +7,22 @@ import com.konkuk.medicarecall.ui.model.CallTimes
 import javax.inject.Inject
 
 class SetCallRepository @Inject constructor(
-    private val service : SetCallService
-){
+    private val service: SetCallService
+) {
     suspend fun saveForElder(
-        elderId : Int,
-        body : SetCallTimeRequestDto
-    ) : Result <Unit> =
+        elderId: Int,
+        body: SetCallTimeRequestDto
+    ): Result<Unit> =
         runCatching {
             val response = service.saveCareCallTimes(elderId, body)
             if (!response.isSuccessful) {
                 Log.e("SetCallRepository", "HTTP ${response.code()} ${response.message()}")
                 Log.e("SetCallRepository", "ErrorBody=${response.errorBody()?.string()}")
-                throw Exception("Error saving care call times: ${response.errorBody()?.string()} / SetCallRepository.kt")
+                throw Exception(
+                    "Error saving care call times: ${
+                        response.errorBody()?.string()
+                    } / SetCallRepository.kt"
+                )
             }
         }
 
@@ -33,7 +37,7 @@ class SetCallRepository @Inject constructor(
         val (amPm, h12, m) = this
         val h24 = when {
             amPm == 0 && h12 == 12 -> 0
-            amPm == 1 && h12 < 12  -> h12 + 12
+            amPm == 1 && h12 < 12 -> h12 + 12
             else -> h12 % 24
         }
         Log.d("SetCallRepository", "Converting time: $this to 24-hour format: $h24:$m")
@@ -42,8 +46,8 @@ class SetCallRepository @Inject constructor(
 
     private fun CallTimes.toRequestDto(): SetCallTimeRequestDto =
         SetCallTimeRequestDto(
-            firstCallTime  = requireNotNull(first) .toHHmm(),
+            firstCallTime = requireNotNull(first).toHHmm(),
             secondCallTime = requireNotNull(second).toHHmm(),
-            thirdCallTime  = requireNotNull(third) .toHHmm()
+            thirdCallTime = requireNotNull(third).toHHmm()
         )
 }

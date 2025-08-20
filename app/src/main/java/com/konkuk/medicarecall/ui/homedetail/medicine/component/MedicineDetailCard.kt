@@ -48,8 +48,8 @@ fun MedicineDetailCard(
         } else {
             val normalized = doseStatusList.map {
                 when (it.doseStatus) {
-                    DoseStatus.TAKEN        -> it.copy(doseStatus = DoseStatus.TAKEN)
-                    DoseStatus.SKIPPED      -> it.copy(doseStatus = DoseStatus.SKIPPED)
+                    DoseStatus.TAKEN -> it.copy(doseStatus = DoseStatus.TAKEN)
+                    DoseStatus.SKIPPED -> it.copy(doseStatus = DoseStatus.SKIPPED)
                     DoseStatus.NOT_RECORDED -> it.copy(doseStatus = DoseStatus.NOT_RECORDED)
                 }
             }
@@ -57,9 +57,11 @@ fun MedicineDetailCard(
                 normalized.isEmpty() -> List(safeRequired) {
                     DoseStatusItem(time = "", doseStatus = DoseStatus.NOT_RECORDED)
                 }
+
                 normalized.size < safeRequired -> normalized + List(safeRequired - normalized.size) {
                     DoseStatusItem(time = "", doseStatus = DoseStatus.NOT_RECORDED)
                 }
+
                 else -> normalized.take(safeRequired)
             }
         }
@@ -106,8 +108,8 @@ fun MedicineDetailCard(
             Row {
                 renderList.forEach { item ->
                     val tintColor = when (item.doseStatus) {
-                        DoseStatus.TAKEN        -> MediCareCallTheme.colors.positive
-                        DoseStatus.SKIPPED      -> MediCareCallTheme.colors.negative
+                        DoseStatus.TAKEN -> MediCareCallTheme.colors.positive
+                        DoseStatus.SKIPPED -> MediCareCallTheme.colors.negative
                         DoseStatus.NOT_RECORDED -> MediCareCallTheme.colors.gray2
                     }
                     Image(
@@ -133,7 +135,7 @@ fun PreviewMedicineDetailCard() {
         todayRequiredCount = 3,
         doseStatusList = listOf(
             DoseStatusItem(time = "MORNING", doseStatus = DoseStatus.TAKEN),
-            DoseStatusItem(time = "LUNCH",   doseStatus = DoseStatus.TAKEN)
+            DoseStatusItem(time = "LUNCH", doseStatus = DoseStatus.TAKEN)
         )
     )
 }

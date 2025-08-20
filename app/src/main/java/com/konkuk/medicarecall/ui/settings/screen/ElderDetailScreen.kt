@@ -33,9 +33,9 @@ import com.konkuk.medicarecall.ui.component.DefaultDropdown
 import com.konkuk.medicarecall.ui.component.DefaultTextField
 import com.konkuk.medicarecall.ui.component.GenderToggleButton
 import com.konkuk.medicarecall.ui.model.CTAButtonType
+import com.konkuk.medicarecall.ui.model.ElderResidenceType
 import com.konkuk.medicarecall.ui.model.GenderType
 import com.konkuk.medicarecall.ui.model.RelationshipType
-import com.konkuk.medicarecall.ui.model.ElderResidenceType
 import com.konkuk.medicarecall.ui.settings.component.DeleteConfirmDialog
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.viewmodel.DetailElderInfoViewModel
@@ -49,14 +49,15 @@ import java.time.format.DateTimeFormatter
 fun PersonalDetailScreen(
     modifier: Modifier = Modifier,
     onBack: () -> Unit = {},
-    eldersInfoResponseDto : EldersInfoResponseDto,
-    detailViewModel : DetailElderInfoViewModel = hiltViewModel()
+    eldersInfoResponseDto: EldersInfoResponseDto,
+    detailViewModel: DetailElderInfoViewModel = hiltViewModel()
 ) {
     val gender = when (eldersInfoResponseDto.gender) {
         GenderType.MALE -> true
         else -> false
     }
-    val parseDate = LocalDate.parse(eldersInfoResponseDto.birthDate)                // yyyy-MM-dd 형식의 문자열을 LocalDate로 변환
+    val parseDate =
+        LocalDate.parse(eldersInfoResponseDto.birthDate)                // yyyy-MM-dd 형식의 문자열을 LocalDate로 변환
     val date = parseDate.format(DateTimeFormatter.ofPattern("yyyyMMdd"))
     val scrollState = rememberScrollState()
 
@@ -66,7 +67,6 @@ fun PersonalDetailScreen(
     var phoneNum by remember { mutableStateOf(eldersInfoResponseDto.phone) }
     var relationship by remember { mutableStateOf(eldersInfoResponseDto.relationship) }
     var residenceType by remember { mutableStateOf(eldersInfoResponseDto.residenceType) }
-
 
 
     var showDeleteDialog by remember { mutableStateOf(false) }
@@ -219,7 +219,7 @@ fun PersonalDetailScreen(
                             onBack()
 
                         }
-                              }, Modifier.padding(bottom = 20.dp)
+                    }, Modifier.padding(bottom = 20.dp)
                 )
 
             }
@@ -240,5 +240,5 @@ fun PersonalDetailScreen(
 fun toDashedDate(yyyymmdd: String): String {
     val d = yyyymmdd.filter { it.isDigit() }
     require(d.length == 8) { "yyyyMMdd 형식(8자리)이어야 합니다." }
-    return "${d.substring(0,4)}-${d.substring(4,6)}-${d.substring(6,8)}"
+    return "${d.substring(0, 4)}-${d.substring(4, 6)}-${d.substring(6, 8)}"
 }

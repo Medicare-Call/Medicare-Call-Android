@@ -44,7 +44,6 @@ fun StateHealthDetail(
 ) {
 
 
-
     val homeEntry = remember(navController.currentBackStackEntry) {
         navController.getBackStackEntry("main")
     }
@@ -56,7 +55,7 @@ fun StateHealthDetail(
     }
 
     val selectedDate by calendarViewModel.selectedDate.collectAsState()
-    val  health by  healthViewModel. health.collectAsState()
+    val health by healthViewModel.health.collectAsState()
 
     // 네임드롭에서 선택된 어르신
     val elderId by homeViewModel.selectedElderId.collectAsState()

@@ -13,7 +13,6 @@ import androidx.compose.foundation.layout.height
 import androidx.compose.foundation.layout.padding
 import androidx.compose.foundation.layout.size
 import androidx.compose.foundation.layout.statusBarsPadding
-import androidx.compose.foundation.layout.systemBarsPadding
 import androidx.compose.foundation.layout.width
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.RoundedCornerShape
@@ -33,7 +32,6 @@ import androidx.lifecycle.LifecycleEventObserver
 import androidx.lifecycle.compose.LocalLifecycleOwner
 import androidx.navigation.NavHostController
 import com.konkuk.medicarecall.R
-import com.konkuk.medicarecall.data.api.SettingService
 import com.konkuk.medicarecall.navigation.Route
 import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.viewmodel.MyDataViewModel
@@ -92,7 +90,7 @@ fun SettingsScreen(
                 )
                 Spacer(modifier = Modifier.width(14.dp))
                 Text(
-                    text = myInfo?.name ?: "어르신 이름이 등록되지 않았습니다.",
+                    text = myInfo?.name ?: "이름이 등록되지 않았습니다.",
                     style = MediCareCallTheme.typography.SB_18,
                     color = MediCareCallTheme.colors.black
 
@@ -129,7 +127,9 @@ fun SettingsScreen(
                 ) {
                     Column(
                         horizontalAlignment = Alignment.CenterHorizontally,
-                        modifier = Modifier.clickable{onNavigateToAnnouncement()}.weight(2f)
+                        modifier = Modifier
+                            .clickable { onNavigateToAnnouncement() }
+                            .weight(2f)
                     ) {
                         Icon(
                             painter = painterResource(id = R.drawable.ic_announcement),
@@ -147,7 +147,9 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.weight(1f))
                     Column(
 
-                        modifier = Modifier.clickable{onNavigateToCenter()}.weight(2f),
+                        modifier = Modifier
+                            .clickable { onNavigateToCenter() }
+                            .weight(2f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
@@ -166,7 +168,9 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.weight(1f))
                     Column(
 
-                        modifier = Modifier.clickable{onNavigateToSubscribe()}.weight(2f),
+                        modifier = Modifier
+                            .clickable { onNavigateToSubscribe() }
+                            .weight(2f),
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(
@@ -185,7 +189,9 @@ fun SettingsScreen(
                     Spacer(modifier = Modifier.weight(1f))
                     Column(
 
-                        modifier = Modifier.clickable{}.weight(2f), // 결제내역 클릭 시 동작 추가
+                        modifier = Modifier
+                            .clickable {}
+                            .weight(2f), // 결제내역 클릭 시 동작 추가
                         horizontalAlignment = Alignment.CenterHorizontally
                     ) {
                         Icon(

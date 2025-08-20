@@ -97,7 +97,8 @@ private fun MentalStatusRow(
 ) {
     val isUnrecorded = count <= 0
     val countText = if (isUnrecorded) "-" else count.toString()
-    val textColor = if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.gray6
+    val textColor =
+        if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.gray6
 
     Row(verticalAlignment = Alignment.CenterVertically) {
         Text(
@@ -114,7 +115,7 @@ private fun MentalStatusRow(
         )
         Spacer(modifier = Modifier.width(4.dp))
         Text(
-            text = "$countText"+"번",
+            text = "$countText" + "번",
             style = MediCareCallTheme.typography.R_14,
             color = textColor
         )

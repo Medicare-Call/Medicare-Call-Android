@@ -46,7 +46,12 @@ class MedicineViewModel @Inject constructor(
 
                 if (daily.isNotEmpty()) {
                     _state.update {
-                        it.copy(loading = false, items = daily, emptyDate = null, hasConfiguredMeds = true)
+                        it.copy(
+                            loading = false,
+                            items = daily,
+                            emptyDate = null,
+                            hasConfiguredMeds = true
+                        )
                     }
                     return@launch
                 }
@@ -55,12 +60,22 @@ class MedicineViewModel @Inject constructor(
                 val configured = medicineRepository.getConfiguredMedicineUiList(elderId)
                 if (configured.isNotEmpty()) {
                     _state.update {
-                        it.copy(loading = false, items = configured, emptyDate = null, hasConfiguredMeds = true)
+                        it.copy(
+                            loading = false,
+                            items = configured,
+                            emptyDate = null,
+                            hasConfiguredMeds = true
+                        )
                     }
                 } else {
 
                     _state.update {
-                        it.copy(loading = false, items = emptyList(), emptyDate = date, hasConfiguredMeds = false)
+                        it.copy(
+                            loading = false,
+                            items = emptyList(),
+                            emptyDate = date,
+                            hasConfiguredMeds = false
+                        )
                     }
                 }
 

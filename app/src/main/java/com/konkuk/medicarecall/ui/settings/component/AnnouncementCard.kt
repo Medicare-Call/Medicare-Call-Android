@@ -14,13 +14,33 @@ import androidx.compose.ui.unit.dp
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 
 @Composable
-fun AnnouncementCard(title : String,date : String,modifier: Modifier = Modifier, onClick: () -> Unit) {
-        Column(
-            modifier = modifier.fillMaxWidth().clickable(onClick = {onClick()}).background(color = MediCareCallTheme.colors.bg).padding(20.dp)
+fun AnnouncementCard(
+    title: String,
+    date: String,
+    modifier: Modifier = Modifier,
+    onClick: () -> Unit
+) {
+    Column(
+        modifier = modifier
+            .fillMaxWidth()
+            .clickable(onClick = { onClick() })
+            .background(color = MediCareCallTheme.colors.bg)
+            .padding(20.dp)
 
-        ) {
-            Text(text = title,style = MediCareCallTheme.typography.SB_16, color = MediCareCallTheme.colors.black)
-            Text(text = date, style = MediCareCallTheme.typography.R_15, color = MediCareCallTheme.colors.gray4)
-        }
-        Box(modifier = modifier.fillMaxWidth().height(1.dp).background(MediCareCallTheme.colors.gray2))
+    ) {
+        Text(
+            text = title,
+            style = MediCareCallTheme.typography.SB_16,
+            color = MediCareCallTheme.colors.black
+        )
+        Text(
+            text = date,
+            style = MediCareCallTheme.typography.R_15,
+            color = MediCareCallTheme.colors.gray4
+        )
+    }
+    Box(modifier = modifier
+        .fillMaxWidth()
+        .height(1.dp)
+        .background(MediCareCallTheme.colors.gray2))
 }

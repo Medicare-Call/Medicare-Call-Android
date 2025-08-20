@@ -84,7 +84,7 @@ fun HomeSleepContainer(
             Column(
                 modifier = Modifier
                     .fillMaxWidth(),
-                ) {
+            ) {
 
                 Row(
                     modifier = Modifier,
@@ -93,7 +93,8 @@ fun HomeSleepContainer(
 
                     val hoursText = if (isRecorded) "$totalSleepHours" else "--"
                     val minutesText = if (isRecorded) "$totalSleepMinutes" else "--"
-                    val textColor = if (isRecorded) MediCareCallTheme.colors.gray8 else MediCareCallTheme.colors.gray4
+                    val textColor =
+                        if (isRecorded) MediCareCallTheme.colors.gray8 else MediCareCallTheme.colors.gray4
 
                     Text(
                         text = hoursText,
@@ -149,7 +150,6 @@ fun HomeSleepContainer(
                         modifier = Modifier.alignByBaseline(),
                         color = MediCareCallTheme.colors.gray8
                     )
-
 
 
                 }

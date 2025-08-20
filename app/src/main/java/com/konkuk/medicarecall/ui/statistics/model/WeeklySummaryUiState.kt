@@ -1,7 +1,7 @@
 package com.konkuk.medicarecall.ui.statistics.model
 
 /**
- * ✅ 주간 요약 통계 화면의 전체 상태를 담는 데이터 클래스
+ * 주간 요약 통계 화면의 전체 상태를 담는 데이터 클래스
  * - 식사율, 복약율, 건강징후, 미응답
  * - 식사/복약 통계 리스트
  * - 건강징후 요약 메시지
@@ -48,6 +48,7 @@ data class WeeklySummaryUiState(
         )
     }
 }
+
 /**
  * ✅ 아침/점심/저녁 식사 통계용
  * ex) 아침 7/7, 점심 5/7, 저녁 1/7
@@ -76,7 +77,7 @@ data class WeeklyMentalUiState(
     val good: Int,    // 좋음 횟수
     val normal: Int,  // 보통 횟수
     val bad: Int      // 나쁨 횟수
-){
+) {
 
     companion object {
         val EMPTY = WeeklyMentalUiState(
@@ -100,7 +101,7 @@ data class WeeklyGlucoseUiState(
     val afterMealNormal: Int,  // 식후 정상 횟수
     val afterMealHigh: Int,    // 식후 높음 횟수
     val afterMealLow: Int      // 식후 낮음 횟수
-){
+) {
     companion object {
         val EMPTY = WeeklyGlucoseUiState(
             beforeMealNormal = 0,

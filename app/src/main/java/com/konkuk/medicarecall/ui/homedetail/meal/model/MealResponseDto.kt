@@ -7,6 +7,7 @@ data class MealResponseDto(
     val date: String,
     val meals: MealData
 )
+
 @Serializable
 data class MealData(
     val breakfast: String?, // null 허용

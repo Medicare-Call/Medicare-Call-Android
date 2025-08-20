@@ -19,7 +19,6 @@ import androidx.compose.runtime.Composable
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.key
 import androidx.compose.runtime.mutableIntStateOf
-import androidx.compose.runtime.mutableStateOf
 import androidx.compose.runtime.remember
 import androidx.compose.runtime.setValue
 import androidx.compose.ui.Alignment
@@ -149,7 +148,7 @@ fun TimePickerBottomSheet(
                         initialHour = secondHour,
                         initialMinute = secondMinute,
                     ) { hour, minute ->
-                       secondHour = hour; secondMinute = minute
+                        secondHour = hour; secondMinute = minute
                     }
                 } else if (tabIndex == 2) {
                     ThirdTimeWheelPicker(
@@ -159,7 +158,7 @@ fun TimePickerBottomSheet(
                         initialHour = thirdHour,
                         initialMinute = thirdMinute,
                     ) { hour, minute ->
-                         thirdHour = hour; thirdMinute = minute
+                        thirdHour = hour; thirdMinute = minute
                     }
                 }
             }
@@ -192,7 +191,7 @@ fun TimePickerBottomSheet(
                     onClick = {
                         onConfirm(
                             firstHour, firstMinute,
-                             secondHour, secondMinute,
+                            secondHour, secondMinute,
                             thirdHour, thirdMinute,
                         )
                         onDismiss()

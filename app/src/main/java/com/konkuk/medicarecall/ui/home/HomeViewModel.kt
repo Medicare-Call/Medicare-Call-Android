@@ -200,7 +200,8 @@ class HomeViewModel @Inject constructor(
         val healthInfo = eldersHealthInfoRepository.getEldersHealthInfo()
             .getOrNull()
             ?.firstOrNull { it.elderId == elderId }
-        val elderName = healthInfo?.name ?: _elderInfoList.value.find { it.id == elderId }?.name ?: ""
+        val elderName =
+            healthInfo?.name ?: _elderInfoList.value.find { it.id == elderId }?.name ?: ""
         val fallbackMedicines = healthInfo?.medications
             ?.flatMap { (time, medNames) ->
                 medNames.map { medName -> medName to time }

@@ -128,6 +128,7 @@ fun StateHealthDetailCard(
         }
     }
 }
+
 /**
  * 전체 미기록 전용 카드 (isRecorded == false)
  * 기존에 쓰던 디자인/문구가 있다면 이 컴포저블 안에서 구성하세요.
@@ -182,6 +183,7 @@ fun StateHealthUnrecordedCard(
         }
     }
 }
+
 @Preview(showBackground = true)
 @Composable
 fun PreviewStateHealthDetailCard() {

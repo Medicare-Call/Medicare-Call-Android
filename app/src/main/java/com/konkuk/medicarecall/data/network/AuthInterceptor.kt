@@ -1,6 +1,5 @@
 package com.konkuk.medicarecall.data.network
 
-import android.util.Log
 import com.konkuk.medicarecall.data.repository.DataStoreRepository
 import kotlinx.coroutines.runBlocking
 import okhttp3.Interceptor

@@ -37,7 +37,8 @@ fun WeeklySleepCard(
     val isUnrecorded = summary.weeklySleepHours == null
     val hoursText = if (isUnrecorded) "--" else summary.weeklySleepHours.toString()
     val minutesText = if (isUnrecorded) "--" else summary.weeklySleepMinutes.toString()
-    val textColor = if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.gray8
+    val textColor =
+        if (isUnrecorded) MediCareCallTheme.colors.gray4 else MediCareCallTheme.colors.gray8
 
 
     Card(
@@ -86,8 +87,9 @@ fun WeeklySleepCard(
                     color = textColor,
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(modifier = Modifier.offset(y = (2).dp),
-                    text="시간",
+                Text(
+                    modifier = Modifier.offset(y = (2).dp),
+                    text = "시간",
                     style = MediCareCallTheme.typography.R_16,
                     color = MediCareCallTheme.colors.gray8,
                 )
@@ -98,8 +100,9 @@ fun WeeklySleepCard(
                     color = textColor,
                 )
                 Spacer(modifier = Modifier.width(4.dp))
-                Text(modifier = Modifier.offset(y = (2).dp),
-                    text="분",
+                Text(
+                    modifier = Modifier.offset(y = (2).dp),
+                    text = "분",
                     style = MediCareCallTheme.typography.R_16,
                     color = MediCareCallTheme.colors.gray8,
                 )

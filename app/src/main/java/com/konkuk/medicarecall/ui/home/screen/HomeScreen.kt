@@ -92,12 +92,15 @@ fun HomeScreen(
     val scope = rememberCoroutineScope()
     val lifecycleOwner = LocalLifecycleOwner.current
 
-    // 데이터 갱신
+
+    // 화면이 다시 보일 때마다 데이터 새로고침
     LaunchedEffect(lifecycleOwner) {
-        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.STARTED) {
+        lifecycleOwner.lifecycle.repeatOnLifecycle(Lifecycle.State.RESUMED) {
+
             homeViewModel.forceRefreshHomeData()
         }
     }
+
 
     HomeScreenLayout(
         modifier = modifier,

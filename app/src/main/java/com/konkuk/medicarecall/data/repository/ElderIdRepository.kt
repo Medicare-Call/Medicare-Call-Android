@@ -19,5 +19,9 @@ class ElderIdRepository @Inject constructor() {
         return elderIds
     }
 
+    fun replaceAll(items: List<Map<String, Int>>) {
+        elderIds.clear()
+        elderIds.addAll(items)
+    }
 
 }

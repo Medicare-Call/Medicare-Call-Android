@@ -21,6 +21,8 @@ class EldersInfoViewModel @Inject constructor(
 
     var eldersInfoList by mutableStateOf<List<EldersInfoResponseDto>>(emptyList())
         private set
+    val isLoading = mutableStateOf(false)
+    val error = mutableStateOf<Throwable?>(null)
 
     var elderNameIdMapList = elderIdRepository.getElderIds()
 
@@ -28,25 +30,53 @@ class EldersInfoViewModel @Inject constructor(
         private set
 
     init {
-        loadEldersInfo()
+        ensureLoaded()
     }
 
-    fun refresh() = loadEldersInfo()
+    fun ensureLoaded() {
+        if (eldersInfoList.isEmpty() && !isLoading.value) {
+            loadEldersInfo()
+        }
+    }
 
-    private fun loadEldersInfo() {
-        Log.d("EldersInfoViewModel", "loadEldersInfo() 진입")
+    fun refresh() = loadEldersInfo(force = true)
+
+    private fun loadEldersInfo(force: Boolean = false) {
+        if (isLoading.value) return
+        isLoading.value = true
+        Log.d("EldersInfoViewModel", "loadEldersInfo() 호출 (force=$force)")
+
         viewModelScope.launch {
             eldersInfoRepository.getElders()
-                .onSuccess {
-                    Log.d("EldersInfoViewModel", "노인 개인 정보 불러오기 성공: ${it.size}개")
-                    eldersInfoList = it
-                    Log.d("EldersInfoViewModel", "노인 개인 정보: $eldersInfoList")
+                .onSuccess { list ->
+                    Log.d("EldersInfoViewModel", "노인 개인 정보 불러오기 성공: ${list.size}개")
+                    eldersInfoList = list
+
+                    // 이름→ID 매핑(순서 유지)
+                    val mapped = list.map { mapOf(it.name to it.elderId) }
+                    elderNameIdMapList = mapped
+
+                    // ElderIdRepository 동기화
+                    // NOTE: 중복 적재를 피하려면 ElderIdRepository에 replaceAll(...)을 추가하는 걸 추천.
+                    val repoCurrent = elderIdRepository.getElderIds()
+                    if (force || repoCurrent.isEmpty()) {
+                        // 간단 동기화(초기 1회 or refresh 시)
+                        mapped.forEach { m ->
+                            val e = m.entries.first()
+                            elderIdRepository.addElderId(e.key, e.value)
+                        }
+                    }
+
+                    error.value = null
+                    errorMessage = null
                 }
                 .onFailure {
+                    error.value = it
                     errorMessage = "노인 개인 정보를 불러오지 못했습니다."
-                    it.printStackTrace()
                     Log.e("EldersInfoViewModel", "노인 개인 정보 로딩 실패: ${it.message}", it)
                 }
+
+            isLoading.value = false
         }
     }
 }

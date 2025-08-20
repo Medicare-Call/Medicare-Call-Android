@@ -25,8 +25,10 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.shape.CircleShape
 import androidx.compose.foundation.shape.RoundedCornerShape
 import androidx.compose.foundation.verticalScroll
+import androidx.compose.material3.CircularProgressIndicator
 import androidx.compose.material3.Text
 import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableIntStateOf
 import androidx.compose.runtime.mutableStateOf
@@ -71,10 +73,52 @@ fun SetCallScreen(
     eldersInfoViewModel: EldersInfoViewModel = hiltViewModel(),
     callTimeViewModel: CallTimeViewModel = hiltViewModel()
 ) {
+
+
+    LaunchedEffect(Unit) { eldersInfoViewModel.ensureLoaded() }
+
+    val isLoading = eldersInfoViewModel.isLoading.value
+    val error = eldersInfoViewModel.error.value
+    val nameIdList = eldersInfoViewModel.elderNameIdMapList
+
+    when {
+        isLoading -> {
+            Box(Modifier.fillMaxSize().background(MediCareCallTheme.colors.bg).systemBarsPadding(), contentAlignment = Alignment.Center) {
+                CircularProgressIndicator(
+                    color = MediCareCallTheme.colors.main,
+                    modifier = Modifier.align(Alignment.Center)
+                )
+            }
+            return
+        }
+        error != null -> {
+            Column(
+                Modifier.fillMaxSize(),
+                horizontalAlignment = Alignment.CenterHorizontally,
+                verticalArrangement = Arrangement.Center
+            ) {
+                Text("어르신 정보를 불러오지 못했어요.\n잠시 후 다시 시도해 주세요.")
+                Spacer(Modifier.height(12.dp))
+                CTAButton(
+                    type = CTAButtonType.GREEN,
+                    text = "다시 시도",
+                    onClick = { eldersInfoViewModel.refresh() }
+                )
+            }
+            return
+        }
+        nameIdList.isEmpty() -> {
+            Box(Modifier.fillMaxSize(), contentAlignment = Alignment.Center) {
+                Text("등록된 어르신이 없습니다.")
+            }
+            return
+        }
+    }
+
     val scrollState = rememberScrollState() // 스크롤 상태
     var showBottomSheet by remember { mutableStateOf(false) } // 하단 시트 제어
-    val elderNames = eldersInfoViewModel.elderNameIdMapList.map { it.keys.first() } // 어르신 이름 리스트
-    val elderIds = eldersInfoViewModel.elderNameIdMapList.map { it.values.first() } // 어르신 아이디 리스트
+    val elderNames = nameIdList.map { it.keys.first() } // 어르신 이름 리스트
+    val elderIds = nameIdList.map { it.values.first() } // 어르신 아이디 리스트
 
     var selectedIndex by remember { mutableIntStateOf(0) } // 선택된 어르신 인덱스
     val selectedId = elderIds.getOrNull(selectedIndex) ?: 0// 선택된 어르신 아이디
@@ -83,7 +127,6 @@ fun SetCallScreen(
 
 
     val allComplete = callTimeViewModel.isAllComplete(elderIds)
-//    val allComplete = elderNames.isNotEmpty() && timeMap.values.all { it.first != null && it.second != null && it.third != null }
 
     Column(
         modifier = modifier

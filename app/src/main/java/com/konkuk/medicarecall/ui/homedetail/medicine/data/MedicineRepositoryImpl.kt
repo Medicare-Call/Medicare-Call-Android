@@ -99,7 +99,11 @@ class MedicineRepositoryImpl @Inject constructor(
                                 m.times.find { it.time == slot }?.let { t ->
                                     DoseStatusItem(
                                         time = kor[slot] ?: slot,
-                                        doseStatus = if (t.taken) DoseStatus.TAKEN else DoseStatus.SKIPPED
+                                        doseStatus = when (t.taken) {
+                                            true -> DoseStatus.TAKEN
+                                            false -> DoseStatus.SKIPPED
+                                            null -> DoseStatus.NOT_RECORDED
+                                        }
                                     )
                                 }
                             }

@@ -1,6 +1,9 @@
 package com.konkuk.medicarecall.ui.home
 
 import android.util.Log
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.lifecycle.SavedStateHandle
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -25,7 +28,7 @@ import java.time.LocalDate
 import javax.inject.Inject
 
 
-data class ElderInfo(val id: Int, val name: String,  val phone: String?)
+data class ElderInfo(val id: Int, val name: String, val phone: String?)
 
 @HiltViewModel
 class HomeViewModel @Inject constructor(
@@ -35,23 +38,23 @@ class HomeViewModel @Inject constructor(
     private val eldersHealthInfoRepository: EldersHealthInfoRepository
 ) : ViewModel() {
 
-    fun callCareCallImmediate(
-        onSuccess: () -> Unit = {},
-        onFailure: (String) -> Unit = {}
+
+    var isLoading by mutableStateOf(true)
+
+    fun callImmediate(
+        careCallTimeOption: String
     ) {
         viewModelScope.launch {
-            try {
-                val res = homeRepository.requestImmediateCareCall()
-                if (res.isSuccessful) {
-                    onSuccess()
-                } else {
-                    onFailure("요청 실패 (${res.code()})")
-                }
-            } catch (e: Exception) {
-                onFailure(e.message ?: "알 수 없는 에러")
+            homeRepository.requestImmediateCareCall(
+                elderId = selectedElderId.value!!,
+                careCallOption = careCallTimeOption
+            ).onSuccess {
+
             }
+                .onFailure { }
         }
     }
+
     private companion object {
         const val TAG = "HomeViewModel"
         const val KEY_SELECTED_ELDER_ID = "selectedElderId"
@@ -233,6 +236,7 @@ class HomeViewModel @Inject constructor(
             _selectedElderId.value = id
         }
     }
+
     // 이름 → ID 매핑
     private val elderIdByName: StateFlow<Map<String, Int>> =
         _elderInfoList.mapState { list -> list.associate { it.name to it.id } }

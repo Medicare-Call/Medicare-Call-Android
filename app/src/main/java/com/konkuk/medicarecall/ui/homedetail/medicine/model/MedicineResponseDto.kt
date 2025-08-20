@@ -20,7 +20,7 @@ data class MedicineData(
 @Serializable
 data class MedicineTime(
     val time: String,   // 복약 시간대 (예: "MORNING", "LUNCH", "DINNER")
-    val taken: Boolean  // 복용 여부
+    val taken: Boolean? // 복용 여부
 )
 
 @Serializable

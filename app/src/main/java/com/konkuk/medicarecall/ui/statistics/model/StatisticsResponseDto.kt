@@ -20,7 +20,8 @@ data class StatisticsResponseDto(
     @SerialName("psychSummary")
     val psychSummary: PsychSummaryDto,
     @SerialName("bloodSugar")
-    val bloodSugar: BloodSugarDto
+    val bloodSugar: BloodSugarDto,
+    val subscriptionStartDate: String
 )
 
 @Serializable

@@ -10,6 +10,7 @@ import com.konkuk.medicarecall.ui.statistics.model.PsychSummaryDto
 import com.konkuk.medicarecall.ui.statistics.model.StatisticsResponseDto
 import com.konkuk.medicarecall.ui.statistics.model.SummaryStatsDto
 import retrofit2.HttpException
+import java.time.LocalDate
 import javax.inject.Inject
 
 interface StatisticsRepository {
@@ -66,7 +67,8 @@ class StatisticsRepositoryImpl @Inject constructor(
             bloodSugar = BloodSugarDto(
                 beforeMeal = BloodSugarDetailDto(normal = 0, high = 0, low = 0),
                 afterMeal = BloodSugarDetailDto(normal = 0, high = 0, low = 0)
-            )
+            ),
+            subscriptionStartDate = LocalDate.now().toString()
         )
     }
 }

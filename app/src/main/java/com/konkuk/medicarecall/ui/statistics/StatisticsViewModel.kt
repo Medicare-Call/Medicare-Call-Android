@@ -152,6 +152,7 @@ class StatisticsViewModel @Inject constructor(
                     summary = summary,
                     error = null
                 )
+                earliestDate = LocalDate.parse(dto.subscriptionStartDate)
             }.onFailure { e ->
 
                 android.util.Log.e("STATISTICS_DEBUG", "onFailure: 데이터 로딩 실패", e)

@@ -66,7 +66,8 @@ fun ElderInputForm(
                 category = "생년월일",
                 placeHolder = "YYYY / MM / DD",
                 keyboardType = KeyboardType.Number,
-                visualTransformation = DateOfBirthVisualTransformation()
+                visualTransformation = DateOfBirthVisualTransformation(),
+                maxLength = 8
             )
             Spacer(Modifier.height(20.dp))
             Column(verticalArrangement = Arrangement.spacedBy(10.dp)) {
@@ -92,7 +93,8 @@ fun ElderInputForm(
                 category = "휴대폰 번호",
                 placeHolder = "010-1234-5678",
                 keyboardType = KeyboardType.Number,
-                visualTransformation = PhoneNumberVisualTransformation()
+                visualTransformation = PhoneNumberVisualTransformation(),
+                maxLength = 11
             )
             Spacer(Modifier.height(20.dp))
 

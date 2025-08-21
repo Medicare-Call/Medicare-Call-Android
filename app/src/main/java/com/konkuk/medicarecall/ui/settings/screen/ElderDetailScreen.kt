@@ -127,7 +127,8 @@ fun PersonalDetailScreen(
                         category = "생년월일",
                         placeHolder = "YYYY / MM / DD",
                         keyboardType = KeyboardType.Number,
-                        visualTransformation = DateOfBirthVisualTransformation()
+                        visualTransformation = DateOfBirthVisualTransformation(),
+                        maxLength = 8
                     )
                 }
                 Column() {
@@ -151,7 +152,8 @@ fun PersonalDetailScreen(
                         onValueChange = { phoneNum = it },
                         placeHolder = "휴대폰 번호",
                         keyboardType = KeyboardType.Number,
-                        visualTransformation = PhoneNumberVisualTransformation()
+                        visualTransformation = PhoneNumberVisualTransformation(),
+                        maxLength = 11
                     )
                 }
                 Column() {

@@ -23,6 +23,7 @@ fun DefaultTextField(
     placeHolder: String,
     keyboardType: KeyboardType = KeyboardType.Text,
     visualTransformation: VisualTransformation = VisualTransformation.None,
+    maxLength: Int = Int.MAX_VALUE,
     textFieldModifier: Modifier = Modifier
 ) {
 
@@ -37,7 +38,11 @@ fun DefaultTextField(
 
     OutlinedTextField(
         value = value,
-        onValueChange = onValueChange,
+        onValueChange = {
+            if (it.length <= maxLength) {
+                onValueChange(it)
+            }
+        },
         modifier = textFieldModifier.fillMaxWidth(),
         placeholder = { Text(placeHolder, style = MediCareCallTheme.typography.M_16) },
         shape = RoundedCornerShape(14.dp),

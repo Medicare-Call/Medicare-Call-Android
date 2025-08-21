@@ -140,7 +140,9 @@ fun LoginVerificationScreen(
                     },
                     placeHolder = "인증번호 입력",
                     keyboardType = KeyboardType.Number,
-                    textFieldModifier = Modifier.focusRequester(focusRequester)
+                    textFieldModifier = Modifier.focusRequester(focusRequester),
+                    maxLength = 6
+
                 )
 
                 Spacer(Modifier.height(30.dp))

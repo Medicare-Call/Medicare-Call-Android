@@ -161,7 +161,7 @@ fun PersonalDetailScreen(
                         category = "어르신과의 관계",
                         scrollState,
                         value = relationship.displayName,
-                        onValueChange = { newValue ->
+                        onOptionSelect = { newValue ->
                             relationship = RelationshipType.entries.firstOrNull {
                                 it.displayName == newValue
                             } ?: RelationshipType.ACQUAINTANCE
@@ -176,7 +176,7 @@ fun PersonalDetailScreen(
                         category = "어르신 거주 방식",
                         scrollState,
                         value = residenceType.displayName,
-                        onValueChange = { newValue ->
+                        onOptionSelect = { newValue ->
                             residenceType = ElderResidenceType.entries.firstOrNull {
                                 it.displayName == newValue
                             } ?: ElderResidenceType.WITH_FAMILY

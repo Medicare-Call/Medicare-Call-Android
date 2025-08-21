@@ -1,5 +1,5 @@
 [versions]
-agp = "8.11.0"
+agp = "8.12.1"
 kotlin = "2.0.21"
 coreKtx = "1.10.1"
 junit = "4.13.2"
@@ -10,6 +10,16 @@ activityCompose = "1.8.0"
 composeBom = "2024.09.00"
 navigationRuntimeAndroid = "2.9.0"
 navigationCompose = "2.9.0"
+composeMaterial3 = "1.5.0-beta05"
+
+hilt = "2.50"
+hiltNavigationCompose = "1.2.0"
+hiltManager = "1.0.0"
+ksp = "2.0.21-1.0.28"
+datastore = "1.1.7"
+datastorePreferences = "1.1.7"
+coreSplashscreen = "1.2.0-rc01"
+media3CommonKtx = "1.8.0"
 
 [libraries]
 androidx-core-ktx = { group = "androidx.core", name = "core-ktx", version.ref = "coreKtx" }
@@ -28,9 +38,29 @@ androidx-ui-test-junit4 = { group = "androidx.compose.ui", name = "ui-test-junit
 androidx-material3 = { group = "androidx.compose.material3", name = "material3" }
 androidx-navigation-runtime-android = { group = "androidx.navigation", name = "navigation-runtime-android", version.ref = "navigationRuntimeAndroid" }
 androidx-navigation-compose = { group = "androidx.navigation", name = "navigation-compose", version.ref = "navigationCompose" }
+androidx-compose-material3 = { group = "androidx.wear.compose", name = "compose-material3", version.ref = "composeMaterial3" }
+
+androidx-foundation = { group = "androidx.compose.foundation", name = "foundation" }
+
+
+
+hilt-core = { group = "com.google.dagger", name = "hilt-core", version.ref = "hilt" }
+hilt-compiler = { group = "com.google.dagger", name = "hilt-compiler", version.ref = "hilt" }
+hilt-android = { group = "com.google.dagger", name = "hilt-android", version.ref = "hilt" }
+hilt-android-compiler = { group = "com.google.dagger", name = "hilt-android-compiler", version.ref = "hilt" }
+hilt-navigation-compose = { group = "androidx.hilt", name = "hilt-navigation-compose", version.ref = "hiltNavigationCompose" }
+hilt-manager = {group = "androidx.hilt" , name = "hilt-compiler", version.ref = "hiltManager"}
+androidx-datastore = { group = "androidx.datastore", name = "datastore", version.ref = "datastore" }
+androidx-datastore-preferences = { group = "androidx.datastore", name = "datastore-preferences", version.ref = "datastorePreferences" }
+androidx-core-splashscreen = { group = "androidx.core", name = "core-splashscreen", version.ref = "coreSplashscreen" }
+androidx-media3-common-ktx = { group = "androidx.media3", name = "media3-common-ktx", version.ref = "media3CommonKtx" }
+
 
 [plugins]
 android-application = { id = "com.android.application", version.ref = "agp" }
 kotlin-android = { id = "org.jetbrains.kotlin.android", version.ref = "kotlin" }
 kotlin-compose = { id = "org.jetbrains.kotlin.plugin.compose", version.ref = "kotlin" }
 
+
+hilt = { id = "com.google.dagger.hilt.android", version.ref = "hilt" }
+ksp = {id = "com.google.devtools.ksp", version.ref = "ksp"}

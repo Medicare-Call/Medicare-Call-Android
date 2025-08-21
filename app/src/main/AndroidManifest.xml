@@ -1,6 +1,15 @@
 <?xml version="1.0" encoding="utf-8"?>
-<manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    xmlns:tools="http://schemas.android.com/tools">
+<manifest xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <!-- 권한 -->
+    <uses-permission android:name="android.permission.INTERNET" />
+    <uses-permission android:name="android.permission.CALL_PHONE" />
+    <uses-permission android:name="android.permission.ACCESS_NETWORK_STATE" />
+
+    <!-- 전화 하드웨어는 필수가 아님 (에뮬레이터/태블릿 대비) -->
+    <uses-feature
+        android:name="android.hardware.telephony"
+        android:required="false" />
 
     <application
         android:name=".App"
@@ -13,22 +22,17 @@
         android:supportsRtl="true"
         android:theme="@style/Theme.MediCareCall">
         <activity
-            android:name=".SplashActivity"
-            android:theme="@style/Theme.MySplashScreen"
-            android:exported="true">
+            android:name=".MainActivity"
+            android:exported="true"
+            android:label="@string/app_name"
+            android:theme="@style/Theme.App.Starting"
+            android:windowSoftInputMode="adjustResize">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-
-        <activity
-            android:name=".MainActivity"
-            android:exported="true"
-            android:label="@string/app_name"
-            android:theme="@style/Theme.MediCareCall">
-
-        </activity>
     </application>
+
 
 </manifest>

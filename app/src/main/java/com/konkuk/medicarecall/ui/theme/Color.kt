@@ -6,22 +6,25 @@ import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.intl.Locale
 
 val BG = Color(0xFFFAFAFA)
+val dim = Color(0xFF000000)
 
 // Main
 val G50 = Color(0xFFE6FAEF)
 val G100 = Color(0xFFDAFFED)
-val G200 = Color(0xFFB2FFD8)
+val G200 = Color(0xFFAFFDD6)
 val G300 = Color(0xFF00CC63)
 val main = Color(0xFF00B859)
 val G500 = Color(0xFF00A34F)
 val G600 = Color(0xFF00994A)
-val G800 = Color(0xFF007A3B)
+val G700 = Color(0xFF007A3B)
+val G800 = Color(0xFF005C2C)
 val G900 = Color(0xFF004723)
 
 // System
 val Negative = Color(0xFFFF4949)
 val Warning = Color(0xFFFFCB3D)
-val Positive = Color(0xFF0AD364)
+val Warning2 = Color(0xFFFFA13D)
+val Positive = Color(0xFF10D268)
 val Active = Color(0xFF2D8FFF)
 
 // Gray
@@ -41,6 +44,7 @@ val Black = Color(0xFF000000)
 @Immutable
 data class MediCareCallColors(
     val bg: Color,
+    val dim: Color,
     val main: Color,
     val g50: Color,
     val g100: Color,
@@ -48,10 +52,12 @@ data class MediCareCallColors(
     val g300: Color,
     val g500: Color,
     val g600: Color,
+    val g700: Color,
     val g800: Color,
     val g900: Color,
     val negative: Color,
     val warning: Color,
+    val warning2: Color,
     val positive: Color,
     val active: Color,
     val white: Color,
@@ -70,6 +76,7 @@ data class MediCareCallColors(
 
 val defaultMediCareCallColors = MediCareCallColors(
     bg = BG,
+    dim = dim,
     main = main,
     g50 = G50,
     g100 = G100,
@@ -77,10 +84,12 @@ val defaultMediCareCallColors = MediCareCallColors(
     g300 = G300,
     g500 = G500,
     g600 = G600,
+    g700 = G700,
     g800 = G800,
     g900 = G900,
     negative = Negative,
     warning = Warning,
+    warning2 = Warning2,
     positive = Positive,
     active = Active,
     white = White,

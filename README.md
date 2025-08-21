@@ -84,14 +84,14 @@ MediCareCall 프로젝트는 다음과 같은 주요 모듈 및 패키지로 구
     
 2.  **Open in Android Studio:**
     *   Android Studio를 실행합니다.
-    *   "Open an Existing Project"를 선택하고 클론한 저장소의 `Medicare-Call-Frontend` 폴더를 엽니다.
+    *   "Open an Existing Project"를 선택하고 클론한 저장소의 `Medicare-Call-Android` 폴더를 엽니다.
 3.  **Sync Gradle:**
     *   Gradle 동기화가 자동으로 시작됩니다. 그렇지 않다면, 툴바에서 "Sync Project with Gradle Files" (코끼리 아이콘)을 클릭합니다.
 4.  **Run the app:**
     *   원하는 에뮬레이터 또는 실제 기기를 선택합니다.
     *   툴바에서 "Run 'app'" (초록색 재생 버튼)을 클릭합니다.
 
-## 📝 참고 사항 (Notes from original README)
+## 📝 참고사항 (Notes)
 
 *   어르신 등록은 5명까지 가능합니다.
 *   알림 부분은 원래 기획부터 일단 피그마 형식대로 UI 구현이 목표였습니다.

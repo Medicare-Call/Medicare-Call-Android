@@ -35,6 +35,7 @@ import com.konkuk.medicarecall.ui.settings.component.SettingsTopAppBar
 import com.konkuk.medicarecall.ui.settings.viewmodel.DetailMyDataViewModel
 import com.konkuk.medicarecall.ui.theme.MediCareCallTheme
 import com.konkuk.medicarecall.ui.util.DateOfBirthVisualTransformation
+import com.konkuk.medicarecall.ui.util.isValidDate
 
 @Composable
 fun MyDetailScreen(
@@ -105,7 +106,11 @@ fun MyDetailScreen(
             }
             Spacer(modifier = modifier.height(30.dp))
             CTAButton(
-                type = if (name.isNotEmpty() && birth.isNotEmpty()) CTAButtonType.GREEN else CTAButtonType.DISABLED,
+                type = if (name.matches(Regex("^[가-힣a-zA-Z]*$"))
+                    && birth.length == 8
+                    && birth.isValidDate()
+                    && isMale != null
+                ) CTAButtonType.GREEN else CTAButtonType.DISABLED,
                 text = "확인",
                 onClick = {
                     val gender = if (isMale == true) GenderType.MALE else GenderType.FEMALE

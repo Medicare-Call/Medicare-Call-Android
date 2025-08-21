@@ -85,7 +85,8 @@ fun LoginPhoneScreen(
                     keyboardType = KeyboardType.Number,
                     visualTransformation = PhoneNumberVisualTransformation(),
                     textFieldModifier = Modifier
-                        .focusRequester(focusRequester)
+                        .focusRequester(focusRequester),
+                    maxLength = 11
                 )
 
                 Spacer(Modifier.height(30.dp))

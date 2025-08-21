@@ -149,7 +149,9 @@ fun LoginMyInfoScreen(
                         },
                         placeHolder = "YYYY / MM / DD",
                         keyboardType = KeyboardType.Number,
-                        visualTransformation = DateOfBirthVisualTransformation()
+                        visualTransformation = DateOfBirthVisualTransformation(),
+                        maxLength = 8
+
                     )
                 }
                 Spacer(Modifier.height(20.dp))

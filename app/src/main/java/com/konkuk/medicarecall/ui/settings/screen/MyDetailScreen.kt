@@ -86,7 +86,8 @@ fun MyDetailScreen(
                 category = "생년월일",
                 placeHolder = "YYYY / MM / DD",
                 keyboardType = KeyboardType.Number,
-                visualTransformation = DateOfBirthVisualTransformation()
+                visualTransformation = DateOfBirthVisualTransformation(),
+                maxLength = 8
             )
             Spacer(modifier = modifier.height(20.dp))
             Column() {
